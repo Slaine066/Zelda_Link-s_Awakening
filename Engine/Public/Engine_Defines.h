@@ -15,6 +15,11 @@
 #include <directXTK/SpriteFont.h>
 #include <directXTK/SpriteBatch.h>
 
+#include <assimp/scene.h>
+#include <assimp/importer.hpp>
+#include <assimp/postprocess.h>
+#include <d3dcompiler.h>
+
 
 using namespace DirectX;
 

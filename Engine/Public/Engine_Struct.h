@@ -73,6 +73,19 @@ namespace Engine
 
 	}VTXCOL;
 
+	typedef struct tagVertexModel
+	{
+		XMFLOAT3			vPosition;
+		XMFLOAT3			vNormal;
+		XMFLOAT2			vTexUV;
+		XMFLOAT3			vTangent;
+	}VTXMODEL;
+
+	typedef struct ENGINE_DLL tagVertexModel_Declaration
+	{
+		static const unsigned int iNumElements = 4;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	}VTXMODEL_DECLARATION;
 
 	typedef struct tagGraphicDesc
 	{

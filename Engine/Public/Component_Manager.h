@@ -1,6 +1,7 @@
 #pragma once
 
 /* 컴포넌트들의 원형을 생성하여 레벨별로 보관한다. */
+#include "Model.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Renderer.h"

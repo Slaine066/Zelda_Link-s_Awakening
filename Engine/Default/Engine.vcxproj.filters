@@ -82,6 +82,12 @@
     <ClCompile Include="..\private\CustomFont.cpp">
       <Filter>01.Utility\07.Fonts</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>01.Utility\03.Components\06.Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MeshContainer.cpp">
+      <Filter>01.Utility\03.Components\06.Model\MeshContainer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -177,6 +183,12 @@
     <ClInclude Include="..\public\CustomFont.h">
       <Filter>01.Utility\07.Fonts</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Model.h">
+      <Filter>01.Utility\03.Components\06.Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MeshContainer.h">
+      <Filter>01.Utility\03.Components\06.Model\MeshContainer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -262,6 +274,12 @@
     </Filter>
     <Filter Include="01.Utility\07.Fonts\Manager">
       <UniqueIdentifier>{eda1bc04-8f96-4f67-996e-728aefbb4382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\06.Model">
+      <UniqueIdentifier>{29a46b80-17f2-477d-8907-eb32b917859f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\06.Model\MeshContainer">
+      <UniqueIdentifier>{4898e6a3-a048-4c41-8501-4b42e7533fcb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
