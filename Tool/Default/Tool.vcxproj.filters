@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Text Include="..\..\Zelda_Link%27s_Awakening\Tool\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="00.MainApp">
+      <UniqueIdentifier>{31747a63-cea1-4036-a42d-b550582012ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Defines">
+      <UniqueIdentifier>{3dd432ef-d130-4256-9cd8-d2a4c6104f33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Default">
+      <UniqueIdentifier>{b26760a5-d099-49a1-8816-854571353685}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\Resource.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\stdafx.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\targetver.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\Tool.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\Tool\public\MainTool.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\Tool_Defines.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\small.ico">
+      <Filter>98.Default</Filter>
+    </Image>
+    <Image Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\Tool.ico">
+      <Filter>98.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\stdafx.cpp">
+      <Filter>98.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\Tool.cpp">
+      <Filter>98.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Private\MainTool.cpp">
+      <Filter>00.MainApp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\Tool.rc">
+      <Filter>98.Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
