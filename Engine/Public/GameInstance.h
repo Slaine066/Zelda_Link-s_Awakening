@@ -28,6 +28,8 @@ public: /* For.Engine */
 
 
 public: /* For.Graphic_Device */	
+	ID3D11RenderTargetView* Get_BackBufferRTV();
+	ID3D11DepthStencilView* Get_DepthStencilView();
 	HRESULT Clear_BackBuffer_View(_float4 vClearColor);
 	HRESULT Clear_DepthStencil_View();
 	HRESULT Present();

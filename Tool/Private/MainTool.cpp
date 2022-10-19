@@ -2,6 +2,7 @@
 
 #include "MainTool.h"
 #include "GameInstance.h"
+#include "ImGuiManager.h"
 
 CMainTool::CMainTool()
 	: m_pGameInstance(CGameInstance::Get_Instance())
@@ -20,6 +21,10 @@ HRESULT CMainTool::Initialize()
 	Graphic_Desc.eWinMode = GRAPHIC_DESC::MODE_WIN;
 
 	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst, LEVEL_END, Graphic_Desc, &m_pDevice, &m_pContext)))
+		return E_FAIL;
+
+	// ImGui Initialize 
+	if (FAILED(CImGuiManager::Get_Instance()->Initialize(m_pDevice, m_pContext)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Prototype_Component()))
@@ -43,7 +48,7 @@ void CMainTool::Tick(_float fTimeDelta)
 
 HRESULT CMainTool::Render()
 {
-	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Clear_BackBuffer_View(_float4(0.32f, 0.4f, 0.47f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
 	m_pRenderer->Render_GameObjects();
@@ -58,6 +63,9 @@ HRESULT CMainTool::Render()
 		m_fTimeAcc = 0.f;
 		m_iNumRender = 0;
 	}
+
+	// ImGui Render
+	CImGuiManager::Get_Instance()->Render();
 
 	m_pGameInstance->Present();
 

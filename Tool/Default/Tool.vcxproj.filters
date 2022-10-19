@@ -13,6 +13,12 @@
     <Filter Include="98.Default">
       <UniqueIdentifier>{b26760a5-d099-49a1-8816-854571353685}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.ImGui">
+      <UniqueIdentifier>{e4af7eca-2b53-48ed-825f-c986ea1c6cd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ImGui\Manager">
+      <UniqueIdentifier>{f67b9af6-90e3-44aa-9606-b57737738a35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\Resource.h">
@@ -33,6 +39,33 @@
     <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\Tool_Defines.h">
       <Filter>99.Defines</Filter>
     </ClInclude>
+    <ClInclude Include="..\ImGui\imconfig.h">
+      <Filter>97.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imgui.h">
+      <Filter>97.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imgui_impl_dx11.h">
+      <Filter>97.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imgui_impl_win32.h">
+      <Filter>97.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imgui_internal.h">
+      <Filter>97.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imstb_rectpack.h">
+      <Filter>97.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imstb_textedit.h">
+      <Filter>97.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGui\imstb_truetype.h">
+      <Filter>97.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGuiManager.h">
+      <Filter>97.ImGui\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\small.ico">
@@ -51,6 +84,30 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Private\MainTool.cpp">
       <Filter>00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui.cpp">
+      <Filter>97.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_demo.cpp">
+      <Filter>97.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_draw.cpp">
+      <Filter>97.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_impl_dx11.cpp">
+      <Filter>97.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_impl_win32.cpp">
+      <Filter>97.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_tables.cpp">
+      <Filter>97.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_widgets.cpp">
+      <Filter>97.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGuiManager.cpp">
+      <Filter>97.ImGui\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

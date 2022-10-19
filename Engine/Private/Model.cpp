@@ -39,8 +39,7 @@ HRESULT CModel::Initialize(void * pArg)
 
 HRESULT CModel::Render()
 {
-	/*for (auto& pMeshContainer : m_Meshes)
-		m_Meshes[0]->Render();*/
+	/*m_Meshes[0]->Render();*/
 
 	for (auto& pMeshContainer : m_Meshes)
 		pMeshContainer->Render();

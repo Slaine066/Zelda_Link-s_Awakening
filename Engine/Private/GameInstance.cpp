@@ -82,6 +82,16 @@ void CGameInstance::Clear(_uint iLevelIndex)
 	m_pObject_Manager->Clear(iLevelIndex);
 }
 
+ID3D11RenderTargetView * CGameInstance::Get_BackBufferRTV()
+{
+	return m_pGraphic_Device->Get_BackBufferRTV();
+}
+
+ID3D11DepthStencilView * CGameInstance::Get_DepthStencilView()
+{
+	return m_pGraphic_Device->Get_DepthStencilView();
+}
+
 HRESULT CGameInstance::Clear_BackBuffer_View(_float4 vClearColor)
 {
 	if (nullptr == m_pGraphic_Device)

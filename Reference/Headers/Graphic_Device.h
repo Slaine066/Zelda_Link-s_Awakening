@@ -16,8 +16,12 @@ public:
 	HRESULT Clear_BackBuffer_View(_float4 vClearColor);
 	HRESULT Clear_DepthStencil_View();
 	HRESULT Present();
-private:	
 
+public:
+	ID3D11RenderTargetView*	Get_BackBufferRTV() { return m_pBackBufferRTV; }
+	ID3D11DepthStencilView*	Get_DepthStencilView() { return m_pDepthStencilView; }
+
+private:	
 	/* 메모리 할당. (정점버퍼, 인덱스버퍼, 텍스쳐로드) */
 	ID3D11Device*			m_pDevice = nullptr;
 
