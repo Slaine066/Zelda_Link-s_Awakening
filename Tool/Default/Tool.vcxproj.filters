@@ -19,6 +19,15 @@
     <Filter Include="97.ImGui\Manager">
       <UniqueIdentifier>{f67b9af6-90e3-44aa-9606-b57737738a35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.GameObjects">
+      <UniqueIdentifier>{26658691-e19e-457b-9f73-0cafd0eec035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.GameObjects\00.Terrain">
+      <UniqueIdentifier>{a8ce4463-1cbd-4466-ad1d-1ed92c9649e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.GameObjects\01.Camera">
+      <UniqueIdentifier>{020bb6ff-45dc-4e43-8085-b233e13bbc74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\Resource.h">
@@ -66,6 +75,12 @@
     <ClInclude Include="..\Public\ImGuiManager.h">
       <Filter>97.ImGui\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h">
+      <Filter>01.GameObjects\00.Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Camera_Dynamic.h">
+      <Filter>01.GameObjects\01.Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\small.ico">
@@ -108,6 +123,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ImGuiManager.cpp">
       <Filter>97.ImGui\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp">
+      <Filter>01.GameObjects\00.Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera_Dynamic.cpp">
+      <Filter>01.GameObjects\01.Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

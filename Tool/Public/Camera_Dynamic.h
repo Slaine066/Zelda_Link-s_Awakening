@@ -1,21 +1,21 @@
 #pragma once
 
-#include "Client_Defines.h"
+#include "Tool_Defines.h"
 #include "Camera.h"
 
 BEGIN(Engine)
 END
 
-BEGIN(Client)
-
+BEGIN(Tool)
 class CCamera_Dynamic final : public CCamera
 {
 public:
 	typedef struct tagCameraDesc_Derived
 	{
-		_uint						iTest;
-		CCamera::CAMERADESC			CameraDesc;
+		_uint iTest;
+		CCamera::CAMERADESC	CameraDesc;
 	}CAMERADESC_DERIVED;
+
 private:
 	CCamera_Dynamic(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CCamera_Dynamic(const CCamera_Dynamic& rhs);

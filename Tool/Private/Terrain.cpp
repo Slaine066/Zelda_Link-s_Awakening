@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\Public\Terrain.h"
 
+#include "Terrain.h"
 #include "GameInstance.h"
 
 CTerrain::CTerrain(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -42,23 +42,16 @@ void CTerrain::Late_Tick(_float fTimeDelta)
 
 HRESULT CTerrain::Render()
 {
-	if (nullptr == m_pShaderCom ||
-		nullptr == m_pVIBufferCom)
+	if (nullptr == m_pShaderCom || nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
 	if (GetKeyState('1') < 0)
-	{
-		m_pShaderCom->Begin(2); // Phong
-	}
+		m_pShaderCom->Begin(2); // Phong Shading
 	else
-	{
-		m_pShaderCom->Begin(0); // Gauraud
-	}
-
-
+		m_pShaderCom->Begin(0); // Standard Shading (Gouraud Shading)
 
 	m_pVIBufferCom->Render();
 
@@ -68,31 +61,31 @@ HRESULT CTerrain::Render()
 HRESULT CTerrain::Ready_Components()
 {
 	/* For.Com_Renderer */
-	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_TOOL, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
 
 	/* For.Com_Transform */
-	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_STATIC, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_TOOL, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNorTex"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxNorTex"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	///* For.Com_Texture */
-	//if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom[TYPE_DIFFUSE])))
+	//if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_TOOL, TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom[TYPE_DIFFUSE])))
 	//	return E_FAIL;
 
 	///* For.Com_Brush */
-	//if (FAILED(__super::Add_Components(TEXT("Com_Brush"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Brush"), (CComponent**)&m_pTextureCom[TYPE_BRUSH])))
+	//if (FAILED(__super::Add_Components(TEXT("Com_Brush"), LEVEL_TOOL, TEXT("Prototype_Component_Texture_Brush"), (CComponent**)&m_pTextureCom[TYPE_BRUSH])))
 	//	return E_FAIL;
 
 	///* For.Com_Filter */
-	//if (FAILED(__super::Add_Components(TEXT("Com_Filter"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Filter"), (CComponent**)&m_pTextureCom[TYPE_FILTER])))
+	//if (FAILED(__super::Add_Components(TEXT("Com_Filter"), LEVEL_TOOL, TEXT("Prototype_Component_Texture_Filter"), (CComponent**)&m_pTextureCom[TYPE_FILTER])))
 	//	return E_FAIL;	
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), (CComponent**)&m_pVIBufferCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), LEVEL_TOOL, TEXT("Prototype_Component_VIBuffer_Terrain"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -103,22 +96,19 @@ HRESULT CTerrain::SetUp_ShaderResources()
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	// Matrices Setup
 	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
-
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-	
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
-	
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
 
-
-	/* For.Lights */
+	// Light Setup
 	const LIGHTDESC* pLightDesc = pGameInstance->Get_LightDesc(0);
 	if (nullptr == pLightDesc)
 		return E_FAIL;
@@ -141,19 +131,17 @@ HRESULT CTerrain::SetUp_ShaderResources()
 		m_iPassIndex = 1;
 	}
 		
-
-
-	
 	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
 		return E_FAIL;	
-
+	
 	RELEASE_INSTANCE(CGameInstance);
 
-	/*ID3D11ShaderResourceView*		pSRVs[] = {
+	// Texture Setup
+	/*ID3D11ShaderResourceView* pSRVs[] = {
 		m_pTextureCom[TYPE_DIFFUSE]->Get_SRV(0), 
 		m_pTextureCom[TYPE_DIFFUSE]->Get_SRV(1),
 	};
@@ -172,9 +160,9 @@ HRESULT CTerrain::SetUp_ShaderResources()
 
 HRESULT CTerrain::Create_FilterTexture()
 {
-	ID3D11Texture2D*			pTexture2D = nullptr;
+	ID3D11Texture2D* pTexture2D = nullptr;
 
-	D3D11_TEXTURE2D_DESC		TextureDesc;
+	D3D11_TEXTURE2D_DESC TextureDesc;
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
 	TextureDesc.Width = 128;
@@ -191,13 +179,13 @@ HRESULT CTerrain::Create_FilterTexture()
 	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	TextureDesc.MiscFlags = 0;
 
-	_uint*			pPixel = new _uint[TextureDesc.Width * 	TextureDesc.Height];
+	_uint* pPixel = new _uint[TextureDesc.Width * TextureDesc.Height];
 
 	for (_uint i = 0; i < TextureDesc.Height; ++i)
 	{
 		for (_uint j = 0; j < TextureDesc.Width; ++j)
 		{
-			_uint		iIndex = i * TextureDesc.Width + j;
+			_uint iIndex = i * TextureDesc.Width + j;
 
 			if(j < 64)
 				pPixel[iIndex] = D3DCOLOR_ARGB(255, 255, 255, 255);
@@ -206,7 +194,7 @@ HRESULT CTerrain::Create_FilterTexture()
 		}
 	}
 
-	D3D11_SUBRESOURCE_DATA			SubResourceData;
+	D3D11_SUBRESOURCE_DATA SubResourceData;
 	ZeroMemory(&SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 
 	SubResourceData.pSysMem = pPixel;
@@ -214,12 +202,11 @@ HRESULT CTerrain::Create_FilterTexture()
 
 	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, &SubResourceData, &pTexture2D)))
 		return E_FAIL;
+ 
+	/* D3D11_MAP_WRITE_NO_OVERWRITE	: 기존에 있던 값을 유지한상태로 메모리의 주소를 얻어오낟ㄷ. */
+	/* D3D11_MAP_WRITE_DISCARD		: 기존에 있던 값은 날리고 메모리 주소를 얻어오낟. */
 
-	
-	/*D3D11_MAP_WRITE_NO_OVERWRITE : 기존에 있던 값을 유지한상태로 메모리의 주소를 얻어오낟ㄷ. */
-	/*D3D11_MAP_WRITE_DISCARD : 기존에 있던 값은 날리고 메모리 주소를 얻어오낟. */
-
-	D3D11_MAPPED_SUBRESOURCE			SubResource;
+	D3D11_MAPPED_SUBRESOURCE SubResource;
 	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	if (FAILED(m_pContext->Map(pTexture2D, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource)))
@@ -245,7 +232,7 @@ HRESULT CTerrain::Create_FilterTexture()
 
 CTerrain * CTerrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CTerrain*	pInstance = new CTerrain(pDevice, pContext);
+	CTerrain* pInstance = new CTerrain(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{

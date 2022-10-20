@@ -43,13 +43,13 @@ VS_OUT VS_MAIN(VS_IN In)
 
 struct PS_IN
 {
-	float4		vPosition : SV_POSITION;
-	float2		vTexUV : TEXCOORD0;
+	float4 vPosition : SV_POSITION;
+	float2 vTexUV : TEXCOORD0;
 };
 
 struct PS_OUT
 {
-	float4		vColor : SV_TARGET0;
+	float4 vColor : SV_TARGET0;
 };
 
 /* 이렇게 만들어진 픽셀을 PS_MAIN함수의 인자로 던진다. */
@@ -57,16 +57,15 @@ struct PS_OUT
 /* 그래서 백버퍼에 색이 그려진다. */
 PS_OUT PS_MAIN(PS_IN In)
 {
-	PS_OUT		Out = (PS_OUT)0;
+	PS_OUT Out = (PS_OUT)0;
 
-	Out.vColor = (vector)1.f;
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (Out.vColor.a <= 0.3f)
+		discard;
 
 	return Out;
 }
-
-
-
-
 
 technique11 DefaultTechnique
 {

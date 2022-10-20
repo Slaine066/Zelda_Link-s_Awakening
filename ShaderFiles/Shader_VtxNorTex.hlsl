@@ -223,7 +223,7 @@ technique11 DefaultTechnique
 {
 	pass Directional
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_Wireframe);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DSS_Default, 0);
 

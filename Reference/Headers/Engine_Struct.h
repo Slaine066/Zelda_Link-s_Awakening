@@ -2,6 +2,11 @@
 
 namespace Engine
 {
+	typedef struct tagModelMaterial
+	{
+		class CTexture*		pMaterials[AI_TEXTURE_TYPE_MAX];
+	}MODELMATERIAL;
+
 	/* 빛의 정보를 표현한다. */
 	typedef struct tagLightDesc
 	{

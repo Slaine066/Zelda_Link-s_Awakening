@@ -24,7 +24,7 @@ HRESULT CImGuiManager::Initialize(ID3D11Device * pDevice, ID3D11DeviceContext * 
 
 	//m_temp = io.ConfigFlags;
 	//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;			// Enable Multi-Viewport / Platform Windows
+	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;			// Enable Multi-Viewport / Platform Windows
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -49,25 +49,9 @@ void CImGuiManager::Render()
 
 	ImGui::EndFrame();
 
-	// Code needed for ImGui Viewport
-	ID3D11RenderTargetView* pBackBufferRTV = CGameInstance::Get_Instance()->Get_BackBufferRTV();
-	ID3D11DepthStencilView* DepthStencilView = CGameInstance::Get_Instance()->Get_DepthStencilView();
-	m_pContext->OMSetRenderTargets(1, &pBackBufferRTV, DepthStencilView);
-
 	// Render
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	// Code needed for ImGui Viewport
-	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		// Update and Render additional Platform Windows
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
-	}
-
-	// Code needed for ImGui Viewport
-	m_pContext->OMSetRenderTargets(1, &pBackBufferRTV, DepthStencilView);
 }
 
 void CImGuiManager::DrawEditor()
@@ -191,8 +175,16 @@ void CImGuiManager::DrawMapModals()
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
 		{
-			m_vMaps.push_back(sMapName); // Add Map
-										 // TODO: ..
+			// Add Map
+			m_vMaps.push_back(sMapName);
+										 
+			CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+			Safe_AddRef(pGameInstance);
+
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), LEVEL_TOOL, TEXT("Layer_Terrain"), nullptr)))
+				return;
+
+			Safe_Release(pGameInstance);
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -266,9 +258,9 @@ void CImGuiManager::Free()
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
-	//CleanupDeviceD3D();
-	//::DestroyWindow(hwnd);
-	//::UnregisterClass(wc.lpszClassName, wc.hInstance);
+	// CleanupDeviceD3D();
+	//DestroyWindow(g_hWnd);
+	//UnregisterClass(wc.lpszClassName, wc.hInstance);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

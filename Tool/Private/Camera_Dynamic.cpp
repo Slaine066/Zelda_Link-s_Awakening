@@ -1,6 +1,5 @@
 #include "stdafx.h"
-
-#include "Camera_Dynamic.h"
+#include "..\Public\Camera_Dynamic.h"
 #include "GameInstance.h"
 
 CCamera_Dynamic::CCamera_Dynamic(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -35,25 +34,31 @@ void CCamera_Dynamic::Tick(_float fTimeDelta)
 
 	if (GetKeyState('W') < 0)
 		m_pTransform->Go_Straight(fTimeDelta);
-
 	if (GetKeyState('S') < 0)
 		m_pTransform->Go_Backward(fTimeDelta);
-
 	if (GetKeyState('A') < 0)
 		m_pTransform->Go_Left(fTimeDelta);
-
 	if (GetKeyState('D') < 0)
 		m_pTransform->Go_Right(fTimeDelta);
+
+	if (GetKeyState(VK_LEFT) < 0)
+		m_pTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * 0.1f);
+	if (GetKeyState(VK_LEFT) < 0)
+		m_pTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), -fTimeDelta * 0.1f);
+	if (GetKeyState(VK_UP) < 0)
+		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), -fTimeDelta * 0.2f);
+	if (GetKeyState(VK_DOWN) < 0)
+		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * 0.2f);
 
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
 	_long MouseMove = 0;
 
-	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X))
+	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X) && GetKeyState(VK_SHIFT) < 0)
 		m_pTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMove * 0.1f);
 
-	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_Y))
+	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_Y) && GetKeyState(VK_SHIFT) < 0)
 		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
 
 	Safe_Release(pGameInstance);
@@ -65,13 +70,14 @@ void CCamera_Dynamic::Tick(_float fTimeDelta)
 void CCamera_Dynamic::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
+
 }
 
 HRESULT CCamera_Dynamic::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
 

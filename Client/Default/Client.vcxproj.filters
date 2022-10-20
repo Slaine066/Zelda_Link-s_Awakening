@@ -37,6 +37,9 @@
     <Filter Include="02.GameObjects\02.Player">
       <UniqueIdentifier>{0181325b-a04c-4cc9-9444-847068cfc789}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.Camera">
+      <UniqueIdentifier>{66e5ba20-3fd3-4da3-862f-f9680f361ed9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -59,9 +62,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Client_Defines.h">
       <Filter>99.Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Camera_Dynamic.h">
-      <Filter>02.GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_GamePlay.h">
       <Filter>01.Levels\02.GamePlay</Filter>
@@ -87,6 +87,9 @@
     <ClInclude Include="..\Public\Player.h">
       <Filter>02.GameObjects\02.Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Camera_Dynamic.h">
+      <Filter>02.GameObjects\03.Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -97,9 +100,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\MainApp.cpp">
       <Filter>00.MainApp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Camera_Dynamic.cpp">
-      <Filter>02.GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_GamePlay.cpp">
       <Filter>01.Levels\02.GamePlay</Filter>
@@ -121,6 +121,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObjects\02.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera_Dynamic.cpp">
+      <Filter>02.GameObjects\03.Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

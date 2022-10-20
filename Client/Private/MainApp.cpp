@@ -35,7 +35,6 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(m_pGameInstance->Add_Fonts(m_pDevice, m_pContext, TEXT("Font_Nexon"), TEXT("../Bin/Resources/Fonts/130.spritefont"))))
 		return E_FAIL;
 
-	
 	// How to set RenderStates with code (currently setting them in Shaders)
 	/*
 	m_pDevice->CreateDepthStencilState();	// Takes a D3D11_DEPTH_STENCIL_DESC
@@ -66,7 +65,7 @@ void CMainApp::Tick(_float fTimeDelta)
 
 HRESULT CMainApp::Render()
 {
-	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Clear_BackBuffer_View(_float4(0.32f, 0.4f, 0.47f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
 	m_pRenderer->Render_GameObjects();

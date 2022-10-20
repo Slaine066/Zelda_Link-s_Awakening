@@ -12,8 +12,9 @@ CMeshContainer::CMeshContainer(const CMeshContainer & rhs)
 
 }
 
-HRESULT CMeshContainer::Initialize_Prototype(const aiMesh * pAIMesh)
+HRESULT CMeshContainer::Initialize_Prototype(const aiMesh * pAIMesh, _fmatrix PivotMatrix)
 {
+	m_iMaterialIndex = pAIMesh->mMaterialIndex;
 	m_pAIMesh = pAIMesh;
 
 #pragma region VERTICES
@@ -37,8 +38,13 @@ HRESULT CMeshContainer::Initialize_Prototype(const aiMesh * pAIMesh)
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		memcpy(&pVertices[i].vPosition, &m_pAIMesh->mVertices[i], sizeof(_float3));
+		XMStoreFloat3(&pVertices[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition), PivotMatrix));
+
 		memcpy(&pVertices[i].vNormal, &m_pAIMesh->mNormals[i], sizeof(_float3));
+		XMStoreFloat3(&pVertices[i].vNormal, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vNormal), PivotMatrix));
+
 		memcpy(&pVertices[i].vTexUV, &m_pAIMesh->mTextureCoords[0][i], sizeof(_float2));
+
 		memcpy(&pVertices[i].vTangent, &m_pAIMesh->mTangents[i], sizeof(_float3));
 	}
 
@@ -98,11 +104,11 @@ HRESULT CMeshContainer::Initialize(void * pArg)
 	return S_OK;
 }
 
-CMeshContainer * CMeshContainer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const aiMesh * pAIMesh)
+CMeshContainer * CMeshContainer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const aiMesh * pAIMesh, _fmatrix PivotMatrix)
 {
 	CMeshContainer*	pInstance = new CMeshContainer(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pAIMesh)))
+	if (FAILED(pInstance->Initialize_Prototype(pAIMesh, PivotMatrix)))
 	{
 		ERR_MSG(TEXT("Failed to Created : CMeshContainer"));
 		Safe_Release(pInstance);
@@ -110,7 +116,6 @@ CMeshContainer * CMeshContainer::Create(ID3D11Device * pDevice, ID3D11DeviceCont
 
 	return pInstance;
 }
-
 
 CComponent * CMeshContainer::Clone(void * pArg)
 {
@@ -128,5 +133,4 @@ CComponent * CMeshContainer::Clone(void * pArg)
 void CMeshContainer::Free()
 {
 	__super::Free();
-
 }

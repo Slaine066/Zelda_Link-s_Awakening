@@ -47,9 +47,17 @@ HRESULT CPlayer::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin();
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshContainers();
 
-	m_pModelCom->Render();
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0)))
+			return E_FAIL;
+	}
+
 
 	return S_OK;
 }
@@ -129,7 +137,6 @@ void CPlayer::Free()
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRendererCom);
 }
