@@ -23,7 +23,6 @@
 
 using namespace DirectX;
 
-
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
@@ -61,3 +60,5 @@ using namespace std;
 
 using namespace Engine;
 
+#define OBJ_DEAD 1
+#define OBJ_NOEVENT 0

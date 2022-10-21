@@ -25,9 +25,10 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
-	virtual void Tick(_float fTimeDelta);
+	virtual _uint Tick(_float fTimeDelta);
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual bool Picking(_float3& OutPos) override;
 
 private:
 	CShader*				m_pShaderCom = nullptr;

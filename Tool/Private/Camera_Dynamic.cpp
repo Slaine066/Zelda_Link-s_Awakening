@@ -28,7 +28,7 @@ HRESULT CCamera_Dynamic::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CCamera_Dynamic::Tick(_float fTimeDelta)
+_uint CCamera_Dynamic::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
@@ -41,30 +41,22 @@ void CCamera_Dynamic::Tick(_float fTimeDelta)
 	if (GetKeyState('D') < 0)
 		m_pTransform->Go_Right(fTimeDelta);
 
-	if (GetKeyState(VK_LEFT) < 0)
-		m_pTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * 0.1f);
-	if (GetKeyState(VK_LEFT) < 0)
-		m_pTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), -fTimeDelta * 0.1f);
-	if (GetKeyState(VK_UP) < 0)
-		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), -fTimeDelta * 0.2f);
-	if (GetKeyState(VK_DOWN) < 0)
-		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * 0.2f);
-
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
 	_long MouseMove = 0;
-
-	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X) && GetKeyState(VK_SHIFT) < 0)
+	if ((MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X)) && GetKeyState(VK_SHIFT) < 0)
 		m_pTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMove * 0.1f);
 
-	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_Y) && GetKeyState(VK_SHIFT) < 0)
+	if ((MouseMove = pGameInstance->Get_DIMMoveState(DIMM_Y)) && GetKeyState(VK_SHIFT) < 0)
 		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
 
 	Safe_Release(pGameInstance);
 
 	if (FAILED(Bind_OnPipeLine()))
-		return;
+		return OBJ_NOEVENT;
+
+	return OBJ_NOEVENT;
 }
 
 void CCamera_Dynamic::Late_Tick(_float fTimeDelta)

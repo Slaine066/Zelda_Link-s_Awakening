@@ -18,6 +18,7 @@ public:
 
 protected:
 	ID3D11Buffer*				m_pVB = nullptr;
+	_float3*					m_vVerticesPosition = nullptr;
 	_uint						m_iNumVertices = 0;
 	_uint						m_iStride = 0;
 	_uint						m_iNumVertexBuffers = 0;
@@ -29,7 +30,6 @@ protected:
 	DXGI_FORMAT					m_eFormat;
 	D3D11_PRIMITIVE_TOPOLOGY	m_eTopology;
 	
-
 protected:
 	D3D11_BUFFER_DESC			m_BufferDesc;
 	D3D11_SUBRESOURCE_DATA		m_SubResourceData;

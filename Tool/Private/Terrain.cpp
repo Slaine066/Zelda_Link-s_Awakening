@@ -29,9 +29,9 @@ HRESULT CTerrain::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CTerrain::Tick(_float fTimeDelta)
+_uint CTerrain::Tick(_float fTimeDelta)
 {
-
+	return S_OK;
 }
 
 void CTerrain::Late_Tick(_float fTimeDelta)
@@ -56,6 +56,19 @@ HRESULT CTerrain::Render()
 	m_pVIBufferCom->Render();
 
 	return S_OK;
+}
+
+bool CTerrain::Picking(_float3& OutPos)
+{
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	if (m_pVIBufferCom->Picking(m_pTransformCom, OutPos))
+		return true;
+
+	Safe_Release(pGameInstance);
+
+	return false;
 }
 
 HRESULT CTerrain::Ready_Components()

@@ -43,8 +43,9 @@ HRESULT CCamera::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CCamera::Tick(_float fTimeDelta)
+_uint CCamera::Tick(_float fTimeDelta)
 {
+	return OBJ_NOEVENT;
 }
 
 void CCamera::Late_Tick(_float fTimeDelta)

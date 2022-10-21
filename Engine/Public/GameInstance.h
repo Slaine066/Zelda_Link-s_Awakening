@@ -6,16 +6,16 @@
 #include "Object_Manager.h"
 #include "Timer_Manager.h"
 #include "PipeLine.h"
-
 #include "Component_Manager.h"
 #include "Light_Manager.h"
 #include "Font_Manager.h"
+#include "Picking.h"
 
 BEGIN(Engine)
-
 class ENGINE_DLL CGameInstance final : public CBase
 {
 	DECLARE_SINGLETON(CGameInstance)
+
 private:
 	CGameInstance();
 	virtual ~CGameInstance() = default;
@@ -23,9 +23,7 @@ private:
 public: /* For.Engine */
 	HRESULT Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext);
 	void Tick_Engine(_float fTimeDelta);
-
 	void Clear(_uint iLevelIndex);
-
 
 public: /* For.Graphic_Device */	
 	ID3D11RenderTargetView* Get_BackBufferRTV();
@@ -51,10 +49,13 @@ public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(const _tchar* pPrototypeTag, _uint iLevelIndex, const _tchar* pLayerTag, void* pArg = nullptr);
 	class CComponent* Get_Component(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iIndex = 0);
+	void Delete_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, _uint iIndex = 0);
 
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
+	class CComponent* Find_Component_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag);
+	class CGameObject* Find_Object(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex = 0);
 
 public: /* For.PipeLine */
 	void Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix);
@@ -70,10 +71,6 @@ public: /* For.Light_Manager */
 public: /* For.Font_Manager */
 	HRESULT Add_Fonts(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag, const _tchar* pFontFilePath);
 	HRESULT Render_Font(const _tchar* pFontTag, const _tchar* pText, _fvector vPos, _fvector vColor);
-
-
-
-
 	
 public:
 	static void Release_Engine();
@@ -88,9 +85,9 @@ private:
 	CPipeLine*						m_pPipeLine = nullptr;
 	CLight_Manager*					m_pLight_Manager = nullptr;
 	CFont_Manager*					m_pFont_Manager = nullptr;
+	CPicking*						m_pPicking = nullptr;
 
 public:
 	virtual void Free() override;
 };
-
 END

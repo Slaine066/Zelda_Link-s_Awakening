@@ -88,6 +88,9 @@
     <ClCompile Include="..\Private\MeshContainer.cpp">
       <Filter>01.Utility\03.Components\06.Model\MeshContainer</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Picking.cpp">
+      <Filter>01.Utility\08.Picking</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -189,6 +192,9 @@
     <ClInclude Include="..\Public\MeshContainer.h">
       <Filter>01.Utility\03.Components\06.Model\MeshContainer</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Picking.h">
+      <Filter>01.Utility\08.Picking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -280,6 +286,9 @@
     </Filter>
     <Filter Include="01.Utility\03.Components\06.Model\MeshContainer">
       <UniqueIdentifier>{4898e6a3-a048-4c41-8501-4b42e7533fcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\08.Picking">
+      <UniqueIdentifier>{19f5e39c-1429-4044-860c-c69494178fc2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

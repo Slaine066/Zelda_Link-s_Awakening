@@ -42,6 +42,8 @@ private:
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Lights();
 
+	void Check_Picking();
+
 public:
 	static CMainTool* Create();
 	virtual void Free();

@@ -12,6 +12,7 @@ CGameInstance::CGameInstance()
 	, m_pPipeLine(CPipeLine::Get_Instance())
 	, m_pLight_Manager(CLight_Manager::Get_Instance())
 	, m_pFont_Manager(CFont_Manager::Get_Instance())
+	, m_pPicking(CPicking::Get_Instance())
 {	
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pLight_Manager);
@@ -22,13 +23,14 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pGraphic_Device); 
-	
+	Safe_AddRef(m_pPicking);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
 {
 	if (nullptr == m_pGraphic_Device || 
-		nullptr == m_pObject_Manager)
+		nullptr == m_pObject_Manager ||
+		nullptr == m_pPicking)
 		return E_FAIL;
 
 	/* 그래픽 디바이스를 초기화한다. */
@@ -41,6 +43,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 	/* 사운드 디바이스를 초기화한다. */
 
+	// Picking Initialize
+	if (FAILED(m_pPicking->Initialize(*ppDevice, *ppContext, GraphicDesc.hWnd, GraphicDesc.iWinSizeX, GraphicDesc.iWinSizeY)))
+		return E_FAIL;
 
 	/* 컨테이너의 공간을 확보해둔다. */
 	if (FAILED(m_pObject_Manager->Reserve_Container(iNumLevels)))
@@ -48,9 +53,6 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 	if (FAILED(m_pComponent_Manager->Reserve_Container(iNumLevels)))
 		return E_FAIL;
-
-	
-
 
 	return S_OK;
 }
@@ -67,6 +69,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	m_pObject_Manager->Tick(fTimeDelta);
 
 	m_pPipeLine->Update();
+	m_pPicking->Tick();
 
 	m_pLevel_Manager->Late_Tick(fTimeDelta);
 	m_pObject_Manager->Late_Tick(fTimeDelta);
@@ -108,7 +111,6 @@ HRESULT CGameInstance::Clear_DepthStencil_View()
 		return E_FAIL;
 
 	return m_pGraphic_Device->Clear_DepthStencil_View();
-	
 }
 
 HRESULT CGameInstance::Present()
@@ -199,6 +201,14 @@ CComponent * CGameInstance::Get_Component(_uint iLevelIndex, const _tchar * pLay
 	return m_pObject_Manager->Get_Component(iLevelIndex, pLayerTag, pComponentTag, iIndex);
 }
 
+void CGameInstance::Delete_GameObject(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex)
+{
+	if (nullptr == m_pObject_Manager)
+		return;
+
+	m_pObject_Manager->Remove_GameObject(iLevelIndex, pLayerTag, iIndex);
+}
+
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, CComponent * pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
@@ -213,6 +223,22 @@ CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar * pP
 		return nullptr;
 
 	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
+}
+
+CComponent * CGameInstance::Find_Component_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag)
+{
+	if (nullptr == m_pComponent_Manager)
+		return nullptr;
+
+	return m_pComponent_Manager->Find_Component(iLevelIndex, pPrototypeTag);
+}
+
+CGameObject * CGameInstance::Find_Object(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->Get_Object(iLevelIndex, pLayerTag, iIndex);
 }
 
 void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix)
@@ -290,24 +316,16 @@ HRESULT CGameInstance::Render_Font(const _tchar * pFontTag, const _tchar * pText
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::Get_Instance()->Destroy_Instance();
-
 	CLevel_Manager::Get_Instance()->Destroy_Instance();
-
 	CObject_Manager::Get_Instance()->Destroy_Instance();
-
 	CComponent_Manager::Get_Instance()->Destroy_Instance();
-	
 	CPipeLine::Get_Instance()->Destroy_Instance();
-
 	CLight_Manager::Get_Instance()->Destroy_Instance();
-
 	CTimer_Manager::Get_Instance()->Destroy_Instance();
-
 	CInput_Device::Get_Instance()->Destroy_Instance();
-
 	CFont_Manager::Get_Instance()->Destroy_Instance();
-
 	CGraphic_Device::Get_Instance()->Destroy_Instance();
+	CPicking::Get_Instance()->Destroy_Instance();
 }
 
 void CGameInstance::Free()
@@ -321,4 +339,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pGraphic_Device);
+	Safe_Release(m_pPicking);
 }

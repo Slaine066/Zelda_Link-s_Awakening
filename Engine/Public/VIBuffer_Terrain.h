@@ -15,6 +15,13 @@ public:
 	virtual HRESULT Initialize_Prototype(_uint iNumVerticesX, _uint iNumVerticesZ, const _tchar* pHeightMapFilePath);
 	virtual HRESULT Initialize(void* pArg);
 
+public:
+	void Set_NumVerticesX(_uint iNumX) { m_iNumVerticesX = iNumX; }
+	void Set_NumVerticesZ(_uint iNumZ) { m_iNumVerticesZ = iNumZ; }
+	HRESULT Refresh_Vertices();
+
+	bool Picking(class CTransform* pTransform, _float3& pOut);
+
 private:
 	_uint m_iNumVerticesX = 0, m_iNumVerticesZ = 0;
 

@@ -22,7 +22,7 @@ CModel::CModel(const CModel & rhs)
 	for (auto& Material : m_Materials)
 	{
 		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
-			Safe_AddRef(Material.pMaterials[i]);
+			Safe_AddRef(Material.pMatTextures[i]);
 	}
 }
 
@@ -60,7 +60,7 @@ HRESULT CModel::SetUp_Material(CShader * pShader, const char * pConstantName, _u
 	if (iMeshIndex >= m_iNumMeshes)
 		return E_FAIL;
 
-	return pShader->Set_ShaderResourceView(pConstantName, m_Materials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pMaterials[eType]->Get_SRV());
+	return pShader->Set_ShaderResourceView(pConstantName, m_Materials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pMatTextures[eType]->Get_SRV());
 }
 
 HRESULT CModel::Render(CShader * pShader, _uint iMeshIndex, _uint iPassIndex)
@@ -137,8 +137,8 @@ HRESULT CModel::Create_Materials(const char* pModelFilePath)
 
 			MultiByteToWideChar(CP_ACP, 0, szFullPath, strlen(szFullPath), szRealPath, MAX_PATH);
 
-			ModelMaterial.pMaterials[j] = CTexture::Create(m_pDevice, m_pContext, szRealPath);
-			if (nullptr == ModelMaterial.pMaterials[j])
+			ModelMaterial.pMatTextures[j] = CTexture::Create(m_pDevice, m_pContext, szRealPath);
+			if (nullptr == ModelMaterial.pMatTextures[j])
 				return E_FAIL;
 		}
 
@@ -186,7 +186,7 @@ void CModel::Free()
 	for (auto& Material : m_Materials)
 	{
 		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
-			Safe_Release(Material.pMaterials[i]);
+			Safe_Release(Material.pMatTextures[i]);
 	}
 	m_Materials.clear();
 

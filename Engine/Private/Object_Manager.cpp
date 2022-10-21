@@ -17,6 +17,15 @@ CComponent * CObject_Manager::Get_Component(_uint iLevelIndex, const _tchar * pL
 	return pLayer->Get_Component(pComponentTag, iIndex);	
 }
 
+CGameObject * CObject_Manager::Get_Object(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
+	if (pLayer == nullptr)
+		return nullptr;
+
+	return pLayer->Get_Object(iIndex);
+}
+
 HRESULT CObject_Manager::Reserve_Container(_uint iNumLevels)
 {
 	if (nullptr != m_pLayers)
@@ -41,15 +50,15 @@ HRESULT CObject_Manager::Add_Prototype(const _tchar * pPrototypeTag, CGameObject
 
 HRESULT CObject_Manager::Add_GameObject(const _tchar * pPrototypeTag, _uint iLevelIndex, const _tchar * pLayerTag, void* pArg)
 {
-	CGameObject*		pPrototype = Find_Prototype(pPrototypeTag);
+	CGameObject* pPrototype = Find_Prototype(pPrototypeTag);
 	if (nullptr == pPrototype)
 		return E_FAIL;
 
-	CGameObject*		pGameObject = pPrototype->Clone(pArg);
+	CGameObject* pGameObject = pPrototype->Clone(pArg);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	CLayer*			pLayer = Find_Layer(iLevelIndex, pLayerTag);
+	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
 
 	if (nullptr == pLayer)
 	{
@@ -63,7 +72,16 @@ HRESULT CObject_Manager::Add_GameObject(const _tchar * pPrototypeTag, _uint iLev
 		pLayer->Add_GameObject(pGameObject);
 	}
 
+	return S_OK;
+}
 
+HRESULT CObject_Manager::Remove_GameObject(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
+	if (!pLayer)
+		return E_FAIL;
+
+	pLayer->Remove_Object(iIndex);
 
 	return S_OK;
 }

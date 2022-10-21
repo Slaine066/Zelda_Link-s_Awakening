@@ -51,12 +51,13 @@ void CMainTool::Tick(_float fTimeDelta)
 	if (nullptr == m_pGameInstance)
 		return;
 
+	Check_Picking();
+
 	m_pGameInstance->Tick_Engine(fTimeDelta);
 
 #ifdef _DEBUG
 	m_fTimeAcc += fTimeDelta;
 #endif // _DEBUG
-
 }
 
 HRESULT CMainTool::Render()
@@ -149,8 +150,8 @@ HRESULT CMainTool::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 	CameraDesc.iTest = 10;
 
-	CameraDesc.CameraDesc.vEye = _float4(10.f, 8.0f, -10.f, 1.f);
-	CameraDesc.CameraDesc.vAt = _float4(10.f, 0.f, 10.f, 1.f);
+	CameraDesc.CameraDesc.vEye = _float4(5.f, 8.0f, -5.f, 1.f);
+	CameraDesc.CameraDesc.vAt = _float4(5.f, 0.f, 5.f, 1.f);
 
 	CameraDesc.CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
@@ -204,6 +205,27 @@ HRESULT CMainTool::Ready_Lights()
 	return S_OK;
 }
 
+void CMainTool::Check_Picking()
+{
+	if (GetKeyState(VK_LBUTTON) < 0)
+	{
+		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+		Safe_AddRef(pGameInstance);
+
+		_float3 vPickedPosition = _float3(0.f, 0.f, 0.f);
+		CGameObject* pGameObject = pGameInstance->Find_Object(LEVEL_TOOL, TEXT("Layer_Terrain"));
+		if (pGameObject)
+		{
+			if (pGameObject->Picking(vPickedPosition))
+				CImGuiManager::Get_Instance()->Set_PickedPosition(vPickedPosition);
+		}
+		else
+			CImGuiManager::Get_Instance()->Set_PickedPosition(vPickedPosition);
+
+		Safe_AddRef(pGameInstance);
+	}
+}
+
 CMainTool * CMainTool::Create()
 {
 	CMainTool* pInstance = new CMainTool();
@@ -225,8 +247,6 @@ void CMainTool::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
-
-	
 
 	CGameInstance::Release_Engine();
 }

@@ -25,8 +25,9 @@ HRESULT CGameObject::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CGameObject::Tick(_float fTimeDelta)
+_uint CGameObject::Tick(_float fTimeDelta)
 {
+	return OBJ_NOEVENT;
 }
 
 void CGameObject::Late_Tick(_float fTimeDelta)
@@ -37,7 +38,6 @@ HRESULT CGameObject::Render()
 {
 	return S_OK;
 }
-
 
 HRESULT CGameObject::Add_Components(const _tchar * pComponentTag, _uint iLevelIndex, const _tchar * pPrototypeTag, CComponent** ppOut, void * pArg)
 {

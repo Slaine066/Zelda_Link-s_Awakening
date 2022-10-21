@@ -35,7 +35,13 @@ void CLayer::Tick(_float fTimeDelta)
 	for (auto& pGameObject : m_GameObjects)
 	{
 		if (nullptr != pGameObject)
-			pGameObject->Tick(fTimeDelta);
+		{
+			int iEvent = pGameObject->Tick(fTimeDelta);
+			if (iEvent == OBJ_DEAD)
+			{
+				Safe_Release(pGameObject);
+			}
+		}
 	}
 }
 
@@ -46,6 +52,32 @@ void CLayer::Late_Tick(_float fTimeDelta)
 		if (nullptr != pGameObject)
 			pGameObject->Late_Tick(fTimeDelta);
 	}
+}
+
+CGameObject * CLayer::Get_Object(_uint iIndex)
+{
+	if (m_GameObjects.size() <= iIndex)
+		return nullptr;
+
+	auto iter = m_GameObjects.begin();
+
+	for (size_t i = 0; i < iIndex; ++i)
+		++iter;
+
+	return *iter;
+}
+
+void CLayer::Remove_Object(_uint iIndex)
+{
+	if (m_GameObjects.size() <= iIndex)
+		return;
+
+	auto iter = m_GameObjects.begin();
+
+	for (size_t i = 0; i < iIndex; ++i)
+		++iter;
+
+	m_GameObjects.erase(iter);
 }
 
 CLayer * CLayer::Create()
@@ -68,4 +100,3 @@ void CLayer::Free()
 
 	m_GameObjects.clear();
 }
-
