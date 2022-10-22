@@ -29,7 +29,7 @@ HRESULT CCamera_Dynamic::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CCamera_Dynamic::Tick(_float fTimeDelta)
+_uint CCamera_Dynamic::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
@@ -59,7 +59,9 @@ void CCamera_Dynamic::Tick(_float fTimeDelta)
 	Safe_Release(pGameInstance);
 
 	if (FAILED(Bind_OnPipeLine()))
-		return;
+		return OBJ_NOEVENT;
+
+	return OBJ_NOEVENT;
 }
 
 void CCamera_Dynamic::Late_Tick(_float fTimeDelta)

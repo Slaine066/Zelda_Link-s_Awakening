@@ -212,6 +212,7 @@ void CMainTool::Check_Picking()
 		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 		Safe_AddRef(pGameInstance);
 
+		// Set Picked Position
 		_float3 vPickedPosition = _float3(0.f, 0.f, 0.f);
 		CGameObject* pGameObject = pGameInstance->Find_Object(LEVEL_TOOL, TEXT("Layer_Terrain"));
 		if (pGameObject)

@@ -34,12 +34,14 @@ HRESULT CBackGround::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CBackGround::Tick(_float fTimeDelta)
+_uint CBackGround::Tick(_float fTimeDelta)
 {
 	m_pTransformCom->Set_Scale(CTransform::STATE_RIGHT, m_fSizeX);
 	m_pTransformCom->Set_Scale(CTransform::STATE_UP, m_fSizeY);
 
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+	
+	return OBJ_NOEVENT;
 }
 
 void CBackGround::Late_Tick(_float fTimeDelta)

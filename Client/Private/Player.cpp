@@ -27,9 +27,9 @@ HRESULT CPlayer::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CPlayer::Tick(_float fTimeDelta)
+_uint CPlayer::Tick(_float fTimeDelta)
 {
-
+	return OBJ_NOEVENT;
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)

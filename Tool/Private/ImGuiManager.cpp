@@ -25,7 +25,7 @@ HRESULT CImGuiManager::Initialize(ID3D11Device * pDevice, ID3D11DeviceContext * 
 	ImGuiIO& io = ImGui::GetIO(); 
 	(void)io;
 
-	io.FontDefault = io.Fonts->AddFontFromFileTTF("../Bin/Resources/Fonts/Quicksand-Medium.ttf", 16.0f);
+	io.FontDefault = io.Fonts->AddFontFromFileTTF("../../Resources/Fonts/Quicksand-Medium.ttf", 16.0f);
 
 	//m_temp = io.ConfigFlags;
 	//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
@@ -285,15 +285,15 @@ void CImGuiManager::DrawMapTool()
 		
 		// Created Mesh
 		// TODO: ..
+		ImGui::Separator();
 	}
-	ImGui::Separator();
-
+	
 	// Navigation Mesh
 	if (ImGui::CollapsingHeader("Navigation Mesh"))
 	{
-		
+		ImGui::Separator();
 	}
-	ImGui::Separator();
+	
 	ImGui::NewLine();
 
 	ImGui::Text("Current Map:");

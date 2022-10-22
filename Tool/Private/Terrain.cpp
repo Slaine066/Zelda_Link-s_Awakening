@@ -231,7 +231,7 @@ HRESULT CTerrain::Create_FilterTexture()
 
 	m_pContext->Unmap(pTexture2D, 0);
 
-	if (FAILED(DirectX::SaveDDSTextureToFile(m_pContext, pTexture2D, TEXT("../Bin/Resources/Textures/Terrain/Newfilter.dds"))))
+	if (FAILED(DirectX::SaveDDSTextureToFile(m_pContext, pTexture2D, TEXT("../../Resources/Textures/Terrain/Newfilter.dds"))))
 		return E_FAIL;
 
 	if (FAILED(m_pDevice->CreateShaderResourceView(pTexture2D, nullptr, &m_pFilterTexture)))
