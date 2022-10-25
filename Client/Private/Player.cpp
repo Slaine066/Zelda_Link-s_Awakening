@@ -117,7 +117,6 @@ CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext
 	return pInstance;
 }
 
-
 CGameObject * CPlayer::Clone(void * pArg)
 {
 	CPlayer*	pInstance = new CPlayer(*this);

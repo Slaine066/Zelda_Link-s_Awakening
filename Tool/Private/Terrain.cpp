@@ -58,19 +58,6 @@ HRESULT CTerrain::Render()
 	return S_OK;
 }
 
-bool CTerrain::Picking(_float3& OutPos)
-{
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	Safe_AddRef(pGameInstance);
-
-	if (m_pVIBufferCom->Picking(m_pTransformCom, OutPos))
-		return true;
-
-	Safe_Release(pGameInstance);
-
-	return false;
-}
-
 HRESULT CTerrain::Ready_Components()
 {
 	/* For.Com_Renderer */

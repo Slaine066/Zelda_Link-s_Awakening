@@ -3,7 +3,6 @@
 #include "Base.h"
 
 BEGIN(Engine)
-
 class CGraphic_Device final : public CBase
 {
 	DECLARE_SINGLETON(CGraphic_Device)
@@ -42,5 +41,4 @@ private:
 public:
 	virtual void Free() override;
 };
-
 END

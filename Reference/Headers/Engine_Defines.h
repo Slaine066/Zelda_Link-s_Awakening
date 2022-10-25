@@ -32,6 +32,7 @@ enum DIMM { DIMM_X, DIMM_Y, DIMM_WHEEL, DIMM_END };
 #include <vector>
 #include <map>
 #include <list>
+#include <unordered_set>
 #include <algorithm>
 #include <typeinfo.h>
 using namespace std;

@@ -5,6 +5,7 @@
 #include "ImGuiManager.h"
 #include "Terrain.h"
 #include "Camera_Dynamic.h"
+#include "Mesh.h"
 
 CMainTool::CMainTool()
 	: m_pGameInstance(CGameInstance::Get_Instance())
@@ -40,6 +41,7 @@ HRESULT CMainTool::Initialize()
 	// Clone Prototypes
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
@@ -112,10 +114,12 @@ HRESULT CMainTool::Ready_Prototype_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
 		return E_FAIL;
+
 	/* For.Prototype_Component_Shader_VtxNorTex */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxNorTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Shaderfiles/Shader_VtxNorTex.hlsl"), VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements))))
 		return E_FAIL;
+
 	/* For.Prototype_Component_Shader_VtxModel */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxModel"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Shaderfiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
@@ -135,6 +139,10 @@ HRESULT CMainTool::Ready_Prototype_GameObjects()
 
 	/* For.Prototype_GameObject_Camera_Dynamic */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mesh"), CMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;
@@ -161,7 +169,8 @@ HRESULT CMainTool::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Camera_Dynamic"), LEVEL_TOOL, pLayerTag, &CameraDesc)))
+	_tchar objid[MAX_PATH] = TEXT("Camera_Dynamic");
+	if (FAILED(pGameInstance->Add_GameObject(objid, TEXT("Prototype_GameObject_Camera_Dynamic"), LEVEL_TOOL, pLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -223,7 +232,7 @@ void CMainTool::Check_Picking()
 		else
 			CImGuiManager::Get_Instance()->Set_PickedPosition(vPickedPosition);
 
-		Safe_AddRef(pGameInstance);
+		Safe_Release(pGameInstance);
 	}
 }
 

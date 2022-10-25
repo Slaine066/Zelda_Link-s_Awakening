@@ -3,7 +3,6 @@
 #include "Component.h"
 
 BEGIN(Engine)
-
 class ENGINE_DLL CVIBuffer abstract : public CComponent 
 {
 protected:
@@ -18,7 +17,6 @@ public:
 
 protected:
 	ID3D11Buffer*				m_pVB = nullptr;
-	_float3*					m_vVerticesPosition = nullptr;
 	_uint						m_iNumVertices = 0;
 	_uint						m_iStride = 0;
 	_uint						m_iNumVertexBuffers = 0;
@@ -42,5 +40,4 @@ public:
 	virtual CComponent* Clone(void* pArg = nullptr) = 0;
 	virtual void Free() override;
 };
-
 END

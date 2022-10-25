@@ -55,7 +55,6 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iNumVerticesX, _uint iNumV
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	VTXNORTEX* pVertices = new VTXNORTEX[m_iNumVertices];
-	m_vVerticesPosition = new _float3[m_iNumVertices];
 
 	for (_uint i = 0; i < m_iNumVerticesZ; ++i)
 	{
@@ -63,7 +62,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iNumVerticesX, _uint iNumV
 		{
 			_uint	iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = m_vVerticesPosition[iIndex] = _float3(_float(j), pHeightMapFilePath ? ((pPixel[iIndex] & 0x000000ff) / 10.0f) : 0.f , _float(i));
+			pVertices[iIndex].vPosition = _float3(_float(j), pHeightMapFilePath ? ((pPixel[iIndex] & 0x000000ff) / 10.0f) : 0.f , _float(i));
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexture = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
 		}
@@ -187,7 +186,7 @@ HRESULT CVIBuffer_Terrain::Refresh_Vertices()
 		{
 			_uint	iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = m_vVerticesPosition[iIndex] = _float3(_float(j), 0.f, _float(i));
+			pVertices[iIndex].vPosition = _float3(_float(j), 0.f, _float(i));
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexture = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
 		}
@@ -280,59 +279,6 @@ HRESULT CVIBuffer_Terrain::Refresh_Vertices()
 
 	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
-}
-
-bool CVIBuffer_Terrain::Picking(CTransform* pTransform, _float3& pOut)
-{
-	XMVECTOR vRayPosition, vRayDirection;
-	CPicking::Get_Instance()->Compute_LocalRayInfo(pTransform, vRayPosition, vRayDirection);
-
-	_matrix	WorldMatrix = pTransform->Get_WorldMatrix();
-
-	// Iterate over Vertices
-	for (_int i = 0; i < m_iNumVerticesZ - 1; ++i)
-	{
-		for (_int j = 0; j < m_iNumVerticesX - 1; ++j)
-		{
-			_uint iIndex = i * m_iNumVerticesX + j;
-
-			_uint iIndices[] = {
-				iIndex + m_iNumVerticesX,
-				iIndex + m_iNumVerticesX + 1,
-				iIndex + 1,
-				iIndex
-			};
-
-			// Right Triangle
-			_vector vVertex1 = XMLoadFloat3(&m_vVerticesPosition[iIndices[0]]);
-			_vector vVertex2 = XMLoadFloat3(&m_vVerticesPosition[iIndices[1]]);
-			_vector vVertex3 = XMLoadFloat3(&m_vVerticesPosition[iIndices[2]]);
-			_float fDist;
-
-			if (TriangleTests::Intersects((FXMVECTOR)vRayPosition, (FXMVECTOR)vRayDirection, (FXMVECTOR)vVertex1, (GXMVECTOR)vVertex2, (HXMVECTOR)vVertex3, fDist) == true)
-			{
-				_vector	vPickedPosition = vRayPosition + vRayDirection * fDist;
-				XMStoreFloat3(&pOut, XMVector3TransformCoord(vPickedPosition, WorldMatrix));
-				return true;
-			}
-			else
-			{
-				// Left Triangle
-				vVertex1 = XMLoadFloat3(&m_vVerticesPosition[iIndices[0]]);
-				vVertex2 = XMLoadFloat3(&m_vVerticesPosition[iIndices[2]]);
-				vVertex3 = XMLoadFloat3(&m_vVerticesPosition[iIndices[3]]);
-
-				if (TriangleTests::Intersects((FXMVECTOR)vRayPosition, (FXMVECTOR)vRayDirection, (FXMVECTOR)vVertex1, (GXMVECTOR)vVertex2, (HXMVECTOR)vVertex3, fDist) == true)
-				{
-					_vector	vPickedPosition = vRayPosition + vRayDirection * fDist;
-					XMStoreFloat3(&pOut, XMVector3TransformCoord(vPickedPosition, WorldMatrix));
-					return true;
-				}
-			}
-		}
-	}
-
-	return false;
 }
 
 CVIBuffer_Terrain * CVIBuffer_Terrain::CreateWithVertices(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _uint iNumVerticesX, _uint iNumVerticesZ)

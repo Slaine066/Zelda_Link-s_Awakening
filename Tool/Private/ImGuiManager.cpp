@@ -3,10 +3,10 @@
 #include "ImGuiManager.h"
 #include "GameInstance.h"
 #include "Terrain.h"
+#include "Mesh.h"
+#include "Layer.h"
 
 IMPLEMENT_SINGLETON(CImGuiManager)
-
-
 
 CImGuiManager::CImGuiManager()
 {
@@ -41,6 +41,11 @@ HRESULT CImGuiManager::Initialize(ID3D11Device * pDevice, ID3D11DeviceContext * 
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
+
+	Read_Maps_Name();
+	
+	_tchar cResourcesPath[MAX_PATH] = TEXT("../../Resources/Zelda_Meshes/");
+	Read_Objects_Name(cResourcesPath);
 
 	return S_OK;
 }
@@ -171,106 +176,245 @@ void CImGuiManager::DrawOverlayWindow()
 
 void CImGuiManager::DrawMapTool()
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
 	ImGuiTreeNodeFlags TreeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
 
-	// Map
-	if (ImGui::CollapsingHeader("Map", TreeNodeFlags))
+	// Create New Map
+	ImGui::Text("New Map");
+	static char cMapName[MAX_PATH];
+	ImGui::InputText("##InputMap", cMapName, MAX_PATH);
+	ImGui::SameLine();
+	if (ImGui::Button("Create Map"))
 	{
-		ImGui::Text("New Map");
-		
+		m_sCurrentMap = cMapName; // Set Current Map
+		m_sCurrentMap += ".dat";
+
+		ImGui::OpenPopup("Create Map");
+	}
+	ImGui::NewLine();
+	ImGui::Separator();
+
+	// Map List
+	ImGui::Text("Saved Maps");
+	if (ImGui::BeginListBox("##Maps", ImVec2(-FLT_MIN, 4 * ImGui::GetTextLineHeightWithSpacing())))
+	{
+		for (int i = 0; i < m_vMaps.size(); i++)
+		{
+			if (ImGui::Selectable(m_vMaps[i].c_str(), m_iSelectedMap == i))
+				m_iSelectedMap = i;
+
+			if (m_iSelectedMap == i)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+
+	if (ImGui::Button("Load Map"))
+	{
+		if (LoadData())
+		{
+			m_sCurrentMap = m_vMaps[m_iSelectedMap];
+			ImGui::OpenPopup("Load Map");
+		}
+	}
+	ImGui::NewLine();
+	ImGui::Separator();
+
+	ImGui::Text("Current Map: %s", m_sCurrentMap.c_str());
+
+	if (ImGui::Button("Save Map"))
+	{
+		if (SaveData())
+		{
+			_bool bNewMap = true;
+			for (auto& map : m_vMaps)
+			{
+				if (m_sCurrentMap == map)
+				{
+					bNewMap = false;
+					break;
+				}
+			}
+
+			if (bNewMap)
+				m_vMaps.push_back(m_sCurrentMap);
+
+			ImGui::OpenPopup("Save Map");
+		}
+	}
+
+	ImGui::NewLine();
+	ImGui::Separator();
+
+	// Map
+	if (ImGui::CollapsingHeader("Terrain"/*, TreeNodeFlags*/))
+	{
 		// Inputs
 		ImGui::PushItemWidth(120);
 		ImGui::InputInt("X-Axis Vertices", &m_iXVertex);
-		ImGui::PushItemWidth(120);
 		ImGui::InputInt("Z-Axis Vertices", &m_iZVertex);
+		ImGui::PopItemWidth();
 
 		// Buttons
-		if (ImGui::Button("Create Map"))
-			ImGui::OpenPopup("Create Map");
-		
-		ImGui::NewLine();
-		ImGui::Separator();
-		
-		// Map List
-		ImGui::Text("Saved Maps");
-		if (ImGui::BeginListBox("##Maps", ImVec2(-FLT_MIN, 4 * ImGui::GetTextLineHeightWithSpacing())))
+		if (ImGui::Button("Create Terrain"))
 		{
-			for (int i = 0; i < m_vMaps.size(); i++)
-			{
-				const bool bIsSelected = (m_iSelectedMap == i);
-				if (ImGui::Selectable(m_vMaps[i].c_str(), bIsSelected))
-					m_iSelectedMap = i;
+			CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+			Safe_AddRef(pGameInstance);
 
-				if (bIsSelected)
-					ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndListBox();
+			// Destroy current Map
+			CGameObject* pObject = pGameInstance->Find_Object(LEVEL_TOOL, TEXT("Layer_Terrain"));
+			if (pObject)
+				pGameInstance->Delete_GameObject(pObject, LEVEL_TOOL, TEXT("Layer_Terrain"));
+
+			// Create Terrain				 
+			CComponent* pComponent = pGameInstance->Find_Component_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_VIBuffer_Terrain"));
+			CVIBuffer_Terrain* pVIBufferTerrain = dynamic_cast<CVIBuffer_Terrain*>(pComponent);
+			if (!pVIBufferTerrain)
+				return;
+
+			pVIBufferTerrain->Set_NumVerticesX(m_iXVertex);
+			pVIBufferTerrain->Set_NumVerticesZ(m_iZVertex);
+			pVIBufferTerrain->Refresh_Vertices();
+
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Terrain"), TEXT("Prototype_GameObject_Terrain"), LEVEL_TOOL, TEXT("Layer_Terrain"), nullptr)))
+				return;
+
+			Safe_Release(pGameInstance);
 		}
-
-		if (ImGui::Button("Load Map"))
-			ImGui::OpenPopup("Load Map");
-
+		
 		ImGui::NewLine();
 		ImGui::Separator();
 	}
 
 	// Object
-	if (ImGui::CollapsingHeader("Object", TreeNodeFlags))
+	if (ImGui::CollapsingHeader("Model", TreeNodeFlags))
 	{
+		ImGui::Text("New Object");
+
 		// Objects List
+		if (ImGui::BeginListBox("##Objects List", ImVec2(-FLT_MIN, 4 * ImGui::GetTextLineHeightWithSpacing())))
 		{
-			ImGui::BeginChild("Objects List", ImVec2(0, 100), true);
-			for (int i = 0; i < m_vObjects.size(); i++)
+			for (auto& iter = m_mObjects.begin(); iter != m_mObjects.end(); iter++)
 			{
-				if (ImGui::Selectable(m_vObjects[i].c_str(), m_iSelectedObject == i))
-					m_iSelectedObject = i;
-			}
-			ImGui::EndChild();
-		}
+				if (ImGui::Selectable(iter->first.c_str(), m_sSelectedObject == iter->first))
+					m_sSelectedObject = iter->first;
 
-		if (ImGui::Button("Create Object"))
-		{
-			// TODO: ..
-		}
-		ImGui::NewLine();
-		ImGui::Separator();
-
-		// Created Objects
-		ImGui::Text("Created Objects");
-		if (ImGui::BeginListBox("##Created Objects", ImVec2(-FLT_MIN, 4 * ImGui::GetTextLineHeightWithSpacing())))
-		{
-			for (int i = 0; i < m_vCreatedObjects.size(); i++)
-			{
-				const bool bIsSelected = (m_iSelectedCreatedObject == i);
-				if (ImGui::Selectable(m_vCreatedObjects[i].c_str(), bIsSelected))
-					m_iSelectedCreatedObject = i;
-
-				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-				if (bIsSelected)
+				if (m_sSelectedObject == iter->first)
 					ImGui::SetItemDefaultFocus();
 			}
 			ImGui::EndListBox();
 		}
 
-		if (ImGui::Button("Delete Object"))
-		{
-			auto& iter = m_vCreatedObjects.begin();
-			iter += m_iSelectedCreatedObject;
+		ImGui::NewLine();
+		ImGui::Text("Layer");
+		ImGui::SameLine();
 
-			m_vCreatedObjects.erase(iter);
+		// Get Layers
+		CObject_Manager::LAYERS mLayers = pGameInstance->Get_Layers(LEVEL_TOOL);
+
+		// Populate Layers
+		if (!mLayers.empty())
+		{
+			for (auto& iter = mLayers.begin(); iter != mLayers.end(); iter++)
+			{
+				wstring wsLayerTag = wstring(iter->first);
+				string sLayerTag = string(wsLayerTag.begin(), wsLayerTag.end());
+				m_vLayers.insert(sLayerTag.c_str());
+
+				m_vLayersTemp.insert(iter->first);
+			}
 		}
 
+		m_sCurrentLayer = m_sCurrentLayer.empty() ? 
+				m_vLayers.empty() ? "" : *m_vLayers.begin()
+			: m_sCurrentLayer;
+
+		// Layers Combo
+		if (ImGui::BeginCombo("##ChooseLayer", m_sCurrentLayer.c_str()))
+		{
+			_uint iCounter = 0;
+			for (auto& iter = m_vLayers.begin(); iter != m_vLayers.end(); iter++)
+			{
+				if (ImGui::Selectable(iter->c_str(), iter->c_str() == m_sCurrentLayer))
+				{
+					m_sCurrentLayer = *iter;
+				}
+
+				if (iter->c_str() == m_sCurrentLayer)
+					ImGui::SetItemDefaultFocus();
+
+				iCounter++;
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::SameLine();
+
+		if (ImGui::Button("Add", ImVec2(0, 23)))
+			ImGui::OpenPopup("Add Layer");
+
+		if (ImGui::Button("Create Object"))
+			Create_Object();
+
+		ImGui::NewLine();
+		ImGui::Separator();
+
+		// Created Objects
+		ImGui::Text("Created Objects");
+		if (ImGui::BeginTable("CreatedObjectTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, ImGui::GetTextLineHeightWithSpacing() * 6)))
+		{
+			ImGui::TableSetupScrollFreeze(0, 1);
+			ImGui::TableSetupColumn("Object");
+			ImGui::TableSetupColumn("Layer");
+			ImGui::TableHeadersRow();
+			
+			// Iterate Layers
+			for (auto& iter = mLayers.begin(); iter != mLayers.end(); iter++)
+			{
+				CLayer* pLayer = iter->second;
+				CLayer::GAMEOBJECTS vGameObjects = pLayer->Get_Objects();
+
+				ImGui::TableNextRow();
+
+				wstring wsLayer = wstring(iter->first);
+				string sLayer = string(wsLayer.begin(), wsLayer.end());
+
+				for (auto& pObject : vGameObjects)
+				{
+					ImGui::TableNextColumn();
+
+					wstring wsObjId = wstring(pObject->Get_ObjId());
+					string sObjId = string(wsObjId.begin(), wsObjId.end());
+					if (ImGui::Selectable(sObjId.c_str(), !wcscmp(pObject->Get_ObjId(), m_pSelectedCreatedObject ? m_pSelectedCreatedObject->Get_ObjId() : TEXT("")), ImGuiSelectableFlags_SpanAllColumns))
+						m_pSelectedCreatedObject = pObject;
+
+					ImGui::TableNextColumn();
+					ImGui::Text(sLayer.c_str());
+				}
+			}
+			
+			ImGui::EndTable();
+		}
 		ImGui::NewLine();
 
+		if (m_pSelectedCreatedObject)
+		{
+			wstring wsCurrentObject = wstring(m_pSelectedCreatedObject->Get_ObjId());
+			string sCurrentObject = string(wsCurrentObject.begin(), wsCurrentObject.end());
+			ImGui::Text("Current Object: %s", sCurrentObject.c_str());
+		}
+		else
+			ImGui::Text("Current Object:");
+
 		// Transformations
-		if (ImGui::RadioButton("Translation", m_eObjAction == OBJ_TRANSLATION)) 
-			m_eObjAction = OBJ_TRANSLATION; 
+		if (ImGui::RadioButton("Translation", m_eObjAction == TRANS_TRANSLATION)) 
+			m_eObjAction = TRANS_TRANSLATION;
 		ImGui::SameLine();
-		if (ImGui::RadioButton("Rotation", m_eObjAction == OBJ_ROTATION))
-			m_eObjAction = OBJ_ROTATION;
+		if (ImGui::RadioButton("Rotation", m_eObjAction == TRANS_ROTATION))
+			m_eObjAction = TRANS_ROTATION;
 		ImGui::SameLine();
-		if (ImGui::RadioButton("Scale", m_eObjAction == OBJ_SCALE))
-			m_eObjAction = OBJ_SCALE;
+		if (ImGui::RadioButton("Scale", m_eObjAction == TRANS_SCALE))
+			m_eObjAction = TRANS_SCALE;
 
 		static float fX = 1.f, fY = 1.f, fZ = 1.f;
 		ImGui::SetNextItemWidth(80);
@@ -281,28 +425,30 @@ void CImGuiManager::DrawMapTool()
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(80);
 		ImGui::DragFloat("##Z", &fZ, 0.005f, 0.f, 0.f, "Z: %.03f");
-		ImGui::NewLine();
 		
-		// Created Mesh
-		// TODO: ..
+		ImGui::NewLine();
+
+		if (ImGui::Button("Delete Object"))
+		{
+			wstring wsCurrentLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
+			pGameInstance->Delete_GameObject(m_pSelectedCreatedObject, LEVEL_TOOL, wsCurrentLayer.c_str());
+			m_pSelectedCreatedObject = nullptr;
+		}
+		ImGui::NewLine();
 		ImGui::Separator();
 	}
 	
 	// Navigation Mesh
-	if (ImGui::CollapsingHeader("Navigation Mesh"))
+	/*if (ImGui::CollapsingHeader("Navigation Mesh"))
 	{
 		ImGui::Separator();
-	}
-	
-	ImGui::NewLine();
-
-	ImGui::Text("Current Map:");
-	if (ImGui::Button("Save Map"))
-		ImGui::OpenPopup("Save Map");
+	}*/
 	
 	DrawMapModals();
 
 	ImGui::EndTabItem();
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CImGuiManager::DrawUITool()
@@ -317,57 +463,40 @@ void CImGuiManager::DrawCamTool()
 
 void CImGuiManager::DrawMapModals()
 {
-	// Create Modal
+	// Create Map Modal
 	ImVec2 pCenter = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(pCenter, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Center Window when appearing
 	if (ImGui::BeginPopupModal("Create Map", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("Insert Map Name");
-		static char sMapName[128] = "";
-		ImGui::InputText("##Map Name", sMapName, sizeof(sMapName));
-		ImGui::NewLine();
+		ImGui::Text("Map Created!\n");
+		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
-		{
-			CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-			Safe_AddRef(pGameInstance);
-
-			// Destroy current Map
-			CGameObject* pObject = pGameInstance->Find_Object(LEVEL_TOOL, TEXT("Layer_Terrain"));
-			pGameInstance->Delete_GameObject(LEVEL_TOOL, TEXT("Layer_Terrain"));
-
-			if (pObject)
-				Safe_Release(pObject);
-
-			// Create Terrain				 
-			CComponent* pComponent = pGameInstance->Find_Component_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_VIBuffer_Terrain"));
-			CVIBuffer_Terrain* pVIBufferTerrain = dynamic_cast<CVIBuffer_Terrain*>(pComponent);
-			if (!pVIBufferTerrain)
-				return;
-
-			pVIBufferTerrain->Set_NumVerticesX(m_iXVertex);
-			pVIBufferTerrain->Set_NumVerticesZ(m_iZVertex);
-			pVIBufferTerrain->Refresh_Vertices();
-
-			if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), LEVEL_TOOL, TEXT("Layer_Terrain"), nullptr)))
-				return;
-
-			Safe_Release(pGameInstance);
-
 			ImGui::CloseCurrentPopup();
-		}
+
 		ImGui::SetItemDefaultFocus();
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
 		ImGui::EndPopup();
 	}
 
-	// Save Modal
+	// Load Map Modal
+	ImGui::SetNextWindowPos(pCenter, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Center Window when appearing
+	if (ImGui::BeginPopupModal("Load Map", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::Text("Map Loaded!\n");
+		ImGui::Separator();
+
+		if (ImGui::Button("OK", ImVec2(120, 0)))
+			ImGui::CloseCurrentPopup();
+
+		ImGui::SetItemDefaultFocus();
+		ImGui::EndPopup();
+	}
+
+	// Save Map Modal
 	ImGui::SetNextWindowPos(pCenter, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Center Window when appearing
 	if (ImGui::BeginPopupModal("Save Map", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		ImGui::Text("Map Saved!\n");
-		ImGui::NewLine();
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
@@ -380,21 +509,180 @@ void CImGuiManager::DrawMapModals()
 		ImGui::EndPopup();
 	}
 
-	// Load Modal
+	// Add Layer Modal
 	ImGui::SetNextWindowPos(pCenter, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Center Window when appearing
-	if (ImGui::BeginPopupModal("Load Map", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("Add Layer", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("Map Loaded!\n");
-		ImGui::NewLine();
+		ImGui::Text("Layer Name");
+		static char cLayer[MAX_PATH] = "";
+		ImGui::PushItemWidth(200);
+		ImGui::InputText("##AddLayer", cLayer, MAX_PATH);
+		ImGui::PopItemWidth();
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
-			ImGui::CloseCurrentPopup();
+		{
+			m_vLayers.insert(cLayer);
 
+			string sLayer = string(cLayer);
+			wstring wsLayer = wstring(sLayer.begin(), sLayer.end());
+			m_vLayersTemp.insert(wsLayer);
+
+			memset(cLayer, 0, MAX_PATH);
 		
+			if (m_sCurrentLayer.empty())
+				m_sCurrentLayer = cLayer;
+
+			ImGui::CloseCurrentPopup();
+		}
+
 		ImGui::SetItemDefaultFocus();
 		ImGui::EndPopup();
 	}
+}
+
+void CImGuiManager::Read_Maps_Name()
+{
+	WIN32_FIND_DATA fileData;
+	HANDLE hDir = FindFirstFile(TEXT("../../Data/*"), &fileData);
+
+	/* No files found */
+	if (hDir == INVALID_HANDLE_VALUE)
+		return; 
+
+	do {
+		if (fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			continue;
+
+		if (!lstrcmp(fileData.cFileName, TEXT(".")) || !lstrcmp(fileData.cFileName, TEXT("..")))
+			continue;
+
+		wstring wsFileName(fileData.cFileName);
+		string sFileName(wsFileName.begin(), wsFileName.end());
+
+		m_vMaps.push_back(sFileName);
+	} while (FindNextFile(hDir, &fileData));
+
+	FindClose(hDir);
+}
+
+void CImGuiManager::Read_Objects_Name(_tchar* cFolderPath)
+{
+	_tchar filePath[MAX_PATH] = TEXT("");
+	wcscpy_s(filePath, MAX_PATH, cFolderPath); // Backup Path used for Sub-folders
+
+	wcscat_s(cFolderPath, MAX_PATH, TEXT("*"));
+
+	WIN32_FIND_DATA fileData;
+
+	HANDLE hDir = FindFirstFile(cFolderPath, &fileData);
+
+	/* No files found */
+	if (hDir == INVALID_HANDLE_VALUE) 
+		return; 
+
+	do {
+		if (fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) // Directory
+		{
+			if (lstrcmp(fileData.cFileName, TEXT(".")) == 0 || lstrcmp(fileData.cFileName, TEXT("..")) == 0)
+				continue;
+
+			_tchar subFilePath[MAX_PATH] = TEXT("");
+			wcscpy_s(subFilePath, MAX_PATH, filePath);
+			wcscat_s(subFilePath, MAX_PATH, fileData.cFileName);
+			wcscat_s(subFilePath, MAX_PATH, TEXT("/"));
+			
+			// Recursive Function Call
+			Read_Objects_Name(subFilePath);
+		}
+		else // File
+		{
+			_tchar szFileExt[MAX_PATH];
+
+			_wsplitpath_s(fileData.cFileName, nullptr, 0, nullptr, 0, nullptr, 0, szFileExt, MAX_PATH);
+
+			if (!wcscmp(szFileExt, TEXT(".fbx")))
+			{
+				wstring wsFileName(fileData.cFileName);
+				string sFileName(wsFileName.begin(), wsFileName.end());
+
+				wstring wsFilePath(filePath);
+				string sFilePath(wsFilePath.begin(), wsFilePath.end());
+
+				m_mObjects.insert(pair<string, string>(sFileName, sFilePath));
+			}
+		}
+	} while (FindNextFile(hDir, &fileData));
+
+	FindClose(hDir);
+}
+
+void CImGuiManager::Create_Object()
+{
+	// Get FileName without extension (Ex: "Fiona.fbx" > "Fiona")
+	map<string, string>::iterator iter;
+	iter = m_mObjects.find(m_sSelectedObject);
+
+	if (iter != m_mObjects.end())
+	{
+		// LayerId (Ex: "Layer_Player")
+		wstring wsLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
+		unordered_set<wstring>::iterator layerIter = m_vLayersTemp.find(wsLayer);
+		const _tchar* wcLayer = layerIter->c_str();
+
+		// FileName (Ex: "Fiona.fbx" > "Fiona")
+		string sFileName = iter->first;
+		wstring wsFileName(sFileName.begin(), sFileName.end());
+		_tchar wcFileName[MAX_PATH];
+		_wsplitpath_s(wsFileName.c_str(), nullptr, 0, nullptr, 0, wcFileName, MAX_PATH, nullptr, 0);
+		
+		// Use FileName to make the Prototype_Id (Ex: Prototype_Component_Model_"Fiona")
+		_tchar wcPrototypeId[MAX_PATH] = TEXT("Prototype_Component_Model_");
+		wcscat_s(wcPrototypeId, MAX_PATH, wcFileName);
+
+		wstring wsPrototypeId = wstring(wcPrototypeId);
+		m_vPrototypesId.push_back(wsPrototypeId);
+		list<wstring>::iterator prototypeIter = find(m_vPrototypesId.begin(), m_vPrototypesId.end(), wsPrototypeId);
+
+		// Check if Prototype_Id is already present
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		CComponent* pComponent = pGameInstance->Find_Component_Prototype(LEVEL_TOOL, prototypeIter->c_str());
+		if (pComponent)
+		{
+			// If Yes: Clone
+			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, wcLayer, (void*)prototypeIter->c_str())))
+				return; 
+		}
+		else
+		{
+			// If No: Create Prototype and Clone
+			char sMeshPath[MAX_PATH];
+			strcpy_s(sMeshPath, MAX_PATH, iter->second.c_str());
+			strcat_s(sMeshPath, MAX_PATH, iter->first.c_str());
+
+			// Prototype Component (Model)
+			if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, prototypeIter->c_str(), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, sMeshPath/*, PivotMatrix*/))))
+				return;
+
+			// Clone GameObject (Mesh)
+			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, wcLayer, (void*)prototypeIter->c_str())))
+				return;
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
+}
+
+_bool CImGuiManager::SaveData()
+{
+	// TODO: ..
+	return true;
+}
+
+_bool CImGuiManager::LoadData()
+{
+	// TODO: ..
+	return true;
 }
 
 void CImGuiManager::Free()

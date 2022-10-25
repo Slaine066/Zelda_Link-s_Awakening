@@ -40,6 +40,7 @@ private:
 	HRESULT Ready_Prototype_GameObjects();
 
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
+
 	HRESULT Ready_Lights();
 
 	void Check_Picking();

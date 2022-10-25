@@ -185,12 +185,12 @@ HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject *
 	return m_pObject_Manager->Add_Prototype(pPrototypeTag, pPrototype);	
 }
 
-HRESULT CGameInstance::Add_GameObject(const _tchar * pPrototypeTag, _uint iLevelIndex, const _tchar * pLayerTag, void* pArg)
+HRESULT CGameInstance::Add_GameObject(const _tchar* pObjName, const _tchar * pPrototypeTag, _uint iLevelIndex, const _tchar * pLayerTag, void* pArg)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Add_GameObject(pPrototypeTag, iLevelIndex, pLayerTag, pArg);
+	return m_pObject_Manager->Add_GameObject(pObjName, pPrototypeTag, iLevelIndex, pLayerTag, pArg);
 }
 
 CComponent * CGameInstance::Get_Component(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pComponentTag, _uint iIndex)
@@ -201,12 +201,17 @@ CComponent * CGameInstance::Get_Component(_uint iLevelIndex, const _tchar * pLay
 	return m_pObject_Manager->Get_Component(iLevelIndex, pLayerTag, pComponentTag, iIndex);
 }
 
-void CGameInstance::Delete_GameObject(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex)
+CObject_Manager::LAYERS CGameInstance::Get_Layers(_uint iLevelIndex)
+{
+	return m_pObject_Manager->Get_Layers(iLevelIndex);
+}
+
+void CGameInstance::Delete_GameObject(CGameObject* pGameObj, _uint iLevelIndex, const _tchar * pLayerTag)
 {
 	if (nullptr == m_pObject_Manager)
 		return;
 
-	m_pObject_Manager->Remove_GameObject(iLevelIndex, pLayerTag, iIndex);
+	m_pObject_Manager->Remove_GameObject(pGameObj, iLevelIndex, pLayerTag);
 }
 
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, CComponent * pPrototype)
@@ -330,6 +335,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {	
+	Safe_Release(m_pPicking);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pPipeLine);
@@ -339,5 +345,4 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pGraphic_Device);
-	Safe_Release(m_pPicking);
 }

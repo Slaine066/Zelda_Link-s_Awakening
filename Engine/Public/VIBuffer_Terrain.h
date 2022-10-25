@@ -3,7 +3,6 @@
 #include "VIBuffer.h"
 
 BEGIN(Engine)
-
 class ENGINE_DLL CVIBuffer_Terrain final : public CVIBuffer
 {
 protected:
@@ -20,8 +19,6 @@ public:
 	void Set_NumVerticesZ(_uint iNumZ) { m_iNumVerticesZ = iNumZ; }
 	HRESULT Refresh_Vertices();
 
-	bool Picking(class CTransform* pTransform, _float3& pOut);
-
 private:
 	_uint m_iNumVerticesX = 0, m_iNumVerticesZ = 0;
 
@@ -31,5 +28,4 @@ public:
 	virtual CComponent* Clone(void* pArg = nullptr);
 	virtual void Free() override;
 };
-
 END

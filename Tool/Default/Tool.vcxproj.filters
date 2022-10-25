@@ -28,6 +28,12 @@
     <Filter Include="01.GameObjects\01.Camera">
       <UniqueIdentifier>{020bb6ff-45dc-4e43-8085-b233e13bbc74}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.GameObjects\03. MeshAnim">
+      <UniqueIdentifier>{0025576c-88eb-44fa-b44c-ede36a1de075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.GameObjects\02. Mesh">
+      <UniqueIdentifier>{f029c0a8-874f-463a-bd98-8dc212794e06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\Resource.h">
@@ -81,6 +87,12 @@
     <ClInclude Include="..\Public\Camera_Dynamic.h">
       <Filter>01.GameObjects\01.Camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Mesh.h">
+      <Filter>01.GameObjects\02. Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MeshAnim.h">
+      <Filter>01.GameObjects\03. MeshAnim</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Zelda_Link%27s_Awakening\Tool\Default\small.ico">
@@ -129,6 +141,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Dynamic.cpp">
       <Filter>01.GameObjects\01.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Mesh.cpp">
+      <Filter>01.GameObjects\02. Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MeshAnim.cpp">
+      <Filter>01.GameObjects\03. MeshAnim</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

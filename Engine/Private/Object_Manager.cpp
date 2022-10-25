@@ -1,6 +1,5 @@
-#include "..\Public\Object_Manager.h"
+#include "Object_Manager.h"
 #include "Layer.h"
-
 
 IMPLEMENT_SINGLETON(CObject_Manager)
 
@@ -8,22 +7,27 @@ CObject_Manager::CObject_Manager()
 {
 }
 
-CComponent * CObject_Manager::Get_Component(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pComponentTag, _uint iIndex)
+CComponent* CObject_Manager::Get_Component(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pComponentTag, _uint iIndex)
 {
-	CLayer*		pLayer = Find_Layer(iLevelIndex, pLayerTag);
+	CLayer*	pLayer = Find_Layer(iLevelIndex, pLayerTag);
 	if (nullptr == pLayer)
 		return nullptr;
 
 	return pLayer->Get_Component(pComponentTag, iIndex);	
 }
 
-CGameObject * CObject_Manager::Get_Object(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex)
+CGameObject* CObject_Manager::Get_Object(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex)
 {
 	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
 	if (pLayer == nullptr)
 		return nullptr;
 
 	return pLayer->Get_Object(iIndex);
+}
+
+CObject_Manager::LAYERS CObject_Manager::Get_Layers(_uint iLevelIndex)
+{
+	return m_pLayers[iLevelIndex];
 }
 
 HRESULT CObject_Manager::Reserve_Container(_uint iNumLevels)
@@ -48,7 +52,7 @@ HRESULT CObject_Manager::Add_Prototype(const _tchar * pPrototypeTag, CGameObject
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_GameObject(const _tchar * pPrototypeTag, _uint iLevelIndex, const _tchar * pLayerTag, void* pArg)
+HRESULT CObject_Manager::Add_GameObject(const _tchar* pObjName, const _tchar * pPrototypeTag, _uint iLevelIndex, const _tchar * pLayerTag, void* pArg)
 {
 	CGameObject* pPrototype = Find_Prototype(pPrototypeTag);
 	if (nullptr == pPrototype)
@@ -63,25 +67,23 @@ HRESULT CObject_Manager::Add_GameObject(const _tchar * pPrototypeTag, _uint iLev
 	if (nullptr == pLayer)
 	{
 		pLayer = CLayer::Create();
-		pLayer->Add_GameObject(pGameObject);
+		pLayer->Add_GameObject(pObjName, pGameObject);
 
 		m_pLayers[iLevelIndex].emplace(pLayerTag, pLayer);
 	}
 	else
-	{
-		pLayer->Add_GameObject(pGameObject);
-	}
+		pLayer->Add_GameObject(pObjName, pGameObject);
 
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Remove_GameObject(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex)
+HRESULT CObject_Manager::Remove_GameObject(CGameObject* pGameObj, _uint iLevelIndex, const _tchar * pLayerTag)
 {
 	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
 	if (!pLayer)
 		return E_FAIL;
 
-	pLayer->Remove_Object(iIndex);
+	pLayer->Remove_Object(pGameObj);
 
 	return S_OK;
 }

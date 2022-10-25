@@ -1,5 +1,4 @@
-#include "..\Public\Layer.h"
-
+#include "Layer.h"
 
 CLayer::CLayer()
 {
@@ -20,10 +19,32 @@ HRESULT CLayer::Initialize()
 	return S_OK;
 }
 
-HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
+HRESULT CLayer::Add_GameObject(const _tchar* pObjName, CGameObject * pGameObject)
 {
 	if (nullptr == pGameObject)
 		return E_FAIL;
+
+	// Create ObjectId ("Fiona" > "Fiona_1", "Fiona_2")
+	if (pObjName)
+	{
+		wcscpy_s(pGameObject->Get_ObjName(), MAX_PATH, pObjName);
+		wcscpy_s(pGameObject->Get_ObjId(), MAX_PATH, pObjName);
+
+		_uint iCounter = 0;
+		for (auto& pObj : m_GameObjects)
+		{
+			if (!wcscmp(pObj->Get_ObjName(), pObjName))
+				iCounter++;
+		}
+
+		if (iCounter) // > 0
+		{
+			wcscat_s((_tchar*)pGameObject->Get_ObjId(), MAX_PATH, TEXT("_"));
+
+			wstring sCounter = to_wstring(iCounter);
+			wcscat_s((_tchar*)pGameObject->Get_ObjId(), MAX_PATH, sCounter.c_str());
+		}
+	}
 
 	m_GameObjects.push_back(pGameObject);
 
@@ -67,17 +88,17 @@ CGameObject * CLayer::Get_Object(_uint iIndex)
 	return *iter;
 }
 
-void CLayer::Remove_Object(_uint iIndex)
+void CLayer::Remove_Object(CGameObject* pGameObj)
 {
-	if (m_GameObjects.size() <= iIndex)
+	auto iter = find_if(m_GameObjects.begin(), m_GameObjects.end(), [&](CGameObject* rObj) {
+		return !wcscmp(rObj->Get_ObjId(), pGameObj->Get_ObjId());
+	});	
+	
+	if (iter == m_GameObjects.end())
 		return;
 
-	auto iter = m_GameObjects.begin();
-
-	for (size_t i = 0; i < iIndex; ++i)
-		++iter;
-
 	m_GameObjects.erase(iter);
+	Safe_Release(pGameObj);
 }
 
 CLayer * CLayer::Create()
