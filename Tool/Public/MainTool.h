@@ -18,7 +18,7 @@ private:
 public:
 	HRESULT Initialize();
 	void Tick(_float fTimeDelta);
-	HRESULT Render();
+	HRESULT Render(_float fTimeDelta);
 
 private:
 	CGameInstance*			m_pGameInstance = nullptr;
@@ -31,7 +31,6 @@ private:
 #ifdef _DEBUG
 private:
 	_uint					m_iNumRender = 0;
-	_tchar					m_szFPS[MAX_PATH] = TEXT("");
 	_float					m_fTimeAcc = 0.f;
 #endif // _DEBUG
 

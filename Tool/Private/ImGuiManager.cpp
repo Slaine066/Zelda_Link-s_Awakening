@@ -109,14 +109,14 @@ void CImGuiManager::ApplyStyle(ImVec3 color_for_text, ImVec3 color_for_head, ImV
 	style.Colors[ImGuiCol_TabHovered] = ImVec4(color_for_head.x, color_for_head.y, color_for_head.z, 0.60f);
 }
 
-void CImGuiManager::Render()
+void CImGuiManager::Render(_float fTimeDelta)
 {
 	// Frame
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	DrawEditor();
+	DrawEditor(fTimeDelta);
 	DrawOverlayWindow();
 
 	ImGui::EndFrame();
@@ -126,7 +126,7 @@ void CImGuiManager::Render()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void CImGuiManager::DrawEditor()
+void CImGuiManager::DrawEditor(_float fTimeDelta)
 {
 	ImGui::Begin("Editor");
 
@@ -144,7 +144,7 @@ void CImGuiManager::DrawEditor()
 	if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
 	{
 		if (ImGui::BeginTabItem("Map Tool"))
-			DrawMapTool();
+			DrawMapTool(fTimeDelta);
 		if (ImGui::BeginTabItem("UI Tool"))
 			DrawUITool();
 		if (ImGui::BeginTabItem("Cam Tool"))
@@ -167,14 +167,14 @@ void CImGuiManager::DrawOverlayWindow()
 		ImGui::Text("Debug Info");
 		ImGui::Separator();
 
-		// Picking
-		ImGui::Text("Current Position: %.2f, %.2f, %.2f", m_vPositionPicked.x, m_vPositionPicked.y, m_vPositionPicked.z);
+		// FramesPerSecond
+		ImGui::Text("FPS: %d", m_iFramesPerSecond);
 	}
 
 	ImGui::End();
 }
 
-void CImGuiManager::DrawMapTool()
+void CImGuiManager::DrawMapTool(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -245,11 +245,11 @@ void CImGuiManager::DrawMapTool()
 	}
 
 	ImGui::NewLine();
-	ImGui::Separator();
 
-	// Map
+	// Terrain
 	if (ImGui::CollapsingHeader("Terrain"/*, TreeNodeFlags*/))
 	{
+		ImGui::Text("New Terrain");
 		// Inputs
 		ImGui::PushItemWidth(120);
 		ImGui::InputInt("X-Axis Vertices", &m_iXVertex);
@@ -284,11 +284,10 @@ void CImGuiManager::DrawMapTool()
 		}
 		
 		ImGui::NewLine();
-		ImGui::Separator();
 	}
 
 	// Object
-	if (ImGui::CollapsingHeader("Model", TreeNodeFlags))
+	if (ImGui::CollapsingHeader("Model"/*, TreeNodeFlags*/))
 	{
 		ImGui::Text("New Object");
 
@@ -386,7 +385,47 @@ void CImGuiManager::DrawMapTool()
 					wstring wsObjId = wstring(pObject->Get_ObjId());
 					string sObjId = string(wsObjId.begin(), wsObjId.end());
 					if (ImGui::Selectable(sObjId.c_str(), !wcscmp(pObject->Get_ObjId(), m_pSelectedCreatedObject ? m_pSelectedCreatedObject->Get_ObjId() : TEXT("")), ImGuiSelectableFlags_SpanAllColumns))
+					{
 						m_pSelectedCreatedObject = pObject;
+
+						// Set Transform of the Selected Object
+						CComponent* pComponent = m_pSelectedCreatedObject->Find_Component(TEXT("Com_Transform"));
+						if (!pComponent)
+							return;
+						CTransform* pTransform = dynamic_cast<CTransform*>(pComponent);
+						if (!pTransform)
+							return;
+
+						m_pTransform = pTransform;
+
+						// Set Transform Sliders values based on selected Transformation Action
+						switch (m_eObjAction)
+						{
+						case TRANS_SCALE:
+						{
+							m_fX = m_pTransform->Get_Scale(CTransform::STATE::STATE_RIGHT);
+							m_fY = m_pTransform->Get_Scale(CTransform::STATE::STATE_UP);
+							m_fZ = m_pTransform->Get_Scale(CTransform::STATE::STATE_LOOK);
+							break;
+						}
+						case TRANS_ROTATION:
+						{
+							m_fX = m_pTransform->Get_RotationDegree(XMVectorSet(1.f, 0.f, 0.f, 0.f));
+							m_fY = m_pTransform->Get_RotationDegree(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+							m_fZ = m_pTransform->Get_RotationDegree(XMVectorSet(0.f, 0.f, 1.f, 0.f));
+							break;
+						}
+						case TRANS_TRANSLATION:
+						{
+							_float3 vCurrentTranslation;
+							XMStoreFloat3(&vCurrentTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+							m_fX = vCurrentTranslation.x;
+							m_fY = vCurrentTranslation.y;
+							m_fZ = vCurrentTranslation.z;
+							break;
+						}
+						}
+					}
 
 					ImGui::TableNextColumn();
 					ImGui::Text(sLayer.c_str());
@@ -406,36 +445,127 @@ void CImGuiManager::DrawMapTool()
 		else
 			ImGui::Text("Current Object:");
 
-		// Transformations
-		if (ImGui::RadioButton("Translation", m_eObjAction == TRANS_TRANSLATION)) 
-			m_eObjAction = TRANS_TRANSLATION;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Rotation", m_eObjAction == TRANS_ROTATION))
-			m_eObjAction = TRANS_ROTATION;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Scale", m_eObjAction == TRANS_SCALE))
-			m_eObjAction = TRANS_SCALE;
-
-		static float fX = 1.f, fY = 1.f, fZ = 1.f;
-		ImGui::SetNextItemWidth(80);
-		ImGui::DragFloat("##X", &fX, 0.005f, 0.f, 0.f, "X: %.03f");
-		ImGui::SameLine(); 
-		ImGui::SetNextItemWidth(80);
-		ImGui::DragFloat("##Y", &fY, 0.005f, 0.f, 0.f, "Y: %.03f");
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(80);
-		ImGui::DragFloat("##Z", &fZ, 0.005f, 0.f, 0.f, "Z: %.03f");
-		
 		ImGui::NewLine();
 
+		// Transformations
+		_float3 vScale, vRotation, vTranslation;
+
+		if (ImGui::RadioButton("Scale", m_eObjAction == TRANS_SCALE))
+		{
+			m_eObjAction = TRANS_SCALE;
+
+			m_fX = m_pTransform->Get_Scale(CTransform::STATE::STATE_RIGHT);
+			m_fY = m_pTransform->Get_Scale(CTransform::STATE::STATE_UP);
+			m_fZ = m_pTransform->Get_Scale(CTransform::STATE::STATE_LOOK);
+		}
+		ImGui::SameLine();
+
+		if (ImGui::RadioButton("Rotation", m_eObjAction == TRANS_ROTATION))
+		{
+			m_eObjAction = TRANS_ROTATION;
+						
+			m_fX = m_pTransform->Get_RotationDegree(XMVectorSet(1.f, 0.f, 0.f, 0.f));
+			m_fY = m_pTransform->Get_RotationDegree(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+			m_fZ = m_pTransform->Get_RotationDegree(XMVectorSet(0.f, 0.f, 1.f, 0.f));
+		}
+		ImGui::SameLine();
+
+		if (ImGui::RadioButton("Translation", m_eObjAction == TRANS_TRANSLATION))
+		{
+			m_eObjAction = TRANS_TRANSLATION;
+
+			_float3 vCurrentTranslation;
+			XMStoreFloat3(&vCurrentTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+			m_fX = vCurrentTranslation.x;
+			m_fY = vCurrentTranslation.y;
+			m_fZ = vCurrentTranslation.z;
+		}
+
+		ImGui::SetNextItemWidth(80);
+		if (ImGui::DragFloat("##X", &m_fX, m_eObjAction == TRANS_ROTATION ? 1 : 0.05f, m_eObjAction == TRANS_ROTATION ? -360.f : 0.f, m_eObjAction == TRANS_ROTATION ? 360.f : 0.f, "X: %.03f"))
+		{
+			switch (m_eObjAction)
+			{
+			case TRANS_SCALE:
+			{
+				m_pTransform->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fX);
+				break;
+			}
+			case TRANS_ROTATION:
+			{
+				_vector vRotationX = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+				m_pTransform->Set_Rotation(_float3(m_fX, m_fY, m_fZ));
+				break;
+			}
+			case TRANS_TRANSLATION:
+			{
+				XMStoreFloat3(&vTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+				_vector vNewTranslation = XMVectorSet(m_fX, vTranslation.y, vTranslation.z, 1.f);
+				m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vNewTranslation);
+				break; 
+			}	
+			}
+		}
+		ImGui::SameLine(); 
+
+		ImGui::SetNextItemWidth(80);
+		if (ImGui::DragFloat("##Y", &m_fY, m_eObjAction == TRANS_ROTATION ? 1 : 0.05f, m_eObjAction == TRANS_ROTATION ? -360.f : 0.f, m_eObjAction == TRANS_ROTATION ? 360.f : 0.f, "Y: %.03f"))
+		{
+			switch (m_eObjAction)
+			{
+				case TRANS_SCALE:
+				{
+					m_pTransform->Set_Scale(CTransform::STATE::STATE_UP, m_fY);
+					break;
+				}
+				case TRANS_ROTATION:
+				{
+					m_pTransform->Set_Rotation(_float3(m_fX, m_fY, m_fZ));
+					break;
+				}
+				case TRANS_TRANSLATION:
+				{	
+					XMStoreFloat3(&vTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+					_vector vNewTranslation = XMVectorSet(vTranslation.x, m_fY, vTranslation.z, 1.f);
+					m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vNewTranslation);
+					break;
+				}
+			}
+		}
+		ImGui::SameLine();
+
+		ImGui::SetNextItemWidth(80);
+		if (ImGui::DragFloat("##Z", &m_fZ, m_eObjAction == TRANS_ROTATION ? 1 : 0.05f, m_eObjAction == TRANS_ROTATION ? -360.f : 0.f, m_eObjAction == TRANS_ROTATION ? 360.f : 0.f, "Z: %.03f"))
+		{
+			switch (m_eObjAction)
+			{
+				case TRANS_SCALE:
+				{
+					m_pTransform->Set_Scale(CTransform::STATE::STATE_LOOK, m_fZ);
+					break;
+				}
+				case TRANS_ROTATION:
+				{
+					m_pTransform->Set_Rotation(_float3(m_fX, m_fY, m_fZ));
+					break;
+				}
+				case TRANS_TRANSLATION:
+				{
+					XMStoreFloat3(&vTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+					_vector vNewTranslation = XMVectorSet(vTranslation.x, vTranslation.y, m_fZ, 1.f);
+					m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vNewTranslation);
+					break;
+				}
+			}
+		}
+		ImGui::NewLine();
+		
 		if (ImGui::Button("Delete Object"))
 		{
 			wstring wsCurrentLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
 			pGameInstance->Delete_GameObject(m_pSelectedCreatedObject, LEVEL_TOOL, wsCurrentLayer.c_str());
 			m_pSelectedCreatedObject = nullptr;
 		}
-		ImGui::NewLine();
-		ImGui::Separator();
 	}
 	
 	// Navigation Mesh
@@ -526,6 +656,7 @@ void CImGuiManager::DrawMapModals()
 
 			string sLayer = string(cLayer);
 			wstring wsLayer = wstring(sLayer.begin(), sLayer.end());
+
 			m_vLayersTemp.insert(wsLayer);
 
 			memset(cLayer, 0, MAX_PATH);

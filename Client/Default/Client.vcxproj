@@ -213,6 +213,7 @@
   <ItemGroup>
     <FxCompile Include="..\..\..\Zelda_Link%27s_Awakening\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\..\..\Zelda_Link%27s_Awakening\ShaderFiles\Shader_VtxTex.hlsl" />
+    <FxCompile Include="..\..\ShaderFiles\Shader_VtxAnimModel.hlsl" />
     <FxCompile Include="..\..\ShaderFiles\Shader_VtxModel.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

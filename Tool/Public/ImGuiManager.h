@@ -3,6 +3,7 @@
 #include "Tool_Defines.h"
 #include "Base.h"
 #include "GameObject.h"
+#include "Transform.h"
 
 class CImGuiManager final : public CBase
 {
@@ -17,7 +18,7 @@ private:
 
 public:
 	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	void Render();
+	void Render(_float fTimeDelta);
 
 private:
 	struct ImVec3 { float x, y, z; ImVec3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f) { x = _x; y = _y; z = _z; } };
@@ -25,10 +26,10 @@ private:
 	void ImGui_SetupCustomStyle();
 	void ApplyStyle(ImVec3 color_for_text, ImVec3 color_for_head, ImVec3 color_for_area, ImVec3 color_for_body, ImVec3 color_for_pops);
 
-	void DrawEditor();
+	void DrawEditor(_float fTimeDelta);
 	void DrawOverlayWindow();
 
-	void DrawMapTool();
+	void DrawMapTool(_float fTimeDelta);
 	void DrawUITool();
 	void DrawCamTool();
 
@@ -49,9 +50,12 @@ private:
 	ID3D11DeviceContext* m_pContext = nullptr;
 
 public:
+	void Set_FramesPerSecond(_uint iFrames) { m_iFramesPerSecond = iFrames; }
 	void Set_PickedPosition(_float3 vPickedPosition) { m_vPositionPicked = vPickedPosition; }
 
 private:
+	_uint m_iFramesPerSecond = 0;
+	
 	// EDITOR SETTINGS
 	_float m_fEditorAlpha = .9f;
 	 
@@ -78,8 +82,11 @@ private:
 	// Created Objects
 	list<wstring> m_vPrototypesId;
 	CGameObject* m_pSelectedCreatedObject = nullptr;
-
+	
+	// Created Objects Transformation
 	TRANSFORM_TYPE m_eObjAction = TRANS_TRANSLATION;
+	CTransform* m_pTransform = nullptr;
+	_float m_fX = 1.f, m_fY = 1.f, m_fZ = 1.f;
 
 	// UI TOOL
 	// TODO: ..

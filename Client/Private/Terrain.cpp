@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "..\Public\Terrain.h"
 
+#include "Terrain.h"
 #include "GameInstance.h"
 
 CTerrain::CTerrain(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -23,8 +23,8 @@ HRESULT CTerrain::Initialize(void * pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	/*if (FAILED(Create_FilterTexture()))
-		return E_FAIL;*/
+	if (FAILED(Create_FilterTexture()))
+		return E_FAIL;
 	
 	return S_OK;
 }
@@ -42,24 +42,13 @@ void CTerrain::Late_Tick(_float fTimeDelta)
 
 HRESULT CTerrain::Render()
 {
-	if (nullptr == m_pShaderCom ||
-		nullptr == m_pVIBufferCom)
+	if (m_pShaderCom == nullptr || m_pVIBufferCom == nullptr)
 		return E_FAIL;
 
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	if (GetKeyState('1') < 0)
-	{
-		m_pShaderCom->Begin(2); // Phong
-	}
-	else
-	{
-		m_pShaderCom->Begin(0); // Gauraud
-	}
-
-
-
+	m_pShaderCom->Begin(0);		// Gauraud Shader
 	m_pVIBufferCom->Render();
 
 	return S_OK;
@@ -79,17 +68,17 @@ HRESULT CTerrain::Ready_Components()
 	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNorTex"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	///* For.Com_Texture */
-	//if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom[TYPE_DIFFUSE])))
-	//	return E_FAIL;
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom[TYPE_DIFFUSE])))
+		return E_FAIL;
 
-	///* For.Com_Brush */
-	//if (FAILED(__super::Add_Components(TEXT("Com_Brush"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Brush"), (CComponent**)&m_pTextureCom[TYPE_BRUSH])))
-	//	return E_FAIL;
+	/* For.Com_Brush */
+	if (FAILED(__super::Add_Components(TEXT("Com_Brush"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Brush"), (CComponent**)&m_pTextureCom[TYPE_BRUSH])))
+		return E_FAIL;
 
-	///* For.Com_Filter */
-	//if (FAILED(__super::Add_Components(TEXT("Com_Filter"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Filter"), (CComponent**)&m_pTextureCom[TYPE_FILTER])))
-	//	return E_FAIL;	
+	/* For.Com_Filter */
+	if (FAILED(__super::Add_Components(TEXT("Com_Filter"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Filter"), (CComponent**)&m_pTextureCom[TYPE_FILTER])))
+		return E_FAIL;	
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), (CComponent**)&m_pVIBufferCom)))
@@ -100,13 +89,13 @@ HRESULT CTerrain::Ready_Components()
 
 HRESULT CTerrain::SetUp_ShaderResources()
 {
-	if (nullptr == m_pShaderCom)
+	if (m_pShaderCom == nullptr)
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
 
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
@@ -116,7 +105,6 @@ HRESULT CTerrain::SetUp_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pGameInstance->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
-
 
 	/* For.Lights */
 	const LIGHTDESC* pLightDesc = pGameInstance->Get_LightDesc(0);
@@ -141,9 +129,6 @@ HRESULT CTerrain::SetUp_ShaderResources()
 		m_iPassIndex = 1;
 	}
 		
-
-
-	
 	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
@@ -153,7 +138,7 @@ HRESULT CTerrain::SetUp_ShaderResources()
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	/*ID3D11ShaderResourceView*		pSRVs[] = {
+	ID3D11ShaderResourceView* pSRVs[] = {
 		m_pTextureCom[TYPE_DIFFUSE]->Get_SRV(0), 
 		m_pTextureCom[TYPE_DIFFUSE]->Get_SRV(1),
 	};
@@ -165,16 +150,16 @@ HRESULT CTerrain::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_FilterTexture", m_pTextureCom[TYPE_FILTER]->Get_SRV(0))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_FilterTexture", m_pFilterTexture)))
-		return E_FAIL;*/
+		return E_FAIL;
 
 	return S_OK;
 }
 
 HRESULT CTerrain::Create_FilterTexture()
 {
-	ID3D11Texture2D*			pTexture2D = nullptr;
+	ID3D11Texture2D* pTexture2D = nullptr;
 
-	D3D11_TEXTURE2D_DESC		TextureDesc;
+	D3D11_TEXTURE2D_DESC TextureDesc;
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
 	TextureDesc.Width = 128;
@@ -191,13 +176,13 @@ HRESULT CTerrain::Create_FilterTexture()
 	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	TextureDesc.MiscFlags = 0;
 
-	_uint*			pPixel = new _uint[TextureDesc.Width * 	TextureDesc.Height];
+	_uint* pPixel = new _uint[TextureDesc.Width * TextureDesc.Height];
 
 	for (_uint i = 0; i < TextureDesc.Height; ++i)
 	{
 		for (_uint j = 0; j < TextureDesc.Width; ++j)
 		{
-			_uint		iIndex = i * TextureDesc.Width + j;
+			_uint iIndex = i * TextureDesc.Width + j;
 
 			if(j < 64)
 				pPixel[iIndex] = D3DCOLOR_ARGB(255, 255, 255, 255);
@@ -206,27 +191,24 @@ HRESULT CTerrain::Create_FilterTexture()
 		}
 	}
 
-	D3D11_SUBRESOURCE_DATA			SubResourceData;
+	D3D11_SUBRESOURCE_DATA SubResourceData;
 	ZeroMemory(&SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-
 	SubResourceData.pSysMem = pPixel;
 	SubResourceData.SysMemPitch = 128 * 4;
 
 	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, &SubResourceData, &pTexture2D)))
 		return E_FAIL;
 
-	
-	/*D3D11_MAP_WRITE_NO_OVERWRITE : 기존에 있던 값을 유지한상태로 메모리의 주소를 얻어오낟ㄷ. */
-	/*D3D11_MAP_WRITE_DISCARD : 기존에 있던 값은 날리고 메모리 주소를 얻어오낟. */
+	/*D3D11_MAP_WRITE_NO_OVERWRITE :	기존에 있던 값을 유지한상태로 메모리의 주소를 얻어오난다. */
+	/*D3D11_MAP_WRITE_DISCARD :			기존에 있던 값은 날리고 메모리 주소를 얻어오난다. */
 
-	D3D11_MAPPED_SUBRESOURCE			SubResource;
+	D3D11_MAPPED_SUBRESOURCE SubResource;
 	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 	if (FAILED(m_pContext->Map(pTexture2D, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource)))
 		return E_FAIL;
 
 	//pPixel[0] = D3DCOLOR_ARGB(255, 255, 255, 0);
-
 	memcpy(SubResource.pData, pPixel, sizeof(_uint) * TextureDesc.Width * TextureDesc.Height);
 
 	m_pContext->Unmap(pTexture2D, 0);
@@ -243,9 +225,9 @@ HRESULT CTerrain::Create_FilterTexture()
 	return S_OK;
 }
 
-CTerrain * CTerrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CTerrain* CTerrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CTerrain*	pInstance = new CTerrain(pDevice, pContext);
+	CTerrain* pInstance = new CTerrain(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -256,10 +238,9 @@ CTerrain * CTerrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pConte
 	return pInstance;
 }
 
-
-CGameObject * CTerrain::Clone(void * pArg)
+CGameObject* CTerrain::Clone(void * pArg)
 {
-	CTerrain*	pInstance = new CTerrain(*this);
+	CTerrain* pInstance = new CTerrain(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{

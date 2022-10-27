@@ -22,9 +22,6 @@ HRESULT CTerrain::Initialize(void * pArg)
 {
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
-	/*if (FAILED(Create_FilterTexture()))
-		return E_FAIL;*/
 	
 	return S_OK;
 }
@@ -48,11 +45,7 @@ HRESULT CTerrain::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	if (GetKeyState('1') < 0)
-		m_pShaderCom->Begin(2); // Phong Shading
-	else
-		m_pShaderCom->Begin(0); // Standard Shading (Gouraud Shading)
-
+	m_pShaderCom->Begin(3); // Gouraud Shading
 	m_pVIBufferCom->Render();
 
 	return S_OK;
@@ -72,18 +65,6 @@ HRESULT CTerrain::Ready_Components()
 	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxNorTex"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	///* For.Com_Texture */
-	//if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_TOOL, TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom[TYPE_DIFFUSE])))
-	//	return E_FAIL;
-
-	///* For.Com_Brush */
-	//if (FAILED(__super::Add_Components(TEXT("Com_Brush"), LEVEL_TOOL, TEXT("Prototype_Component_Texture_Brush"), (CComponent**)&m_pTextureCom[TYPE_BRUSH])))
-	//	return E_FAIL;
-
-	///* For.Com_Filter */
-	//if (FAILED(__super::Add_Components(TEXT("Com_Filter"), LEVEL_TOOL, TEXT("Prototype_Component_Texture_Filter"), (CComponent**)&m_pTextureCom[TYPE_FILTER])))
-	//	return E_FAIL;	
-
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), LEVEL_TOOL, TEXT("Prototype_Component_VIBuffer_Terrain"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
@@ -93,7 +74,7 @@ HRESULT CTerrain::Ready_Components()
 
 HRESULT CTerrain::SetUp_ShaderResources()
 {
-	if (nullptr == m_pShaderCom)
+	if (m_pShaderCom == nullptr)
 		return E_FAIL;
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -139,21 +120,6 @@ HRESULT CTerrain::SetUp_ShaderResources()
 		return E_FAIL;	
 	
 	RELEASE_INSTANCE(CGameInstance);
-
-	// Texture Setup
-	/*ID3D11ShaderResourceView* pSRVs[] = {
-		m_pTextureCom[TYPE_DIFFUSE]->Get_SRV(0), 
-		m_pTextureCom[TYPE_DIFFUSE]->Get_SRV(1),
-	};
-
-	if (FAILED(m_pShaderCom->Set_ShaderResourceViewArray("g_DiffuseTexture", pSRVs, 2)))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_BrushTexture", m_pTextureCom[TYPE_BRUSH]->Get_SRV(0))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_FilterTexture", m_pTextureCom[TYPE_FILTER]->Get_SRV(0))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_FilterTexture", m_pFilterTexture)))
-		return E_FAIL;*/
 
 	return S_OK;
 }

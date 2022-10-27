@@ -1,5 +1,8 @@
+/*
+*.hpp Files are Headers which can be included by Shader Files (*.hlsl) 
+*/
 
-
+#pragma region Samplers
 sampler LinearSampler = sampler_state
 {
 	Filter = MIN_MAG_MIP_LINEAR;
@@ -13,8 +16,9 @@ sampler PointSampler = sampler_state
 	AddressU = wrap;
 	AddressV = wrap;
 };
+#pragma endregion
 
-
+#pragma region RasterizerStates
 RasterizerState RS_Default
 {
 	FillMode = solid;
@@ -35,16 +39,9 @@ RasterizerState RS_SkyBox
 	CullMode = front;
 	FrontCounterClockwise = false;
 };
+#pragma endregion
 
-//BOOL BlendEnable;
-//D3D11_BLEND SrcBlend;
-//D3D11_BLEND DestBlend;
-//D3D11_BLEND_OP BlendOp;
-//D3D11_BLEND SrcBlendAlpha;
-//D3D11_BLEND DestBlendAlpha;
-//D3D11_BLEND_OP BlendOpAlpha;
-//UINT8 RenderTargetWriteMask;
-
+#pragma region BlendStates
 BlendState BS_Default
 {
 	BlendEnable[0] = false;
@@ -67,13 +64,9 @@ BlendState BS_AddBlending
 	DestBlend = one;
 	BlendOp = add;
 };
+#pragma endregion 
 
-
-// D3D11_COMPARISON_FUNC
-//BOOL DepthEnable;
-//D3D11_DEPTH_WRITE_MASK DepthWriteMask;
-//D3D11_COMPARISON_FUNC DepthFunc;
-
+#pragma region DepthStencilStates
 DepthStencilState DSS_Default
 {
 	DepthEnable = true;
@@ -86,3 +79,4 @@ DepthStencilState DSS_Priority
 	DepthEnable = false;
 	DepthWriteMask = zero;	
 };
+#pragma endregion

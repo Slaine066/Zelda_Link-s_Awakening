@@ -19,10 +19,18 @@ public:
 
 
 public:
-	_uint	Get_NumMeshContainers() const { return m_iNumMeshes; }
+	_uint Get_NumMeshContainers() const { return m_iNumMeshes; }
+
+	class CHierarchyNode* Get_BonePtr(const char* pBoneName) const;
+
+public:
+	void Set_CurrentAnimIndex(_uint iAnimIndex) {
+		m_iCurrentAnimIndex = iAnimIndex;
+	}
 
 public:
 	HRESULT SetUp_Material(class CShader* pShader, const char* pConstantName, _uint iMeshIndex, aiTextureType eType);
+	HRESULT Play_Animation(_float fTimeDelta);
 	HRESULT Render(class CShader* pShader, _uint iMeshIndex, _uint iPassIndex = 0);
 
 private:
@@ -40,11 +48,24 @@ private:
 	vector<MODELMATERIAL>				m_Materials;
 
 private:
+	/* ³» ¸ðµ¨ ÀüÃ¼ »ÀÀÇ °¹¼ö. */
+	_uint								m_iNumBones;
+	vector<class CHierarchyNode*>		m_Bones;
+
+private:
+	_uint								m_iNumAnimations = 0;
+	vector<class CAnimation*>			m_Animations;
+
+	_uint								m_iCurrentAnimIndex = 0;
+
+private:
 	_float4x4 m_PivotMatrix;
 
 private:
 	HRESULT Create_MeshContainer();
 	HRESULT Create_Materials(const char* pModelFilePath);
+	HRESULT Create_HierarchyNodes(const aiNode* pNode, CHierarchyNode* pParent = nullptr);
+	HRESULT Create_Animations();
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix = XMMatrixIdentity());

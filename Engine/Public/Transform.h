@@ -48,6 +48,7 @@ public:
 	
 	}
 
+	_float Get_RotationDegree(_vector vAxis);
 
 	_float Get_Scale(STATE eState) {
 		return XMVectorGetX(XMVector3Length(XMLoadFloat4x4(&m_WorldMatrix).r[eState]));
@@ -65,7 +66,6 @@ public:
 		m_TransformDesc = TransformDesc;
 	}
 
-
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -78,6 +78,7 @@ public:
 
 public:
 	void Turn(_fvector vAxis, _float fTimeDelta);
+	void Set_Rotation(_float3 fAngle);
 	void LookAt(_fvector vAt);
 
 private:			

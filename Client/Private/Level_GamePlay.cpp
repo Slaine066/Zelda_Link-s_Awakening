@@ -92,7 +92,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	CGameInstance*			pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Player"), TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 		return E_FAIL;	
 
 	Safe_Release(pGameInstance);
@@ -106,7 +106,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	CGameInstance*			pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Terrain"), TEXT("Prototype_GameObject_Terrain"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 		return E_FAIL;
 
 	//if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Sky"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
@@ -124,7 +124,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar * pLayerTag)
 
 	for (_uint i = 0; i < 20; ++i)
 	{
-		if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Effect"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		if (FAILED(pGameInstance->Add_GameObject(TEXT("Effect"), TEXT("Prototype_GameObject_Effect"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
 			return E_FAIL;
 	}	
 
@@ -154,7 +154,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Camera_Dynamic"), LEVEL_GAMEPLAY, pLayerTag, &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Dynamic"), TEXT("Prototype_GameObject_Camera_Dynamic"), LEVEL_GAMEPLAY, pLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -167,7 +167,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 	CGameInstance*			pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_UI"), LEVEL_GAMEPLAY, pLayerTag)))
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("UI"), TEXT("Prototype_GameObject_UI"), LEVEL_GAMEPLAY, pLayerTag)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

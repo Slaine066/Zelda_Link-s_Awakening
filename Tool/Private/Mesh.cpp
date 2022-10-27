@@ -69,7 +69,11 @@ HRESULT CMesh::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Transform */
-	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_TOOL, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom)))
+	CTransform::TRANSFORMDESC tTransformDesc;
+	ZeroMemory(&tTransformDesc, sizeof(CTransform::TRANSFORMDESC));
+	tTransformDesc.fSpeedPerSec = 3.f;
+	tTransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
+	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_TOOL, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &tTransformDesc)))
 		return E_FAIL;
 
 	/* For.Com_Shader */

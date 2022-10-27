@@ -1,9 +1,7 @@
 #include "stdafx.h"
-#include "..\Public\Loader.h"
 
+#include "Loader.h"
 #include "GameInstance.h"
-
-
 #include "Camera_Dynamic.h"
 #include "BackGround.h"
 #include "Terrain.h"
@@ -11,7 +9,6 @@
 //#include "Effect.h"
 //#include "Sky.h"
 //#include "UI.h"
-
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -160,7 +157,7 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 	/*For.Prototype_Component_Model_Fiona*/
 	_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/Fiona/Fiona.fbx", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Fiona/Fiona.fbx", PivotMatrix))))
 		return E_FAIL;
 
 	///*For.Prototype_Component_VIBuffer_Cube */
@@ -185,6 +182,11 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 	/* For.Prototype_Component_Shader_VtxModel */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Shaderfiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxAnimModel */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Shaderfiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 	/* °´Ã¼ »ý¼º Áß. */

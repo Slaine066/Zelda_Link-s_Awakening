@@ -62,7 +62,7 @@ void CMainTool::Tick(_float fTimeDelta)
 #endif // _DEBUG
 }
 
-HRESULT CMainTool::Render()
+HRESULT CMainTool::Render(_float fTimeDelta)
 {
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.32f, 0.4f, 0.47f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
@@ -73,15 +73,14 @@ HRESULT CMainTool::Render()
 
 	if (m_fTimeAcc > 1.0f)
 	{
-		wsprintf(m_szFPS, TEXT("FPS: %d"), m_iNumRender);
-		OutputDebugString(m_szFPS);
+		CImGuiManager::Get_Instance()->Set_FramesPerSecond(m_iNumRender);
 
 		m_fTimeAcc = 0.f;
 		m_iNumRender = 0;
 	}
 
 	// ImGui Render
-	CImGuiManager::Get_Instance()->Render();
+	CImGuiManager::Get_Instance()->Render(fTimeDelta);
 
 	m_pGameInstance->Present();
 

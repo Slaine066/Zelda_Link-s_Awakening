@@ -158,8 +158,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Animation.cpp" />
     <ClCompile Include="..\Private\Base.cpp" />
     <ClCompile Include="..\Private\Camera.cpp" />
+    <ClCompile Include="..\Private\Channel.cpp" />
     <ClCompile Include="..\Private\Component.cpp" />
     <ClCompile Include="..\Private\Component_Manager.cpp" />
     <ClCompile Include="..\private\CustomFont.cpp" />
@@ -167,6 +169,7 @@
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\GameObject.cpp" />
     <ClCompile Include="..\Private\Graphic_Device.cpp" />
+    <ClCompile Include="..\Private\HierarchyNode.cpp" />
     <ClCompile Include="..\Private\Input_Device.cpp" />
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
@@ -190,8 +193,10 @@
     <ClCompile Include="..\Public\Engine_Struct.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\Animation.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\Camera.h" />
+    <ClInclude Include="..\Public\Channel.h" />
     <ClInclude Include="..\Public\Component.h" />
     <ClInclude Include="..\Public\Component_Manager.h" />
     <ClInclude Include="..\public\CustomFont.h" />
@@ -204,6 +209,7 @@
     <ClInclude Include="..\Public\GameInstance.h" />
     <ClInclude Include="..\Public\GameObject.h" />
     <ClInclude Include="..\Public\Graphic_Device.h" />
+    <ClInclude Include="..\Public\HierarchyNode.h" />
     <ClInclude Include="..\Public\Input_Device.h" />
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
