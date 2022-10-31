@@ -15,6 +15,14 @@ CTexture::CTexture(const CTexture & rhs)
 		Safe_AddRef(pSRV);
 }
 
+ID3D11ShaderResourceView * CTexture::Get_SRV(_uint iIndex)
+{
+	if (m_SRVs.empty() || iIndex > m_SRVs.size())
+		return nullptr; 
+
+	return m_SRVs[iIndex];
+}
+
 HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNumTextures)
 {
 	_tchar			szFullPath[MAX_PATH] = TEXT("");

@@ -32,7 +32,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL; 
 
 	// MakeSpriteFont "폰트이름" /FontSize:32 /FastPack /CharacterRegion:0x0020-0x00FF /CharacterRegion:0x3131-0x3163 /CharacterRegion:0xAC00-0xD800 /DefaultCharacter:0xAC00 출력파일이름.spritefont
-	if (FAILED(m_pGameInstance->Add_Fonts(m_pDevice, m_pContext, TEXT("Font_Nexon"), TEXT("../../Resources/Fonts/130.spritefont"))))
+	if (FAILED(m_pGameInstance->Add_Fonts(m_pDevice, m_pContext, TEXT("Quicksand-24"), TEXT("../../Resources/Fonts/Quicksand-24.spritefont"))))
 		return E_FAIL;
 
 	// How to set RenderStates with code (currently setting them in Shaders)
@@ -80,7 +80,7 @@ HRESULT CMainApp::Render()
 		m_iNumRender = 0;
 	}
 
-	m_pGameInstance->Render_Font(TEXT("Font_Nexon"), m_szFPS, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Quicksand-24"), m_szFPS, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
 
 	m_pGameInstance->Present();
 
@@ -122,8 +122,6 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
 		return E_FAIL;
-
-
 
 	Safe_AddRef(m_pRenderer);
 

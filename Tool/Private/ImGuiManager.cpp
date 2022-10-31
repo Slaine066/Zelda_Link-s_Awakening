@@ -44,8 +44,11 @@ HRESULT CImGuiManager::Initialize(ID3D11Device * pDevice, ID3D11DeviceContext * 
 
 	Read_Maps_Name();
 	
-	_tchar cResourcesPath[MAX_PATH] = TEXT("../../Resources/Zelda_Meshes/");
-	Read_Objects_Name(cResourcesPath);
+	_tchar cNonAnimResourcesPath[MAX_PATH] = TEXT("../../Resources/Meshes/NonAnim/");
+	Read_NonAnimModels_Name(cNonAnimResourcesPath);
+
+	_tchar cAnimResourcePath[MAX_PATH] = TEXT("../../Resources/Meshes/Anim/");
+	Read_AnimModels_Name(cAnimResourcePath);
 
 	return S_OK;
 }
@@ -259,9 +262,6 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		// Buttons
 		if (ImGui::Button("Create Terrain"))
 		{
-			CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-			Safe_AddRef(pGameInstance);
-
 			// Destroy current Map
 			CGameObject* pObject = pGameInstance->Find_Object(LEVEL_TOOL, TEXT("Layer_Terrain"));
 			if (pObject)
@@ -279,8 +279,6 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Terrain"), TEXT("Prototype_GameObject_Terrain"), LEVEL_TOOL, TEXT("Layer_Terrain"), nullptr)))
 				return;
-
-			Safe_Release(pGameInstance);
 		}
 		
 		ImGui::NewLine();
@@ -296,10 +294,10 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		{
 			for (auto& iter = m_mObjects.begin(); iter != m_mObjects.end(); iter++)
 			{
-				if (ImGui::Selectable(iter->first.c_str(), m_sSelectedObject == iter->first))
-					m_sSelectedObject = iter->first;
+				if (ImGui::Selectable(iter->sFileName.c_str(), m_sSelectedObject == iter->sFileName))
+					m_sSelectedObject = iter->sFileName;
 
-				if (m_sSelectedObject == iter->first)
+				if (m_sSelectedObject == iter->sFileName)
 					ImGui::SetItemDefaultFocus();
 			}
 			ImGui::EndListBox();
@@ -410,9 +408,9 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 						}
 						case TRANS_ROTATION:
 						{
-							m_fX = m_pTransform->Get_RotationDegree(XMVectorSet(1.f, 0.f, 0.f, 0.f));
-							m_fY = m_pTransform->Get_RotationDegree(XMVectorSet(0.f, 1.f, 0.f, 0.f));
-							m_fZ = m_pTransform->Get_RotationDegree(XMVectorSet(0.f, 0.f, 1.f, 0.f));
+							m_fX = m_pTransform->Get_CurrentRotationX();
+							m_fY = m_pTransform->Get_CurrentRotationY();
+							m_fZ = m_pTransform->Get_CurrentRotationZ();
 							break;
 						}
 						case TRANS_TRANSLATION:
@@ -464,9 +462,9 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		{
 			m_eObjAction = TRANS_ROTATION;
 						
-			m_fX = m_pTransform->Get_RotationDegree(XMVectorSet(1.f, 0.f, 0.f, 0.f));
-			m_fY = m_pTransform->Get_RotationDegree(XMVectorSet(0.f, 1.f, 0.f, 0.f));
-			m_fZ = m_pTransform->Get_RotationDegree(XMVectorSet(0.f, 0.f, 1.f, 0.f));
+			m_fX = m_pTransform->Get_CurrentRotationX();
+			m_fY = m_pTransform->Get_CurrentRotationY();
+			m_fZ = m_pTransform->Get_CurrentRotationZ();
 		}
 		ImGui::SameLine();
 
@@ -697,7 +695,7 @@ void CImGuiManager::Read_Maps_Name()
 	FindClose(hDir);
 }
 
-void CImGuiManager::Read_Objects_Name(_tchar* cFolderPath)
+void CImGuiManager::Read_NonAnimModels_Name(_tchar* cFolderPath)
 {
 	_tchar filePath[MAX_PATH] = TEXT("");
 	wcscpy_s(filePath, MAX_PATH, cFolderPath); // Backup Path used for Sub-folders
@@ -724,7 +722,7 @@ void CImGuiManager::Read_Objects_Name(_tchar* cFolderPath)
 			wcscat_s(subFilePath, MAX_PATH, TEXT("/"));
 			
 			// Recursive Function Call
-			Read_Objects_Name(subFilePath);
+			Read_NonAnimModels_Name(subFilePath);
 		}
 		else // File
 		{
@@ -740,7 +738,68 @@ void CImGuiManager::Read_Objects_Name(_tchar* cFolderPath)
 				wstring wsFilePath(filePath);
 				string sFilePath(wsFilePath.begin(), wsFilePath.end());
 
-				m_mObjects.insert(pair<string, string>(sFileName, sFilePath));
+				CMesh::MODELDESC tModelDesc;
+				tModelDesc.sFileName = sFileName;
+				tModelDesc.sFilePath = sFilePath;
+				tModelDesc.sModelType = CModel::TYPE::TYPE_NONANIM;
+
+				m_mObjects.push_back(tModelDesc);
+			}
+		}
+	} while (FindNextFile(hDir, &fileData));
+
+	FindClose(hDir);
+}
+
+void CImGuiManager::Read_AnimModels_Name(_tchar * cFolderPath)
+{
+	_tchar filePath[MAX_PATH] = TEXT("");
+	wcscpy_s(filePath, MAX_PATH, cFolderPath); // Backup Path used for Sub-folders
+
+	wcscat_s(cFolderPath, MAX_PATH, TEXT("*"));
+
+	WIN32_FIND_DATA fileData;
+
+	HANDLE hDir = FindFirstFile(cFolderPath, &fileData);
+
+	/* No files found */
+	if (hDir == INVALID_HANDLE_VALUE)
+		return;
+
+	do {
+		if (fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) // Directory
+		{
+			if (lstrcmp(fileData.cFileName, TEXT(".")) == 0 || lstrcmp(fileData.cFileName, TEXT("..")) == 0)
+				continue;
+
+			_tchar subFilePath[MAX_PATH] = TEXT("");
+			wcscpy_s(subFilePath, MAX_PATH, filePath);
+			wcscat_s(subFilePath, MAX_PATH, fileData.cFileName);
+			wcscat_s(subFilePath, MAX_PATH, TEXT("/"));
+
+			// Recursive Function Call
+			Read_AnimModels_Name(subFilePath);
+		}
+		else // File
+		{
+			_tchar szFileExt[MAX_PATH];
+
+			_wsplitpath_s(fileData.cFileName, nullptr, 0, nullptr, 0, nullptr, 0, szFileExt, MAX_PATH);
+
+			if (!wcscmp(szFileExt, TEXT(".fbx")))
+			{
+				wstring wsFileName(fileData.cFileName);
+				string sFileName(wsFileName.begin(), wsFileName.end());
+
+				wstring wsFilePath(filePath);
+				string sFilePath(wsFilePath.begin(), wsFilePath.end());
+
+				CMesh::MODELDESC tModelDesc;
+				tModelDesc.sFileName = sFileName;
+				tModelDesc.sFilePath = sFilePath;
+				tModelDesc.sModelType = CModel::TYPE::TYPE_ANIM;
+
+				m_mObjects.push_back(tModelDesc);
 			}
 		}
 	} while (FindNextFile(hDir, &fileData));
@@ -751,8 +810,9 @@ void CImGuiManager::Read_Objects_Name(_tchar* cFolderPath)
 void CImGuiManager::Create_Object()
 {
 	// Get FileName without extension (Ex: "Fiona.fbx" > "Fiona")
-	map<string, string>::iterator iter;
-	iter = m_mObjects.find(m_sSelectedObject);
+	list<CMesh::MODELDESC>::iterator iter = find_if(m_mObjects.begin(), m_mObjects.end(), [&](CMesh::MODELDESC tDesc) {
+		return m_sSelectedObject == tDesc.sFileName;
+	});
 
 	if (iter != m_mObjects.end())
 	{
@@ -762,7 +822,7 @@ void CImGuiManager::Create_Object()
 		const _tchar* wcLayer = layerIter->c_str();
 
 		// FileName (Ex: "Fiona.fbx" > "Fiona")
-		string sFileName = iter->first;
+		string sFileName = iter->sFileName;
 		wstring wsFileName(sFileName.begin(), sFileName.end());
 		_tchar wcFileName[MAX_PATH];
 		_wsplitpath_s(wsFileName.c_str(), nullptr, 0, nullptr, 0, wcFileName, MAX_PATH, nullptr, 0);
@@ -788,11 +848,11 @@ void CImGuiManager::Create_Object()
 		{
 			// If No: Create Prototype and Clone
 			char sMeshPath[MAX_PATH];
-			strcpy_s(sMeshPath, MAX_PATH, iter->second.c_str());
-			strcat_s(sMeshPath, MAX_PATH, iter->first.c_str());
+			strcpy_s(sMeshPath, MAX_PATH, iter->sFilePath.c_str());
+			strcat_s(sMeshPath, MAX_PATH, iter->sFileName.c_str());
 
 			// Prototype Component (Model)
-			if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, prototypeIter->c_str(), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, sMeshPath/*, PivotMatrix*/))))
+			if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, prototypeIter->c_str(), CModel::Create(m_pDevice, m_pContext, iter->sModelType, sMeshPath/*, PivotMatrix*/))))
 				return;
 
 			// Clone GameObject (Mesh)
@@ -806,7 +866,170 @@ void CImGuiManager::Create_Object()
 
 _bool CImGuiManager::SaveData()
 {
-	// TODO: ..
+	//HANDLE hFile = nullptr;
+	//switch (m_eEditorId)
+	//{
+	//case STAGE1_1:
+	//	hFile = CreateFile(L"../Data/Tile_1_1.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//	break;
+	//case STAGE1_2:
+	//	hFile = CreateFile(L"../Data/Tile_1_2.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//	break;
+	//case STAGE_BOSS:
+	//	hFile = CreateFile(L"../Data/Boss_Tile.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//	break;
+	//}
+
+	//if (hFile == INVALID_HANDLE_VALUE)
+	//	return;
+
+	//int iDrawID, iOption = 0;
+	//bool bIsBossTile = false;
+	//DWORD dwByte = 0;
+
+	//for (auto& iter : m_vecTile)
+	//{
+	//	iDrawID = static_cast<Tile*>(iter)->Get_DrawID();
+	//	iOption = static_cast<Tile*>(iter)->Get_Option();
+	//	bIsBossTile = static_cast<Tile*>(iter)->Get_IsBossTile();
+
+	//	WriteFile(hFile, &(iter->Get_Info()), sizeof(INFO), &dwByte, nullptr);
+	//	WriteFile(hFile, &iDrawID, sizeof(int), &dwByte, nullptr);
+	//	WriteFile(hFile, &iOption, sizeof(int), &dwByte, nullptr);
+	//	WriteFile(hFile, &bIsBossTile, sizeof(bool), &dwByte, nullptr);
+	//}
+
+	//CloseHandle(hFile);
+
+	//if (m_eEditorId != STAGE_BOSS)
+	//{
+	//	// ENEMIES
+	//	HANDLE hFile2 = nullptr;
+	//	switch (m_eEditorId)
+	//	{
+	//	case STAGE1_1:
+	//		hFile2 = CreateFile(L"../Data/Enemies_1_1.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//		break;
+	//	case STAGE1_2:
+	//		hFile2 = CreateFile(L"../Data/Enemies_1_2.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//		break;
+	//	}
+
+	//	if (hFile2 == INVALID_HANDLE_VALUE)
+	//		return;
+
+	//	char cType;
+	//	for (auto& iter : ObjManager::Get_Instance()->Get_Enemies())
+	//	{
+	//		PigWarrior* pWarrior = dynamic_cast<PigWarrior*>(iter);
+	//		if (pWarrior)
+	//		{
+	//			cType = '1';
+	//			WriteFile(hFile2, &(pWarrior->Get_Info()), sizeof(INFO), &dwByte, nullptr);
+	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
+	//		}
+
+	//		PigGunner* pGunner = dynamic_cast<PigGunner*>(iter);
+	//		if (pGunner)
+	//		{
+	//			cType = '2';
+	//			WriteFile(hFile2, &(pGunner->Get_Info()), sizeof(INFO), &dwByte, nullptr);
+	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
+	//		}
+
+	//		Wolf* pWolf = dynamic_cast<Wolf*>(iter);
+	//		if (pWolf)
+	//		{
+	//			cType = '3';
+	//			WriteFile(hFile2, &(pWolf->Get_Info()), sizeof(INFO), &dwByte, nullptr);
+	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
+	//		}
+	//	}
+
+	//	CloseHandle(hFile2);
+	//}HANDLE hFile = nullptr;
+	//switch (m_eEditorId)
+	//{
+	//case STAGE1_1:
+	//	hFile = CreateFile(L"../Data/Tile_1_1.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//	break;
+	//case STAGE1_2:
+	//	hFile = CreateFile(L"../Data/Tile_1_2.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//	break;
+	//case STAGE_BOSS:
+	//	hFile = CreateFile(L"../Data/Boss_Tile.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//	break;
+	//}
+
+	//if (hFile == INVALID_HANDLE_VALUE)
+	//	return;
+
+	//int iDrawID, iOption = 0;
+	//bool bIsBossTile = false;
+	//DWORD dwByte = 0;
+
+	//for (auto& iter : m_vecTile)
+	//{
+	//	iDrawID = static_cast<Tile*>(iter)->Get_DrawID();
+	//	iOption = static_cast<Tile*>(iter)->Get_Option();
+	//	bIsBossTile = static_cast<Tile*>(iter)->Get_IsBossTile();
+
+	//	WriteFile(hFile, &(iter->Get_Info()), sizeof(INFO), &dwByte, nullptr);
+	//	WriteFile(hFile, &iDrawID, sizeof(int), &dwByte, nullptr);
+	//	WriteFile(hFile, &iOption, sizeof(int), &dwByte, nullptr);
+	//	WriteFile(hFile, &bIsBossTile, sizeof(bool), &dwByte, nullptr);
+	//}
+
+	//CloseHandle(hFile);
+
+	//if (m_eEditorId != STAGE_BOSS)
+	//{
+	//	// ENEMIES
+	//	HANDLE hFile2 = nullptr;
+	//	switch (m_eEditorId)
+	//	{
+	//	case STAGE1_1:
+	//		hFile2 = CreateFile(L"../Data/Enemies_1_1.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//		break;
+	//	case STAGE1_2:
+	//		hFile2 = CreateFile(L"../Data/Enemies_1_2.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//		break;
+	//	}
+
+	//	if (hFile2 == INVALID_HANDLE_VALUE)
+	//		return;
+
+	//	char cType;
+	//	for (auto& iter : ObjManager::Get_Instance()->Get_Enemies())
+	//	{
+	//		PigWarrior* pWarrior = dynamic_cast<PigWarrior*>(iter);
+	//		if (pWarrior)
+	//		{
+	//			cType = '1';
+	//			WriteFile(hFile2, &(pWarrior->Get_Info()), sizeof(INFO), &dwByte, nullptr);
+	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
+	//		}
+
+	//		PigGunner* pGunner = dynamic_cast<PigGunner*>(iter);
+	//		if (pGunner)
+	//		{
+	//			cType = '2';
+	//			WriteFile(hFile2, &(pGunner->Get_Info()), sizeof(INFO), &dwByte, nullptr);
+	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
+	//		}
+
+	//		Wolf* pWolf = dynamic_cast<Wolf*>(iter);
+	//		if (pWolf)
+	//		{
+	//			cType = '3';
+	//			WriteFile(hFile2, &(pWolf->Get_Info()), sizeof(INFO), &dwByte, nullptr);
+	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
+	//		}
+	//	}
+
+	//	CloseHandle(hFile2);
+	//}
+
 	return true;
 }
 

@@ -3,12 +3,7 @@
 #include "Loader.h"
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
-#include "BackGround.h"
-#include "Terrain.h"
 #include "Player.h"
-//#include "Effect.h"
-//#include "Sky.h"
-//#include "UI.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -20,7 +15,7 @@ CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 unsigned int APIENTRY Thread_Main(void* pArg)
 {
-	CLoader*		pLoader = (CLoader*)pArg;
+	CLoader* pLoader = (CLoader*)pArg;
 
 	EnterCriticalSection(&pLoader->Get_CriticalSection());
 
@@ -56,44 +51,43 @@ HRESULT CLoader::Initialize(LEVEL eNextLevel)
 
 HRESULT CLoader::Loading_ForLogoLevel()
 {
-	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
 	Safe_AddRef(pGameInstance);
 
-	/* 텍스쳐 로딩 중. */
-	lstrcpy(m_szLoadingText, TEXT("텍스쳐 로딩 중."));
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Default%d.jpg"), 2))))
-		return E_FAIL;
+#pragma region Loading_Textures
+	lstrcpy(m_szLoadingText, TEXT("Loading Textures.."));
 	
-	/* 모델 로딩 중. */
-	lstrcpy(m_szLoadingText, TEXT("모델 로딩 중."));
-	
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Textures
 
-	/* 셰이더 로딩 중. */
-	lstrcpy(m_szLoadingText, TEXT("셰이더 로딩 중."));
+#pragma region Loading_Models
+	lstrcpy(m_szLoadingText, TEXT("Loading Models.."));
 	
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Models
 
+#pragma region Loading_Shaders
+	lstrcpy(m_szLoadingText, TEXT("Loading Shaders.."));	
 	
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Shaders
 
-	// CShader::Create(m_pDevice, m_pContext, TEXT(""), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
+#pragma region Loading_Objects
+	lstrcpy(m_szLoadingText, TEXT("Loading Objects.."));
 	
-
-	
-
-	/* 객체 원형 생성 중. */
-	lstrcpy(m_szLoadingText, TEXT("객체 생성 중."));
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"),
-		CBackGround::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	
-
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Objects
 
 	m_isFinished = true;
-
+	lstrcpy(m_szLoadingText, TEXT("Loading Completed."));
+	
 	Safe_Release(pGameInstance);
 
 	return S_OK;
@@ -101,78 +95,35 @@ HRESULT CLoader::Loading_ForLogoLevel()
 
 HRESULT CLoader::Loading_ForGamePlayLevel()
 {
-	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
-	if (nullptr == pGameInstance)
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	if (pGameInstance == nullptr)
 		return E_FAIL;
 
 	Safe_AddRef(pGameInstance);
 
-	/* 텍스쳐 로딩 중. */
-	lstrcpy(m_szLoadingText, TEXT("텍스쳐 로딩 중."));
+#pragma region Loading_Textures
+	lstrcpy(m_szLoadingText, TEXT("Loading Textures.."));
 
-	///*For.Prototype_Component_Texture_UI */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UI"),
-	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
-	//	return E_FAIL;
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Textures
 
-	/*For.Prototype_Component_Texture_Terrain*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Terrain/Grass_%d.dds"), 2))))
-		return E_FAIL;
-
-	/*For.Prototype_Component_Texture_Brush */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Brush"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Terrain/Brush.png"), 1))))
-		return E_FAIL;
-
-	/*For.Prototype_Component_Texture_Filter */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Filter"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Terrain/Filter.bmp"), 1))))
-		return E_FAIL;
-
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Tile0.dds"), 1))))
-	//	return E_FAIL;
-
-	///*For.Prototype_Component_Texture_Sky */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Sky"),
-	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
-	//	return E_FAIL;
-
-	///*For.Prototype_Component_Texture_Explosion */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Explosion"),
-	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Explosion/Explosion%d.png"), 90))))
-	//	return E_FAIL;	
-	//
-
-	/* 모델 로딩 중. */
-	lstrcpy(m_szLoadingText, TEXT("모델 로딩 중."));
-
-	/*For.Prototype_Component_VIBuffer_Terrain*/
-	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::CreateWithVertices(m_pDevice, m_pContext, 100, 100))))
-		return E_FAIL;*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::CreateWithHeightMap(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Terrain/Height.bmp")))))
-		return E_FAIL;
+#pragma region Loading_Models
+	lstrcpy(m_szLoadingText, TEXT("Loading Models.."));
 
 	/*For.Prototype_Component_Model_Fiona*/
 	_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Fiona/Fiona.fbx", PivotMatrix))))
 		return E_FAIL;
 
-	///*For.Prototype_Component_VIBuffer_Cube */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Cube"),
-	//	CVIBuffer_Cube::Create(m_pGraphic_Device))))
-	//	return E_FAIL;
-	//
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Models
 
-	/* 셰이더 로딩 중. */
-	lstrcpy(m_szLoadingText, TEXT("셰이더 로딩 중."));
-
-	///* For.Prototype_Component_Shader_Cube */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Cube"), 
-	//	CShader::Create(m_pGraphic_Device, TEXT("../Bin/Shaderfiles/Shader_Cube.hlsl")))))
-	//	return E_FAIL;
+#pragma region Loading_Shaders
+	lstrcpy(m_szLoadingText, TEXT("Loading_Shaders.."));
 
 	/* For.Prototype_Component_Shader_VtxNorTex*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNorTex"), 
@@ -189,54 +140,38 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Shaderfiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
-	/* 객체 생성 중. */
-	lstrcpy(m_szLoadingText, TEXT("객체 생성 중."));
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Shaders
 
-	///*For.Prototype_GameObject_UI */
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"),
-	//	CUI::Create(m_pGraphic_Device))))
-	//	return E_FAIL;
+#pragma region Loading_Objects
+	lstrcpy(m_szLoadingText, TEXT("Loading_Objects.."));
 
-	///*For.Prototype_GameObject_Sky */
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sky"),
-	//	CSky::Create(m_pGraphic_Device))))
-	//	return E_FAIL;
+	/*For.Prototype_GameObject_Camera_Dynamic */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
+		CCamera_Dynamic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/*For.Prototype_GameObject_Player*/
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/*For.Prototype_GameObject_Terrain*/
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
-		CTerrain::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/*For.Prototype_GameObject_Camera_Dynamic */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"),
-		CCamera_Dynamic::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	//
-	///*For.Prototype_GameObject_Effect */
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect"),
-	//	CEffect::Create(m_pGraphic_Device))))
-	//	return E_FAIL;
-
-
-
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
-
-	Safe_Release(pGameInstance);
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Objects
 
 	m_isFinished = true;
+	lstrcpy(m_szLoadingText, TEXT("Loading Completed."));
 
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
 
-CLoader * CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel)
+CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel)
 {
-	CLoader*	pInstance = new CLoader(pDevice, pContext);
+	CLoader* pInstance = new CLoader(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize(eNextLevel)))
 	{

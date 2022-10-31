@@ -13,24 +13,17 @@ CTransform::CTransform(const CTransform & rhs)
 
 }
 
-_float CTransform::Get_RotationDegree(_vector vAxis)
+void CTransform::Set_State(STATE eState, _fvector vState)
 {
-	_vector vScale, vRotationQuat, vTranslation;
-	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, Get_WorldMatrix());
-
-	_float fAngle = 0;
-	XMQuaternionToAxisAngle(&vAxis, &fAngle, vRotationQuat);
-
-	_float fAngleDegree = XMConvertToDegrees(fAngle);
-	return fAngleDegree;
+	_matrix	WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
+	WorldMatrix.r[eState] = vState;
+	XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);
 }
 
 void CTransform::Set_Scale(STATE eState, _float fScale)
 {
 	_matrix	WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
-
 	WorldMatrix.r[eState] = XMVector3Normalize(WorldMatrix.r[eState]) * fScale;
-
 	XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);
 }
 
@@ -43,7 +36,7 @@ HRESULT CTransform::Initialize_Prototype()
 
 HRESULT CTransform::Initialize(void * pArg)
 {
-	if (nullptr != pArg)
+	if (pArg != nullptr)
 		memcpy(&m_TransformDesc, pArg, sizeof(TRANSFORMDESC));
 
 	return S_OK;
@@ -113,6 +106,9 @@ void CTransform::Set_Rotation(_float3 fAngle)
 
 	// Make a NewRotationMatrix with new angle values
 	_matrix NewRotationMatrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fAngle.x), XMConvertToRadians(fAngle.y), XMConvertToRadians(fAngle.z));
+	m_fCurrentRotationX = fAngle.x;
+	m_fCurrentRotationY = fAngle.y;
+	m_fCurrentRotationZ = fAngle.z;
 
 	// Set NewRotationMatrix to WorldMatrixWithoutRotation
 	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(WorldMatrixWithoutRotation.r[0], NewRotationMatrix));
@@ -135,7 +131,7 @@ void CTransform::LookAt(_fvector vAt)
 	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * Get_Scale(CTransform::STATE_LOOK));
 }
 
-CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CTransform* CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
 	CTransform*	pInstance = new CTransform(pDevice, pContext);
 
@@ -148,7 +144,7 @@ CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pC
 	return pInstance;
 }
 
-CComponent * CTransform::Clone(void * pArg)
+CComponent* CTransform::Clone(void * pArg)
 {
 	CTransform*	pInstance = new CTransform(*this);
 

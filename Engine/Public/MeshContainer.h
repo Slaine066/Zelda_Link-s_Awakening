@@ -3,9 +3,8 @@
 #include "VIBuffer.h"
 #include "Model.h"
 
+/* Class for each Mesh that makes up the Model. */
 BEGIN(Engine)
-
-/* 모델을 구성하는 각각의 메시다. */
 class CMeshContainer final : public CVIBuffer
 {
 private:
@@ -29,7 +28,7 @@ private:
 	const aiMesh*	m_pAIMesh = nullptr;
 	_uint			m_iMaterialIndex = 0;
 
-	/* 이 메시에 영향을 주는 뼈들의 갯수 .*/
+	// Number of Bones affecting this Mesh.
 	_uint							m_iNumBones = 0;
 	vector<class CHierarchyNode*>	m_Bones;
 

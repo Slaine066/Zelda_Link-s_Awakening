@@ -4,7 +4,9 @@
 #include "Base.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "Mesh.h"
 
+BEGIN(Tool)
 class CImGuiManager final : public CBase
 {
 	DECLARE_SINGLETON(CImGuiManager)
@@ -38,7 +40,8 @@ private:
 	//void DrawCamModals();
 
 	void Read_Maps_Name();
-	void Read_Objects_Name(_tchar* cFolderPath);
+	void Read_NonAnimModels_Name(_tchar* cFolderPath);
+	void Read_AnimModels_Name(_tchar* cFolderPath);
 
 	void Create_Object();
 
@@ -71,7 +74,8 @@ private:
 	_float3 m_vPositionPicked = _float3(0.f, 0.f, 0.f);
 
 	//	Objects
-	map<string, string> m_mObjects;	// <FileName.ext, FilePath>
+	//map<string, string> m_mObjects;	
+	list<CMesh::MODELDESC> m_mObjects; 
 	string m_sSelectedObject = "";
 
 	// Layers
@@ -97,3 +101,4 @@ private:
 public:
 	virtual void Free() override;
 };
+END

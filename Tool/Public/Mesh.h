@@ -2,6 +2,7 @@
 
 #include "Tool_Defines.h"
 #include "GameObject.h"
+#include "Model.h"
 
 BEGIN(Engine)
 class CShader;
@@ -13,6 +14,14 @@ END
 BEGIN(Tool)
 class CMesh final : public CGameObject
 {
+public:
+	typedef struct tagModelDescription
+	{
+		string sFileName;
+		string sFilePath;
+		CModel::TYPE sModelType;
+	}MODELDESC;
+
 private:
 	CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMesh(const CMesh& rhs);

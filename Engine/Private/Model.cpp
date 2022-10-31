@@ -1,4 +1,4 @@
-#include "..\Public\Model.h"
+#include "Model.h"
 #include "MeshContainer.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -27,7 +27,7 @@ CModel::CModel(const CModel & rhs)
 			Safe_AddRef(Material.pMatTextures[i]);
 }
 
-CHierarchyNode * CModel::Get_BonePtr(const char * pBoneName) const
+CHierarchyNode* CModel::Get_BonePtr(const char * pBoneName) const
 {
 	auto iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CHierarchyNode* pNode)
 	{
@@ -37,17 +37,18 @@ CHierarchyNode * CModel::Get_BonePtr(const char * pBoneName) const
 	return *iter;
 }
 
-HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char * pModelFilePath, _fmatrix PivotMatrix)
+HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix)
 {
 	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
 
-	_uint			iFlag = 0;
+	_uint iFlag = 0;
 
 	if(TYPE_NONANIM == eModelType)	
 		iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
 	else
 		iFlag = aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace;
 	
+	// Imported reads the *.fbx File and populate the Assimp structure (aiScene)
 	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
 	if (nullptr == m_pAIScene)
 		return E_FAIL;
@@ -58,14 +59,21 @@ HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char * pModelFilePat
 	if (FAILED(Create_Materials(pModelFilePath)))
 		return E_FAIL;
 
+	// Bones are not created when the Model Prototype is created, but instead when is cloned.
+	// By "Deep Copy"ing while cloning we avoid aving same bones pointers in different models.
+
 	return S_OK;
 }
 
-HRESULT CModel::Initialize(void * pArg)
+HRESULT CModel::Initialize(void* pArg)
 {
+	/* Load all the Model Bones (aiNode) */
 	if (FAILED(Create_HierarchyNodes(m_pAIScene->mRootNode)))
 		return E_FAIL;
 
+	/* Load all the Mesh Bones 
+	Why can't I just use the Model Bones? Because while rendering we just need the Bones which affect the Vertices.
+	*/
 	for (auto& pMeshContainer : m_Meshes)
 		pMeshContainer->SetUp_Bones(this);
 
@@ -80,26 +88,42 @@ HRESULT CModel::SetUp_Material(CShader * pShader, const char * pConstantName, _u
 	if (iMeshIndex >= m_iNumMeshes)
 		return E_FAIL;
 
-	return pShader->Set_ShaderResourceView(pConstantName, m_Materials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pMatTextures[eType]->Get_SRV());
+	_uint iMaterialIndex = m_Meshes[iMeshIndex]->Get_MaterialIndex();
+	CTexture* pMaterialTexture = m_Materials[iMaterialIndex].pMatTextures[eType];
+
+	if (!pMaterialTexture)
+		return E_FAIL;
+
+	ID3D11ShaderResourceView* pSRV = pMaterialTexture->Get_SRV();
+
+	return pShader->Set_ShaderResourceView(pConstantName, pSRV);
 }
 
 HRESULT CModel::Play_Animation(_float fTimeDelta)
 {
-	/* 뼈의 m_TransformationMatrix행렬을 갱신한다. */
+	/* Update Bone m_TransformationMatrix. */
 	m_Animations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrix(fTimeDelta);
 
-	/* 뼈의 m_CombinedTransformationMatrix행렬을 갱신한다. */
+	/* Update Bone m_CombinedTransformationMatrix. */
 	for (auto& pBoneNode : m_Bones)
 		pBoneNode->Invalidate_CombinedTransformationmatrix();
 
 	return S_OK;
 }
 
-HRESULT CModel::Render(CShader * pShader, _uint iMeshIndex, _uint iPassIndex)
+/* 
+This function will be called N times by the Model owner. 
+Where N is the number of Meshes in this Model.
+*/
+HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 {
+	/* Get the matrix of affected bones per mesh. */
 	_float4x4 BoneMatrix[256];
+
+	/* Populate Bone Matrix Array with the Bone Matrices of every Mesh. */
 	m_Meshes[iMeshIndex]->Get_BoneMatrices(BoneMatrix, XMLoadFloat4x4(&m_PivotMatrix));
 
+	// Give it to the Shader
 	pShader->Set_MatrixArray("g_BoneMatrices", BoneMatrix, 256);
 	pShader->Begin(iPassIndex);
 
@@ -108,12 +132,18 @@ HRESULT CModel::Render(CShader * pShader, _uint iMeshIndex, _uint iPassIndex)
 	return S_OK;
 }
 
-
+// Mesh Creation
+/*
+For every "aiMesh" stored in the "aiScene" get the followings:
+Vertex Positions, Normals, Texture UVs, Tangents, Bone Indexes, Bone Influences.
+Create VertexBuffer and IndexBuffer with above data.
+*/
 HRESULT CModel::Create_MeshContainer()
 {
-	if (nullptr == m_pAIScene)
+	if (m_pAIScene == nullptr)
 		return E_FAIL;
 
+	// One Model consists of multiple Meshes
 	m_iNumMeshes = m_pAIScene->mNumMeshes;
 	m_Meshes.reserve(m_iNumMeshes);
 
@@ -121,8 +151,9 @@ HRESULT CModel::Create_MeshContainer()
 	{
 		aiMesh*	pAIMesh = m_pAIScene->mMeshes[i];
 
+		
 		CMeshContainer*	pMeshContainer = CMeshContainer::Create(m_pDevice, m_pContext, m_eModelType, pAIMesh, this, XMLoadFloat4x4(&m_PivotMatrix));
-		if (nullptr == pMeshContainer)
+		if (pMeshContainer == nullptr)
 			return E_FAIL;
 
 		m_Meshes.push_back(pMeshContainer);
@@ -133,7 +164,11 @@ HRESULT CModel::Create_MeshContainer()
 
 HRESULT CModel::Create_Materials(const char* pModelFilePath)
 {
-	if (nullptr == m_pAIScene)
+	// Material Creation
+	/*
+	Read the texture material information to be mapped to each mesh constituting this model.
+	*/
+	if (m_pAIScene == nullptr)
 		return E_FAIL;
 
 	m_iNumMaterials = m_pAIScene->mNumMaterials;
@@ -145,8 +180,14 @@ HRESULT CModel::Create_Materials(const char* pModelFilePath)
 		MODELMATERIAL ModelMaterial;
 		ZeroMemory(&ModelMaterial, sizeof(MODELMATERIAL));
 
+		/*
+		In a Material there can be up to 18 (AI_TEXTURE_TYPE_MAX) Texture Maps describing that Material.
+		(Diffuse Map, Normal Map, Specular Map, Occlusion Map, ..)
+		*/
 		for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; ++j)
 		{
+			// The Diffuse Map is the second Texture(j = 1)
+
 			aiString strPath;
 			if (FAILED(pAIMaterial->GetTexture(aiTextureType(j), 0, &strPath)))
 				continue;
@@ -182,8 +223,8 @@ HRESULT CModel::Create_Materials(const char* pModelFilePath)
 
 HRESULT CModel::Create_HierarchyNodes(const aiNode* pNode, CHierarchyNode* pParent)
 {
-	CHierarchyNode*		pHierarchyNode = CHierarchyNode::Create(pNode, pParent);
-	if (nullptr == pHierarchyNode)
+	CHierarchyNode* pHierarchyNode = CHierarchyNode::Create(pNode, pParent);
+	if (pHierarchyNode == nullptr)
 		return E_FAIL;
 
 	m_Bones.push_back(pHierarchyNode);
@@ -196,17 +237,17 @@ HRESULT CModel::Create_HierarchyNodes(const aiNode* pNode, CHierarchyNode* pPare
 
 HRESULT CModel::Create_Animations()
 {
-	if (nullptr == m_pAIScene)
+	if (m_pAIScene == nullptr)
 		return E_FAIL;
 
 	m_iNumAnimations = m_pAIScene->mNumAnimations;
 
 	for (_uint i = 0; i < m_iNumAnimations; ++i)
 	{
-		aiAnimation*	pAIAnimation = m_pAIScene->mAnimations[i];
+		aiAnimation* pAIAnimation = m_pAIScene->mAnimations[i];
 
-		CAnimation*		pAnimation = CAnimation::Create(this, pAIAnimation);
-		if (nullptr == pAIAnimation)
+		CAnimation*	pAnimation = CAnimation::Create(this, pAIAnimation);
+		if (pAIAnimation == nullptr)
 			return E_FAIL;
 
 		m_Animations.push_back(pAnimation);
@@ -215,7 +256,7 @@ HRESULT CModel::Create_Animations()
 	return S_OK;
 }
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, TYPE eModelType, const char * pModelFilePath, _fmatrix PivotMatrix)
+CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix)
 {
 	CModel*	pInstance = new CModel(pDevice, pContext);
 
@@ -228,7 +269,7 @@ CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, 
 	return pInstance;
 }
 
-CComponent * CModel::Clone(void * pArg)
+CComponent* CModel::Clone(void * pArg)
 {
 	CModel*	pInstance = new CModel(*this);
 

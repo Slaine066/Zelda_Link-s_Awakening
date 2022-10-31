@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "Actor.h"
 
 BEGIN(Engine)
 class CShader;
@@ -11,7 +11,7 @@ class CModel;
 END
 
 BEGIN(Client)
-class CPlayer final : public CGameObject
+class CPlayer final : public CActor
 {
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -19,21 +19,15 @@ private:
 	virtual ~CPlayer() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize(void* pArg);
-	virtual _uint Tick(_float fTimeDelta);
-	virtual void Late_Tick(_float fTimeDelta);
-	virtual HRESULT Render();
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual _uint Tick(_float fTimeDelta) override;
+	virtual void Late_Tick(_float fTimeDelta) override;
+	virtual HRESULT Render() override;
 
 private:
-	CShader*	m_pShaderCom = nullptr;
-	CRenderer*	m_pRendererCom = nullptr;
-	CTransform*	m_pTransformCom = nullptr;
-	CModel*		m_pModelCom = nullptr;
-
-private:
-	HRESULT Ready_Components();
-	HRESULT SetUp_ShaderResources();
+	virtual HRESULT Ready_Components() override;
+	virtual HRESULT SetUp_ShaderResources() override;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

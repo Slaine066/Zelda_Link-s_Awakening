@@ -15,9 +15,9 @@ CMeshContainer::CMeshContainer(const CMeshContainer & rhs)
 	strcpy_s(m_szName, rhs.m_szName);
 }
 
-void CMeshContainer::Get_BoneMatrices(_float4x4 * pBoneMatrices, _fmatrix PivotMatrix)
+void CMeshContainer::Get_BoneMatrices(_float4x4* pBoneMatrices, _fmatrix PivotMatrix)
 {
-	if (0 == m_iNumBones)
+	if (m_iNumBones == 0)
 	{
 		XMStoreFloat4x4(&pBoneMatrices[0], XMMatrixIdentity());
 		return;
@@ -32,8 +32,22 @@ void CMeshContainer::Get_BoneMatrices(_float4x4 * pBoneMatrices, _fmatrix PivotM
 
 HRESULT CMeshContainer::Initialize_Prototype(CModel::TYPE eModelType, const aiMesh * pAIMesh, CModel* pModel, _fmatrix PivotMatrix)
 {
-	strcpy_s(m_szName, pAIMesh->mName.data);
-	m_iMaterialIndex = pAIMesh->mMaterialIndex;
+	// Store Mesh Name
+	/* 
+	For finding the Bone to which attach a Mesh without Bones.
+	In case a Mesh does not have any bones, it will be placed at the Model origin position.
+	(In the Bone Hierarchy there is always a bone named as the Mesh that should be attached to it)
+	(Ex: Sword Mesh > There will be a bone in the Bone Hierarchy called "Sword", or similar)
+	*/
+	strcpy_s(m_szName, pAIMesh->mName.data); 
+	
+	// Store Material Index 
+	/* 
+	For finding Material Texture Maps that should be mapped when this Mesh is drawn.
+	(The "Mesh : Material" relationship is 1 : 1)
+	*/
+	m_iMaterialIndex = pAIMesh->mMaterialIndex; 
+	
 	m_pAIMesh = pAIMesh;
 
 #pragma region Vertices
@@ -56,7 +70,7 @@ HRESULT CMeshContainer::Initialize_Prototype(CModel::TYPE eModelType, const aiMe
 	m_iNumIndicesPerPrimitive = 3;
 
 	m_BufferDesc.ByteWidth = m_iIndicesByte * m_iNumPrimitive;
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT; /* 정적버퍼를 생성한다. */
+	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT; /* Create a Static Buffer. */
 	m_BufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	m_BufferDesc.CPUAccessFlags = 0;
 	m_BufferDesc.MiscFlags = 0;
@@ -76,51 +90,54 @@ HRESULT CMeshContainer::Initialize_Prototype(CModel::TYPE eModelType, const aiMe
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pIndices;
 
-	/* 정점을 담기 위한 공간을 할당하고, 내가 전달해준 배열의 값들을 멤카피한다. */
 	if (FAILED(__super::Create_IndexBuffer()))
 		return E_FAIL;
 
 	Safe_Delete_Array(pIndices);
 #pragma endregion
 
-
-
 	return S_OK;
 }
 
-HRESULT CMeshContainer::Initialize(void * pArg)
+HRESULT CMeshContainer::Initialize(void* pArg)
 {
 	return S_OK;
 }
 
-HRESULT CMeshContainer::SetUp_Bones(CModel * pModel)
+HRESULT CMeshContainer::SetUp_Bones(CModel* pModel)
 {
+	// Loop over Bones making up this Mesh
 	for (_uint i = 0; i < m_iNumBones; ++i)
 	{
 		aiBone*	pAIBone = m_pAIMesh->mBones[i];
 
 		CHierarchyNode*	pBoneNode = pModel->Get_BonePtr(pAIBone->mName.data);
-		if (nullptr == pBoneNode)
+		if (pBoneNode == nullptr)
 			return E_FAIL;
 
+		// Add this Bone to the Mesh
 		m_Bones.push_back(pBoneNode);
-
 		Safe_AddRef(pBoneNode);
 
+		// Get the OffsetMatrix from the Mesh Bone (aiBone)
 		_float4x4 OffsetMatrix;
 		memcpy(&OffsetMatrix, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
 
+		// Set the OffsetMatrix to the Model Bone (aiNode)
 		pBoneNode->Set_OffsetMatrix(XMMatrixTranspose(XMLoadFloat4x4(&OffsetMatrix)));
 	}
 
+	// If the Mesh does not have any Bones
 	if (m_iNumBones == 0)
 	{
+		// Get the Bone (aiNode) to which this Mesh should be attached to.
 		CHierarchyNode*	pNode = pModel->Get_BonePtr(m_szName);
 		if (pNode == nullptr)
 			return S_OK;
 
 		m_iNumBones = 1;
 
+		// Add this Bone to the Mesh
 		m_Bones.push_back(pNode);
 		Safe_AddRef(pNode);
 	}
@@ -139,13 +156,13 @@ HRESULT CMeshContainer::Create_VertexBuffer_NonAnimModel(const aiMesh * pAIMesh,
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	m_BufferDesc.ByteWidth = m_iStride * m_iNumVertices;
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT; /* 정적버퍼를 생성한다. */
+	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT; /* Create a Static Buffer. */
 	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_BufferDesc.CPUAccessFlags = 0;
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = m_iStride;
 
-	VTXMODEL*			pVertices = new VTXMODEL[m_iNumVertices];
+	VTXMODEL* pVertices = new VTXMODEL[m_iNumVertices];
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
@@ -162,7 +179,6 @@ HRESULT CMeshContainer::Create_VertexBuffer_NonAnimModel(const aiMesh * pAIMesh,
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pVertices;
 
-	/* 정점을 담기 위한 공간을 할당하고, 내가 전달해준 배열의 값들을 멤카피한다. */
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
 
@@ -175,7 +191,6 @@ HRESULT CMeshContainer::Create_VertexBuffer_AnimModel(const aiMesh * pAIMesh, CM
 {
 	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));
 
-
 	m_iStride = sizeof(VTXANIMMODEL);
 	m_iNumVertices = pAIMesh->mNumVertices;
 	m_iNumVertexBuffers = 1;
@@ -183,13 +198,13 @@ HRESULT CMeshContainer::Create_VertexBuffer_AnimModel(const aiMesh * pAIMesh, CM
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	m_BufferDesc.ByteWidth = m_iStride * m_iNumVertices;
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT; /* 정적버퍼를 생성한다. */
+	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT; /* Create a Static Buffer. */
 	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_BufferDesc.CPUAccessFlags = 0;
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = m_iStride;
 
-	VTXANIMMODEL*			pVertices = new VTXANIMMODEL[m_iNumVertices];
+	VTXANIMMODEL* pVertices = new VTXANIMMODEL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXANIMMODEL) * m_iNumVertices);
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
@@ -200,51 +215,42 @@ HRESULT CMeshContainer::Create_VertexBuffer_AnimModel(const aiMesh * pAIMesh, CM
 		memcpy(&pVertices[i].vTangent, &m_pAIMesh->mTangents[i], sizeof(_float3));
 	}
 
+	/* Number of Bones affecting this Mesh */
 	m_iNumBones = pAIMesh->mNumBones;
 
 	for (_uint i = 0; i < m_iNumBones; ++i)
 	{
-		aiBone*		pAIBone = pAIMesh->mBones[i];
+		/*
+		An aiBone has a name by which it can be found in the frame hierarchy and by which it can be addressed by animations. 
+		In addition it has a number of influences on vertices. 
+		And a matrix relating the mesh position to the position of the bone at the time of binding.
+		*/
+		aiBone*	pAIBone = pAIMesh->mBones[i];
 
-		//CHierarchyNode*	pBoneNode = pModel->Get_BonePtr(pAIBone->mName.data);
-		//if (nullptr == pBoneNode)
-		//	return E_FAIL;		
-
-		//m_Bones.push_back(pBoneNode);
-
-		//Safe_AddRef(pBoneNode);
-
-		/*_float4x4		OffsetMatrix;
-
-		memcpy(&OffsetMatrix, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
-
-		pBoneNode->Set_OffsetMatrix(XMMatrixTranspose(XMLoadFloat4x4(&OffsetMatrix)));*/
-
-		// pAIBone->mNumWeights : 몇개의 정점에 영향을 주고 있는지? 
+		// Loop over all the Vertices affected by "i" aiBone
 		for (_uint j = 0; j < pAIBone->mNumWeights; ++j)
 		{
-			/* pAIBone->mWeights[j].mVertexId : 이 뼈가 j번째로 영향을 주는 정점의 인덱스다. */
-			_uint		iVertexIndex = pAIBone->mWeights[j].mVertexId;
+			// Index of the "j" Vertex affected by by "i" aiBone 
+			_uint iVertexIndex = pAIBone->mWeights[j].mVertexId;
 
-			if (0 == pVertices[iVertexIndex].vBlendWeight.x)
+			// Same Vertex can be influenced by 4 Bones only.
+			// Therefore in the Vertex Structure, BlendWeight and BlendIndex are implemented as a 4 dimension variable (x, y, z, w).
+			if (pVertices[iVertexIndex].vBlendWeight.x == 0)
 			{
 				pVertices[iVertexIndex].vBlendWeight.x = pAIBone->mWeights[j].mWeight;
 				pVertices[iVertexIndex].vBlendIndex.x = i;
 			}
-
-			else if (0 == pVertices[iVertexIndex].vBlendWeight.y)
+			else if (pVertices[iVertexIndex].vBlendWeight.y == 0)
 			{
 				pVertices[iVertexIndex].vBlendWeight.y = pAIBone->mWeights[j].mWeight;
 				pVertices[iVertexIndex].vBlendIndex.y = i;
 			}
-
-			else if (0 == pVertices[iVertexIndex].vBlendWeight.z)
+			else if (pVertices[iVertexIndex].vBlendWeight.z == 0)
 			{
 				pVertices[iVertexIndex].vBlendWeight.z = pAIBone->mWeights[j].mWeight;
 				pVertices[iVertexIndex].vBlendIndex.z = i;
 			}
-
-			else if (0 == pVertices[iVertexIndex].vBlendWeight.w)
+			else if (pVertices[iVertexIndex].vBlendWeight.w == 0)
 			{
 				pVertices[iVertexIndex].vBlendWeight.w = pAIBone->mWeights[j].mWeight;
 				pVertices[iVertexIndex].vBlendIndex.w = i;
@@ -252,28 +258,13 @@ HRESULT CMeshContainer::Create_VertexBuffer_AnimModel(const aiMesh * pAIMesh, CM
 		}
 	}
 
-
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pVertices;
 
-	/* 정점을 담기 위한 공간을 할당하고, 내가 전달해준 배열의 값들을 멤카피한다. */
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
 
 	Safe_Delete_Array(pVertices);
-
-
-	/*if (0 == m_iNumBones)
-	{
-	CHierarchyNode*		pNode = pModel->Get_BonePtr(m_szName);
-	if (nullptr == pNode)
-	return S_OK;
-
-	m_iNumBones = 1;
-
-	m_Bones.push_back(pNode);
-	Safe_AddRef(pNode);
-	}*/
 
 	return S_OK;
 }

@@ -3,7 +3,6 @@
 #include "Component.h"
 
 BEGIN(Engine)
-
 class ENGINE_DLL CTexture final : public CComponent
 {
 private:
@@ -12,9 +11,7 @@ private:
 	virtual ~CTexture() = default;
 
 public:
-	ID3D11ShaderResourceView* Get_SRV(_uint iIndex = 0) const {
-		return m_SRVs[iIndex];
-	}
+	ID3D11ShaderResourceView* Get_SRV(_uint iIndex = 0);
 
 public:
 	virtual HRESULT Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNumTextures);
@@ -31,5 +28,4 @@ public:
 	virtual CComponent* Clone(void* pArg = nullptr);
 	virtual void Free() override;
 };
-
 END

@@ -172,7 +172,6 @@
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
     <ClInclude Include="..\Public\ImGuiManager.h" />
     <ClInclude Include="..\public\Mesh.h" />
-    <ClInclude Include="..\public\MeshAnim.h" />
     <ClInclude Include="..\Public\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
@@ -196,7 +195,6 @@
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\Private\ImGuiManager.cpp" />
     <ClCompile Include="..\private\Mesh.cpp" />
-    <ClCompile Include="..\private\MeshAnim.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>

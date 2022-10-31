@@ -47,7 +47,7 @@ HRESULT CMesh::Render()
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshContainers();
 
-	for (_uint i = 0; i < iNumMeshes - 1; ++i)
+	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
@@ -75,7 +75,7 @@ HRESULT CMesh::Ready_Components(void* pArg)
 	tTransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_TOOL, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &tTransformDesc)))
 		return E_FAIL;
-
+	 
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;

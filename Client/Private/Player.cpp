@@ -4,12 +4,12 @@
 #include "GameInstance.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CGameObject(pDevice, pContext)
+	: CActor(pDevice, pContext)
 {
 }
 
 CPlayer::CPlayer(const CPlayer & rhs)
-	: CGameObject(rhs)
+	: CActor(rhs)
 {
 }
 
@@ -156,9 +156,4 @@ CGameObject* CPlayer::Clone(void * pArg)
 void CPlayer::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pRendererCom);
 }

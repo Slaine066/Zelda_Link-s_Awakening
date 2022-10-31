@@ -33,19 +33,19 @@ _uint CTerrain::Tick(_float fTimeDelta)
 
 void CTerrain::Late_Tick(_float fTimeDelta)
 {
-	if (nullptr != m_pRendererCom)
+	if (m_pRendererCom != nullptr)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
 HRESULT CTerrain::Render()
 {
-	if (nullptr == m_pShaderCom || nullptr == m_pVIBufferCom)
+	if (m_pShaderCom == nullptr || m_pVIBufferCom == nullptr)
 		return E_FAIL;
 
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(3); // Gouraud Shading
+	m_pShaderCom->Begin(3);		// Gouraud Shading
 	m_pVIBufferCom->Render();
 
 	return S_OK;
@@ -233,6 +233,7 @@ void CTerrain::Free()
 
 	for (_uint i = 0; i < TYPE_END; ++i)
 		Safe_Release(m_pTextureCom[i]);
+
 
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);

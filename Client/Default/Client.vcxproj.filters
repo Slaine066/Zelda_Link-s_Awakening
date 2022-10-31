@@ -25,20 +25,26 @@
     <Filter Include="01.Levels\02.GamePlay">
       <UniqueIdentifier>{35c5c360-0a21-4524-b3bd-78fd1a809214}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.BackGround">
-      <UniqueIdentifier>{57566d9b-4982-490a-9436-a60395b8dd99}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97.ShaderFiles">
       <UniqueIdentifier>{ffd39a2b-4897-4694-bc2f-d9c96bf2d061}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Terrain">
+    <Filter Include="02.GameObjects\00.Actor">
+      <UniqueIdentifier>{375921b8-a927-4301-9ee5-d990efe6b319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Camera">
+      <UniqueIdentifier>{66e5ba20-3fd3-4da3-862f-f9680f361ed9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Terrain">
       <UniqueIdentifier>{6cd33bd8-14ca-4499-8f92-7d7ff986c039}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Player">
+    <Filter Include="02.GameObjects\00.Actor\00.Player">
       <UniqueIdentifier>{0181325b-a04c-4cc9-9444-847068cfc789}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03.Camera">
-      <UniqueIdentifier>{66e5ba20-3fd3-4da3-862f-f9680f361ed9}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster">
+      <UniqueIdentifier>{075ef735-275a-40dc-8418-b34603505a1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\02.StaticObject">
+      <UniqueIdentifier>{d5de4b50-4b93-48e2-bcb8-755b793ba4ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -75,20 +81,26 @@
     <ClInclude Include="..\Public\Level_Logo.h">
       <Filter>01.Levels\01.Logo</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\BackGround.h">
-      <Filter>02.GameObjects\00.BackGround</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
-      <Filter>02.GameObjects\01.Terrain</Filter>
+      <Filter>02.GameObjects\02.Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\ShaderFiles\Client_Shader_Defines.hpp">
       <Filter>97.ShaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player.h">
-      <Filter>02.GameObjects\02.Player</Filter>
+      <Filter>02.GameObjects\00.Actor\00.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Camera_Dynamic.h">
-      <Filter>02.GameObjects\03.Camera</Filter>
+      <Filter>02.GameObjects\01.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster.h">
+      <Filter>02.GameObjects\00.Actor\01.Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StaticObject.h">
+      <Filter>02.GameObjects\00.Actor\02.StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Actor.h">
+      <Filter>02.GameObjects\00.Actor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -113,17 +125,23 @@
     <ClCompile Include="..\Private\Level_Logo.cpp">
       <Filter>01.Levels\01.Logo</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\BackGround.cpp">
-      <Filter>02.GameObjects\00.BackGround</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
-      <Filter>02.GameObjects\01.Terrain</Filter>
+      <Filter>02.GameObjects\02.Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
-      <Filter>02.GameObjects\02.Player</Filter>
+      <Filter>02.GameObjects\00.Actor\00.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Dynamic.cpp">
-      <Filter>02.GameObjects\03.Camera</Filter>
+      <Filter>02.GameObjects\01.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster.cpp">
+      <Filter>02.GameObjects\00.Actor\01.Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StaticObject.cpp">
+      <Filter>02.GameObjects\00.Actor\02.StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Actor.cpp">
+      <Filter>02.GameObjects\00.Actor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
