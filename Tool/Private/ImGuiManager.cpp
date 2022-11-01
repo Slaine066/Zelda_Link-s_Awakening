@@ -757,6 +757,8 @@ void CImGuiManager::Read_NonAnimModels_Name(_tchar* cFolderPath)
 				wcscpy_s(tModelDesc.wcObjName, MAX_PATH, szFileName);					// "Fiona"
 				wcscpy_s(tModelDesc.wcObjPrototypeId, MAX_PATH, wcObjectPrototypeId);	// "Prototype_GameObject_Player"					
 
+				XMStoreFloat4x4(&tModelDesc.mWorldMatrix, XMMatrixIdentity());
+
 				m_lObjects.push_back(tModelDesc);
 			}
 		}
@@ -819,6 +821,8 @@ void CImGuiManager::Read_AnimModels_Name(_tchar * cFolderPath)
 				// Object Infos
 				wcscpy_s(tModelDesc.wcObjName, MAX_PATH, szFileName);					// "Fiona"
 				wcscpy_s(tModelDesc.wcObjPrototypeId, MAX_PATH, wcObjectPrototypeId);	// "Prototype_GameObject_Player"	
+
+				XMStoreFloat4x4(&tModelDesc.mWorldMatrix, XMMatrixIdentity());
 
 				m_lObjects.push_back(tModelDesc);
 			}
@@ -933,6 +937,7 @@ _bool CImGuiManager::SaveData()
 			// (The already existing MODELDESC of the Object cannot be used cause it's universal, setting a specific Layer or WorldMatrix for that Object would be wrong).
 
 			CMesh::MODELDESC tNewModelDesc; 
+			ZeroMemory(&tNewModelDesc, sizeof(CMesh::MODELDESC));
 			memcpy(&tNewModelDesc, &(*iter), sizeof(CMesh::MODELDESC));
 
 			// Add Layer to New MODELDESC
@@ -966,6 +971,28 @@ _bool CImGuiManager::SaveData()
 
 _bool CImGuiManager::LoadData()
 {
+	// Destroy all Objects in every Layer before Loading from File
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	CObject_Manager::LAYERS mLayers = pGameInstance->Get_Layers(LEVEL_TOOL);
+
+	for (auto& iter = mLayers.begin(); iter != mLayers.end(); iter++)
+	{
+		CLayer* pLayer = iter->second;
+		CLayer::GAMEOBJECTS vGameObjects = pLayer->Get_Objects();
+
+		// Loop over Layer Objects
+		for (auto& pObject : vGameObjects)
+		{
+			if (!wcscmp(pObject->Get_ObjName(), TEXT("Camera_Dynamic")))
+				continue;
+
+			pGameInstance->Delete_GameObject(pObject, LEVEL_TOOL, iter->first);
+		}
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	// Proceed with Loading
 	HANDLE hFile = nullptr;
 	
 	_tchar LoadPath[MAX_PATH] = TEXT("../../Data/");
