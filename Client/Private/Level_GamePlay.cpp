@@ -3,6 +3,7 @@
 #include "Level_GamePlay.h"
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
+#include "Actor.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -14,6 +15,12 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
+	if (FAILED(Load_From_File()))
+		return E_FAIL;
+
+	/*if (FAILED(Ready_Layer_UI()))
+		return E_FAIL;*/
+
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
@@ -22,6 +29,9 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
+
+	/*if (FAILED(Ready_Layer_Effect()))
+		return E_FAIL;*/
 
 	return S_OK;
 }
@@ -36,6 +46,46 @@ void CLevel_GamePlay::Late_Tick(_float fTimeDelta)
 	__super::Late_Tick(fTimeDelta);
 
 	SetWindowText(g_hWnd, TEXT("Gameplay Level."));
+}
+
+HRESULT CLevel_GamePlay::Load_From_File()
+{
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	if (hFile == 0)
+		return E_FAIL;
+
+	_ulong dwByte = 0;
+	CActor::ACTORDESC tActorDesc;
+	ZeroMemory(&tActorDesc, sizeof(CActor::ACTORDESC));
+
+	while (true)
+	{
+		ReadFile(hFile, &tActorDesc, sizeof(CActor::ACTORDESC), &dwByte, nullptr);
+		pGameInstance->Add_GameObject(tActorDesc.wcObjName, tActorDesc.wcObjPrototypeId, LEVEL_GAMEPLAY, tActorDesc.wcObjLayerTag, &tActorDesc.mObjPivotMatrix);
+
+		if (!dwByte)
+			break;
+	}
+
+	CloseHandle(hFile);
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	// ..
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Lights()
@@ -74,31 +124,6 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
-{
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	Safe_AddRef(pGameInstance);
-
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Player"), TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
-		return E_FAIL;	
-
-	Safe_Release(pGameInstance);
-
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar * pLayerTag)
-{
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	Safe_AddRef(pGameInstance);
-
-	// ..
-
-	Safe_Release(pGameInstance);
-	
-	return S_OK;
-}
-
 HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
@@ -128,7 +153,20 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
+HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Player"), TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+		return E_FAIL;	
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
@@ -136,7 +174,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 	// ..
 
 	Safe_Release(pGameInstance);
-
+	
 	return S_OK;
 }
 

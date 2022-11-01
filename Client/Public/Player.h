@@ -26,7 +26,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	virtual HRESULT Ready_Components() override;
+	virtual HRESULT Ready_Components(void* pArg) override;
 	virtual HRESULT SetUp_ShaderResources() override;
 
 public:

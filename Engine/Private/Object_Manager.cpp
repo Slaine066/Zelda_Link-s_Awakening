@@ -59,6 +59,7 @@ HRESULT CObject_Manager::Add_GameObject(const _tchar* pObjName, const _tchar * p
 		return E_FAIL;
 
 	CGameObject* pGameObject = pPrototype->Clone(pArg);
+
 	if (nullptr == pGameObject)
 		return E_FAIL;
 

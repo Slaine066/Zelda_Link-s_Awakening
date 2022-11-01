@@ -11,7 +11,7 @@ public:
 public:
 	typedef struct tagTransformDesc
 	{
-		_float3		vInitialPosition = { 0, 0, 0 };
+		_float4x4		vInitialWorldMatrix;
 		float		fSpeedPerSec;
 		float		fRotationPerSec;
 	}TRANSFORMDESC;

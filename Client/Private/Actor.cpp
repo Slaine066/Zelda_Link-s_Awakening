@@ -13,6 +13,39 @@ CActor::CActor(const CActor & rhs)
 {
 }
 
+HRESULT CActor::Initialize_Prototype()
+{
+	return S_OK;
+}
+
+HRESULT CActor::Initialize(void * pArg)
+{
+	if (FAILED(Ready_Components(pArg)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+_uint CActor::Tick(_float fTimeDelta)
+{
+	return OBJ_NOEVENT;
+}
+
+void CActor::Late_Tick(_float fTimeDelta)
+{
+}
+
+HRESULT CActor::Render()
+{
+	if (m_pShaderCom == nullptr || m_pModelCom == nullptr)
+		return E_FAIL;
+
+	if (FAILED(SetUp_ShaderResources()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void CActor::Free()
 {
 	__super::Free();

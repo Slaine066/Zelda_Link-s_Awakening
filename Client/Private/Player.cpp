@@ -20,7 +20,7 @@ HRESULT CPlayer::Initialize_Prototype()
 
 HRESULT CPlayer::Initialize(void * pArg)
 {
-	if (FAILED(Ready_Components()))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	m_pModelCom->Set_CurrentAnimIndex(3);
@@ -60,10 +60,7 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 
 HRESULT CPlayer::Render()
 {
-	if (m_pShaderCom == nullptr || m_pModelCom == nullptr)
-		return E_FAIL;
-
-	if (FAILED(SetUp_ShaderResources()))
+	if (FAILED(__super::Render()))
 		return E_FAIL;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshContainers();
@@ -80,18 +77,21 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::Ready_Components()
+HRESULT CPlayer::Ready_Components(void* pArg)
 {
 	/* For.Com_Renderer */
 	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
 
-	/* For.Com_Transform */
+	
 	CTransform::TRANSFORMDESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 	TransformDesc.fSpeedPerSec = 5.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
+	if (pArg)
+		TransformDesc.vInitialPosition = *(_float3*)pArg;
 
+	/* For.Com_Transform */
 	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_STATIC, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 

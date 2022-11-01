@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
 #include "Player.h"
+#include "StaticObject.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -114,10 +115,16 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 	/*For.Prototype_Component_Model_Fiona*/
 	_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Fiona/Fiona.fbx", PivotMatrix))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Fiona/Fiona.fbx", PivotMatrix))))
 		return E_FAIL;
 
+	// Field Model Prototype
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_2A"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field_2A/Field_2A.fbx"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_2B"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field_2B/Field_2B.fbx"))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_2C"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field_2C/Field_2C.fbx"))))
+		return E_FAIL;
 	// >
 	// .. Add Above ..
 #pragma endregion Loading_Models
@@ -153,10 +160,12 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 		return E_FAIL;
 
 	/*For.Prototype_GameObject_Player*/
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
-		CPlayer::Create(m_pDevice, m_pContext))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/*For.Prototype_GameObject_StaticObject*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	// >
 	// .. Add Above ..
 #pragma endregion Loading_Objects

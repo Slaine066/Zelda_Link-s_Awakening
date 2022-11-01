@@ -37,7 +37,12 @@ HRESULT CTransform::Initialize_Prototype()
 HRESULT CTransform::Initialize(void * pArg)
 {
 	if (pArg != nullptr)
+	{
 		memcpy(&m_TransformDesc, pArg, sizeof(TRANSFORMDESC));
+
+		// Set Initial WorldMatrix
+		m_WorldMatrix = m_TransformDesc.vInitialWorldMatrix;
+	}
 
 	return S_OK;
 }

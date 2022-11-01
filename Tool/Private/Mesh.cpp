@@ -61,8 +61,7 @@ HRESULT CMesh::Render()
 
 HRESULT CMesh::Ready_Components(void* pArg)
 {
-	//ZeroMemory(pArg, sizeof(MAX_PATH));
-	wcscpy_s(wcModelPrototypeId, MAX_PATH, (_tchar*)pArg);
+	memcpy(&m_tModelDesc, pArg, sizeof(MODELDESC));
 
 	/* For.Com_Renderer */
 	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_TOOL, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -71,17 +70,18 @@ HRESULT CMesh::Ready_Components(void* pArg)
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC tTransformDesc;
 	ZeroMemory(&tTransformDesc, sizeof(CTransform::TRANSFORMDESC));
+	tTransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
 	tTransformDesc.fSpeedPerSec = 3.f;
 	tTransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_TOOL, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &tTransformDesc)))
 		return E_FAIL;
 	 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_TOOL, m_tModelDesc.eModelType == CModel::TYPE::TYPE_ANIM ? TEXT("Prototype_Component_Shader_VtxAnimModel") : TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_TOOL, wcModelPrototypeId, (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_TOOL, m_tModelDesc.wcModelPrototypeId, (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;

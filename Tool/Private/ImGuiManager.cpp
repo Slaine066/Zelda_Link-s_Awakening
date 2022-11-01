@@ -182,72 +182,76 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	ImGuiTreeNodeFlags TreeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
-
-	// Create New Map
-	ImGui::Text("New Map");
-	static char cMapName[MAX_PATH];
-	ImGui::InputText("##InputMap", cMapName, MAX_PATH);
-	ImGui::SameLine();
-	if (ImGui::Button("Create Map"))
+	
+	// Level
+	if (ImGui::CollapsingHeader("Level"/*, TreeNodeFlags*/))
 	{
-		m_sCurrentMap = cMapName; // Set Current Map
-		m_sCurrentMap += ".dat";
-
-		ImGui::OpenPopup("Create Map");
-	}
-	ImGui::NewLine();
-	ImGui::Separator();
-
-	// Map List
-	ImGui::Text("Saved Maps");
-	if (ImGui::BeginListBox("##Maps", ImVec2(-FLT_MIN, 4 * ImGui::GetTextLineHeightWithSpacing())))
-	{
-		for (int i = 0; i < m_vMaps.size(); i++)
+		// Create New Map
+		ImGui::Text("New Level");
+		static char cMapName[MAX_PATH];
+		ImGui::InputText("##InputLevel", cMapName, MAX_PATH);
+		ImGui::SameLine();
+		if (ImGui::Button("Create Level"))
 		{
-			if (ImGui::Selectable(m_vMaps[i].c_str(), m_iSelectedMap == i))
-				m_iSelectedMap = i;
+			m_sCurrentMap = cMapName; // Set Current Map
+			m_sCurrentMap += ".dat";
 
-			if (m_iSelectedMap == i)
-				ImGui::SetItemDefaultFocus();
+			ImGui::OpenPopup("Create Level");
 		}
-		ImGui::EndListBox();
-	}
+		ImGui::NewLine();
+		ImGui::Separator();
 
-	if (ImGui::Button("Load Map"))
-	{
-		if (LoadData())
+		// Map List
+		ImGui::Text("Saved Levels");
+		if (ImGui::BeginListBox("##Levels", ImVec2(-FLT_MIN, 4 * ImGui::GetTextLineHeightWithSpacing())))
 		{
-			m_sCurrentMap = m_vMaps[m_iSelectedMap];
-			ImGui::OpenPopup("Load Map");
-		}
-	}
-	ImGui::NewLine();
-	ImGui::Separator();
-
-	ImGui::Text("Current Map: %s", m_sCurrentMap.c_str());
-
-	if (ImGui::Button("Save Map"))
-	{
-		if (SaveData())
-		{
-			_bool bNewMap = true;
-			for (auto& map : m_vMaps)
+			for (int i = 0; i < m_vMaps.size(); i++)
 			{
-				if (m_sCurrentMap == map)
-				{
-					bNewMap = false;
-					break;
-				}
+				if (ImGui::Selectable(m_vMaps[i].c_str(), m_iSelectedMap == i))
+					m_iSelectedMap = i;
+
+				if (m_iSelectedMap == i)
+					ImGui::SetItemDefaultFocus();
 			}
-
-			if (bNewMap)
-				m_vMaps.push_back(m_sCurrentMap);
-
-			ImGui::OpenPopup("Save Map");
+			ImGui::EndListBox();
 		}
-	}
 
-	ImGui::NewLine();
+		if (ImGui::Button("Load Level"))
+		{
+			if (LoadData())
+			{
+				m_sCurrentMap = m_vMaps[m_iSelectedMap];
+				ImGui::OpenPopup("Load Level");
+			}
+		}
+		ImGui::NewLine();
+		ImGui::Separator();
+
+		ImGui::Text("Current Level: %s", m_sCurrentMap.c_str());
+
+		if (ImGui::Button("Save Level"))
+		{
+			if (SaveData())
+			{
+				_bool bNewMap = true;
+				for (auto& map : m_vMaps)
+				{
+					if (m_sCurrentMap == map)
+					{
+						bNewMap = false;
+						break;
+					}
+				}
+
+				if (bNewMap)
+					m_vMaps.push_back(m_sCurrentMap);
+
+				ImGui::OpenPopup("Save Level");
+			}
+		}
+
+		ImGui::NewLine();
+	}
 
 	// Terrain
 	if (ImGui::CollapsingHeader("Terrain"/*, TreeNodeFlags*/))
@@ -292,12 +296,15 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		// Objects List
 		if (ImGui::BeginListBox("##Objects List", ImVec2(-FLT_MIN, 4 * ImGui::GetTextLineHeightWithSpacing())))
 		{
-			for (auto& iter = m_mObjects.begin(); iter != m_mObjects.end(); iter++)
+			for (auto& iter = m_lObjects.begin(); iter != m_lObjects.end(); iter++)
 			{
-				if (ImGui::Selectable(iter->sFileName.c_str(), m_sSelectedObject == iter->sFileName))
-					m_sSelectedObject = iter->sFileName;
+				wstring wsFileName = wstring(iter->wcFileName);
+				string sFileName = string(wsFileName.begin(), wsFileName.end());
 
-				if (m_sSelectedObject == iter->sFileName)
+				if (ImGui::Selectable(sFileName.c_str(), m_sSelectedObject == sFileName))
+					m_sSelectedObject = sFileName;
+
+				if (m_sSelectedObject == sFileName)
 					ImGui::SetItemDefaultFocus();
 			}
 			ImGui::EndListBox();
@@ -608,9 +615,9 @@ void CImGuiManager::DrawMapModals()
 
 	// Load Map Modal
 	ImGui::SetNextWindowPos(pCenter, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Center Window when appearing
-	if (ImGui::BeginPopupModal("Load Map", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("Load Level", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("Map Loaded!\n");
+		ImGui::Text("Level Loaded!\n");
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
@@ -622,9 +629,9 @@ void CImGuiManager::DrawMapModals()
 
 	// Save Map Modal
 	ImGui::SetNextWindowPos(pCenter, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Center Window when appearing
-	if (ImGui::BeginPopupModal("Save Map", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("Save Level", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("Map Saved!\n");
+		ImGui::Text("Level Saved!\n");
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
@@ -726,24 +733,31 @@ void CImGuiManager::Read_NonAnimModels_Name(_tchar* cFolderPath)
 		}
 		else // File
 		{
+			_tchar szFileName[MAX_PATH];
 			_tchar szFileExt[MAX_PATH];
-
-			_wsplitpath_s(fileData.cFileName, nullptr, 0, nullptr, 0, nullptr, 0, szFileExt, MAX_PATH);
+			
+			_wsplitpath_s(fileData.cFileName, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szFileExt, MAX_PATH);
 
 			if (!wcscmp(szFileExt, TEXT(".fbx")))
 			{
-				wstring wsFileName(fileData.cFileName);
-				string sFileName(wsFileName.begin(), wsFileName.end());
+				_tchar wcModelPrototypeId[MAX_PATH] = TEXT("Prototype_Component_Model_");
+				wcscat_s(wcModelPrototypeId, MAX_PATH, szFileName);
 
-				wstring wsFilePath(filePath);
-				string sFilePath(wsFilePath.begin(), wsFilePath.end());
+				_tchar wcObjectPrototypeId[MAX_PATH] = TEXT("Prototype_GameObject_");
+				wcscat_s(wcObjectPrototypeId, MAX_PATH, szFileName);
 
+				// Model Infos
 				CMesh::MODELDESC tModelDesc;
-				tModelDesc.sFileName = sFileName;
-				tModelDesc.sFilePath = sFilePath;
-				tModelDesc.sModelType = CModel::TYPE::TYPE_NONANIM;
+				wcscpy_s(tModelDesc.wcFileName, MAX_PATH, fileData.cFileName);			// "Fiona.fbx"
+				wcscpy_s(tModelDesc.wcFilePath, MAX_PATH, filePath);					// "../../Resources/Meshes/Anim/Fiona/"
+				wcscpy_s(tModelDesc.wcModelPrototypeId, MAX_PATH, wcModelPrototypeId);	// "Prototype_Component_Model_Fiona"
+				tModelDesc.eModelType = CModel::TYPE::TYPE_NONANIM;						// "TYPE::TYPE_NONANIM" or "TYPE::TYPE_ANIM"
 
-				m_mObjects.push_back(tModelDesc);
+				// Object Infos
+				wcscpy_s(tModelDesc.wcObjName, MAX_PATH, szFileName);					// "Fiona"
+				wcscpy_s(tModelDesc.wcObjPrototypeId, MAX_PATH, wcObjectPrototypeId);	// "Prototype_GameObject_Player"					
+
+				m_lObjects.push_back(tModelDesc);
 			}
 		}
 	} while (FindNextFile(hDir, &fileData));
@@ -782,24 +796,31 @@ void CImGuiManager::Read_AnimModels_Name(_tchar * cFolderPath)
 		}
 		else // File
 		{
+			_tchar szFileName[MAX_PATH];
 			_tchar szFileExt[MAX_PATH];
 
-			_wsplitpath_s(fileData.cFileName, nullptr, 0, nullptr, 0, nullptr, 0, szFileExt, MAX_PATH);
+			_wsplitpath_s(fileData.cFileName, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szFileExt, MAX_PATH);
 
 			if (!wcscmp(szFileExt, TEXT(".fbx")))
 			{
-				wstring wsFileName(fileData.cFileName);
-				string sFileName(wsFileName.begin(), wsFileName.end());
+				_tchar wcModelPrototypeId[MAX_PATH] = TEXT("Prototype_Component_Model_");
+				wcscat_s(wcModelPrototypeId, MAX_PATH, szFileName);
 
-				wstring wsFilePath(filePath);
-				string sFilePath(wsFilePath.begin(), wsFilePath.end());
+				_tchar wcObjectPrototypeId[MAX_PATH] = TEXT("Prototype_GameObject_");
+				wcscat_s(wcObjectPrototypeId, MAX_PATH, szFileName);
 
+				// Model Infos
 				CMesh::MODELDESC tModelDesc;
-				tModelDesc.sFileName = sFileName;
-				tModelDesc.sFilePath = sFilePath;
-				tModelDesc.sModelType = CModel::TYPE::TYPE_ANIM;
+				wcscpy_s(tModelDesc.wcFileName, MAX_PATH, fileData.cFileName);			// "Fiona.fbx"
+				wcscpy_s(tModelDesc.wcFilePath, MAX_PATH, filePath);					// "../../Resources/Meshes/Anim/Fiona/"
+				wcscpy_s(tModelDesc.wcModelPrototypeId, MAX_PATH, wcModelPrototypeId);	// "Prototype_Component_Model_Fiona"
+				tModelDesc.eModelType = CModel::TYPE::TYPE_ANIM;						// "TYPE::TYPE_NONANIM" or "TYPE::TYPE_ANIM"
 
-				m_mObjects.push_back(tModelDesc);
+				// Object Infos
+				wcscpy_s(tModelDesc.wcObjName, MAX_PATH, szFileName);					// "Fiona"
+				wcscpy_s(tModelDesc.wcObjPrototypeId, MAX_PATH, wcObjectPrototypeId);	// "Prototype_GameObject_Player"	
+
+				m_lObjects.push_back(tModelDesc);
 			}
 		}
 	} while (FindNextFile(hDir, &fileData));
@@ -810,11 +831,14 @@ void CImGuiManager::Read_AnimModels_Name(_tchar * cFolderPath)
 void CImGuiManager::Create_Object()
 {
 	// Get FileName without extension (Ex: "Fiona.fbx" > "Fiona")
-	list<CMesh::MODELDESC>::iterator iter = find_if(m_mObjects.begin(), m_mObjects.end(), [&](CMesh::MODELDESC tDesc) {
-		return m_sSelectedObject == tDesc.sFileName;
+	list<CMesh::MODELDESC>::iterator iter = find_if(m_lObjects.begin(), m_lObjects.end(), [&](CMesh::MODELDESC tDesc) {
+		wstring wsFileName = wstring(tDesc.wcFileName);
+		string sFileName = string(wsFileName.begin(), wsFileName.end());
+
+		return m_sSelectedObject == sFileName;
 	});
 
-	if (iter != m_mObjects.end())
+	if (iter != m_lObjects.end())
 	{
 		// LayerId (Ex: "Layer_Player")
 		wstring wsLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
@@ -822,41 +846,46 @@ void CImGuiManager::Create_Object()
 		const _tchar* wcLayer = layerIter->c_str();
 
 		// FileName (Ex: "Fiona.fbx" > "Fiona")
-		string sFileName = iter->sFileName;
-		wstring wsFileName(sFileName.begin(), sFileName.end());
 		_tchar wcFileName[MAX_PATH];
-		_wsplitpath_s(wsFileName.c_str(), nullptr, 0, nullptr, 0, wcFileName, MAX_PATH, nullptr, 0);
+		_wsplitpath_s(iter->wcFileName, nullptr, 0, nullptr, 0, wcFileName, MAX_PATH, nullptr, 0);
 		
-		// Use FileName to make the Prototype_Id (Ex: Prototype_Component_Model_"Fiona")
-		_tchar wcPrototypeId[MAX_PATH] = TEXT("Prototype_Component_Model_");
-		wcscat_s(wcPrototypeId, MAX_PATH, wcFileName);
+		// Pass the Prototype_Id (Ex: "Prototype_Component_Model_Fiona")
+		wstring wsModelPrototypeId(iter->wcModelPrototypeId);
+		m_lModelPrototypeIds.push_back(wsModelPrototypeId);
+		list<wstring>::iterator modelPrototypeIter = find_if(m_lModelPrototypeIds.begin(), m_lModelPrototypeIds.end(), [&](wstring wsProtoId) {
+			return wsProtoId == wsModelPrototypeId;
+		});
 
-		wstring wsPrototypeId = wstring(wcPrototypeId);
-		m_vPrototypesId.push_back(wsPrototypeId);
-		list<wstring>::iterator prototypeIter = find(m_vPrototypesId.begin(), m_vPrototypesId.end(), wsPrototypeId);
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 		// Check if Prototype_Id is already present
-		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-		CComponent* pComponent = pGameInstance->Find_Component_Prototype(LEVEL_TOOL, prototypeIter->c_str());
+		CComponent* pComponent = pGameInstance->Find_Component_Prototype(LEVEL_TOOL, wsModelPrototypeId.c_str());
 		if (pComponent)
 		{
 			// If Yes: Clone
-			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, wcLayer, (void*)prototypeIter->c_str())))
+			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, wcLayer, &(*iter))))
 				return; 
 		}
 		else
 		{
 			// If No: Create Prototype and Clone
 			char sMeshPath[MAX_PATH];
-			strcpy_s(sMeshPath, MAX_PATH, iter->sFilePath.c_str());
-			strcat_s(sMeshPath, MAX_PATH, iter->sFileName.c_str());
+
+			wstring wsFilePath = wstring(iter->wcFilePath);
+			string sFilePath = string(wsFilePath.begin(), wsFilePath.end());
+
+			wstring wsFileName = wstring(iter->wcFileName);
+			string sFileName = string(wsFileName.begin(), wsFileName.end());
+
+			strcpy_s(sMeshPath, MAX_PATH, sFilePath.c_str());
+			strcat_s(sMeshPath, MAX_PATH, sFileName.c_str());
 
 			// Prototype Component (Model)
-			if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, prototypeIter->c_str(), CModel::Create(m_pDevice, m_pContext, iter->sModelType, sMeshPath/*, PivotMatrix*/))))
+			if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, modelPrototypeIter->c_str(), CModel::Create(m_pDevice, m_pContext, iter->eModelType, sMeshPath))))
 				return;
 
-			// Clone GameObject (Mesh)
-			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, wcLayer, (void*)prototypeIter->c_str())))
+			// Clone GameObject
+			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, wcLayer, &(*iter))))
 				return;
 		}
 
@@ -866,176 +895,154 @@ void CImGuiManager::Create_Object()
 
 _bool CImGuiManager::SaveData()
 {
-	//HANDLE hFile = nullptr;
-	//switch (m_eEditorId)
-	//{
-	//case STAGE1_1:
-	//	hFile = CreateFile(L"../Data/Tile_1_1.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	//	break;
-	//case STAGE1_2:
-	//	hFile = CreateFile(L"../Data/Tile_1_2.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	//	break;
-	//case STAGE_BOSS:
-	//	hFile = CreateFile(L"../Data/Boss_Tile.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	//	break;
-	//}
+	HANDLE hFile = nullptr;
 
-	//if (hFile == INVALID_HANDLE_VALUE)
-	//	return;
+	_tchar LoadPath[MAX_PATH] = TEXT("../../Data/");
+	wstring wsCurrentMap = wstring(m_sCurrentMap.begin(), m_sCurrentMap.end());
 
-	//int iDrawID, iOption = 0;
-	//bool bIsBossTile = false;
-	//DWORD dwByte = 0;
+	wcscat_s(LoadPath, MAX_PATH, wsCurrentMap.c_str()); // ../../Data/Field.dat
 
-	//for (auto& iter : m_vecTile)
-	//{
-	//	iDrawID = static_cast<Tile*>(iter)->Get_DrawID();
-	//	iOption = static_cast<Tile*>(iter)->Get_Option();
-	//	bIsBossTile = static_cast<Tile*>(iter)->Get_IsBossTile();
+	hFile = CreateFile(LoadPath, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	
+	if (hFile == INVALID_HANDLE_VALUE)
+		return false;
 
-	//	WriteFile(hFile, &(iter->Get_Info()), sizeof(INFO), &dwByte, nullptr);
-	//	WriteFile(hFile, &iDrawID, sizeof(int), &dwByte, nullptr);
-	//	WriteFile(hFile, &iOption, sizeof(int), &dwByte, nullptr);
-	//	WriteFile(hFile, &bIsBossTile, sizeof(bool), &dwByte, nullptr);
-	//}
+	DWORD dwByte = 0;
 
-	//CloseHandle(hFile);
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	CObject_Manager::LAYERS mLayers = pGameInstance->Get_Layers(LEVEL_TOOL);
 
-	//if (m_eEditorId != STAGE_BOSS)
-	//{
-	//	// ENEMIES
-	//	HANDLE hFile2 = nullptr;
-	//	switch (m_eEditorId)
-	//	{
-	//	case STAGE1_1:
-	//		hFile2 = CreateFile(L"../Data/Enemies_1_1.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	//		break;
-	//	case STAGE1_2:
-	//		hFile2 = CreateFile(L"../Data/Enemies_1_2.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	//		break;
-	//	}
+	// Loop over Layers
+	for (auto& iter = mLayers.begin(); iter != mLayers.end(); iter++)
+	{
+		CLayer* pLayer = iter->second;
+		CLayer::GAMEOBJECTS vGameObjects = pLayer->Get_Objects();
 
-	//	if (hFile2 == INVALID_HANDLE_VALUE)
-	//		return;
+		// Loop over Layer Objects
+		for (auto& pObject : vGameObjects)
+		{
+			// Don't save the Camera Object to File
+			if (!wcscmp(pObject->Get_ObjName(), TEXT("Camera_Dynamic")))
+				continue;
+			
+			list<CMesh::MODELDESC>::iterator iter = find_if(m_lObjects.begin(), m_lObjects.end(), [&](CMesh::MODELDESC tDesc) {
+				return !wcscmp(pObject->Get_ObjName(), tDesc.wcObjName);
+			});
 
-	//	char cType;
-	//	for (auto& iter : ObjManager::Get_Instance()->Get_Enemies())
-	//	{
-	//		PigWarrior* pWarrior = dynamic_cast<PigWarrior*>(iter);
-	//		if (pWarrior)
-	//		{
-	//			cType = '1';
-	//			WriteFile(hFile2, &(pWarrior->Get_Info()), sizeof(INFO), &dwByte, nullptr);
-	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
-	//		}
+			// Make a new MODELDESC (based on the already existing MODELDESC of the Object) which will be updated with Layer and WorldMatrix data.
+			// (The already existing MODELDESC of the Object cannot be used cause it's universal, setting a specific Layer or WorldMatrix for that Object would be wrong).
 
-	//		PigGunner* pGunner = dynamic_cast<PigGunner*>(iter);
-	//		if (pGunner)
-	//		{
-	//			cType = '2';
-	//			WriteFile(hFile2, &(pGunner->Get_Info()), sizeof(INFO), &dwByte, nullptr);
-	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
-	//		}
+			CMesh::MODELDESC tNewModelDesc; 
+			memcpy(&tNewModelDesc, &(*iter), sizeof(CMesh::MODELDESC));
 
-	//		Wolf* pWolf = dynamic_cast<Wolf*>(iter);
-	//		if (pWolf)
-	//		{
-	//			cType = '3';
-	//			WriteFile(hFile2, &(pWolf->Get_Info()), sizeof(INFO), &dwByte, nullptr);
-	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
-	//		}
-	//	}
+			// Add Layer to New MODELDESC
+			wstring wsLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
+			wcscpy_s(tNewModelDesc.wcLayerTag, MAX_PATH, wsLayer.c_str());
 
-	//	CloseHandle(hFile2);
-	//}HANDLE hFile = nullptr;
-	//switch (m_eEditorId)
-	//{
-	//case STAGE1_1:
-	//	hFile = CreateFile(L"../Data/Tile_1_1.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	//	break;
-	//case STAGE1_2:
-	//	hFile = CreateFile(L"../Data/Tile_1_2.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	//	break;
-	//case STAGE_BOSS:
-	//	hFile = CreateFile(L"../Data/Boss_Tile.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	//	break;
-	//}
+			// Add WorldMatrix of the Object to New MODELDESC
+			_float4x4 mWorldMatrix;
 
-	//if (hFile == INVALID_HANDLE_VALUE)
-	//	return;
+			CComponent* pComponent = pObject->Find_Component(TEXT("Com_Transform"));
+			if (!pComponent)
+				XMStoreFloat4x4(&mWorldMatrix, XMMatrixIdentity());
 
-	//int iDrawID, iOption = 0;
-	//bool bIsBossTile = false;
-	//DWORD dwByte = 0;
+			CTransform* pTransform = dynamic_cast<CTransform*>(pComponent);
+			if (!pTransform)
+				XMStoreFloat4x4(&mWorldMatrix, XMMatrixIdentity());
 
-	//for (auto& iter : m_vecTile)
-	//{
-	//	iDrawID = static_cast<Tile*>(iter)->Get_DrawID();
-	//	iOption = static_cast<Tile*>(iter)->Get_Option();
-	//	bIsBossTile = static_cast<Tile*>(iter)->Get_IsBossTile();
+			mWorldMatrix = pTransform->Get_World4x4();
+			tNewModelDesc.mWorldMatrix = mWorldMatrix;
 
-	//	WriteFile(hFile, &(iter->Get_Info()), sizeof(INFO), &dwByte, nullptr);
-	//	WriteFile(hFile, &iDrawID, sizeof(int), &dwByte, nullptr);
-	//	WriteFile(hFile, &iOption, sizeof(int), &dwByte, nullptr);
-	//	WriteFile(hFile, &bIsBossTile, sizeof(bool), &dwByte, nullptr);
-	//}
+			WriteFile(hFile, &tNewModelDesc, sizeof(CMesh::MODELDESC), &dwByte, nullptr);
+		}	
+	}
 
-	//CloseHandle(hFile);
+	Safe_Release(pGameInstance);
 
-	//if (m_eEditorId != STAGE_BOSS)
-	//{
-	//	// ENEMIES
-	//	HANDLE hFile2 = nullptr;
-	//	switch (m_eEditorId)
-	//	{
-	//	case STAGE1_1:
-	//		hFile2 = CreateFile(L"../Data/Enemies_1_1.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	//		break;
-	//	case STAGE1_2:
-	//		hFile2 = CreateFile(L"../Data/Enemies_1_2.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	//		break;
-	//	}
-
-	//	if (hFile2 == INVALID_HANDLE_VALUE)
-	//		return;
-
-	//	char cType;
-	//	for (auto& iter : ObjManager::Get_Instance()->Get_Enemies())
-	//	{
-	//		PigWarrior* pWarrior = dynamic_cast<PigWarrior*>(iter);
-	//		if (pWarrior)
-	//		{
-	//			cType = '1';
-	//			WriteFile(hFile2, &(pWarrior->Get_Info()), sizeof(INFO), &dwByte, nullptr);
-	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
-	//		}
-
-	//		PigGunner* pGunner = dynamic_cast<PigGunner*>(iter);
-	//		if (pGunner)
-	//		{
-	//			cType = '2';
-	//			WriteFile(hFile2, &(pGunner->Get_Info()), sizeof(INFO), &dwByte, nullptr);
-	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
-	//		}
-
-	//		Wolf* pWolf = dynamic_cast<Wolf*>(iter);
-	//		if (pWolf)
-	//		{
-	//			cType = '3';
-	//			WriteFile(hFile2, &(pWolf->Get_Info()), sizeof(INFO), &dwByte, nullptr);
-	//			WriteFile(hFile2, &cType, sizeof(char), &dwByte, nullptr);
-	//		}
-	//	}
-
-	//	CloseHandle(hFile2);
-	//}
+	CloseHandle(hFile);
 
 	return true;
 }
 
 _bool CImGuiManager::LoadData()
 {
-	// TODO: ..
+	HANDLE hFile = nullptr;
+	
+	_tchar LoadPath[MAX_PATH] = TEXT("../../Data/");
+	wstring wsCurrentMap = wstring(m_vMaps[m_iSelectedMap].begin(), m_vMaps[m_iSelectedMap].end());
+
+	wcscat_s(LoadPath, MAX_PATH, wsCurrentMap.c_str()); // ../../Data/Field.dat
+
+	hFile = CreateFile(LoadPath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+		return false;
+
+	CMesh::MODELDESC tNewModelDesc;
+	ZeroMemory(&tNewModelDesc, sizeof(CMesh::MODELDESC));
+
+	DWORD dwByte = 0;
+
+	while (true)
+	{
+		ReadFile(hFile, &tNewModelDesc, sizeof(CMesh::MODELDESC), &dwByte, nullptr);
+
+		if (!dwByte)
+			break;
+
+		// Populate Layers Combo
+		wstring wsLayer = wstring(tNewModelDesc.wcLayerTag);
+		string sLayer = string(wsLayer.begin(), wsLayer.end());
+		m_vLayers.insert(sLayer);
+		m_vLayersTemp.insert(tNewModelDesc.wcLayerTag);
+
+		// Get Layer Iterator which will be passed to the Engine (so it doesn't get deleted when out of scope)
+		unordered_set<wstring>::iterator layerIter = m_vLayersTemp.find(wsLayer);
+
+		// Populate Model Prototype Ids
+		m_lModelPrototypeIds.push_back(tNewModelDesc.wcModelPrototypeId);
+		
+		// Get Model Prototype Iterator which will be passed to the Engine (so it doesn't get deleted when out of scope)
+		list<wstring>::iterator modelPrototypeIter = find_if(m_lModelPrototypeIds.begin(), m_lModelPrototypeIds.end(), [&](wstring wsProtoId) {
+			return wsProtoId == tNewModelDesc.wcModelPrototypeId;
+		});
+	
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		CComponent* pComponent = pGameInstance->Find_Component_Prototype(LEVEL_TOOL, tNewModelDesc.wcModelPrototypeId);
+		if (pComponent)
+		{
+			// If Yes: Clone
+			if (FAILED(pGameInstance->Add_GameObject(tNewModelDesc.wcObjName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, layerIter->c_str(), &tNewModelDesc)))
+				return false;
+		}
+		else
+		{
+			// If No: Create Prototype and Clone
+			char sMeshPath[MAX_PATH];
+
+			wstring wsFilePath = wstring(tNewModelDesc.wcFilePath);
+			string sFilePath = string(wsFilePath.begin(), wsFilePath.end());
+
+			wstring wsFileName = wstring(tNewModelDesc.wcFileName);
+			string sFileName = string(wsFileName.begin(), wsFileName.end());
+
+			strcpy_s(sMeshPath, MAX_PATH, sFilePath.c_str());
+			strcat_s(sMeshPath, MAX_PATH, sFileName.c_str());
+
+			// Prototype Component (Model)
+			if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, modelPrototypeIter->c_str(), CModel::Create(m_pDevice, m_pContext, tNewModelDesc.eModelType, sMeshPath))))
+				return false;
+
+			// Clone GameObject
+			if (FAILED(pGameInstance->Add_GameObject(tNewModelDesc.wcObjName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, layerIter->c_str(), &tNewModelDesc)))
+				return false;
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
+
+	CloseHandle(hFile);
+
 	return true;
 }
 

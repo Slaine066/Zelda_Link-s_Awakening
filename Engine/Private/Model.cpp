@@ -117,14 +117,18 @@ Where N is the number of Meshes in this Model.
 */
 HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 {
-	/* Get the matrix of affected bones per mesh. */
-	_float4x4 BoneMatrix[256];
+	if (m_eModelType == TYPE::TYPE_ANIM)
+	{
+		/* Get the matrix of affected bones per mesh. */
+		_float4x4 BoneMatrix[256];
 
-	/* Populate Bone Matrix Array with the Bone Matrices of every Mesh. */
-	m_Meshes[iMeshIndex]->Get_BoneMatrices(BoneMatrix, XMLoadFloat4x4(&m_PivotMatrix));
+		/* Populate Bone Matrix Array with the Bone Matrices of every Mesh. */
+		m_Meshes[iMeshIndex]->Get_BoneMatrices(BoneMatrix, XMLoadFloat4x4(&m_PivotMatrix));
 
-	// Give it to the Shader
-	pShader->Set_MatrixArray("g_BoneMatrices", BoneMatrix, 256);
+		// Give it to the Shader
+		pShader->Set_MatrixArray("g_BoneMatrices", BoneMatrix, 256);
+	}
+	
 	pShader->Begin(iPassIndex);
 
 	m_Meshes[iMeshIndex]->Render();

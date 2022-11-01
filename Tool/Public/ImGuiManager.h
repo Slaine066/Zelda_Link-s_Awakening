@@ -73,18 +73,17 @@ private:
 
 	_float3 m_vPositionPicked = _float3(0.f, 0.f, 0.f);
 
-	//	Objects
-	//map<string, string> m_mObjects;	
-	list<CMesh::MODELDESC> m_mObjects; 
+	//	Objects	
+	list<CMesh::MODELDESC> m_lObjects; 
 	string m_sSelectedObject = "";
 
 	// Layers
-	unordered_set<string> m_vLayers;		// Layers to show to ImGui
-	unordered_set<wstring> m_vLayersTemp;	// Layers to pass to ObjectManager
+	unordered_set<string> m_vLayers;					// Layers to show to ImGui
+	unordered_set<wstring> m_vLayersTemp;				// Layers to pass to ObjectManager
 	string m_sCurrentLayer = "";
 
 	// Created Objects
-	list<wstring> m_vPrototypesId;
+	list<wstring> m_lModelPrototypeIds;					// Prototypes to pass to ObjectManager
 	CGameObject* m_pSelectedCreatedObject = nullptr;
 	
 	// Created Objects Transformation
