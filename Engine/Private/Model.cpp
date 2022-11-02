@@ -157,7 +157,6 @@ HRESULT CModel::Create_MeshContainer()
 	{
 		aiMesh*	pAIMesh = m_pAIScene->mMeshes[i];
 
-		
 		CMeshContainer*	pMeshContainer = CMeshContainer::Create(m_pDevice, m_pContext, m_eModelType, pAIMesh, this, XMLoadFloat4x4(&m_PivotMatrix));
 		if (pMeshContainer == nullptr)
 			return E_FAIL;
@@ -199,9 +198,10 @@ HRESULT CModel::Create_Materials(const char* pModelFilePath)
 				continue;
 
 			char szName[MAX_PATH] = "";
-			char szExt[MAX_PATH] = "";
+			char szExt[MAX_PATH] = ".dds";	// Forced *.dds Extension (..really bad, but there is no other option).
+											// (Map 3ds Max Project is already made with Models exported with *.png Textures, changing all the Textures to *.dds for every Mesh would take forever).
 			char szTextureFileName[MAX_PATH] = "";
-			_splitpath_s(strPath.data, nullptr, 0, nullptr, 0, szName, MAX_PATH, szExt, MAX_PATH);
+			_splitpath_s(strPath.data, nullptr, 0, nullptr, 0, szName, MAX_PATH, nullptr, 0);
 
 			strcpy_s(szTextureFileName, szName);
 			strcat_s(szTextureFileName, szExt);
