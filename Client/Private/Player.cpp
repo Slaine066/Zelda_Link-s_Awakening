@@ -79,17 +79,18 @@ HRESULT CPlayer::Render()
 
 HRESULT CPlayer::Ready_Components(void* pArg)
 {
+	memcpy(&m_tModelDesc, pArg, sizeof(MODELDESC));
+
 	/* For.Com_Renderer */
 	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
-
 	
 	CTransform::TRANSFORMDESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 	TransformDesc.fSpeedPerSec = 5.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 	if (pArg)
-		TransformDesc.vInitialPosition = *(_float3*)pArg;
+		TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
 
 	/* For.Com_Transform */
 	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_STATIC, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))

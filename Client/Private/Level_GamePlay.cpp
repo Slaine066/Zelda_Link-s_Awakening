@@ -158,7 +158,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Player"), TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, pLayerTag, nullptr)))
+	// Model Infos
+	CActor::MODELDESC tModelDesc;
+	XMStoreFloat4x4(&tModelDesc.mWorldMatrix, XMMatrixIdentity());
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Player"), TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, pLayerTag, &tModelDesc)))
 		return E_FAIL;	
 
 	Safe_Release(pGameInstance);

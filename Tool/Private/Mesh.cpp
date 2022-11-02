@@ -28,6 +28,17 @@ HRESULT CMesh::Initialize(void* pArg)
 
 _uint CMesh::Tick(_float fTimeDelta)
 {
+	/*
+	* Tool doesn't need Animations (..for now) 
+	* Be sure to use the "Shader_VtxModel" (not the "Shader_VtxAnimModel"). 
+	* If the "Shader_VtxAnimModel" is used but the Animations are not played the Bones will be rendered wrongly.
+	*/
+	/*if (m_tModelDesc.eModelType == CModel::TYPE::TYPE_ANIM)
+	{
+		m_pModelCom->Set_CurrentAnimIndex(0);
+		m_pModelCom->Play_Animation(fTimeDelta);
+	}*/
+
 	return OBJ_NOEVENT;
 }
 
@@ -77,7 +88,8 @@ HRESULT CMesh::Ready_Components(void* pArg)
 		return E_FAIL;
 	 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_TOOL, m_tModelDesc.eModelType == CModel::TYPE::TYPE_ANIM ? TEXT("Prototype_Component_Shader_VtxAnimModel") : TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
+	//															- - - > Read comment inside Tick() function.
+	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_TOOL, /*m_tModelDesc.eModelType == CModel::TYPE::TYPE_ANIM ? TEXT("Prototype_Component_Shader_VtxAnimModel") : */TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/

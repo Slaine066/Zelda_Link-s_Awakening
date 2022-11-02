@@ -44,6 +44,7 @@ HRESULT CImGuiManager::Initialize(ID3D11Device * pDevice, ID3D11DeviceContext * 
 
 	Read_Maps_Name();
 	
+	// Change Path below
 	_tchar cNonAnimResourcesPath[MAX_PATH] = TEXT("../../Resources/Meshes/NonAnim/");
 	Read_NonAnimModels_Name(cNonAnimResourcesPath);
 
@@ -887,7 +888,7 @@ void CImGuiManager::Create_Object()
 		// LayerId (Ex: "Layer_Player")
 		wstring wsLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
 		unordered_set<wstring>::iterator layerIter = m_vLayersTemp.find(wsLayer);
-		const _tchar* wcLayer = layerIter->c_str();
+		wcscpy_s(iter->wcLayerTag, MAX_PATH, layerIter->c_str());
 
 		// FileName (Ex: "Fiona.fbx" > "Fiona")
 		_tchar wcFileName[MAX_PATH];
@@ -907,7 +908,7 @@ void CImGuiManager::Create_Object()
 		if (pComponent)
 		{
 			// If Yes: Clone
-			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, wcLayer, &(*iter))))
+			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, iter->wcLayerTag, &(*iter))))
 				return; 
 		}
 		else
@@ -929,7 +930,7 @@ void CImGuiManager::Create_Object()
 				return;
 
 			// Clone GameObject
-			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, wcLayer, &(*iter))))
+			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, iter->wcLayerTag, &(*iter))))
 				return;
 		}
 

@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "GameObject.h"
+#include "Model.h"
 
 BEGIN(Engine)
 class CShader;
@@ -13,6 +14,31 @@ END
 BEGIN(Client)
 class CActor abstract : public CGameObject
 {
+public:
+	/*
+	*	Client Info
+	*	Change Structure below in order to be able to use this Tool with your Client specific Data.
+	*/
+
+	// Struct used to Load and Save Data to Files
+	typedef struct tagModelDescription
+	{
+		// Model Infos
+		_tchar wcFileName[MAX_PATH];			// "Fiona.fbx"
+		_tchar wcFilePath[MAX_PATH];			// "../../Resources/Meshes/Anim/Fiona
+		_tchar wcModelPrototypeId[MAX_PATH];	// "Prototype_Component_Model_Fiona"
+		CModel::TYPE eModelType;				// TYPE::TYPE_NONANIM or TYPE::TYPE_ANIM
+
+												// Object Infos
+		_tchar wcObjName[MAX_PATH];				// "Fiona"
+		_tchar wcObjPrototypeId[MAX_PATH];		// "Prototype_GameObject_Player"
+
+												// Layer Infos
+		_tchar wcLayerTag[MAX_PATH];			// "Layer_Player"
+
+												// Transform Infos
+		_float4x4 mWorldMatrix;
+	}MODELDESC;
 public:
 	typedef struct tagActorDescription
 	{
@@ -41,6 +67,9 @@ protected:
 	CRenderer*	m_pRendererCom = nullptr;
 	CTransform*	m_pTransformCom = nullptr;
 	CModel*		m_pModelCom = nullptr;
+
+protected:
+	MODELDESC m_tModelDesc;
 
 protected:
 	virtual HRESULT Ready_Components(void* pArg) = 0;

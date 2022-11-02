@@ -78,12 +78,12 @@ private:
 	string m_sSelectedObject = "";
 
 	// Layers
-	unordered_set<string> m_vLayers;					// Layers to show to ImGui
-	unordered_set<wstring> m_vLayersTemp;				// Layers to pass to ObjectManager
+	unordered_set<string> m_vLayers;					
+	unordered_set<wstring> m_vLayersTemp;				// Storing Layers so that they don't get de-allocated when passing them to Engine
 	string m_sCurrentLayer = "";
 
 	// Created Objects
-	list<wstring> m_lModelPrototypeIds;					// Prototypes to pass to ObjectManager
+	list<wstring> m_lModelPrototypeIds;					// Storing Model Prototypes so that they don't get de-allocated when passing them to Engine
 	CGameObject* m_pSelectedCreatedObject = nullptr;
 	
 	// Created Objects Transformation

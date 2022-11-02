@@ -17,6 +17,7 @@ CModel::CModel(const CModel & rhs)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_iNumBones(rhs.m_iNumBones)
+	, m_eModelType(rhs.m_eModelType)
 	, m_PivotMatrix(rhs.m_PivotMatrix)
 {
 	for (auto& pMeshContainer : rhs.m_Meshes)
@@ -39,6 +40,7 @@ CHierarchyNode* CModel::Get_BonePtr(const char * pBoneName) const
 
 HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix)
 {
+	m_eModelType = eModelType;
 	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
 
 	_uint iFlag = 0;

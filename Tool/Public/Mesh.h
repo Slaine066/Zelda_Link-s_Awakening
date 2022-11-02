@@ -17,7 +17,7 @@ class CMesh final : public CGameObject
 public:
 	/*
 	*	Client Info
-	*	Change Structure below in order to be able to use this Tool with your Client Data.
+	*	Change Structure below in order to be able to use this Tool with your Client specific Data.
 	*/
 
 	// Struct used to Load and Save Data to Files
