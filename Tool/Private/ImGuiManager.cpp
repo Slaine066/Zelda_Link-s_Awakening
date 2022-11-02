@@ -193,10 +193,15 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		ImGui::SameLine();
 		if (ImGui::Button("Create Level"))
 		{
-			m_sCurrentMap = cMapName; // Set Current Map
-			m_sCurrentMap += ".dat";
+			if (strcmp(cMapName, ""))
+			{
+				m_sCurrentMap = cMapName; // Set Current Map
+				m_sCurrentMap += ".dat";
 
-			ImGui::OpenPopup("Create Level");
+				memset(cMapName, 0, MAX_PATH);
+
+				ImGui::OpenPopup("Create Level");
+			}
 		}
 		ImGui::NewLine();
 		ImGui::Separator();
@@ -441,7 +446,7 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		}
 		ImGui::NewLine();
 
-		if (m_pSelectedCreatedObject)
+		if (m_pSelectedCreatedObject && m_pTransform)
 		{
 			wstring wsCurrentObject = wstring(m_pSelectedCreatedObject->Get_ObjId());
 			string sCurrentObject = string(wsCurrentObject.begin(), wsCurrentObject.end());
@@ -459,19 +464,25 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		{
 			m_eObjAction = TRANS_SCALE;
 
-			m_fX = m_pTransform->Get_Scale(CTransform::STATE::STATE_RIGHT);
-			m_fY = m_pTransform->Get_Scale(CTransform::STATE::STATE_UP);
-			m_fZ = m_pTransform->Get_Scale(CTransform::STATE::STATE_LOOK);
+			if (m_pTransform)
+			{
+				m_fX = m_pTransform->Get_Scale(CTransform::STATE::STATE_RIGHT);
+				m_fY = m_pTransform->Get_Scale(CTransform::STATE::STATE_UP);
+				m_fZ = m_pTransform->Get_Scale(CTransform::STATE::STATE_LOOK);
+			}
 		}
 		ImGui::SameLine();
 
 		if (ImGui::RadioButton("Rotation", m_eObjAction == TRANS_ROTATION))
 		{
 			m_eObjAction = TRANS_ROTATION;
-						
-			m_fX = m_pTransform->Get_CurrentRotationX();
-			m_fY = m_pTransform->Get_CurrentRotationY();
-			m_fZ = m_pTransform->Get_CurrentRotationZ();
+				
+			if (m_pTransform)
+			{
+				m_fX = m_pTransform->Get_CurrentRotationX();
+				m_fY = m_pTransform->Get_CurrentRotationY();
+				m_fZ = m_pTransform->Get_CurrentRotationZ();
+			}
 		}
 		ImGui::SameLine();
 
@@ -479,11 +490,14 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		{
 			m_eObjAction = TRANS_TRANSLATION;
 
-			_float3 vCurrentTranslation;
-			XMStoreFloat3(&vCurrentTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
-			m_fX = vCurrentTranslation.x;
-			m_fY = vCurrentTranslation.y;
-			m_fZ = vCurrentTranslation.z;
+			if (m_pTransform)
+			{
+				_float3 vCurrentTranslation;
+				XMStoreFloat3(&vCurrentTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+				m_fX = vCurrentTranslation.x;
+				m_fY = vCurrentTranslation.y;
+				m_fZ = vCurrentTranslation.z;
+			}
 		}
 
 		ImGui::SetNextItemWidth(80);
@@ -493,20 +507,29 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 			{
 			case TRANS_SCALE:
 			{
-				m_pTransform->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fX);
+				if (m_pTransform)
+					m_pTransform->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fX);
 				break;
 			}
 			case TRANS_ROTATION:
 			{
-				_vector vRotationX = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-				m_pTransform->Set_Rotation(_float3(m_fX, m_fY, m_fZ));
+				if (m_pTransform)
+				{
+					_vector vRotationX = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+					m_pTransform->Set_Rotation(_float3(m_fX, m_fY, m_fZ));
+				}
+				
 				break;
 			}
 			case TRANS_TRANSLATION:
 			{
-				XMStoreFloat3(&vTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
-				_vector vNewTranslation = XMVectorSet(m_fX, vTranslation.y, vTranslation.z, 1.f);
-				m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vNewTranslation);
+				if (m_pTransform)
+				{
+					XMStoreFloat3(&vTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+					_vector vNewTranslation = XMVectorSet(m_fX, vTranslation.y, vTranslation.z, 1.f);
+					m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vNewTranslation);
+				}
+				
 				break; 
 			}	
 			}
@@ -520,19 +543,25 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 			{
 				case TRANS_SCALE:
 				{
-					m_pTransform->Set_Scale(CTransform::STATE::STATE_UP, m_fY);
+					if (m_pTransform)
+						m_pTransform->Set_Scale(CTransform::STATE::STATE_UP, m_fY);
 					break;
 				}
 				case TRANS_ROTATION:
 				{
-					m_pTransform->Set_Rotation(_float3(m_fX, m_fY, m_fZ));
+					if (m_pTransform)
+						m_pTransform->Set_Rotation(_float3(m_fX, m_fY, m_fZ));
 					break;
 				}
 				case TRANS_TRANSLATION:
 				{	
-					XMStoreFloat3(&vTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
-					_vector vNewTranslation = XMVectorSet(vTranslation.x, m_fY, vTranslation.z, 1.f);
-					m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vNewTranslation);
+					if (m_pTransform)
+					{
+						XMStoreFloat3(&vTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+						_vector vNewTranslation = XMVectorSet(vTranslation.x, m_fY, vTranslation.z, 1.f);
+						m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vNewTranslation);
+					}
+					
 					break;
 				}
 			}
@@ -546,19 +575,24 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 			{
 				case TRANS_SCALE:
 				{
-					m_pTransform->Set_Scale(CTransform::STATE::STATE_LOOK, m_fZ);
+					if (m_pTransform)
+						m_pTransform->Set_Scale(CTransform::STATE::STATE_LOOK, m_fZ);
 					break;
 				}
 				case TRANS_ROTATION:
 				{
-					m_pTransform->Set_Rotation(_float3(m_fX, m_fY, m_fZ));
+					if (m_pTransform)
+						m_pTransform->Set_Rotation(_float3(m_fX, m_fY, m_fZ));
 					break;
 				}
 				case TRANS_TRANSLATION:
 				{
-					XMStoreFloat3(&vTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
-					_vector vNewTranslation = XMVectorSet(vTranslation.x, vTranslation.y, m_fZ, 1.f);
-					m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vNewTranslation);
+					if (m_pTransform)
+					{
+						XMStoreFloat3(&vTranslation, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+						_vector vNewTranslation = XMVectorSet(vTranslation.x, vTranslation.y, m_fZ, 1.f);
+						m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vNewTranslation);
+					}
 					break;
 				}
 			}
@@ -567,9 +601,12 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		
 		if (ImGui::Button("Delete Object"))
 		{
-			wstring wsCurrentLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
-			pGameInstance->Delete_GameObject(m_pSelectedCreatedObject, LEVEL_TOOL, wsCurrentLayer.c_str());
-			m_pSelectedCreatedObject = nullptr;
+			if (m_pSelectedCreatedObject)
+			{
+				wstring wsCurrentLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
+				pGameInstance->Delete_GameObject(m_pSelectedCreatedObject, LEVEL_TOOL, wsCurrentLayer.c_str());
+				m_pSelectedCreatedObject = nullptr;
+			}
 		}
 	}
 	
@@ -601,9 +638,9 @@ void CImGuiManager::DrawMapModals()
 	// Create Map Modal
 	ImVec2 pCenter = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(pCenter, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Center Window when appearing
-	if (ImGui::BeginPopupModal("Create Map", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("Create Level", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("Map Created!\n");
+		ImGui::Text("Level Created!\n");
 		ImGui::Separator();
 
 		if (ImGui::Button("OK", ImVec2(120, 0)))
@@ -834,6 +871,9 @@ void CImGuiManager::Read_AnimModels_Name(_tchar * cFolderPath)
 
 void CImGuiManager::Create_Object()
 {
+	if (m_sSelectedObject.empty())
+		return;
+
 	// Get FileName without extension (Ex: "Fiona.fbx" > "Fiona")
 	list<CMesh::MODELDESC>::iterator iter = find_if(m_lObjects.begin(), m_lObjects.end(), [&](CMesh::MODELDESC tDesc) {
 		wstring wsFileName = wstring(tDesc.wcFileName);
