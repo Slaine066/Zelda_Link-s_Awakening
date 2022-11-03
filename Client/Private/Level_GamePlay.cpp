@@ -27,8 +27,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
+	/*if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;*/
 
 	/*if (FAILED(Ready_Layer_Effect()))
 		return E_FAIL;*/
@@ -53,21 +53,28 @@ HRESULT CLevel_GamePlay::Load_From_File()
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
-	HANDLE hFile = CreateFile(TEXT("../Bin/Resources/Data/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE hFile = CreateFile(TEXT("../../Data/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (hFile == 0)
 		return E_FAIL;
 
 	_ulong dwByte = 0;
-	CActor::ACTORDESC tActorDesc;
-	ZeroMemory(&tActorDesc, sizeof(CActor::ACTORDESC));
+	CActor::MODELDESC tModelDesc;
+	ZeroMemory(&tModelDesc, sizeof(CActor::MODELDESC));
 
 	while (true)
 	{
-		ReadFile(hFile, &tActorDesc, sizeof(CActor::ACTORDESC), &dwByte, nullptr);
-		pGameInstance->Add_GameObject(tActorDesc.wcObjName, tActorDesc.wcObjPrototypeId, LEVEL_GAMEPLAY, tActorDesc.wcObjLayerTag, &tActorDesc.mObjPivotMatrix);
-
+		ReadFile(hFile, &tModelDesc, sizeof(CActor::MODELDESC), &dwByte, nullptr);
+		
 		if (!dwByte)
 			break;
+		
+		wstring wsObjName = wstring(tModelDesc.wcObjName);
+		string sObjName = string(wsObjName.begin(), wsObjName.end());
+
+		if (wcsstr(tModelDesc.wcObjName, TEXT("Field")))
+			pGameInstance->Add_GameObject(tModelDesc.wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_GAMEPLAY, tModelDesc.wcLayerTag, &tModelDesc);
+		else if (!wcscmp(tModelDesc.wcObjName, TEXT("Link")))
+			pGameInstance->Add_GameObject(tModelDesc.wcObjName, TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, tModelDesc.wcLayerTag, &tModelDesc);
 	}
 
 	CloseHandle(hFile);
@@ -162,7 +169,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	CActor::MODELDESC tModelDesc;
 	XMStoreFloat4x4(&tModelDesc.mWorldMatrix, XMMatrixIdentity());
 	if (FAILED(pGameInstance->Add_GameObject(TEXT("Player"), TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, pLayerTag, &tModelDesc)))
-		return E_FAIL;	
+		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 

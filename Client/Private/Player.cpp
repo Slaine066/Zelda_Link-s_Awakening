@@ -42,10 +42,10 @@ _uint CPlayer::Tick(_float fTimeDelta)
 	if (GetKeyState(VK_UP) & 0x8000)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
-		m_pModelCom->Set_CurrentAnimIndex(4);
+		m_pModelCom->Set_CurrentAnimIndex(0);
 	}
 	else
-		m_pModelCom->Set_CurrentAnimIndex(3);
+		m_pModelCom->Set_CurrentAnimIndex(0);
 
 	m_pModelCom->Play_Animation(fTimeDelta);
 
@@ -87,10 +87,9 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 	
 	CTransform::TRANSFORMDESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
+	TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
 	TransformDesc.fSpeedPerSec = 5.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
-	if (pArg)
-		TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
 
 	/* For.Com_Transform */
 	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_STATIC, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
@@ -101,7 +100,7 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_GAMEPLAY, m_tModelDesc.wcModelPrototypeId, (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;

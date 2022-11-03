@@ -20,17 +20,17 @@ HRESULT CStaticObject::Initialize_Prototype()
 
 HRESULT CStaticObject::Initialize(void * pArg)
 {
-	if (FAILED(Ready_Components(pArg)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pModelCom->Set_CurrentAnimIndex(3);
+	//m_pModelCom->Set_CurrentAnimIndex(3);
 
 	return S_OK;
 }
 
 _uint CStaticObject::Tick(_float fTimeDelta)
 {
-	if (GetKeyState(VK_LEFT) & 0x8000)
+	/*if (GetKeyState(VK_LEFT) & 0x8000)
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
 
 	if (GetKeyState(VK_RIGHT) & 0x8000)
@@ -47,7 +47,7 @@ _uint CStaticObject::Tick(_float fTimeDelta)
 	else
 		m_pModelCom->Set_CurrentAnimIndex(3);
 
-	m_pModelCom->Play_Animation(fTimeDelta);
+	m_pModelCom->Play_Animation(fTimeDelta);*/
 
 	return OBJ_NOEVENT;
 }
@@ -82,6 +82,8 @@ HRESULT CStaticObject::Render()
 
 HRESULT CStaticObject::Ready_Components(void* pArg)
 {
+	memcpy(&m_tModelDesc, pArg, sizeof(MODELDESC));
+
 	/* For.Com_Renderer */
 	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
@@ -89,18 +91,19 @@ HRESULT CStaticObject::Ready_Components(void* pArg)
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
-	TransformDesc.fSpeedPerSec = 5.f;
+	TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
+	TransformDesc.fSpeedPerSec = 0.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
 	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_STATIC, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_GAMEPLAY, m_tModelDesc.wcModelPrototypeId, (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;

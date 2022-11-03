@@ -63,7 +63,7 @@ HRESULT CMesh::Render()
 		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0, false))) // "false" (means this Model should not animate).
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0, false))) // "false" (means Model should not animate).
 			return E_FAIL;
 	}
 
@@ -84,6 +84,7 @@ HRESULT CMesh::Ready_Components(void* pArg)
 	tTransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
 	tTransformDesc.fSpeedPerSec = 3.f;
 	tTransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
+
 	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_TOOL, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &tTransformDesc)))
 		return E_FAIL;
 	 

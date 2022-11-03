@@ -33,22 +33,12 @@ public:
 		_tchar wcObjName[MAX_PATH];				// "Fiona"
 		_tchar wcObjPrototypeId[MAX_PATH];		// "Prototype_GameObject_Player"
 
-												// Layer Infos
+		// Layer Infos
 		_tchar wcLayerTag[MAX_PATH];			// "Layer_Player"
 
-												// Transform Infos
+		// Transform Infos
 		_float4x4 mWorldMatrix;
 	}MODELDESC;
-public:
-	typedef struct tagActorDescription
-	{
-		_tchar wcObjName[MAX_PATH];
-		_tchar wcObjPrototypeId[MAX_PATH];
-		_tchar wcModelPrototypeId[MAX_PATH];
-		_tchar wcObjLayerTag[MAX_PATH];
-		_float4x4 mObjPivotMatrix;
-		//.. Class Tag?
-	}ACTORDESC;
 
 protected:
 	CActor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
