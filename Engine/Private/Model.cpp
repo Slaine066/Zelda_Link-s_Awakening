@@ -69,6 +69,9 @@ HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath
 
 HRESULT CModel::Initialize(void* pArg)
 {
+	if (m_eModelType == TYPE::TYPE_NONANIM)
+		return S_OK;
+
 	/* Load all the Model Bones (aiNode) */
 	if (FAILED(Create_HierarchyNodes(m_pAIScene->mRootNode)))
 		return E_FAIL;
@@ -117,9 +120,9 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 This function will be called N times by the Model owner. 
 Where N is the number of Meshes in this Model.
 */
-HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
+HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex, _bool bAnimate)
 {
-	if (m_eModelType == TYPE::TYPE_ANIM)
+	if (m_eModelType == TYPE::TYPE_ANIM && bAnimate)
 	{
 		/* Get the matrix of affected bones per mesh. */
 		_float4x4 BoneMatrix[256];

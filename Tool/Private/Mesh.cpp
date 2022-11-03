@@ -33,11 +33,11 @@ _uint CMesh::Tick(_float fTimeDelta)
 	* Be sure to use the "Shader_VtxModel" (not the "Shader_VtxAnimModel"). 
 	* If the "Shader_VtxAnimModel" is used but the Animations are not played the Bones will be rendered wrongly.
 	*/
-	/*if (m_tModelDesc.eModelType == CModel::TYPE::TYPE_ANIM)
+	if (m_tModelDesc.eModelType == CModel::TYPE::TYPE_ANIM)
 	{
 		m_pModelCom->Set_CurrentAnimIndex(0);
 		m_pModelCom->Play_Animation(fTimeDelta);
-	}*/
+	}
 
 	return OBJ_NOEVENT;
 }
@@ -63,7 +63,7 @@ HRESULT CMesh::Render()
 		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0, false))) // "false" (means this Model should not animate).
 			return E_FAIL;
 	}
 
@@ -89,7 +89,7 @@ HRESULT CMesh::Ready_Components(void* pArg)
 	 
 	/* For.Com_Shader */
 	//															- - - > Read comment inside Tick() function.
-	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_TOOL, /*m_tModelDesc.eModelType == CModel::TYPE::TYPE_ANIM ? TEXT("Prototype_Component_Shader_VtxAnimModel") : */TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_TOOL, /*m_tModelDesc.eModelType == CModel::TYPE::TYPE_ANIM ? TEXT("Prototype_Component_Shader_VtxAnimModel") :*/ TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
