@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Level.h"
+#include "Actor.h"
 
 BEGIN(Client)
 class CLevel_GamePlay final : public CLevel

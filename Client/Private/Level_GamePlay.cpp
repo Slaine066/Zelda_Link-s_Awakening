@@ -3,7 +3,6 @@
 #include "Level_GamePlay.h"
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
-#include "Actor.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -58,18 +57,16 @@ HRESULT CLevel_GamePlay::Load_From_File()
 		return E_FAIL;
 
 	_ulong dwByte = 0;
+
 	CActor::MODELDESC tModelDesc;
 	ZeroMemory(&tModelDesc, sizeof(CActor::MODELDESC));
 
 	while (true)
 	{
-		ReadFile(hFile, &tModelDesc, sizeof(CActor::MODELDESC), &dwByte, nullptr);
-		
+		ReadFile(hFile, &tModelDesc, sizeof(CActor::MODELDESC), &dwByte, nullptr);		
+
 		if (!dwByte)
 			break;
-		
-		wstring wsObjName = wstring(tModelDesc.wcObjName);
-		string sObjName = string(wsObjName.begin(), wsObjName.end());
 
 		if (wcsstr(tModelDesc.wcObjName, TEXT("Field")))
 			pGameInstance->Add_GameObject(tModelDesc.wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_GAMEPLAY, tModelDesc.wcLayerTag, &tModelDesc);

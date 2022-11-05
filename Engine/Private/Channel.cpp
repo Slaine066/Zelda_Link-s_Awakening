@@ -1,8 +1,6 @@
-#include "..\Public\Channel.h"
+#include "Channel.h"
 #include "Model.h"
 #include "HierarchyNode.h"
-
-
 
 CChannel::CChannel()
 {
@@ -15,13 +13,13 @@ HRESULT CChannel::Initialize(CModel* pModel, aiNodeAnim * pAIChannel)
 	m_iNumKeyframes = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
 	m_iNumKeyframes = max(m_iNumKeyframes, pAIChannel->mNumPositionKeys);
 
-	_float3			vScale;
-	_float4			vRotation;
-	_float3			vPosition;
+	_float3	vScale;
+	_float4	vRotation;
+	_float3	vPosition;
 
 	for (_uint i = 0; i < m_iNumKeyframes; ++i)
 	{
-		KEYFRAME				Keyframe;
+		KEYFRAME Keyframe;
 		ZeroMemory(&Keyframe, sizeof(KEYFRAME));
 
 		if (i < pAIChannel->mNumScalingKeys)
@@ -32,7 +30,6 @@ HRESULT CChannel::Initialize(CModel* pModel, aiNodeAnim * pAIChannel)
 
 		if (i < pAIChannel->mNumRotationKeys)
 		{
-			/*memcpy(&vRotation, &pAIChannel->mRotationKeys[i].mValue, sizeof(_float4));*/
 			vRotation.x = pAIChannel->mRotationKeys[i].mValue.x;
 			vRotation.y = pAIChannel->mRotationKeys[i].mValue.y;
 			vRotation.z = pAIChannel->mRotationKeys[i].mValue.z;
@@ -61,12 +58,8 @@ HRESULT CChannel::Initialize(CModel* pModel, aiNodeAnim * pAIChannel)
 
 void CChannel::Invalidate_TransformationMatrix(_float fCurrentTime)
 {
-//	for (_uint i = 0; i < 999999; ++i)
-//		int a = 10;
-
-	_vector			vScale, vRotation, vPosition;
-
-	KEYFRAME		LastKeyframe = m_KeyFrames.back();
+	_vector	vScale, vRotation, vPosition;
+	KEYFRAME LastKeyframe = m_KeyFrames.back();
 
 	if (fCurrentTime >= LastKeyframe.fTime)	
 	{
@@ -80,8 +73,8 @@ void CChannel::Invalidate_TransformationMatrix(_float fCurrentTime)
 		while (fCurrentTime >= m_KeyFrames[m_iCurrentKeyFrameIndex + 1].fTime)
 			++m_iCurrentKeyFrameIndex;			
 
-		_vector		vSourScale, vSourRotation, vSourPosition;
-		_vector		vDestScale, vDestRotation, vDestPosition;
+		_vector	vSourScale, vSourRotation, vSourPosition;
+		_vector	vDestScale, vDestRotation, vDestPosition;
 		
 		vSourScale = XMLoadFloat3(&m_KeyFrames[m_iCurrentKeyFrameIndex].vScale);
 		vSourRotation = XMLoadFloat4(&m_KeyFrames[m_iCurrentKeyFrameIndex].vRotation);
@@ -91,8 +84,7 @@ void CChannel::Invalidate_TransformationMatrix(_float fCurrentTime)
 		vDestRotation = XMLoadFloat4(&m_KeyFrames[m_iCurrentKeyFrameIndex + 1].vRotation);
 		vDestPosition = XMLoadFloat3(&m_KeyFrames[m_iCurrentKeyFrameIndex + 1].vPosition);
 			
-		_float		fRatio = (fCurrentTime - m_KeyFrames[m_iCurrentKeyFrameIndex].fTime) / 
-			(m_KeyFrames[m_iCurrentKeyFrameIndex + 1].fTime - m_KeyFrames[m_iCurrentKeyFrameIndex].fTime);
+		_float fRatio = (fCurrentTime - m_KeyFrames[m_iCurrentKeyFrameIndex].fTime) / (m_KeyFrames[m_iCurrentKeyFrameIndex + 1].fTime - m_KeyFrames[m_iCurrentKeyFrameIndex].fTime);
 
 		vScale = XMVectorLerp(vSourScale, vDestScale, fRatio);
 		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio);
@@ -100,10 +92,8 @@ void CChannel::Invalidate_TransformationMatrix(_float fCurrentTime)
 		vPosition = XMVectorSetW(vPosition, 1.f);
 	}
 
-	_matrix		TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
-	
+	_matrix	TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 	m_pBoneNode->Set_TransformationMatrix(TransformationMatrix);
-	
 }
 
 void CChannel::Reset()
@@ -113,7 +103,7 @@ void CChannel::Reset()
 
 CChannel * CChannel::Create( CModel* pModel, aiNodeAnim * pAIChannel)
 {
-	CChannel*	pInstance = new CChannel();
+	CChannel* pInstance = new CChannel();
 
 	if (FAILED(pInstance->Initialize(pModel, pAIChannel)))
 	{

@@ -28,6 +28,21 @@ CModel::CModel(const CModel & rhs)
 			Safe_AddRef(Material.pMatTextures[i]);
 }
 
+char * CModel::Get_MeshName(_uint iMeshIndex)
+{
+	return m_Meshes[iMeshIndex]->Get_MeshName();
+}
+
+char * CModel::Get_AnimationName(_uint iAnimationIndex)
+{
+	return m_Animations[iAnimationIndex]->Get_AnimationName();
+}
+
+char * CModel::Get_CurrentAnimationName()
+{
+	return m_Animations[m_iCurrentAnimIndex]->Get_AnimationName();
+}
+
 CHierarchyNode* CModel::Get_BonePtr(const char * pBoneName) const
 {
 	auto iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CHierarchyNode* pNode)
@@ -104,10 +119,10 @@ HRESULT CModel::SetUp_Material(CShader * pShader, const char * pConstantName, _u
 	return pShader->Set_ShaderResourceView(pConstantName, pSRV);
 }
 
-HRESULT CModel::Play_Animation(_float fTimeDelta)
+HRESULT CModel::Play_Animation(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoop)
 {
 	/* Update Bone m_TransformationMatrix. */
-	m_Animations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrix(fTimeDelta);
+	m_Animations[m_iCurrentAnimIndex]->Animate(fTimeDelta, bIsFinished, bIsLoop);
 
 	/* Update Bone m_CombinedTransformationMatrix. */
 	for (auto& pBoneNode : m_Bones)

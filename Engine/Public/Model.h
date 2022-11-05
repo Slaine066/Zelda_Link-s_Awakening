@@ -18,14 +18,18 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
+	char* Get_MeshName(_uint iMeshIndex);
+	char* Get_AnimationName(_uint iAnimationIndex);
+	char* Get_CurrentAnimationName();
 	_uint Get_NumMeshContainers() const { return m_iNumMeshes; }
 	class CHierarchyNode* Get_BonePtr(const char* pBoneName) const;
 
+	_uint Get_CurrentAnimIndex() { return m_iCurrentAnimIndex; }
 	void Set_CurrentAnimIndex(_uint iAnimIndex) { m_iCurrentAnimIndex = iAnimIndex; }
 
 public:
 	HRESULT SetUp_Material(class CShader* pShader, const char* pConstantName, _uint iMeshIndex, aiTextureType eType);
-	HRESULT Play_Animation(_float fTimeDelta);
+	HRESULT Play_Animation(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoop = true);
 	HRESULT Render(class CShader* pShader, _uint iMeshIndex, _uint iPassIndex = 0, _bool bAnimate = true);
 
 private:

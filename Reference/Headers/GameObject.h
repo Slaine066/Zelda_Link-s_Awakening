@@ -15,14 +15,12 @@ protected:
 public:
 	_tchar* Get_ObjName() { return m_pObjName; }
 	_tchar* Get_ObjId() { return m_pObjId; }
-	/*_tchar* Get_ObjPrototypeId() { return m_pObjPrototypeId; }
-	_tchar* Get_ModelPrototypeId() { return m_pModelPrototypeId; }
-	_tchar* Get_LayerTag() { return m_pLayerTag; }*/
+	_tchar* Get_LayerId() { return m_pLayerId; }
+	_float3 Get_Position() { return m_vPosition; }
 	_float Get_CamDistance() const { return m_fCamDistance; }
 
-	/*void Set_ObjPrototypeId(const _tchar* pObjPrototypeId) { wcscpy_s(m_pObjPrototypeId, MAX_PATH, pObjPrototypeId); }
-	void Set_LayerTag(const _tchar* pLayerTag) { wcscpy_s(m_pLayerTag, MAX_PATH, pLayerTag); }*/
-
+	void Set_Position(_float3 vPosition) { m_vPosition = vPosition; }
+	
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -44,12 +42,11 @@ protected:
 
 	_tchar m_pObjName[MAX_PATH];			// "Fiona"
 	_tchar m_pObjId[MAX_PATH];				// "Fiona_1"
-	//_tchar m_pObjPrototypeId[MAX_PATH];		// "Prototype_GameObject_Player"
-	//_tchar m_pModelPrototypeId[MAX_PATH];	// "Prototype_Component_Model_Fiona"
-	//_tchar m_pLayerTag[MAX_PATH];			// "Layer_Player"
+	_tchar m_pLayerId[MAX_PATH];			// "Layer_Player"
 
 	map<const _tchar*, class CComponent*> m_Components;
 
+	_float3 m_vPosition;
 	float m_fCamDistance = 0.f;
 
 public:	

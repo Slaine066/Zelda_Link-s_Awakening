@@ -13,6 +13,7 @@ CGameInstance::CGameInstance()
 	, m_pLight_Manager(CLight_Manager::Get_Instance())
 	, m_pFont_Manager(CFont_Manager::Get_Instance())
 	, m_pPicking(CPicking::Get_Instance())
+	, m_pKeys_Manager(CKeysManager::Get_Instance())
 {	
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pLight_Manager);
@@ -24,6 +25,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pGraphic_Device); 
 	Safe_AddRef(m_pPicking);
+	Safe_AddRef(m_pKeys_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
@@ -318,6 +320,30 @@ HRESULT CGameInstance::Render_Font(const _tchar * pFontTag, const _tchar * pText
 	return m_pFont_Manager->Render_Font(pFontTag, pText, vPos, vColor);
 }
 
+_bool CGameInstance::Key_Pressing(int _Key)
+{
+	if (nullptr == m_pKeys_Manager)
+		return false;
+
+	return m_pKeys_Manager->Key_Pressing(_Key);
+}
+
+_bool CGameInstance::Key_Up(int _Key)
+{
+	if (nullptr == m_pKeys_Manager)
+		return false;
+
+	return m_pKeys_Manager->Key_Up(_Key);
+}
+
+_bool CGameInstance::Key_Down(int _Key)
+{
+	if (nullptr == m_pKeys_Manager)
+		return false;
+
+	return m_pKeys_Manager->Key_Down(_Key);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::Get_Instance()->Destroy_Instance();
@@ -331,10 +357,12 @@ void CGameInstance::Release_Engine()
 	CFont_Manager::Get_Instance()->Destroy_Instance();
 	CGraphic_Device::Get_Instance()->Destroy_Instance();
 	CPicking::Get_Instance()->Destroy_Instance();
+	CKeysManager::Get_Instance()->Destroy_Instance();
 }
 
 void CGameInstance::Free()
-{	
+{
+	Safe_Release(m_pKeys_Manager);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pLight_Manager);

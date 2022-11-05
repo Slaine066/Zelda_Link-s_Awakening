@@ -47,7 +47,7 @@ _uint CMonster::Tick(_float fTimeDelta)
 	else
 		m_pModelCom->Set_CurrentAnimIndex(3);
 
-	m_pModelCom->Play_Animation(fTimeDelta);
+	//m_pModelCom->Play_Animation(fTimeDelta);
 
 	return OBJ_NOEVENT;
 }

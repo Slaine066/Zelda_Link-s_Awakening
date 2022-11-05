@@ -19,7 +19,7 @@ HRESULT CLayer::Initialize()
 	return S_OK;
 }
 
-HRESULT CLayer::Add_GameObject(const _tchar* pObjName, CGameObject * pGameObject)
+HRESULT CLayer::Add_GameObject(const _tchar* pObjName, CGameObject * pGameObject, const _tchar* pLayerTag)
 {
 	if (nullptr == pGameObject)
 		return E_FAIL;
@@ -29,6 +29,7 @@ HRESULT CLayer::Add_GameObject(const _tchar* pObjName, CGameObject * pGameObject
 	{
 		wcscpy_s(pGameObject->Get_ObjName(), MAX_PATH, pObjName);
 		wcscpy_s(pGameObject->Get_ObjId(), MAX_PATH, pObjName);
+		wcscpy_s(pGameObject->Get_LayerId(), MAX_PATH, pLayerTag);
 
 		_uint iCounter = 0;
 		for (auto& pObj : m_GameObjects)

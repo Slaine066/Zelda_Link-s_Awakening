@@ -52,13 +52,25 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
+	void Move_Straight(_float fTimeDelta);
+	void Move_Backward(_float fTimeDelta);
+	void Move_Left(_float fTimeDelta);
+	void Move_Right(_float fTimeDelta);
+
 	void Go_Straight(_float fTimeDelta);
 	void Go_Backward(_float fTimeDelta);
 	void Go_Left(_float fTimeDelta);
-	void Go_Right(_float fTimeDelta);	
+	void Go_Right(_float fTimeDelta);
+	void Go_Straight_Left(_float fTimeDelta);
+	void Go_Straight_Right(_float fTimeDelta);
+	void Go_Backward_Left(_float fTimeDelta);
+	void Go_Backward_Right(_float fTimeDelta);
+
 	void Turn(_fvector vAxis, _float fTimeDelta);
 	void Set_Rotation(_float3 fAngle);
+	
 	void LookAt(_fvector vAt);
+	void Follow_Target(_fvector fTargetPosition, _fvector fDistance);
 
 private:			
 	TRANSFORMDESC m_TransformDesc;

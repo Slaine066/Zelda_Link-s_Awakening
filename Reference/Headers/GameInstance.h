@@ -10,6 +10,7 @@
 #include "Light_Manager.h"
 #include "Font_Manager.h"
 #include "Picking.h"
+#include "KeysManager.h"
 
 BEGIN(Engine)
 class ENGINE_DLL CGameInstance final : public CBase
@@ -48,6 +49,7 @@ public: /* For.Level_Manager */
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(const _tchar* pObjName, const _tchar* pPrototypeTag, _uint iLevelIndex, const _tchar* pLayerTag, void* pArg = nullptr);
+	class CGameObject* Find_Object(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex = 0);
 	class CComponent* Get_Component(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iIndex = 0);
 	CObject_Manager::LAYERS Get_Layers(_uint iLevelIndex);
 	void Delete_GameObject(CGameObject* pGameObj, _uint iLevelIndex, const _tchar* pLayerTag);
@@ -56,7 +58,6 @@ public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
 	class CComponent* Find_Component_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag);
-	class CGameObject* Find_Object(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex = 0);
 
 public: /* For.PipeLine */
 	void Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix);
@@ -72,6 +73,11 @@ public: /* For.Light_Manager */
 public: /* For.Font_Manager */
 	HRESULT Add_Fonts(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag, const _tchar* pFontFilePath);
 	HRESULT Render_Font(const _tchar* pFontTag, const _tchar* pText, _fvector vPos, _fvector vColor);
+
+public: /* For.KeysManager */
+	_bool Key_Down(int _Key);
+	_bool Key_Pressing(int _Key);
+	_bool Key_Up(int _Key);
 	
 public:
 	static void Release_Engine();
@@ -87,6 +93,7 @@ private:
 	CLight_Manager*					m_pLight_Manager = nullptr;
 	CFont_Manager*					m_pFont_Manager = nullptr;
 	CPicking*						m_pPicking = nullptr;
+	CKeysManager*					m_pKeys_Manager = nullptr;
 
 public:
 	virtual void Free() override;

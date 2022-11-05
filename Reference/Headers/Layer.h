@@ -19,7 +19,7 @@ public:
 
 public:
 	HRESULT Initialize();
-	HRESULT Add_GameObject(const _tchar* pObjName, class CGameObject* pGameObject);
+	HRESULT Add_GameObject(const _tchar* pObjName, class CGameObject* pGameObject, const _tchar* pLayerTag);
 	void Tick(_float fTimeDelta);
 	void Late_Tick(_float fTimeDelta);
 

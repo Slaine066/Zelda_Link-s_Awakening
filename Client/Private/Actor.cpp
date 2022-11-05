@@ -28,6 +28,10 @@ HRESULT CActor::Initialize(void * pArg)
 
 _uint CActor::Tick(_float fTimeDelta)
 {
+	_float4 vObjPosition;
+	XMStoreFloat4(&vObjPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+	Set_Position(_float3(vObjPosition.x, vObjPosition.y, vObjPosition.y));
+
 	return OBJ_NOEVENT;
 }
 

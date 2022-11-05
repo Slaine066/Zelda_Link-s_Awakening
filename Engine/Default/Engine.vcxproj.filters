@@ -100,6 +100,9 @@
     <ClCompile Include="..\Private\Animation.cpp">
       <Filter>01.Utility\03.Components\06.Model\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\KeysManager.cpp">
+      <Filter>01.Utility\09.KeysManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -213,6 +216,9 @@
     <ClInclude Include="..\Public\Animation.h">
       <Filter>01.Utility\03.Components\06.Model\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\KeysManager.h">
+      <Filter>01.Utility\09.KeysManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -316,6 +322,9 @@
     </Filter>
     <Filter Include="01.Utility\03.Components\06.Model\Animation\Channel">
       <UniqueIdentifier>{318abae4-55cf-41e5-9aa4-29392b6c6f14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\09.KeysManager">
+      <UniqueIdentifier>{16578ea5-6719-43c1-8eeb-d3de40b34f73}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

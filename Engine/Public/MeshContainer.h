@@ -13,6 +13,7 @@ private:
 	virtual ~CMeshContainer() = default;
 
 public:
+	char* Get_MeshName() { return m_szName; }
 	_uint Get_MaterialIndex() const { return m_iMaterialIndex; }
 	void Get_BoneMatrices(_float4x4* pBoneMatrices, _fmatrix PivotMatrix);
 

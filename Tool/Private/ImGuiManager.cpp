@@ -875,7 +875,6 @@ void CImGuiManager::Create_Object()
 	if (m_sSelectedObject.empty())
 		return;
 
-	// Get FileName without extension (Ex: "Fiona.fbx" > "Fiona")
 	list<CMesh::MODELDESC>::iterator iter = find_if(m_lObjects.begin(), m_lObjects.end(), [&](CMesh::MODELDESC tDesc) {
 		wstring wsFileName = wstring(tDesc.wcFileName);
 		string sFileName = string(wsFileName.begin(), wsFileName.end());
@@ -888,7 +887,6 @@ void CImGuiManager::Create_Object()
 		// LayerId (Ex: "Layer_Player")
 		wstring wsLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
 		unordered_set<wstring>::iterator layerIter = m_vLayersTemp.find(wsLayer);
-		wcscpy_s(iter->wcLayerTag, MAX_PATH, layerIter->c_str());
 
 		// FileName (Ex: "Fiona.fbx" > "Fiona")
 		_tchar wcFileName[MAX_PATH];
@@ -908,7 +906,7 @@ void CImGuiManager::Create_Object()
 		if (pComponent)
 		{
 			// If Yes: Clone
-			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, iter->wcLayerTag, &(*iter))))
+			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, layerIter->c_str(), &(*iter))))
 				return; 
 		}
 		else
@@ -930,7 +928,7 @@ void CImGuiManager::Create_Object()
 				return;
 
 			// Clone GameObject
-			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, iter->wcLayerTag, &(*iter))))
+			if (FAILED(pGameInstance->Add_GameObject(wcFileName, TEXT("Prototype_GameObject_Mesh"), LEVEL_TOOL, layerIter->c_str(), &(*iter))))
 				return;
 		}
 
@@ -982,8 +980,7 @@ _bool CImGuiManager::SaveData()
 			memcpy(&tNewModelDesc, &(*iter), sizeof(CMesh::MODELDESC));
 
 			// Add Layer to New MODELDESC
-			wstring wsLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
-			wcscpy_s(tNewModelDesc.wcLayerTag, MAX_PATH, wsLayer.c_str());
+			wcscpy_s(tNewModelDesc.wcLayerTag, MAX_PATH, pObject->Get_LayerId());
 
 			// Add WorldMatrix of the Object to New MODELDESC
 			_float4x4 mWorldMatrix;

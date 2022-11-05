@@ -16,11 +16,10 @@ HRESULT CAnimation::Initialize(CModel* pModel, aiAnimation * pAIAnimation)
 
 	for (_uint i = 0; i < m_iNumChannels; ++i)
 	{
-		aiNodeAnim*		pAIChannel = pAIAnimation->mChannels[i];
+		aiNodeAnim* pAIChannel = pAIAnimation->mChannels[i];
+		CChannel* pChannel = CChannel::Create(pModel, pAIAnimation->mChannels[i]);
 
-		CChannel*		pChannel = CChannel::Create(pModel, pAIAnimation->mChannels[i]);
-
-		if (nullptr == pChannel)
+		if (!pChannel)
 			return E_FAIL;
 
 		m_Channels.push_back(pChannel);
@@ -29,31 +28,34 @@ HRESULT CAnimation::Initialize(CModel* pModel, aiAnimation * pAIAnimation)
 	return S_OK;
 }
 
-void CAnimation::Invalidate_TransformationMatrix(_float fTimeDelta)
+void CAnimation::Animate(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoop)
 {
-	/* 현재 재생중인 시간. */
 	m_fCurrentTime += m_fTickPerSecond * fTimeDelta;
 
+	// If the Animation is finished 
 	if (m_fCurrentTime >= m_fDuration)
 	{
 		m_fCurrentTime = 0.f;
-
-		m_isFinished = true;
-	
+		bIsFinished = true;
 	}
 
 	for (auto& pChannel : m_Channels)
 	{
-		if (true == m_isFinished && true == m_isLoop)		
-			pChannel->Reset();
-
+		// If the Animation is finished and it's a Loop Animation > Set CurrentAnimationIndex back to 0.
+		if (bIsFinished)
+		{
+			if (bIsLoop)
+				pChannel->Reset();
+			else
+				return;
+		}
+			
 		pChannel->Invalidate_TransformationMatrix(m_fCurrentTime);
 	}
 
-	if (true == m_isFinished && true == m_isLoop)
-		m_isFinished = false;
-
-
+	// If the Animation is finished and it's a Loop Animation > Toggle back m_isFinished to true (since the Animation needs to start again).
+	if (bIsFinished && bIsLoop)
+		bIsFinished = false;
 }
 
 CAnimation * CAnimation::Create( CModel* pModel, aiAnimation * pAIAnimation)

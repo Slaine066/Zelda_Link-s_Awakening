@@ -68,12 +68,12 @@ HRESULT CObject_Manager::Add_GameObject(const _tchar* pObjName, const _tchar * p
 	if (nullptr == pLayer)
 	{
 		pLayer = CLayer::Create();
-		pLayer->Add_GameObject(pObjName, pGameObject);
+		pLayer->Add_GameObject(pObjName, pGameObject, pLayerTag);
 
 		m_pLayers[iLevelIndex].emplace(pLayerTag, pLayer);
 	}
 	else
-		pLayer->Add_GameObject(pObjName, pGameObject);
+		pLayer->Add_GameObject(pObjName, pGameObject, pLayerTag);
 
 	return S_OK;
 }

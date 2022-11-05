@@ -36,7 +36,8 @@ _uint CMesh::Tick(_float fTimeDelta)
 	if (m_tModelDesc.eModelType == CModel::TYPE::TYPE_ANIM)
 	{
 		m_pModelCom->Set_CurrentAnimIndex(0);
-		m_pModelCom->Play_Animation(fTimeDelta);
+		_bool isFinished = false;
+		m_pModelCom->Play_Animation(fTimeDelta, isFinished);
 	}
 
 	return OBJ_NOEVENT;

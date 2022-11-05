@@ -23,31 +23,26 @@ HRESULT CPlayer::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pModelCom->Set_CurrentAnimIndex(3);
+	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, .4f);
+	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, .4f);
+	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, .4f);
+
+	m_pModelCom->Set_CurrentAnimIndex(ANIM_IDLE);
 
 	return S_OK;
 }
 
 _uint CPlayer::Tick(_float fTimeDelta)
 {
-	if (GetKeyState(VK_LEFT) & 0x8000)
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
+	__super::Tick(fTimeDelta);
 
-	if (GetKeyState(VK_RIGHT) & 0x8000)
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
+	Handle_Input();				// Change STATE based on Input and CurrentState.
+	Execute_State(fTimeDelta);	// Execute Action based on STATE.
 
-	if (GetKeyState(VK_DOWN) & 0x8000)
-		m_pTransformCom->Go_Backward(fTimeDelta);
+	m_bIsAnimationFinished = false;
+	m_pModelCom->Play_Animation(fTimeDelta, m_bIsAnimationFinished, Is_AnimationLoop((ANIMID)m_pModelCom->Get_CurrentAnimIndex()));
 
-	if (GetKeyState(VK_UP) & 0x8000)
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-		m_pModelCom->Set_CurrentAnimIndex(0);
-	}
-	else
-		m_pModelCom->Set_CurrentAnimIndex(0);
-
-	m_pModelCom->Play_Animation(fTimeDelta);
+	Reset_State();				// Change STATE when Animation ends.
 
 	return OBJ_NOEVENT;
 }
@@ -67,6 +62,10 @@ HRESULT CPlayer::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
+		if (i == MESH_SWORD_B || i == MESH_SWORD_B_HANDLE|| i == MESH_SHIELD_B|| i == MESH_SHIELD_B_MIRROR|| i == MESH_MAGIC_ROD ||
+			i == MESH_HOOKSHOT || i == MESH_OCARINA || i == MESH_SHOVEL || i == MESH_FLIPPERS)
+			continue;
+
 		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
@@ -88,7 +87,7 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 	CTransform::TRANSFORMDESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 	TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
-	TransformDesc.fSpeedPerSec = 5.f;
+	TransformDesc.fSpeedPerSec = 1.5f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
 	/* For.Com_Transform */
@@ -125,6 +124,206 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
+}
+
+void CPlayer::Handle_Input()
+{
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+	switch (m_eCurrentState)
+	{
+	case STATE_IDLE:
+		if (pGameInstance->Key_Down('Z'))
+		{
+			m_eCurrentState = STATE_ATTACKING;
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_SLASH);
+		}
+		else if (Move())
+		{
+			m_eCurrentState = STATE_MOVING;
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_RUN);
+		}
+		else
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_IDLE);
+		break;
+	case STATE_MOVING:
+		if (pGameInstance->Key_Down('Z'))
+		{
+			m_eCurrentState = STATE_ATTACKING;
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_SLASH);
+		}
+		else if (Move())
+		{
+			m_eCurrentState = STATE_MOVING;
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_RUN);
+		}
+		else
+		{
+			m_eCurrentState = STATE_IDLE;
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_IDLE);
+		}
+		break;
+	case STATE_ATTACKING:
+		break;
+	}
+}
+
+void CPlayer::Execute_State(_float fTimeDelta)
+{
+	switch (m_eCurrentState)
+	{
+	case STATE_MOVING:
+		switch (m_eCurrentDir)
+		{
+		case DIR_STRAIGHT_LEFT:
+			m_pTransformCom->Go_Straight_Left(fTimeDelta);
+			break;
+		case DIR_STRAIGHT_RIGHT:
+			m_pTransformCom->Go_Straight_Right(fTimeDelta);
+			break;
+		case DIR_BACKWARD_LEFT:
+			m_pTransformCom->Go_Backward_Left(fTimeDelta);
+			break;
+		case DIR_BACKWARD_RIGHT:
+			m_pTransformCom->Go_Backward_Right(fTimeDelta);
+			break;
+		case DIR_STRAIGHT:
+			m_pTransformCom->Go_Straight(fTimeDelta);
+			break;
+		case DIR_BACKWARD:
+			m_pTransformCom->Go_Backward(fTimeDelta);
+			break;
+		case DIR_LEFT:
+			m_pTransformCom->Go_Left(fTimeDelta);
+			break;
+		case DIR_RIGHT:
+			m_pTransformCom->Go_Right(fTimeDelta);
+			break;
+		}
+	}
+}
+
+void CPlayer::Reset_State()
+{
+	if (m_bIsAnimationFinished)
+	{
+		switch ((ANIMID)m_pModelCom->Get_CurrentAnimIndex())
+		{
+		case ANIM_SLASH:
+			m_eCurrentState = STATE_IDLE;
+		}
+	}
+}
+
+_bool CPlayer::Is_AnimationLoop(ANIMID eAnimId)
+{
+	switch (eAnimId)
+	{
+	case ANIM_CARRY:
+	case ANIM_IDLE:
+	case ANIM_IDLE_BARE:
+	case ANIM_IDLE_CARRY:
+	case ANIM_ITEM_GET_LOOP:
+	case ANIM_LADDER_DOWN:
+	case ANIM_LADDER_UP:
+	case ANIM_LADDER_WAIT:
+	case ANIM_RUN:
+	case ANIM_RUN_BARE:
+	case ANIM_SHIELD_HOLD_BACK:
+	case ANIM_SHIELD_HOLD_FRONT:
+	case ANIM_SHIELD_HOLD_LEFT:
+	case ANIM_SHIELD_HOLD_RIGHT:
+	case ANIM_SHIELD_LOOP:
+	case ANIM_SLASH_HOLD_BACK:
+	case ANIM_SLASH_HOLD_FRONT:
+	case ANIM_SLASH_HOLD_LEFT:
+	case ANIM_SLASH_HOLD_LOOP:
+	case ANIM_SLASH_HOLD_RIGHT:
+	case ANIM_TALK:
+	case ANIM_WALK:
+	case ANIM_WALK_BARE:
+		return true;
+	case ANIM_BOW_END:
+	case ANIM_BOW_START:
+	case ANIM_CARRY_FAIL:
+	case ANIM_DEATH:
+	case ANIM_DAMAGE_AIR:
+	case ANIM_DAMAGE_BACK:
+	case ANIM_DAMAGE_FRONT:
+	case ANIM_FALL_FROM_TOP:
+	case ANIM_FALL_HOLE:
+	case ANIM_ITEM_CARRY:
+	case ANIM_ITEM_GET_END:
+	case ANIM_ITEM_GET_START:
+	case ANIM_ITEM_PUT:
+	case ANIM_JUMP:
+	case ANIM_JUMP_SLASH:
+	case ANIM_KEY_OPEN:
+	case ANIM_LADDER_DOWN_START:
+	case ANIM_LADDER_UP_END:
+	case ANIM_LADDER_UP_START:
+	case ANIM_LAND:
+	case ANIM_REVODOOR_IN:
+	case ANIM_ROD_END:
+	case ANIM_ROD_START:
+	case ANIM_SHIELD_END:
+	case ANIM_SHIELD_START:
+	case ANIM_SLASH:
+	case ANIM_SLASH_HOLD_END:
+	case ANIM_SLASH_HOLD_START:
+	case ANIM_THROW:
+	case ANIM_WARP_END:
+	case ANIM_WARP_START:
+		return false;
+	}
+}
+
+_bool CPlayer::Move()
+{
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+	if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
+	{
+		m_eCurrentDir = DIR_STRAIGHT_LEFT;
+		return true;
+	}
+	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))
+	{
+		m_eCurrentDir = DIR_STRAIGHT_RIGHT;
+		return true;
+	}
+	else if (pGameInstance->Key_Pressing(VK_DOWN) && pGameInstance->Key_Pressing(VK_LEFT))
+	{
+		m_eCurrentDir = DIR_BACKWARD_LEFT;
+		return true;
+	}
+	else if (pGameInstance->Key_Pressing(VK_DOWN) && pGameInstance->Key_Pressing(VK_RIGHT))
+	{
+		m_eCurrentDir = DIR_BACKWARD_RIGHT;
+		return true;
+	}
+	else if (pGameInstance->Key_Pressing(VK_LEFT))
+	{
+		m_eCurrentDir = DIR_LEFT;
+		return true;
+	}
+	else if (pGameInstance->Key_Pressing(VK_RIGHT))
+	{
+		m_eCurrentDir = DIR_RIGHT;
+		return true;
+	}
+	else if (pGameInstance->Key_Pressing(VK_DOWN))
+	{
+		m_eCurrentDir = DIR_BACKWARD;
+		return true;
+	}
+	else if (pGameInstance->Key_Pressing(VK_UP))
+	{
+		m_eCurrentDir = DIR_STRAIGHT;
+		return true;
+	}
+
+	return false;
 }
 
 CPlayer* CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
