@@ -17,17 +17,19 @@ public:
 	virtual ~CLevel_Manager() = default;
 
 public:
+	_uint Get_CurrentLevelIndex() { return m_iLevelIndex; }
+
+public:
 	HRESULT Open_Level(unsigned int iLevelIndex, class CLevel* pNewLevel);
 	void Tick(_float fTimeDelta);
 	void Late_Tick(_float fTimeDelta);
 	void Render();
 
 private:
-	class CLevel*				m_pCurrentLevel = nullptr;
-	_uint						m_iLevelIndex;
+	class CLevel* m_pCurrentLevel = nullptr;
+	_uint m_iLevelIndex;
+
 public:
 	virtual void Free() override;
 };
-
 END
-

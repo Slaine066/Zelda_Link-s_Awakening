@@ -32,7 +32,7 @@ void CAnimation::Animate(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoo
 {
 	m_fCurrentTime += m_fTickPerSecond * fTimeDelta;
 
-	// If the Animation is finished 
+	// If the Animation is finished
 	if (m_fCurrentTime >= m_fDuration)
 	{
 		m_fCurrentTime = 0.f;
@@ -41,15 +41,16 @@ void CAnimation::Animate(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoo
 
 	for (auto& pChannel : m_Channels)
 	{
-		// If the Animation is finished and it's a Loop Animation > Set CurrentAnimationIndex back to 0.
+		// If the Animation is finished > Set CurrentAnimationIndex back to 0.
 		if (bIsFinished)
 		{
-			if (bIsLoop)
-				pChannel->Reset();
-			else
-				return;
-		}
+			pChannel->Reset();
 			
+			// In case of Not-Loop Animation "Invalidate_TransformationMatrix" since we don't want to start again.
+			if (!bIsLoop)
+				continue;
+		}
+
 		pChannel->Invalidate_TransformationMatrix(m_fCurrentTime);
 	}
 

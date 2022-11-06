@@ -30,9 +30,6 @@ private:
 	_uint m_iNumChannels = 0;
 	vector<class CChannel*> m_Channels; /* Channel <-> Bone */
 
-	/*_bool m_isFinished = false;
-	_bool m_isLoop = true;*/
-
 public:
 	static CAnimation* Create(class CModel* pModel, aiAnimation* pAIAnimation);
 	virtual void Free() override;

@@ -1,4 +1,4 @@
-#include "..\Public\Level_Manager.h"
+#include "Level_Manager.h"
 #include "Level.h"
 #include "GameInstance.h"
 
@@ -12,7 +12,7 @@ HRESULT CLevel_Manager::Open_Level(unsigned int iLevelIndex, CLevel * pNewLevel)
 {
 	if (nullptr != m_pCurrentLevel)
 	{
-		CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 		Safe_AddRef(pGameInstance);
 
 		pGameInstance->Clear(m_iLevelIndex);
@@ -31,7 +31,7 @@ HRESULT CLevel_Manager::Open_Level(unsigned int iLevelIndex, CLevel * pNewLevel)
 
 void CLevel_Manager::Tick(_float fTimeDelta)
 {
-	if (nullptr == m_pCurrentLevel)
+	if (m_pCurrentLevel == nullptr)
 		return;
 
 	m_pCurrentLevel->Tick(fTimeDelta);
@@ -39,14 +39,17 @@ void CLevel_Manager::Tick(_float fTimeDelta)
 
 void CLevel_Manager::Late_Tick(_float fTimeDelta)
 {
-	if (nullptr == m_pCurrentLevel)
+	if (m_pCurrentLevel == nullptr)
 		return;
 
 	m_pCurrentLevel->Late_Tick(fTimeDelta);
+}
+
+void CLevel_Manager::Render()
+{
 }
 
 void CLevel_Manager::Free()
 {
 	Safe_Release(m_pCurrentLevel);
 }
-

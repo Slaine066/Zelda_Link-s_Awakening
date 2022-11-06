@@ -1,4 +1,4 @@
-#include "..\Public\GameInstance.h"
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -177,6 +177,14 @@ HRESULT CGameInstance::Open_Level(unsigned int iLevelIndex, CLevel * pNewLevel)
 		return E_FAIL;
 
 	return m_pLevel_Manager->Open_Level(iLevelIndex, pNewLevel);
+}
+
+_uint CGameInstance::Get_CurrentLevelIndex()
+{
+	if (nullptr == m_pLevel_Manager)
+		return E_FAIL;
+
+	return m_pLevel_Manager->Get_CurrentLevelIndex();
 }
 
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)

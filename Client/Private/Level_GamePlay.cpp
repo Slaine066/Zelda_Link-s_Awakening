@@ -56,25 +56,38 @@ HRESULT CLevel_GamePlay::Load_From_File()
 	if (hFile == 0)
 		return E_FAIL;
 
+	// First read to get Objects count, so we can resize the vector.
 	_ulong dwByte = 0;
+ 	_uint iCounter = 0;
 
 	CActor::MODELDESC tModelDesc;
 	ZeroMemory(&tModelDesc, sizeof(CActor::MODELDESC));
-
 	while (true)
 	{
-		ReadFile(hFile, &tModelDesc, sizeof(CActor::MODELDESC), &dwByte, nullptr);		
-
+		ReadFile(hFile, &tModelDesc, sizeof(CActor::MODELDESC), &dwByte, nullptr);
 		if (!dwByte)
 			break;
 
-		if (wcsstr(tModelDesc.wcObjName, TEXT("Field")))
-			pGameInstance->Add_GameObject(tModelDesc.wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_GAMEPLAY, tModelDesc.wcLayerTag, &tModelDesc);
-		else if (!wcscmp(tModelDesc.wcObjName, TEXT("Link")))
-			pGameInstance->Add_GameObject(tModelDesc.wcObjName, TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, tModelDesc.wcLayerTag, &tModelDesc);
+		iCounter++;
+	}
+	CloseHandle(hFile);
+
+	hFile = CreateFile(TEXT("../../Data/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	if (hFile == 0)
+		return E_FAIL;
+
+	m_vInstancedObjects.resize(iCounter);
+
+	for (_uint i = 0; i < iCounter; i++)
+	{
+		ReadFile(hFile, &m_vInstancedObjects[i], sizeof(CActor::MODELDESC), nullptr, nullptr);
+
+		if (wcsstr(m_vInstancedObjects[i].wcObjName, TEXT("Field")))
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_GAMEPLAY, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Link")))
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 	}
 
-	CloseHandle(hFile);
 	Safe_Release(pGameInstance);
 
 	return S_OK;
