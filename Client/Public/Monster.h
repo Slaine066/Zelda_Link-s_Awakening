@@ -11,9 +11,9 @@ class CModel;
 END
 
 BEGIN(Client)
-class CMonster final : public CActor
+class CMonster abstract : public CActor
 {
-private:
+protected:
 	CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMonster(const CMonster& rhs);
 	virtual ~CMonster() = default;
@@ -25,13 +25,18 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-private:
-	virtual HRESULT Ready_Components(void* pArg) override;
-	virtual HRESULT SetUp_ShaderResources() override;
+protected:
+	virtual void Execute_State(_float fTimeDelta) = 0;
+	virtual void Reset_State() = 0;
+
+	virtual _bool Is_AnimationLoop(_uint eAnimId) = 0;
+
+protected:
+	DIRID m_eCurrentDir = DIR_STRAIGHT;
+
+	_bool m_bIsAnimationFinished = false;
 
 public:
-	static CMonster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg = nullptr);
 	virtual void Free() override;
 };
 END

@@ -3,8 +3,9 @@
 #include "Loader.h"
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
-#include "Player.h"
 #include "StaticObject.h"
+#include "Player.h"
+#include "MoriblinSword.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -112,10 +113,15 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 #pragma region Loading_Models
 	lstrcpy(m_szLoadingText, TEXT("Loading Models.."));
 
-	/*For.Prototype_Component_Model_Link*/
 	_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+	/*For.Prototype_Component_Model_Link*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Link"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Player_Link/Link.fbx", PivotMatrix))))
 	return E_FAIL;
+
+	/*For.Prototype_Component_Model_MoriblinSword*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_MoriblinSword"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_MoriblinSword/MoriblinSword.fbx", PivotMatrix))))
+		return E_FAIL;
 
 	/*For.Prototype_Component_Model_Field_** */
 	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_2A"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_2A.fbx"))))
@@ -330,14 +336,18 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/*For.Prototype_GameObject_Player*/
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	/*For.Prototype_GameObject_StaticObject*/
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/*For.Prototype_GameObject_Player*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/*For.Prototype_GameObject_MoriblinSword*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSword"), CMoriblinSword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
 	// >
 	// .. Add Above ..
 #pragma endregion Loading_Objects

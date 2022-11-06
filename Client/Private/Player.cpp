@@ -15,6 +15,9 @@ CPlayer::CPlayer(const CPlayer & rhs)
 
 HRESULT CPlayer::Initialize_Prototype()
 {
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -40,7 +43,7 @@ _uint CPlayer::Tick(_float fTimeDelta)
 	Execute_State(fTimeDelta);	// Execute Action based on STATE.
 
 	m_bIsAnimationFinished = false;
-	m_pModelCom->Play_Animation(fTimeDelta, m_bIsAnimationFinished, Is_AnimationLoop((ANIMID)m_pModelCom->Get_CurrentAnimIndex()));
+	m_pModelCom->Play_Animation(fTimeDelta, m_bIsAnimationFinished, Is_AnimationLoop(m_pModelCom->Get_CurrentAnimIndex()));
 
 	Reset_State();				// Change STATE when Animation ends.
 
@@ -49,7 +52,7 @@ _uint CPlayer::Tick(_float fTimeDelta)
 
 void CPlayer::Late_Tick(_float fTimeDelta)
 {
-	if (nullptr != m_pRendererCom)
+	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
@@ -107,17 +110,12 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 
 HRESULT CPlayer::SetUp_ShaderResources()
 {
-	if (m_pShaderCom == nullptr)
-		return E_FAIL;
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
@@ -215,9 +213,9 @@ void CPlayer::Reset_State()
 	}
 }
 
-_bool CPlayer::Is_AnimationLoop(ANIMID eAnimId)
+_bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 {
-	switch (eAnimId)
+	switch ((ANIMID)eAnimId)
 	{
 	case ANIM_CARRY:
 	case ANIM_IDLE:
@@ -332,7 +330,7 @@ CPlayer* CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		ERR_MSG(TEXT("Failed to Created : CPlayer"));
+		ERR_MSG(TEXT("Failed to Create: CPlayer"));
 		Safe_Release(pInstance);
 	}
 
@@ -345,7 +343,7 @@ CGameObject* CPlayer::Clone(void * pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		ERR_MSG(TEXT("Failed to Cloned : CPlayer"));
+		ERR_MSG(TEXT("Failed to Clone: CPlayer"));
 		Safe_Release(pInstance);
 	}
 

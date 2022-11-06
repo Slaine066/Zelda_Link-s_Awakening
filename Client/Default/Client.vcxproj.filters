@@ -46,6 +46,33 @@
     <Filter Include="02.GameObjects\00.Actor\02.StaticObject">
       <UniqueIdentifier>{d5de4b50-4b93-48e2-bcb8-755b793ba4ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\MoriblinSword">
+      <UniqueIdentifier>{266eea3a-ef8b-4940-89a3-cb1345919167}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\Bossblin">
+      <UniqueIdentifier>{9669f787-9392-4cfd-9fb8-3e60cc22f49e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\Heiho">
+      <UniqueIdentifier>{c271b9b0-95bb-47b0-acc0-5c7340a90ea8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\Hinox">
+      <UniqueIdentifier>{381732b2-b6b0-4ed9-91d1-b007734da74d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\Keese">
+      <UniqueIdentifier>{e7b470e7-4836-4c20-8bef-f0904e573189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\MoriblinSpear">
+      <UniqueIdentifier>{057322a6-7413-438e-8b52-4b7e8415660a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\Stalfos">
+      <UniqueIdentifier>{dfdd52c7-c11e-41e2-8b22-eebec33e414d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\StalfosKnightSword">
+      <UniqueIdentifier>{e671b814-9715-4c0a-a409-b1bf722dd4b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\Togezo">
+      <UniqueIdentifier>{e2d4cb0d-a9ea-47c1-aa96-5b93366e3e7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -102,6 +129,9 @@
     <ClInclude Include="..\public\Actor.h">
       <Filter>02.GameObjects\00.Actor</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MoriblinSword.h">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -142,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Actor.cpp">
       <Filter>02.GameObjects\00.Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSword.cpp">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

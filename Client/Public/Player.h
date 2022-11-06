@@ -3,13 +3,6 @@
 #include "Client_Defines.h"
 #include "Actor.h"
 
-BEGIN(Engine)
-class CShader;
-class CRenderer;
-class CTransform;
-class CModel;
-END
-
 /* 
 Player Inputs
 	ก่:	Go Straight		(ก่ on Switch)
@@ -110,14 +103,16 @@ private:
 		ANIM_WALK,
 		ANIM_WALK_BARE,
 		ANIM_WARP_END,
-		ANIM_WARP_START
+		ANIM_WARP_START,
+		ANIM_END
 	};
 
 	enum STATEID
 	{
 		STATE_IDLE,
 		STATE_MOVING,
-		STATE_ATTACKING
+		STATE_ATTACKING,
+		STATE_END
 	};
 
 private:
@@ -143,7 +138,7 @@ private:
 
 	_bool Move();  // Returns "true" if any of the moving Inputs are pressed, "false" if not.
 
-	_bool Is_AnimationLoop(ANIMID eAnimId);
+	_bool Is_AnimationLoop(_uint eAnimId);
 
 private:
 	STATEID m_eCurrentState = STATE_IDLE;

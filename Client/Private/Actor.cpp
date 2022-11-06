@@ -41,7 +41,7 @@ void CActor::Late_Tick(_float fTimeDelta)
 
 HRESULT CActor::Render()
 {
-	if (m_pShaderCom == nullptr || m_pModelCom == nullptr)
+	if (!m_pShaderCom || !m_pModelCom)
 		return E_FAIL;
 
 	if (FAILED(SetUp_ShaderResources()))

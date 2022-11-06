@@ -17,17 +17,14 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Load_From_File()))
 		return E_FAIL;
 
-	/*if (FAILED(Ready_Layer_UI()))
-		return E_FAIL;*/
-
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	/*if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
-		return E_FAIL;*/
+	/*if (FAILED(Ready_Layer_UI()))
+	return E_FAIL;*/
 
 	/*if (FAILED(Ready_Layer_Effect()))
 		return E_FAIL;*/
@@ -72,11 +69,12 @@ HRESULT CLevel_GamePlay::Load_From_File()
 	}
 	CloseHandle(hFile);
 
+	m_vInstancedObjects.resize(iCounter);
+
+	// Second read to write in specific vector index (since we now the number of Objects and the vector is correctly resized).
 	hFile = CreateFile(TEXT("../../Data/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (hFile == 0)
 		return E_FAIL;
-
-	m_vInstancedObjects.resize(iCounter);
 
 	for (_uint i = 0; i < iCounter; i++)
 	{
@@ -86,6 +84,8 @@ HRESULT CLevel_GamePlay::Load_From_File()
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_GAMEPLAY, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Link")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSword")))
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSword"), LEVEL_GAMEPLAY, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 	}
 
 	Safe_Release(pGameInstance);
@@ -163,22 +163,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
 	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Dynamic"), TEXT("Prototype_GameObject_Camera_Dynamic"), LEVEL_GAMEPLAY, pLayerTag, &CameraDesc)))
-		return E_FAIL;
-
-	Safe_Release(pGameInstance);
-
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
-{
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	Safe_AddRef(pGameInstance);
-
-	// Model Infos
-	CActor::MODELDESC tModelDesc;
-	XMStoreFloat4x4(&tModelDesc.mWorldMatrix, XMMatrixIdentity());
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Player"), TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, pLayerTag, &tModelDesc)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

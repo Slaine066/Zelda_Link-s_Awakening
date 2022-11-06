@@ -179,6 +179,7 @@
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\public\Monster.h" />
+    <ClInclude Include="..\public\MoriblinSword.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\StaticObject.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
+    <ClCompile Include="..\private\MoriblinSword.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />

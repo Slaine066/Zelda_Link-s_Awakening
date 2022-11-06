@@ -1,48 +1,52 @@
 #include "stdafx.h"
 
-#include "StaticObject.h"
+#include "MoriblinSword.h"
 #include "GameInstance.h"
 
-CStaticObject::CStaticObject(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CActor(pDevice, pContext)
+CMoriblinSword::CMoriblinSword(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CMonster(pDevice, pContext)
 {
 }
 
-CStaticObject::CStaticObject(const CStaticObject & rhs)
-	: CActor(rhs)
+CMoriblinSword::CMoriblinSword(const CMoriblinSword & rhs)
+	: CMonster(rhs)
 {
 }
 
-HRESULT CStaticObject::Initialize_Prototype()
+HRESULT CMoriblinSword::Initialize_Prototype()
 {
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-HRESULT CStaticObject::Initialize(void * pArg)
+HRESULT CMoriblinSword::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_pModelCom->Set_CurrentAnimIndex(ANIM_WAIT);
+
 	return S_OK;
 }
 
-_uint CStaticObject::Tick(_float fTimeDelta)
+_uint CMoriblinSword::Tick(_float fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
+	 
 	return OBJ_NOEVENT;
 }
 
-void CStaticObject::Late_Tick(_float fTimeDelta)
+void CMoriblinSword::Late_Tick(_float fTimeDelta)
 {
-	if (nullptr != m_pRendererCom)
+	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
-HRESULT CStaticObject::Render()
+HRESULT CMoriblinSword::Render()
 {
-	if (m_pShaderCom == nullptr || m_pModelCom == nullptr)
-		return E_FAIL;
-
-	if (FAILED(SetUp_ShaderResources()))
+	if (FAILED(__super::Render()))
 		return E_FAIL;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshContainers();
@@ -56,10 +60,10 @@ HRESULT CStaticObject::Render()
 			return E_FAIL;
 	}
 
-	return S_OK;
+	return E_NOTIMPL;
 }
 
-HRESULT CStaticObject::Ready_Components(void* pArg)
+HRESULT CMoriblinSword::Ready_Components(void * pArg)
 {
 	memcpy(&m_tModelDesc, pArg, sizeof(MODELDESC));
 
@@ -67,18 +71,18 @@ HRESULT CStaticObject::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
 
-	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 	TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
-	TransformDesc.fSpeedPerSec = 0.f;
+	TransformDesc.fSpeedPerSec = 1.5f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
+	/* For.Com_Transform */
 	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_STATIC, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
@@ -88,19 +92,14 @@ HRESULT CStaticObject::Ready_Components(void* pArg)
 	return S_OK;
 }
 
-HRESULT CStaticObject::SetUp_ShaderResources()
+HRESULT CMoriblinSword::SetUp_ShaderResources()
 {
-	if (m_pShaderCom == nullptr)
-		return E_FAIL;
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
@@ -109,33 +108,46 @@ HRESULT CStaticObject::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CStaticObject* CStaticObject::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+void CMoriblinSword::Execute_State(_float fTimeDelta)
 {
-	CStaticObject* pInstance = new CStaticObject(pDevice, pContext);
+}
+
+void CMoriblinSword::Reset_State()
+{
+}
+
+_bool CMoriblinSword::Is_AnimationLoop(_uint eAnimId)
+{
+	return true;
+}
+
+CMoriblinSword * CMoriblinSword::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+{
+	CMoriblinSword* pInstance = new CMoriblinSword(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		ERR_MSG(TEXT("Failed to Created : CStaticObject"));
+		ERR_MSG(TEXT("Failed to Create: CMoriblinSword"));
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CStaticObject::Clone(void * pArg)
+CGameObject * CMoriblinSword::Clone(void * pArg)
 {
-	CStaticObject* pInstance = new CStaticObject(*this);
+	CMoriblinSword* pInstance = new CMoriblinSword(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		ERR_MSG(TEXT("Failed to Cloned : CStaticObject"));
+		ERR_MSG(TEXT("Failed to Clone: CMoriblinSword"));
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CStaticObject::Free()
+void CMoriblinSword::Free()
 {
 	__super::Free();
 }
