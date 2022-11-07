@@ -102,7 +102,7 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxAnimModel"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
@@ -115,7 +115,7 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
 
 	/* For.Com_ColliderOBB*/
-	if (FAILED(__super::Add_Components(TEXT("Com_ColliderOBB"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_pColliderOBBCom, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(TEXT("Com_ColliderOBB"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_pColliderOBBCom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
