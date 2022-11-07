@@ -40,6 +40,8 @@ _uint CMoriblinSword::Tick(_float fTimeDelta)
 
 void CMoriblinSword::Late_Tick(_float fTimeDelta)
 {
+	__super::Late_Tick(fTimeDelta);
+
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
@@ -59,6 +61,8 @@ HRESULT CMoriblinSword::Render()
 		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0)))
 			return E_FAIL;
 	}
+
+	Render_Colliders();
 
 	return E_NOTIMPL;
 }
@@ -87,6 +91,15 @@ HRESULT CMoriblinSword::Ready_Components(void * pArg)
 
 	/* For.Com_Model*/
 	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_GAMEPLAY, m_tModelDesc.wcModelPrototypeId, (CComponent**)&m_pModelCom)))
+		return E_FAIL;
+
+	CCollider::COLLIDERDESC	ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vScale = _float3(1.4f, 1.4f, 1.2f);
+	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
+
+	/* For.Com_ColliderOBB*/
+	if (FAILED(__super::Add_Components(TEXT("Com_ColliderOBB"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_pColliderOBBCom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;

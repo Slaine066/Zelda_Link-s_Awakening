@@ -52,6 +52,8 @@ _uint CPlayer::Tick(_float fTimeDelta)
 
 void CPlayer::Late_Tick(_float fTimeDelta)
 {
+	__super::Late_Tick(fTimeDelta);
+
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
@@ -75,6 +77,8 @@ HRESULT CPlayer::Render()
 		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0)))
 			return E_FAIL;
 	}
+
+	Render_Colliders();
 
 	return S_OK;
 }
@@ -105,6 +109,15 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_GAMEPLAY, m_tModelDesc.wcModelPrototypeId, (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
+	CCollider::COLLIDERDESC	ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vScale = _float3(.8f, 1.3f, .8f);
+	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
+
+	/* For.Com_ColliderOBB*/
+	if (FAILED(__super::Add_Components(TEXT("Com_ColliderOBB"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_pColliderOBBCom, &ColliderDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -131,7 +144,7 @@ void CPlayer::Handle_Input()
 	switch (m_eCurrentState)
 	{
 	case STATE_IDLE:
-		if (pGameInstance->Key_Down('Z'))
+		if (pGameInstance->Key_Down('S'))
 		{
 			m_eCurrentState = STATE_ATTACKING;
 			m_pModelCom->Set_CurrentAnimIndex(ANIM_SLASH);
@@ -145,7 +158,7 @@ void CPlayer::Handle_Input()
 			m_pModelCom->Set_CurrentAnimIndex(ANIM_IDLE);
 		break;
 	case STATE_MOVING:
-		if (pGameInstance->Key_Down('Z'))
+		if (pGameInstance->Key_Down('S'))
 		{
 			m_eCurrentState = STATE_ATTACKING;
 			m_pModelCom->Set_CurrentAnimIndex(ANIM_SLASH);

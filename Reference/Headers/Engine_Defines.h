@@ -14,6 +14,9 @@
 #include <DirectXTK/ScreenGrab.h>
 #include <directXTK/SpriteFont.h>
 #include <directXTK/SpriteBatch.h>
+#include <DirectXTK/VertexTypes.h>
+#include <DirectXTK/PrimitiveBatch.h>
+#include <DirectXTK/Effects.h>
 
 #include <assimp/scene.h>
 #include <assimp/importer.hpp>

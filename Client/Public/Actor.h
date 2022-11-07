@@ -9,6 +9,7 @@ class CShader;
 class CRenderer;
 class CTransform;
 class CModel;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -52,11 +53,18 @@ protected:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void Render_Colliders();
+
 protected:
 	CShader*	m_pShaderCom = nullptr;
 	CRenderer*	m_pRendererCom = nullptr;
 	CTransform*	m_pTransformCom = nullptr;
 	CModel*		m_pModelCom = nullptr;
+
+	// Not necessarily all three will be used, so be sure to "nullcheck" when using.
+	CCollider*	m_pColliderAABBCom = nullptr;
+	CCollider*	m_pColliderOBBCom = nullptr;
+	CCollider*	m_pColliderSphereCom = nullptr;
 
 protected:
 	MODELDESC m_tModelDesc;

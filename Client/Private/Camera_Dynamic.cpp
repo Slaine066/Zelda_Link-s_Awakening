@@ -3,6 +3,7 @@
 #include "Camera_Dynamic.h"
 #include "GameInstance.h"
 
+
 CCamera_Dynamic::CCamera_Dynamic(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera(pDevice, pContext)
 {
@@ -33,7 +34,30 @@ _uint CCamera_Dynamic::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	Attach_ToPlayer();
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if(!pGameInstance->Key_Pressing(VK_SHIFT))
+		Attach_ToPlayer();
+	
+	// Camera Inputs
+	if (pGameInstance->Key_Pressing('W') && pGameInstance->Key_Pressing(VK_SHIFT))
+		m_pTransform->Move_Straight(fTimeDelta);
+	if (pGameInstance->Key_Pressing('S') && pGameInstance->Key_Pressing(VK_SHIFT))
+		m_pTransform->Move_Backward(fTimeDelta);
+	if (pGameInstance->Key_Pressing('A') && pGameInstance->Key_Pressing(VK_SHIFT))
+		m_pTransform->Move_Left(fTimeDelta);
+	if (pGameInstance->Key_Pressing('D') && pGameInstance->Key_Pressing(VK_SHIFT))
+		m_pTransform->Move_Right(fTimeDelta);
+	
+	_long MouseMove = 0;
+	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X))
+		if ((MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X)) && GetKeyState(VK_SHIFT) < 0)
+			m_pTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMove * 0.1f);
+	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_Y))
+		if ((MouseMove = pGameInstance->Get_DIMMoveState(DIMM_Y)) && GetKeyState(VK_SHIFT) < 0)
+			m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	if (FAILED(Bind_OnPipeLine()))
 		return OBJ_NOEVENT;
