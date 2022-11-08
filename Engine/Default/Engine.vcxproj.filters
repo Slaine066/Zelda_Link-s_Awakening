@@ -109,6 +109,9 @@
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <Filter>01.Utility\03.Components\07.Collider\DebugDraw</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\CollisionManager.cpp">
+      <Filter>01.Utility\03.Components\07.Collider\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -231,6 +234,9 @@
     <ClInclude Include="..\Public\DebugDraw.h">
       <Filter>01.Utility\03.Components\07.Collider\DebugDraw</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CollisionManager.h">
+      <Filter>01.Utility\03.Components\07.Collider\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -343,6 +349,9 @@
     </Filter>
     <Filter Include="01.Utility\03.Components\07.Collider\DebugDraw">
       <UniqueIdentifier>{483a0ece-c9c3-431a-85ec-1cbca3f8dc63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\07.Collider\Manager">
+      <UniqueIdentifier>{e93dcb1a-eb01-4557-aff9-6d136e4b2075}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

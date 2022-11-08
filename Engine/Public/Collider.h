@@ -7,11 +7,13 @@ class ENGINE_DLL CCollider final : public CComponent
 {
 public:
 	enum TYPE { TYPE_AABB, TYPE_OBB, TYPE_SPHERE, TYPE_END };
+	enum AIM { AIM_DAMAGE_INPUT, AIM_DAMAGE_OUTPUT, AIM_END };
 	enum BOUNDING { BOUNDING_ORIGINAL, BOUNDING_WORLD, BOUNDING_END };
 
 public:
 	typedef struct tagColliderDesc
 	{
+		AIM eAim;
 		_float3	vScale;
 		_float3	vRotation;
 		_float3	vPosition;
@@ -28,6 +30,9 @@ private:
 	CCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CCollider(const CCollider& rhs);
 	virtual ~CCollider() = default;
+
+public:
+	COLLIDERDESC Get_ColliderDesc() { return m_ColliderDesc; }
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType);

@@ -1,4 +1,4 @@
-#include "..\Public\GameObject.h"
+#include "GameObject.h"
 #include "GameInstance.h"
 
 CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -82,6 +82,16 @@ CComponent * CGameObject::Find_Component(const _tchar * pComponentTag)
 		return nullptr;
 
 	return iter->second;	
+}
+
+CCollider * CGameObject::Get_Collider(CCollider::AIM eAim)
+{
+	return nullptr;
+}
+
+_float CGameObject::Take_Damage(float fDamage, void * DamageType, CGameObject * DamageCauser)
+{
+	return 0.f;
 }
 
 void CGameObject::Free()

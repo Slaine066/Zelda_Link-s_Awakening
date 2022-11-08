@@ -163,6 +163,7 @@
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\Channel.cpp" />
     <ClCompile Include="..\private\Collider.cpp" />
+    <ClCompile Include="..\private\CollisionManager.cpp" />
     <ClCompile Include="..\Private\Component.cpp" />
     <ClCompile Include="..\Private\Component_Manager.cpp" />
     <ClCompile Include="..\private\CustomFont.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\Channel.h" />
     <ClInclude Include="..\public\Collider.h" />
+    <ClInclude Include="..\public\CollisionManager.h" />
     <ClInclude Include="..\Public\Component.h" />
     <ClInclude Include="..\Public\Component_Manager.h" />
     <ClInclude Include="..\public\CustomFont.h" />

@@ -52,6 +52,7 @@ protected:
 	virtual _uint Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual CCollider* Get_Collider(CCollider::AIM eAim) override;
 
 	void Render_Colliders();
 
@@ -60,11 +61,7 @@ protected:
 	CRenderer*	m_pRendererCom = nullptr;
 	CTransform*	m_pTransformCom = nullptr;
 	CModel*		m_pModelCom = nullptr;
-
-	// Not necessarily all three will be used, so be sure to "nullcheck" when using.
-	CCollider*	m_pColliderAABBCom = nullptr;
-	CCollider*	m_pColliderOBBCom = nullptr;
-	CCollider*	m_pColliderSphereCom = nullptr;
+	vector<CCollider*> m_vCollidersCom;
 
 protected:
 	MODELDESC m_tModelDesc;

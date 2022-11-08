@@ -13,6 +13,7 @@ CGameInstance::CGameInstance()
 	, m_pLight_Manager(CLight_Manager::Get_Instance())
 	, m_pFont_Manager(CFont_Manager::Get_Instance())
 	, m_pPicking(CPicking::Get_Instance())
+	, m_pCollision_Manager(CCollision_Manager::Get_Instance())
 	, m_pKeys_Manager(CKeysManager::Get_Instance())
 {	
 	Safe_AddRef(m_pFont_Manager);
@@ -25,6 +26,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pGraphic_Device); 
 	Safe_AddRef(m_pPicking);
+	Safe_AddRef(m_pCollision_Manager);
 	Safe_AddRef(m_pKeys_Manager);
 }
 
@@ -61,8 +63,7 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 void CGameInstance::Tick_Engine(_float fTimeDelta)
 {
-	if (nullptr == m_pLevel_Manager || 
-		nullptr == m_pObject_Manager)
+	if (!m_pLevel_Manager || !m_pObject_Manager || !m_pCollision_Manager)
 		return;
 
 	m_pInput_Device->Update();
@@ -75,6 +76,8 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	m_pLevel_Manager->Late_Tick(fTimeDelta);
 	m_pObject_Manager->Late_Tick(fTimeDelta);
+
+	m_pCollision_Manager->Reset_ColliderGroup(); // Be sure to call it last, after all the Late_Tick functions.
 }
 
 void CGameInstance::Clear(_uint iLevelIndex)
@@ -248,6 +251,52 @@ CComponent * CGameInstance::Find_Component_Prototype(_uint iLevelIndex, const _t
 	return m_pComponent_Manager->Find_Component(iLevelIndex, pPrototypeTag);
 }
 
+HRESULT CGameInstance::Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP eCollisionGroup, CGameObject * pGameObject)
+{
+	if (!m_pCollision_Manager)
+		return E_FAIL;
+
+	return m_pCollision_Manager->Add_CollisionGroup(eCollisionGroup, pGameObject);
+}
+
+void CGameInstance::Out_CollisionGroup(CCollision_Manager::COLLISION_GROUP eCollisionGroup, CGameObject * pGameObject)
+{
+	if (!m_pCollision_Manager)
+		return;
+
+	m_pCollision_Manager->Remove_CollisionGroup(eCollisionGroup, pGameObject);
+}
+
+_bool CGameInstance::Collision_with_Group(CCollision_Manager::COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT CGameObject& pDamagedObject)
+{
+	if (!m_pCollision_Manager)
+		return false;
+
+	return m_pCollision_Manager->Collision_with_Group(eGroup, pDamageCauser, eCollisionAim, pDamagedObject);
+}
+
+_bool CGameInstance::Collision_Check_Group_Multi(CCollision_Manager::COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT vector<CGameObject*>& pDamagedObjects)
+{
+	if (!m_pCollision_Manager)
+		return false;
+
+	return m_pCollision_Manager->Collision_Check_Group_Multi(eGroup, pDamageCauser, eCollisionAim, pDamagedObjects);
+}
+
+void CGameInstance::Apply_Damage(_float fDamage, CGameObject * DamagedObj, CGameObject * DamageCauser, void * AttackType)
+{
+	DamagedObj->Take_Damage(fDamage, AttackType, DamageCauser);
+}
+
+void CGameInstance::Apply_Damage_Multi(_float fDamage, vector<CGameObject*>& vecDamagedObj, CGameObject * DamageCauser, void * AttackType)
+{
+	for (auto& iter = vecDamagedObj.begin(); iter != vecDamagedObj.end();)
+	{
+		(*iter)->Take_Damage(fDamage, AttackType, DamageCauser);
+		iter++;
+	}
+}
+
 CGameObject * CGameInstance::Find_Object(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex)
 {
 	if (nullptr == m_pObject_Manager)
@@ -365,12 +414,14 @@ void CGameInstance::Release_Engine()
 	CFont_Manager::Get_Instance()->Destroy_Instance();
 	CGraphic_Device::Get_Instance()->Destroy_Instance();
 	CPicking::Get_Instance()->Destroy_Instance();
+	CCollision_Manager::Get_Instance()->Destroy_Instance();
 	CKeysManager::Get_Instance()->Destroy_Instance();
 }
 
 void CGameInstance::Free()
 {
 	Safe_Release(m_pKeys_Manager);
+	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pLight_Manager);

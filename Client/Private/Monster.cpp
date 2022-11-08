@@ -37,6 +37,9 @@ _uint CMonster::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_MONSTER, this);
+
 	// () ..? AI Function?
 	Execute_State(fTimeDelta);	// Execute Action based on STATE.
 

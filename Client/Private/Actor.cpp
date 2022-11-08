@@ -39,12 +39,9 @@ _uint CActor::Tick(_float fTimeDelta)
 void CActor::Late_Tick(_float fTimeDelta)
 {
 	// Update Colliders
-	if (m_pColliderAABBCom)
-		m_pColliderAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
-	if (m_pColliderOBBCom)
-		m_pColliderOBBCom->Update(m_pTransformCom->Get_WorldMatrix());
-	if (m_pColliderSphereCom)
-		m_pColliderSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
+	for (auto& pCollider : m_vCollidersCom)
+		if (pCollider)
+			pCollider->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 HRESULT CActor::Render()
@@ -58,16 +55,25 @@ HRESULT CActor::Render()
 	return S_OK;
 }
 
+CCollider * CActor::Get_Collider(CCollider::AIM eAim)
+{
+	auto iter = find_if(m_vCollidersCom.begin(), m_vCollidersCom.end(), [&](CCollider* pCollider) {
+		return pCollider->Get_ColliderDesc().eAim == eAim;
+	});
+
+	if (iter == m_vCollidersCom.end())
+		return nullptr;
+
+	return *iter;
+}
+
 void CActor::Render_Colliders()
 {
 	// Render Colliders only in Debug
 #ifdef _DEBUG
-	if (m_pColliderAABBCom)
-		m_pColliderAABBCom->Render();
-	if (m_pColliderOBBCom)
-		m_pColliderOBBCom->Render();
-	if (m_pColliderSphereCom)
-		m_pColliderSphereCom->Render();
+	for (auto& pCollider : m_vCollidersCom)
+		if (pCollider)
+			pCollider->Render();
 #endif
 }
 
@@ -75,12 +81,11 @@ void CActor::Free()
 {
 	__super::Free();
 
-	if (m_pColliderAABBCom)
-		Safe_Release(m_pColliderAABBCom);
-	if (m_pColliderOBBCom)
-		Safe_Release(m_pColliderOBBCom);
-	if (m_pColliderSphereCom)
-		Safe_Release(m_pColliderSphereCom);
+	for (auto& pCollider : m_vCollidersCom)
+		if (pCollider)
+			Safe_Release(pCollider);
+
+	m_vCollidersCom.clear();
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pShaderCom);

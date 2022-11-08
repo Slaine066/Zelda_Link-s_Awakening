@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Base.h"
+#include "Collider.h"
 
-/* 게임객체들의 부모가되는 클래스다. */
+/* Base Class of every Game Object. */
 
 BEGIN(Engine)
 class ENGINE_DLL CGameObject abstract : public CBase
@@ -30,7 +31,9 @@ public:
 
 public:
 	class CComponent* Find_Component(const _tchar* pComponentTag);
+	virtual CCollider* Get_Collider(CCollider::AIM eAim); // TODO: Fix this function. Return type should be "vector<CCollider*>".
 	virtual bool Picking(_float3& OutPos) {	return false; }
+	virtual _float Take_Damage(float fDamage, void* DamageType, CGameObject* DamageCauser);
 
 protected:
 	HRESULT Add_Components(const _tchar* pComponentTag, _uint iLevelIndex, const _tchar* pPrototypeTag, CComponent** ppOut, void* pArg = nullptr);

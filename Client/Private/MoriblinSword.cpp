@@ -42,6 +42,11 @@ void CMoriblinSword::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	vector<CGameObject*> pDamagedObjects;
+	pGameInstance->Collision_Check_Group_Multi(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, Get_Collider(CCollider::AIM_DAMAGE_INPUT), CCollider::AIM_DAMAGE_INPUT, pDamagedObjects);
+	RELEASE_INSTANCE(CGameInstance);
+
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
@@ -95,11 +100,14 @@ HRESULT CMoriblinSword::Ready_Components(void * pArg)
 
 	CCollider::COLLIDERDESC	ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_INPUT;
 	ColliderDesc.vScale = _float3(1.4f, 1.4f, 1.2f);
 	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
 
-	/* For.Com_ColliderOBB*/
-	if (FAILED(__super::Add_Components(TEXT("Com_ColliderOBB"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_pColliderOBBCom, &ColliderDesc)))
+	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object
+
+	/* For.Com_Collider*/
+	if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;

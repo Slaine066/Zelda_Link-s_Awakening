@@ -10,6 +10,7 @@
 #include "Light_Manager.h"
 #include "Font_Manager.h"
 #include "Picking.h"
+#include "CollisionManager.h"
 #include "KeysManager.h"
 
 BEGIN(Engine)
@@ -60,6 +61,16 @@ public: /* For.Component_Manager */
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
 	class CComponent* Find_Component_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag);
 
+public: /* For. Collider Manager */
+	HRESULT Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP eCollisionGroup, class CGameObject* pGameObject);
+	void Out_CollisionGroup(CCollision_Manager::COLLISION_GROUP eCollisionGroup, class CGameObject* pGameObject);
+	_bool Collision_with_Group(CCollision_Manager::COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT CGameObject& pDamagedObject);
+	_bool Collision_Check_Group_Multi(CCollision_Manager::COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT vector<CGameObject*>& pDamagedObjects);
+
+	// Damage Functions
+	static void Apply_Damage(_float fDamage, CGameObject* DamagedObj, CGameObject * DamageCauser, void* AttackType = nullptr);
+	static void	Apply_Damage_Multi(_float fDamage, vector<CGameObject*>& vecDamagedObj, CGameObject * DamageCauser, void* AttackType = nullptr);
+
 public: /* For.PipeLine */
 	void Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix);
 	_matrix Get_TransformMatrix(CPipeLine::TRANSFORMSTATE  eState);
@@ -94,6 +105,7 @@ private:
 	CLight_Manager*					m_pLight_Manager = nullptr;
 	CFont_Manager*					m_pFont_Manager = nullptr;
 	CPicking*						m_pPicking = nullptr;
+	CCollision_Manager*				m_pCollision_Manager = nullptr;
 	CKeysManager*					m_pKeys_Manager = nullptr;
 
 public:
