@@ -173,6 +173,7 @@ void CImGuiManager::DrawOverlayWindow()
 
 		// FramesPerSecond
 		ImGui::Text("FPS: %d", m_iFramesPerSecond);
+		ImGui::Text("Picking: %.3f, %.3f, %.3f", m_vPositionPicked.x, m_vPositionPicked.y, m_vPositionPicked.z);
 	}
 
 	ImGui::End();
@@ -397,7 +398,15 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 					string sObjId = string(wsObjId.begin(), wsObjId.end());
 					if (ImGui::Selectable(sObjId.c_str(), !wcscmp(pObject->Get_ObjId(), m_pSelectedCreatedObject ? m_pSelectedCreatedObject->Get_ObjId() : TEXT("")), ImGuiSelectableFlags_SpanAllColumns))
 					{
+						CMesh* pToolMesh = dynamic_cast<CMesh*>(m_pSelectedCreatedObject);
+						if (pToolMesh)
+							pToolMesh->Set_IsSelected(false);
+
 						m_pSelectedCreatedObject = pObject;
+
+						pToolMesh = dynamic_cast<CMesh*>(m_pSelectedCreatedObject);
+						if (pToolMesh)
+							pToolMesh->Set_IsSelected(true);
 
 						// Set Transform of the Selected Object
 						CComponent* pComponent = m_pSelectedCreatedObject->Find_Component(TEXT("Com_Transform"));

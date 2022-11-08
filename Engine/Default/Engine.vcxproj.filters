@@ -112,6 +112,15 @@
     <ClCompile Include="..\private\CollisionManager.cpp">
       <Filter>01.Utility\03.Components\07.Collider\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Navigation.cpp">
+      <Filter>01.Utility\03.Components\08.Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Cell.cpp">
+      <Filter>01.Utility\03.Components\08.Navigation\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Navigation.cpp">
+      <Filter>01.Utility\03.Components\02.VIBuffer\03.Navigation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -237,6 +246,15 @@
     <ClInclude Include="..\public\CollisionManager.h">
       <Filter>01.Utility\03.Components\07.Collider\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Navigation.h">
+      <Filter>01.Utility\03.Components\08.Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Cell.h">
+      <Filter>01.Utility\03.Components\08.Navigation\Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Navigation.h">
+      <Filter>01.Utility\03.Components\02.VIBuffer\03.Navigation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -352,6 +370,18 @@
     </Filter>
     <Filter Include="01.Utility\03.Components\07.Collider\Manager">
       <UniqueIdentifier>{e93dcb1a-eb01-4557-aff9-6d136e4b2075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\08.Navigation">
+      <UniqueIdentifier>{a3690fc7-9e81-4f43-91ed-a1413a435563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\08.Navigation\Cell">
+      <UniqueIdentifier>{4244b2c2-3f4f-453d-a352-80b309d9e6a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\02.VIBuffer\03.Navigation">
+      <UniqueIdentifier>{ade98243-24f3-40b0-b43d-c085f376a817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\02.VIBuffer\03.Navigation\Shader">
+      <UniqueIdentifier>{f1e0e24e-a4fe-4c11-97ee-88472b3adc28}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -53,8 +53,6 @@ void CMainTool::Tick(_float fTimeDelta)
 	if (nullptr == m_pGameInstance)
 		return;
 
-	Check_Picking();
-
 	m_pGameInstance->Tick_Engine(fTimeDelta);
 
 #ifdef _DEBUG
@@ -216,28 +214,6 @@ HRESULT CMainTool::Ready_Lights()
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
-}
-
-void CMainTool::Check_Picking()
-{
-	if (GetKeyState(VK_LBUTTON) < 0)
-	{
-		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-		Safe_AddRef(pGameInstance);
-
-		// Set Picked Position
-		_float3 vPickedPosition = _float3(0.f, 0.f, 0.f);
-		CGameObject* pGameObject = pGameInstance->Find_Object(LEVEL_TOOL, TEXT("Layer_Terrain"));
-		if (pGameObject)
-		{
-			if (pGameObject->Picking(vPickedPosition))
-				CImGuiManager::Get_Instance()->Set_PickedPosition(vPickedPosition);
-		}
-		else
-			CImGuiManager::Get_Instance()->Set_PickedPosition(vPickedPosition);
-
-		Safe_Release(pGameInstance);
-	}
 }
 
 CMainTool * CMainTool::Create()

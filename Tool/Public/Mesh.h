@@ -43,6 +43,8 @@ public:
 public:
 	MODELDESC Get_ModelDesc() { return m_tModelDesc; }
 
+	void Set_IsSelected(_bool bIsSelected) { m_bIsSelected = bIsSelected; }
+
 private:
 	CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMesh(const CMesh& rhs);
@@ -54,6 +56,7 @@ public:
 	virtual _uint Tick(_float fTimeDelta);
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual _bool Picking(_float3& OutPos) override;
 
 private:
 	CShader*	m_pShaderCom = nullptr;
@@ -67,6 +70,8 @@ private:
 
 private:
 	MODELDESC m_tModelDesc;
+
+	_bool m_bIsSelected = false; // Selected from Tool List
 
 public:
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

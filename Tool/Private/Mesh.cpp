@@ -2,6 +2,8 @@
 
 #include "Mesh.h"
 #include "GameInstance.h"
+#include "MeshContainer.h"
+#include "ImGuiManager.h"
 
 CMesh::CMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -39,6 +41,11 @@ _uint CMesh::Tick(_float fTimeDelta)
 		_bool isFinished = false;
 		m_pModelCom->Play_Animation(fTimeDelta, isFinished);
 	}
+	/*else */if (m_bIsSelected)
+	{
+		_float3 vPickedPosition = { 0.f, 0.f, 0.f };
+		Picking(vPickedPosition);
+	}
 
 	return OBJ_NOEVENT;
 }
@@ -69,6 +76,28 @@ HRESULT CMesh::Render()
 	}
 
 	return S_OK;
+}
+
+_bool CMesh::Picking(_float3& OutPos)
+{
+	vector<CMeshContainer*> vMeshes = m_pModelCom->Get_MeshContainers();
+
+	for (_uint i = 0; i < vMeshes.size(); ++i)
+	{
+		if (vMeshes[i]->Picking(m_pTransformCom, OutPos))
+		{
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			if (pGameInstance->Key_Down(VK_LBUTTON))
+			{
+				CImGuiManager* pImGuiManager = GET_INSTANCE(CImGuiManager);
+				pImGuiManager->Set_PickedPosition(OutPos);
+				RELEASE_INSTANCE(CImGuiManager);
+				RELEASE_INSTANCE(CGameInstance);
+				return true;
+			}
+			RELEASE_INSTANCE(CGameInstance);
+		}
+	}
 }
 
 HRESULT CMesh::Ready_Components(void* pArg)
@@ -110,11 +139,12 @@ HRESULT CMesh::SetUp_ShaderResources()
 	
 	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_IsSelected", &m_bIsSelected, sizeof(_bool))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

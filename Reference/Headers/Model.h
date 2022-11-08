@@ -22,6 +22,7 @@ public:
 	char* Get_AnimationName(_uint iAnimationIndex);
 	char* Get_CurrentAnimationName();
 	_uint Get_NumMeshContainers() const { return m_iNumMeshes; }
+	vector<class CMeshContainer*> Get_MeshContainers() const { return m_Meshes; }
 	class CHierarchyNode* Get_BonePtr(const char* pBoneName) const;
 
 	_uint Get_CurrentAnimIndex() { return m_iCurrentAnimIndex; }

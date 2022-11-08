@@ -42,6 +42,7 @@ void CMoriblinSword::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
+	// Test Collision
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	vector<CGameObject*> pDamagedObjects;
 	pGameInstance->Collision_Check_Group_Multi(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, Get_Collider(CCollider::AIM_DAMAGE_INPUT), CCollider::AIM_DAMAGE_INPUT, pDamagedObjects);

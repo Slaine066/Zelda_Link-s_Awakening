@@ -2,10 +2,11 @@
 
 #include "VIBuffer.h"
 #include "Model.h"
+#include "Transform.h"
 
 /* Class for each Mesh that makes up the Model. */
 BEGIN(Engine)
-class CMeshContainer final : public CVIBuffer
+class ENGINE_DLL CMeshContainer final : public CVIBuffer
 {
 private:
 	CMeshContainer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -20,6 +21,9 @@ public:
 public:
 	virtual HRESULT Initialize_Prototype(CModel::TYPE eModelType, const aiMesh* pAIMesh, class CModel* pModel, _fmatrix PivotMatrix);
 	virtual HRESULT Initialize(void* pArg);
+
+public:
+	virtual _bool Picking(class CTransform * pTransform, _float3& pOut) override;
 
 public:
 	HRESULT SetUp_Bones(class CModel* pModel);

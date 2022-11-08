@@ -64,14 +64,33 @@ void CPicking::Tick()
 	Safe_Release(pGameInstance);
 }
 
-void CPicking::Compute_LocalRayInfo(CTransform* pTransform, _vector& vRayPosition, _vector& vRayDirection)
+void CPicking::Compute_LocalRayInfo(CTransform* pTransform)
 {
 	_matrix WorldMatrix = pTransform->Get_WorldMatrix();
 	_matrix WorldMatrixInv = XMMatrixInverse(nullptr, WorldMatrix);
 
-	vRayPosition = XMVector3TransformCoord(XMLoadFloat3(&m_vRayPosition), WorldMatrixInv);
-	vRayDirection = XMVector3TransformNormal(XMLoadFloat3(&m_vRayDirection), WorldMatrixInv);
-	vRayDirection = XMVector3Normalize(vRayDirection);
+	XMStoreFloat3(&m_vRayPosistionLocal, XMVector3TransformCoord(XMLoadFloat3(&m_vRayPosition), WorldMatrixInv));
+	XMStoreFloat3(&m_vRayDirectionLocal, XMVector3TransformNormal(XMLoadFloat3(&m_vRayDirection), WorldMatrixInv));
+	XMStoreFloat3(&m_vRayDirectionLocal, XMVector3Normalize(XMLoadFloat3(&m_vRayDirectionLocal)));
+}
+
+_bool CPicking::Intersect(_fvector vPointA, _fvector vPointB, _fvector vPointC, _float3& pOut)
+{
+	_float fDistance = 0.f;
+
+	_vector vRayPos = XMLoadFloat3(&m_vRayPosistionLocal);
+	vRayPos = XMVectorSetW(vRayPos, 1.f);
+
+	_vector vRayDir = XMLoadFloat3(&m_vRayDirectionLocal); 
+	vRayDir = XMVectorSetW(vRayDir, 0.f);
+	
+	if (TriangleTests::Intersects(vRayPos, vRayDir, vPointA, vPointB, vPointC, fDistance))
+	{
+		XMStoreFloat3(&pOut, vRayPos + vRayDir * fDistance);
+		return true;
+	}
+
+	return false;
 }
 
 void CPicking::Free()

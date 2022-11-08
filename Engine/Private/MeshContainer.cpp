@@ -1,5 +1,6 @@
 #include "MeshContainer.h"
 #include "HierarchyNode.h"
+#include "Picking.h"
 
 CMeshContainer::CMeshContainer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CVIBuffer(pDevice, pContext)
@@ -102,6 +103,53 @@ HRESULT CMeshContainer::Initialize_Prototype(CModel::TYPE eModelType, const aiMe
 HRESULT CMeshContainer::Initialize(void* pArg)
 {
 	return S_OK;
+}
+
+_bool CMeshContainer::Picking(CTransform * pTransform, _float3& pOut)
+{
+	CPicking* pPicking = GET_INSTANCE(CPicking);
+	pPicking->Compute_LocalRayInfo(pTransform);
+
+	FACEINDICES32* pIndices = new FACEINDICES32[m_iNumPrimitive];
+
+	// Loop through Mesh Faces (Triangle) to populate Indices
+	for (_uint i = 0; i < m_iNumPrimitive; i++)
+	{
+		aiFace AIFace = m_pAIMesh->mFaces[i];
+
+		pIndices[i]._0 = AIFace.mIndices[0];
+		pIndices[i]._1 = AIFace.mIndices[1];
+		pIndices[i]._2 = AIFace.mIndices[2];
+	}
+
+	// Loop through Mesh Faces (Triangle) to check Intersection
+	for (_uint i = 0; i < m_iNumPrimitive; i++)
+	{
+		_vector vPointA;
+		_vector vPointB;
+		_vector vPointC;
+
+		memcpy(&vPointA, &m_pAIMesh->mVertices[pIndices[i]._0], sizeof(_float3));
+		vPointA = XMVectorSetW(vPointA, 1.f);
+		memcpy(&vPointB, &m_pAIMesh->mVertices[pIndices[i]._1], sizeof(_float3));
+		vPointB = XMVectorSetW(vPointB, 1.f);
+		memcpy(&vPointC, &m_pAIMesh->mVertices[pIndices[i]._2], sizeof(_float3));
+		vPointC = XMVectorSetW(vPointC, 1.f);
+
+		if (pPicking->Intersect(vPointA, vPointB, vPointC, pOut))
+		{
+			// Get Output Position in World Space.
+			XMStoreFloat3(&pOut, XMVector3TransformCoord(XMLoadFloat3(&pOut), pTransform->Get_WorldMatrix()));
+		
+			Safe_Delete_Array(pIndices);
+			RELEASE_INSTANCE(CPicking);
+			return true;
+		}		
+	}
+
+	Safe_Delete_Array(pIndices);
+	RELEASE_INSTANCE(CPicking);
+	return false;
 }
 
 HRESULT CMeshContainer::SetUp_Bones(CModel* pModel)
