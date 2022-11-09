@@ -384,4 +384,9 @@
       <UniqueIdentifier>{f1e0e24e-a4fe-4c11-97ee-88472b3adc28}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\ShaderFiles\Shader_Navigation.hlsl">
+      <Filter>01.Utility\03.Components\02.VIBuffer\03.Navigation\Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

@@ -45,8 +45,12 @@ void CLevel_Manager::Late_Tick(_float fTimeDelta)
 	m_pCurrentLevel->Late_Tick(fTimeDelta);
 }
 
-void CLevel_Manager::Render()
+void CLevel_Manager::Render_NavigationMesh()
 {
+	if (!m_pCurrentLevel)
+		return;
+
+	m_pCurrentLevel->Render_NavigationMesh();
 }
 
 void CLevel_Manager::Free()

@@ -57,14 +57,14 @@ public:
 	void Move_Left(_float fTimeDelta);
 	void Move_Right(_float fTimeDelta);
 
-	void Go_Straight(_float fTimeDelta);
-	void Go_Backward(_float fTimeDelta);
-	void Go_Left(_float fTimeDelta);
-	void Go_Right(_float fTimeDelta);
-	void Go_Straight_Left(_float fTimeDelta);
-	void Go_Straight_Right(_float fTimeDelta);
-	void Go_Backward_Left(_float fTimeDelta);
-	void Go_Backward_Right(_float fTimeDelta);
+	void Go_Straight(_float fTimeDelta, class CNavigation* pNavigation);
+	void Go_Backward(_float fTimeDelta, class CNavigation* pNavigation);
+	void Go_Left(_float fTimeDelta, class CNavigation* pNavigation);
+	void Go_Right(_float fTimeDelta, class CNavigation* pNavigation);
+	void Go_Straight_Left(_float fTimeDelta, class CNavigation* pNavigation);
+	void Go_Straight_Right(_float fTimeDelta, class CNavigation* pNavigation);
+	void Go_Backward_Left(_float fTimeDelta, class CNavigation* pNavigation);
+	void Go_Backward_Right(_float fTimeDelta, class CNavigation* pNavigation);
 
 	void Turn(_fvector vAxis, _float fTimeDelta);
 	void Set_Rotation(_float3 fAngle);

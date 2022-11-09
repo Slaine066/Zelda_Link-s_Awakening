@@ -23,8 +23,15 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_NavigationMesh()))
+		return E_FAIL;
+
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation_Field"), (CComponent**)&m_pNavigationMesh)))
+		return E_FAIL;
+
 	/*if (FAILED(Ready_Layer_UI()))
-	return E_FAIL;*/
+		return E_FAIL;*/
 
 	/*if (FAILED(Ready_Layer_Effect()))
 		return E_FAIL;*/
@@ -179,6 +186,45 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar * pLayerTag)
 
 	Safe_Release(pGameInstance);
 	
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_NavigationMesh()
+{
+	HANDLE hFile = CreateFile(TEXT("../../Data/NavigationField.dat"), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	if (!hFile)
+		return E_FAIL;
+
+	_float3	vPoints[3];
+	_ulong dwByte = 0;
+
+	/* Create Cells. */
+	ZeroMemory(vPoints, sizeof(_float3) * 3);
+	vPoints[0] = _float3(0.f, 0.f, 5.f);
+	vPoints[1] = _float3(5.f, 0.f, 0.f);
+	vPoints[2] = _float3(0.f, 0.f, 0.f);
+	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+
+	ZeroMemory(vPoints, sizeof(_float3) * 3);
+	vPoints[0] = _float3(0.f, 0.f, 5.f);
+	vPoints[1] = _float3(5.f, 0.f, 5.f);
+	vPoints[2] = _float3(5.f, 0.f, 0.f);
+	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+
+	ZeroMemory(vPoints, sizeof(_float3) * 3);
+	vPoints[0] = _float3(0.f, 0.f, 10.f);
+	vPoints[1] = _float3(5.f, 0.f, 5.f);
+	vPoints[2] = _float3(0.f, 0.f, 5.f);
+	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+
+	ZeroMemory(vPoints, sizeof(_float3) * 3);
+	vPoints[0] = _float3(5.f, 0.f, 5.f);
+	vPoints[1] = _float3(10.f, 0.f, 0.f);
+	vPoints[2] = _float3(5.f, 0.f, 0.f);
+	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+
+	CloseHandle(hFile);
+
 	return S_OK;
 }
 

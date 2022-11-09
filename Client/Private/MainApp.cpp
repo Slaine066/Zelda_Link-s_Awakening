@@ -69,6 +69,10 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.32f, 0.4f, 0.47f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
+#ifdef _DEBUG
+	m_pGameInstance->Render_NavigationMesh();
+#endif // _DEBUG
+
 	m_pRenderer->Render_GameObjects();
 
 	++m_iNumRender;

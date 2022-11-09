@@ -3,13 +3,6 @@
 #include "Client_Defines.h"
 #include "Actor.h"
 
-BEGIN(Engine)
-class CShader;
-class CRenderer;
-class CTransform;
-class CModel;
-END
-
 BEGIN(Client)
 class CStaticObject final : public CActor
 {

@@ -77,6 +77,15 @@ void CActor::Render_Colliders()
 #endif
 }
 
+void CActor::Render_NavigationMesh()
+{
+	// Render NavigationMesh only in Debug
+#ifdef _DEBUG
+		if (m_pNavigationCom)
+			m_pNavigationCom->Render_Navigation();
+#endif
+}
+
 void CActor::Free()
 {
 	__super::Free();
@@ -86,6 +95,9 @@ void CActor::Free()
 			Safe_Release(pCollider);
 
 	m_vCollidersCom.clear();
+
+	if (m_pNavigationCom)
+		Safe_Release(m_pNavigationCom);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pShaderCom);

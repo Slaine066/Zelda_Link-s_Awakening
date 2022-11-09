@@ -190,6 +190,16 @@ _uint CGameInstance::Get_CurrentLevelIndex()
 	return m_pLevel_Manager->Get_CurrentLevelIndex();
 }
 
+HRESULT CGameInstance::Render_NavigationMesh()
+{
+	if (!m_pLevel_Manager)
+		return E_FAIL;
+
+	m_pLevel_Manager->Render_NavigationMesh();
+
+	return S_OK;
+}
+
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr == m_pObject_Manager)

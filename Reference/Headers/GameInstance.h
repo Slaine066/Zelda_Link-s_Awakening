@@ -47,6 +47,7 @@ public: /* For.Timer_Manager */
 public: /* For.Level_Manager */
 	HRESULT Open_Level(unsigned int iLevelIndex, class CLevel* pNewLevel);
 	_uint Get_CurrentLevelIndex();
+	HRESULT Render_NavigationMesh();
 
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);

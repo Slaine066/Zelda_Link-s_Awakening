@@ -23,6 +23,9 @@ public:
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag);
 
+	// Navigation Mesh Test
+	HRESULT Ready_NavigationMesh();
+
 	vector<CActor::MODELDESC> m_vInstancedObjects;
 	
 public:

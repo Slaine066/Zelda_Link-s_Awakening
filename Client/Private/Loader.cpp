@@ -6,6 +6,7 @@
 #include "StaticObject.h"
 #include "Player.h"
 #include "MoriblinSword.h"
+#include "Navigation.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -151,6 +152,9 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 #pragma region Loading_Components
 	lstrcpy(m_szLoadingText, TEXT("Loading Components.."));
 
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation_Field"), CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/NavigationField.dat")))))
+		return E_FAIL;
 	// >
 	// .. Add Above ..
 #pragma endregion Loading_Components

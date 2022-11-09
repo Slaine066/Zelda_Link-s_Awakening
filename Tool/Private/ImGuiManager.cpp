@@ -132,7 +132,7 @@ void CImGuiManager::Render(_float fTimeDelta)
 
 void CImGuiManager::DrawEditor(_float fTimeDelta)
 {
-	ImGui::Begin("Editor");
+	ImGui::Begin("Editor", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 	// Editor Alpha
 	ImGui::Text("Settings");
@@ -172,8 +172,16 @@ void CImGuiManager::DrawOverlayWindow()
 		ImGui::Separator();
 
 		// FramesPerSecond
-		ImGui::Text("FPS: %d", m_iFramesPerSecond);
-		ImGui::Text("Picking: %.3f, %.3f, %.3f", m_vPositionPicked.x, m_vPositionPicked.y, m_vPositionPicked.z);
+		ImGui::Text("%d FPS", m_iFramesPerSecond);
+
+		if (m_pSelectedCreatedObject && m_pTransform)
+		{
+			wstring wsCurrentObject = wstring(m_pSelectedCreatedObject->Get_ObjId());
+			string sCurrentObject = string(wsCurrentObject.begin(), wsCurrentObject.end());
+			ImGui::Text("%s", sCurrentObject.c_str());
+		}
+
+		ImGui::Text("X: %.2f, Y: %.2f, Z: %.2f", m_vPositionPicked.x, m_vPositionPicked.y, m_vPositionPicked.z);
 	}
 
 	ImGui::End();
@@ -372,7 +380,7 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 
 		// Created Objects
 		ImGui::Text("Created Objects");
-		if (ImGui::BeginTable("CreatedObjectTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(0, ImGui::GetTextLineHeightWithSpacing() * 6)))
+		if (ImGui::BeginTable("CreatedObjectTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Resizable, ImVec2(0, ImGui::GetTextLineHeightWithSpacing() * 6)))
 		{
 			ImGui::TableSetupScrollFreeze(0, 1);
 			ImGui::TableSetupColumn("Object");
@@ -392,6 +400,10 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 
 				for (auto& pObject : vGameObjects)
 				{
+					// Don't save the Camera Object to File
+					if (!wcscmp(pObject->Get_ObjName(), TEXT("Camera_Dynamic")))
+						continue;
+
 					ImGui::TableNextColumn();
 
 					wstring wsObjId = wstring(pObject->Get_ObjId());
@@ -454,16 +466,6 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 			
 			ImGui::EndTable();
 		}
-		ImGui::NewLine();
-
-		if (m_pSelectedCreatedObject && m_pTransform)
-		{
-			wstring wsCurrentObject = wstring(m_pSelectedCreatedObject->Get_ObjId());
-			string sCurrentObject = string(wsCurrentObject.begin(), wsCurrentObject.end());
-			ImGui::Text("Current Object: %s", sCurrentObject.c_str());
-		}
-		else
-			ImGui::Text("Current Object:");
 
 		ImGui::NewLine();
 

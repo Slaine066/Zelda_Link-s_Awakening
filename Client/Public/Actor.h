@@ -10,6 +10,7 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CCollider;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -55,12 +56,14 @@ protected:
 	virtual CCollider* Get_Collider(CCollider::AIM eAim) override;
 
 	void Render_Colliders();
+	void Render_NavigationMesh();
 
 protected:
-	CShader*	m_pShaderCom = nullptr;
-	CRenderer*	m_pRendererCom = nullptr;
+	CShader* m_pShaderCom = nullptr;
+	CRenderer* m_pRendererCom = nullptr;
 	CTransform*	m_pTransformCom = nullptr;
-	CModel*		m_pModelCom = nullptr;
+	CModel*	m_pModelCom = nullptr;
+	CNavigation* m_pNavigationCom = nullptr;
 	vector<CCollider*> m_vCollidersCom;
 
 protected:

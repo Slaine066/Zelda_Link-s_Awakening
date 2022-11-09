@@ -60,7 +60,7 @@ private:
 	_uint m_iFramesPerSecond = 0;
 	
 	// EDITOR SETTINGS
-	_float m_fEditorAlpha = .9f;
+	_float m_fEditorAlpha = 1.f;
 	 
 	// MAP TOOL
 	//	Maps

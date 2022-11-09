@@ -81,7 +81,9 @@ HRESULT CPlayer::Render()
 			return E_FAIL;
 	}
 
+	// Only in Debug
 	Render_Colliders();
+	Render_NavigationMesh();
 
 	return S_OK;
 }
@@ -122,6 +124,15 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 
 	/* For.Com_Collider*/
 	if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+		return E_FAIL;
+
+	
+	CNavigation::NAVDESC NavDesc;
+	ZeroMemory(&NavDesc, sizeof(CNavigation::NAVDESC));
+	NavDesc.iCurrentCellIndex = 0;
+	
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_Components(TEXT("Com_Navigation"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation_Field"), (CComponent**)&m_pNavigationCom, &NavDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -193,28 +204,28 @@ void CPlayer::Execute_State(_float fTimeDelta)
 		switch (m_eCurrentDir)
 		{
 		case DIR_STRAIGHT_LEFT:
-			m_pTransformCom->Go_Straight_Left(fTimeDelta);
+			m_pTransformCom->Go_Straight_Left(fTimeDelta, m_pNavigationCom);
 			break;
 		case DIR_STRAIGHT_RIGHT:
-			m_pTransformCom->Go_Straight_Right(fTimeDelta);
+			m_pTransformCom->Go_Straight_Right(fTimeDelta, m_pNavigationCom);
 			break;
 		case DIR_BACKWARD_LEFT:
-			m_pTransformCom->Go_Backward_Left(fTimeDelta);
+			m_pTransformCom->Go_Backward_Left(fTimeDelta, m_pNavigationCom);
 			break;
 		case DIR_BACKWARD_RIGHT:
-			m_pTransformCom->Go_Backward_Right(fTimeDelta);
+			m_pTransformCom->Go_Backward_Right(fTimeDelta, m_pNavigationCom);
 			break;
 		case DIR_STRAIGHT:
-			m_pTransformCom->Go_Straight(fTimeDelta);
+			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
 			break;
 		case DIR_BACKWARD:
-			m_pTransformCom->Go_Backward(fTimeDelta);
+			m_pTransformCom->Go_Backward(fTimeDelta, m_pNavigationCom);
 			break;
 		case DIR_LEFT:
-			m_pTransformCom->Go_Left(fTimeDelta);
+			m_pTransformCom->Go_Left(fTimeDelta, m_pNavigationCom);
 			break;
 		case DIR_RIGHT:
-			m_pTransformCom->Go_Right(fTimeDelta);
+			m_pTransformCom->Go_Right(fTimeDelta, m_pNavigationCom);
 			break;
 		}
 	}
