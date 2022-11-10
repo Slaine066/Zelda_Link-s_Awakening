@@ -110,6 +110,13 @@ _bool CMeshContainer::Picking(CTransform * pTransform, _float3& pOut)
 	CPicking* pPicking = GET_INSTANCE(CPicking);
 	pPicking->Compute_LocalRayInfo(pTransform);
 
+	_vector vRayOrigin = XMLoadFloat3(&pPicking->Get_RayPosition());
+	XMVectorSetW(vRayOrigin, 1.f);
+	_float fDistance = 9999.f;
+
+	_float3 vIntersectionPosition;
+	_bool bIntersection = false;
+
 	FACEINDICES32* pIndices = new FACEINDICES32[m_iNumPrimitive];
 
 	// Loop through Mesh Faces (Triangle) to populate Indices
@@ -136,20 +143,25 @@ _bool CMeshContainer::Picking(CTransform * pTransform, _float3& pOut)
 		memcpy(&vPointC, &m_pAIMesh->mVertices[pIndices[i]._2], sizeof(_float3));
 		vPointC = XMVectorSetW(vPointC, 1.f);
 
-		if (pPicking->Intersect(vPointA, vPointB, vPointC, pOut))
+		if (pPicking->Intersect(vPointA, vPointB, vPointC, vIntersectionPosition))
 		{
+			bIntersection = true;
+
 			// Get Output Position in World Space.
-			XMStoreFloat3(&pOut, XMVector3TransformCoord(XMLoadFloat3(&pOut), pTransform->Get_WorldMatrix()));
+			XMStoreFloat3(&vIntersectionPosition, XMVector3TransformCoord(XMLoadFloat3(&vIntersectionPosition), pTransform->Get_WorldMatrix()));
 		
-			Safe_Delete_Array(pIndices);
-			RELEASE_INSTANCE(CPicking);
-			return true;
+			_float fDistanceFromOrigin = XMVectorGetX(XMVector3Length(vRayOrigin - XMLoadFloat3(&vIntersectionPosition)));
+			if (fDistanceFromOrigin < fDistance)
+			{
+				pOut = vIntersectionPosition;
+				fDistance = fDistanceFromOrigin;
+			}
 		}		
 	}
 
 	Safe_Delete_Array(pIndices);
 	RELEASE_INSTANCE(CPicking);
-	return false;
+	return bIntersection;
 }
 
 HRESULT CMeshContainer::SetUp_Bones(CModel* pModel)

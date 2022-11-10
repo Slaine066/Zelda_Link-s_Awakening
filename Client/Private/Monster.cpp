@@ -26,10 +26,6 @@ HRESULT CMonster::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, .4f);
-	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, .4f);
-	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, .4f);
-
 	return S_OK;
 }
 

@@ -153,7 +153,7 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 	lstrcpy(m_szLoadingText, TEXT("Loading Components.."));
 
 	/* For.Prototype_Component_Navigation */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation_Field"), CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/NavigationField.dat")))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation_Field"), CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/navigationData/Field.dat")))))
 		return E_FAIL;
 	// >
 	// .. Add Above ..

@@ -86,6 +86,20 @@ void CActor::Render_NavigationMesh()
 #endif
 }
 
+void CActor::Sync_WithNavigationHeight()
+{
+	_float3 vPosition;
+	XMStoreFloat3(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+	
+	_float fHeight = m_pNavigationCom->Get_NavigationHeight(vPosition);
+
+	vPosition.y = fHeight;
+	_vector vNewPosition = XMLoadFloat3(&vPosition);
+	vNewPosition = XMVectorSetW(vNewPosition, 1.f);
+
+	m_pTransformCom->Set_State(CTransform::STATE::STATE_TRANSLATION, vNewPosition);
+}
+
 void CActor::Free()
 {
 	__super::Free();

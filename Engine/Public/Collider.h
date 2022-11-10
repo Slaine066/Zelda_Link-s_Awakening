@@ -3,6 +3,7 @@
 #include "Component.h"
 
 BEGIN(Engine)
+class CHierarchyNode;
 class ENGINE_DLL CCollider final : public CComponent
 {
 public:
@@ -16,7 +17,14 @@ public:
 		AIM eAim;
 		_float3	vScale;
 		_float3	vRotation;
+		_bool m_bIsAttachedToBone = false;
+
+		// For Bone Non-Attached Colliders
 		_float3	vPosition;
+
+		// For Bone Attached Colliders
+		CHierarchyNode* pSocket = nullptr;
+		_float4x4 pPivotMatrix;
 	}COLLIDERDESC;
 
 	typedef struct tagOBB

@@ -69,7 +69,7 @@ _bool CCell::Contain_Point(_fvector vPosition, _int* pNeighborIndex)
 	for (_uint i = 0; i < LINE_END; ++i)
 	{
 		_vector vDir = XMVector3Normalize(vPosition - XMLoadFloat3(&m_vPoints[i]));
-		if (XMVectorGetX(XMVector3Dot(vDir, XMVector3Normalize(XMLoadFloat3(&m_vNormals[i])))))
+		if (XMVectorGetX(XMVector3Dot(vDir, XMVector3Normalize(XMLoadFloat3(&m_vNormals[i])))) > 0)
 		{
 			*pNeighborIndex = m_iNeighborIndices[i];
 			return false;

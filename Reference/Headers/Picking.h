@@ -12,6 +12,9 @@ public:
 	virtual ~CPicking() = default;
 
 public:
+	_float3 Get_RayPosition() { return m_vRayPosition; }
+
+public:
 	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, HWND hWnd, _uint iWinCX, _uint iWinCY);
 	void Tick();
 	void Compute_LocalRayInfo(class CTransform* pTransform);

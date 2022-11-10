@@ -23,6 +23,8 @@
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
+#include <iomanip>
+#include <sstream>
 
 #include "../ImGui/imgui.h"
 #include "../ImGui/imgui_impl_win32.h"

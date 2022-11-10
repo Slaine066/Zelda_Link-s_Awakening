@@ -30,6 +30,8 @@ public:
 	/* 리턴받은 행렬보관해야할 때  */
 	_float4x4 Get_World4x4() const { return m_WorldMatrix; }
 
+	const _float4x4* Get_World4x4Ptr() const { return &m_WorldMatrix; }
+
 	/* 리턴받은 행렬을 셰이더에 던지기위해.  */
 	_float4x4 Get_World4x4_TP() const {
 		_float4x4 TransposeMatrix;

@@ -5,6 +5,7 @@
 #include "Terrain.h"
 #include "Mesh.h"
 #include "Layer.h"
+#include "DebugDraw.h"
 
 IMPLEMENT_SINGLETON(CImGuiManager)
 
@@ -50,6 +51,19 @@ HRESULT CImGuiManager::Initialize(ID3D11Device * pDevice, ID3D11DeviceContext * 
 
 	_tchar cAnimResourcePath[MAX_PATH] = TEXT("../../Resources/Meshes/Anim/");
 	Read_AnimModels_Name(cAnimResourcePath);
+
+	// Initialize Variables for drawing Navigation Mesh.
+	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext);
+	m_pEffect = new BasicEffect(m_pDevice);
+
+	m_pEffect->SetVertexColorEnabled(true);
+
+	const void*	pShaderbyteCode = nullptr;
+	size_t iShaderByteCodeLength = 0;
+	m_pEffect->GetVertexShaderBytecode(&pShaderbyteCode, &iShaderByteCodeLength);
+
+	if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderbyteCode, iShaderByteCodeLength, &m_pInputLayout)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -123,6 +137,9 @@ void CImGuiManager::Render(_float fTimeDelta)
 	DrawEditor(fTimeDelta);
 	DrawOverlayWindow();
 
+	if (m_bShowNavigationMesh)
+		DrawNavigationMesh();
+
 	ImGui::EndFrame();
 
 	// Render
@@ -163,7 +180,7 @@ void CImGuiManager::DrawEditor(_float fTimeDelta)
 void CImGuiManager::DrawOverlayWindow()
 {
 	ImGuiIO& io = ImGui::GetIO();
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
 	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
 
 	if (ImGui::Begin("Debug Info", nullptr, window_flags))
@@ -185,6 +202,51 @@ void CImGuiManager::DrawOverlayWindow()
 	}
 
 	ImGui::End();
+}
+
+void CImGuiManager::DrawNavigationMesh()
+{
+	if (m_vNavigationCells.empty() && m_vCurrentCell.empty())
+		return;
+
+	m_pBatch->Begin();
+	m_pContext->IASetInputLayout(m_pInputLayout);
+	m_pEffect->SetWorld(XMMatrixIdentity());
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	m_pEffect->SetView(pGameInstance->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+	m_pEffect->SetProjection(pGameInstance->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+	RELEASE_INSTANCE(CGameInstance);
+
+	m_pEffect->Apply(m_pContext);
+
+	// Render Green Triangles
+	_vector	vColor = XMVectorSet(.31f, .78f, .47f, 1.f);
+
+	for (auto& vPoint : m_vCurrentCell)
+	{
+		_float3 vCellPoint = vPoint;
+		vCellPoint.y += .02f;
+		DX::DrawRing(m_pBatch, XMLoadFloat3(&vCellPoint), XMVectorSet(.05f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 0.f, .05f, 0.f), vColor);
+	}
+
+	for (auto& vCell : m_vNavigationCells)
+	{
+		_float3 vCellPointA = (_float3)vCell.m[0];
+		vCellPointA.y += .02f;
+		_float3 vCellPointB = (_float3)vCell.m[1];
+		vCellPointB.y += .02f;
+		_float3 vCellPointC = (_float3)vCell.m[2];
+		vCellPointC.y += .02f;
+
+		_vector vPointA = XMLoadFloat3(&vCellPointA);;
+		_vector vPointB = XMLoadFloat3(&vCellPointB);;
+		_vector vPointC = XMLoadFloat3(&vCellPointC);;
+
+		DX::DrawTriangle(m_pBatch, vPointA, vPointB, vPointC, vColor);
+	}
+
+	m_pBatch->End();
 }
 
 void CImGuiManager::DrawMapTool(_float fTimeDelta)
@@ -369,7 +431,7 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		}
 		ImGui::SameLine();
 
-		if (ImGui::Button("Add", ImVec2(0, 23)))
+		if (ImGui::Button("Add", ImVec2(0, 24)))
 			ImGui::OpenPopup("Add Layer");
 
 		if (ImGui::Button("Create Object"))
@@ -615,18 +677,30 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		{
 			if (m_pSelectedCreatedObject)
 			{
-				wstring wsCurrentLayer = wstring(m_sCurrentLayer.begin(), m_sCurrentLayer.end());
-				pGameInstance->Delete_GameObject(m_pSelectedCreatedObject, LEVEL_TOOL, wsCurrentLayer.c_str());
+				pGameInstance->Delete_GameObject(m_pSelectedCreatedObject, LEVEL_TOOL, m_pSelectedCreatedObject->Get_LayerId());
 				m_pSelectedCreatedObject = nullptr;
 			}
 		}
+		ImGui::NewLine();
 	}
 	
-	// Navigation Mesh
-	/*if (ImGui::CollapsingHeader("Navigation Mesh"))
+	if (ImGui::CollapsingHeader("Navigation Mesh"/*, TreeNodeFlags*/))
 	{
-		ImGui::Separator();
-	}*/
+		if (ImGui::Checkbox("Show Navigation Mesh", &m_bShowNavigationMesh))
+			m_bShowNavigationMesh != m_bShowNavigationMesh;
+		ImGui::NewLine();
+
+		if (ImGui::Button(m_bIsNavigationActive ? "End" : "Start", ImVec2(0, 24)))
+			m_bIsNavigationActive = m_bIsNavigationActive ? false : true;			
+
+		if (ImGui::Button("Undo", ImVec2(0, 24)))
+		{
+			if (!m_vCurrentCell.empty())
+				m_vCurrentCell.pop_back();
+			else if (!m_vNavigationCells.empty())
+				m_vNavigationCells.pop_back();
+		}
+	}
 	
 	DrawMapModals();
 
@@ -729,7 +803,7 @@ void CImGuiManager::DrawMapModals()
 void CImGuiManager::Read_Maps_Name()
 {
 	WIN32_FIND_DATA fileData;
-	HANDLE hDir = FindFirstFile(TEXT("../../Data/*"), &fileData);
+	HANDLE hDir = FindFirstFile(TEXT("../../Data/MapData/*"), &fileData);
 
 	/* No files found */
 	if (hDir == INVALID_HANDLE_VALUE)
@@ -949,16 +1023,16 @@ void CImGuiManager::Create_Object()
 
 _bool CImGuiManager::SaveData()
 {
-	HANDLE hFile = nullptr;
+	wstring wsCurrentMap = wstring(m_sCurrentMap.begin(), m_sCurrentMap.end()); // "Field"
 
-	_tchar LoadPath[MAX_PATH] = TEXT("../../Data/");
-	wstring wsCurrentMap = wstring(m_sCurrentMap.begin(), m_sCurrentMap.end());
+	// Save Map Data
+	HANDLE hFileMap = nullptr;
+	_tchar LoadPathMap[MAX_PATH] = TEXT("../../Data/MapData/");
+	wcscat_s(LoadPathMap, MAX_PATH, wsCurrentMap.c_str()); // ../../Data/MapData/Field.dat
 
-	wcscat_s(LoadPath, MAX_PATH, wsCurrentMap.c_str()); // ../../Data/Field.dat
-
-	hFile = CreateFile(LoadPath, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	hFileMap = CreateFile(LoadPathMap, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	
-	if (hFile == INVALID_HANDLE_VALUE)
+	if (hFileMap == INVALID_HANDLE_VALUE)
 		return false;
 
 	DWORD dwByte = 0;
@@ -1007,14 +1081,41 @@ _bool CImGuiManager::SaveData()
 			mWorldMatrix = pTransform->Get_World4x4();
 			tNewModelDesc.mWorldMatrix = mWorldMatrix;
 
-			WriteFile(hFile, &tNewModelDesc, sizeof(CMesh::MODELDESC), &dwByte, nullptr);
+			WriteFile(hFileMap, &tNewModelDesc, sizeof(CMesh::MODELDESC), &dwByte, nullptr);
 		}	
 	}
 
 	Safe_Release(pGameInstance);
+	CloseHandle(hFileMap);
 
-	CloseHandle(hFile);
+	// Save Navigation Data
+	if (!m_vNavigationCells.empty())
+	{
+		HANDLE hFileNavigation = nullptr;
+		_tchar LoadPathNavigation[MAX_PATH] = TEXT("../../Data/NavigationData/");
+		wcscat_s(LoadPathNavigation, MAX_PATH, wsCurrentMap.c_str()); // ../../Data/NavigationData/Field.dat
 
+		hFileNavigation = CreateFile(LoadPathNavigation, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+		if (hFileNavigation == INVALID_HANDLE_VALUE)
+			return false;
+
+		dwByte = 0;
+		_float3	vPoints[3];
+
+		for (_float3x3 pCell : m_vNavigationCells)
+		{
+			ZeroMemory(&vPoints, sizeof(_float3) * 3);
+			memcpy(&vPoints[0], &pCell.m[0], sizeof(_float3));
+			memcpy(&vPoints[1], &pCell.m[1], sizeof(_float3));
+			memcpy(&vPoints[2], &pCell.m[2], sizeof(_float3));
+
+			WriteFile(hFileNavigation, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+		}
+
+		CloseHandle(hFileNavigation);
+	}
+	
 	return true;
 }
 
@@ -1040,18 +1141,17 @@ _bool CImGuiManager::LoadData()
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
-
-	// Proceed with Loading
-	HANDLE hFile = nullptr;
 	
-	_tchar LoadPath[MAX_PATH] = TEXT("../../Data/");
 	wstring wsCurrentMap = wstring(m_vMaps[m_iSelectedMap].begin(), m_vMaps[m_iSelectedMap].end());
 
-	wcscat_s(LoadPath, MAX_PATH, wsCurrentMap.c_str()); // ../../Data/Field.dat
+	// Load Map Data
+	HANDLE hFileMap = nullptr;
+	_tchar LoadPathMap[MAX_PATH] = TEXT("../../Data/MapData/");
+	wcscat_s(LoadPathMap, MAX_PATH, wsCurrentMap.c_str()); // ../../Data/MapData/Field.dat
 
-	hFile = CreateFile(LoadPath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	hFileMap = CreateFile(LoadPathMap, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-	if (hFile == INVALID_HANDLE_VALUE)
+	if (hFileMap == INVALID_HANDLE_VALUE)
 		return false;
 
 	CMesh::MODELDESC tNewModelDesc;
@@ -1061,7 +1161,7 @@ _bool CImGuiManager::LoadData()
 
 	while (true)
 	{
-		ReadFile(hFile, &tNewModelDesc, sizeof(CMesh::MODELDESC), &dwByte, nullptr);
+		ReadFile(hFileMap, &tNewModelDesc, sizeof(CMesh::MODELDESC), &dwByte, nullptr);
 
 		if (!dwByte)
 			break;
@@ -1117,9 +1217,130 @@ _bool CImGuiManager::LoadData()
 		RELEASE_INSTANCE(CGameInstance);
 	}
 
-	CloseHandle(hFile);
+	CloseHandle(hFileMap);
+
+	// Load Navigation Data
+	HANDLE hFileNavigation = nullptr;
+	_tchar LoadPathNavigation[MAX_PATH] = TEXT("../../Data/NavigationData/");
+	wcscat_s(LoadPathNavigation, MAX_PATH, wsCurrentMap.c_str()); // ../../Data/NavigationData/Field.dat
+
+	hFileNavigation = CreateFile(LoadPathNavigation, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (hFileNavigation == INVALID_HANDLE_VALUE)
+		return false;
+
+	dwByte = 0;
+
+	_float3	vPoints[3];
+
+	while (true)
+	{
+		ReadFile(hFileMap, &vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+
+		if (!dwByte)
+			break;
+
+		_float3x3 vCell;
+		ZeroMemory(&vCell, sizeof(_float3x3));
+		memcpy(&vCell.m[0], &vPoints[0], sizeof(_float3));
+		memcpy(&vCell.m[1], &vPoints[1], sizeof(_float3));
+		memcpy(&vCell.m[2], &vPoints[2], sizeof(_float3));
+
+		m_vNavigationCells.push_back(vCell);
+	}
+
+	CloseHandle(hFileNavigation);
 
 	return true;
+}
+
+void CImGuiManager::Add_NavigationPoint(_float3 vPoint)
+{
+	/* If the Cell that is getting drawn IS the first Cell. */
+	if (m_vNavigationCells.size() == 0)
+	{
+		/* Add a Point to "m_vCurrentCell". */
+		m_vCurrentCell.push_back(vPoint);
+
+		/* If, after adding the Point there are 3 Points in "m_vCurrentCell": Add a Cell to "m_vNavigationCells" and empty "m_vCurrentCell". */
+		if (m_vCurrentCell.size() == 3)
+		{
+			_float3x3 vCell;
+			ZeroMemory(&vCell, sizeof(_float3x3));
+			memcpy(vCell.m[0], &m_vCurrentCell[0], sizeof(_float3));
+			memcpy(vCell.m[1], &m_vCurrentCell[1], sizeof(_float3));
+			memcpy(vCell.m[2], &m_vCurrentCell[2], sizeof(_float3));
+
+			m_vNavigationCells.push_back(vCell);
+			m_vCurrentCell.clear();
+		}
+	}
+	/* If the Cell that is getting drawn is NOT the first Cell. */
+	else
+	{
+		/* Check if the new Point is supposed to refer to an already existing Point or is a new one. */
+		_float3 vExistingPoint;
+
+		/* If the new Point refers to an already existing Point, add the already existing point to "m_vCurrentCell". */
+		if (Check_ExistingPoints(vPoint, vExistingPoint))
+			m_vCurrentCell.push_back(vExistingPoint);
+		/* If not, add the new Point to "m_vCurrentCell". */
+		else
+			m_vCurrentCell.push_back(vPoint);
+
+		/* If, after adding the Point there are 3 Points in "m_vCurrentCell": Add a Cell to "m_vNavigationCells" and empty "m_vCurrentCell". */
+		if (m_vCurrentCell.size() == 3)
+		{
+			_float3x3 vCell;
+			ZeroMemory(&vCell, sizeof(_float3x3));
+			memcpy(vCell.m[0], &m_vCurrentCell[0], sizeof(_float3));
+			memcpy(vCell.m[1], &m_vCurrentCell[1], sizeof(_float3));
+			memcpy(vCell.m[2], &m_vCurrentCell[2], sizeof(_float3));
+
+			m_vNavigationCells.push_back(vCell);
+			m_vCurrentCell.clear();
+		}
+	}
+}
+
+_bool CImGuiManager::Check_ExistingPoints(_float3 vNewPoint, OUT _float3& vExistingPoint, _float fDistance)
+{
+	for (auto& vCell : m_vNavigationCells)
+	{
+		_float3 vPointA, vPointB, vPointC;
+		ZeroMemory(&vPointA, sizeof(_float3));
+		ZeroMemory(&vPointB, sizeof(_float3));
+		ZeroMemory(&vPointC, sizeof(_float3));
+		memcpy(&vPointA, &vCell._11, sizeof(_float3));
+		memcpy(&vPointB, &vCell._21, sizeof(_float3));
+		memcpy(&vPointC, &vCell._31, sizeof(_float3));
+
+		_float fDistanceFromA = XMVectorGetX(XMVector3Length(XMLoadFloat3(&vPointA) - XMLoadFloat3(&vNewPoint)));
+		_float fDistanceFromB = XMVectorGetX(XMVector3Length(XMLoadFloat3(&vPointB) - XMLoadFloat3(&vNewPoint)));
+		_float fDistanceFromC = XMVectorGetX(XMVector3Length(XMLoadFloat3(&vPointC) - XMLoadFloat3(&vNewPoint)));
+
+		/* New Point DOES refer to an already existing Point (A). */
+		if (fDistanceFromA < fDistance && fDistanceFromA < fDistanceFromB && fDistanceFromA < fDistanceFromC)
+		{
+			vExistingPoint = vPointA;
+			return true;
+		}
+		/* New Point DOES refer to an already existing Point (B). */
+		if (fDistanceFromB < fDistance && fDistanceFromB < fDistanceFromA && fDistanceFromB < fDistanceFromC)
+		{
+			vExistingPoint = vPointB;
+			return true;
+		}
+		/* New Point DOES refer to an already existing Point (C). */
+		if (fDistanceFromC < fDistance && fDistanceFromC < fDistanceFromB && fDistanceFromC < fDistanceFromA)
+		{
+			vExistingPoint = vPointC;
+			return true;
+		}
+	}
+	
+	/* New Point does NOT refer to an already existing Point. */
+	return false;
 }
 
 void CImGuiManager::Free()
@@ -1131,6 +1352,10 @@ void CImGuiManager::Free()
 	// CleanupDeviceD3D();
 	//DestroyWindow(g_hWnd);
 	//UnregisterClass(wc.lpszClassName, wc.hInstance);
+
+	Safe_Release(m_pInputLayout);
+	Safe_Delete(m_pBatch);
+	Safe_Delete(m_pEffect);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

@@ -47,7 +47,7 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar * pNavigationData)
 
 	CloseHandle(hFile);
 
-	if (FAILED(SetUp_Neighbor()))
+	if (FAILED(Setup_Neighbors()))
 		return E_FAIL;
 
 #ifdef _DEBUG
@@ -64,6 +64,34 @@ HRESULT CNavigation::Initialize(void * pArg)
 		memcpy(&m_NavDesc, pArg, sizeof(NAVDESC));
 
 	return S_OK;
+}
+
+_float CNavigation::Get_NavigationHeight(_float3 vPosition)
+{
+	_float fDistance = 0.f;
+
+	_vector vRayPos = XMLoadFloat3(&vPosition);
+	vRayPos -= XMVectorSet(0.f, .5f, 0.f, 1.f);
+	vRayPos = XMVectorSetW(vRayPos, 1.f);
+
+	_vector vRayDir = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	_vector vPointA = XMLoadFloat3(m_Cells[m_NavDesc.iCurrentCellIndex]->Get_Point(CCell::POINT::POINT_A));
+	vPointA = XMVectorSetW(vPointA, 1.f);
+	_vector vPointB = XMLoadFloat3(m_Cells[m_NavDesc.iCurrentCellIndex]->Get_Point(CCell::POINT::POINT_B));
+	vPointB = XMVectorSetW(vPointB, 1.f);
+	_vector vPointC = XMLoadFloat3(m_Cells[m_NavDesc.iCurrentCellIndex]->Get_Point(CCell::POINT::POINT_C));
+	vPointC = XMVectorSetW(vPointC, 1.f);
+
+	if (TriangleTests::Intersects(vRayPos, vRayDir, vPointA, vPointB, vPointC, fDistance))
+	{
+		_float3 vIntersection;
+		XMStoreFloat3(&vIntersection, vRayPos + vRayDir * fDistance);
+
+		return vIntersection.y;
+	}
+
+	return 0.f;
 }
 
 _bool CNavigation::CanMove(_fvector vPosition)
@@ -115,7 +143,7 @@ HRESULT CNavigation::Render_Navigation()
 	if (m_NavDesc.iCurrentCellIndex  == -1)
 	{
 		m_pShader->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
-		m_pShader->Set_RawValue("g_vColor", &_float4(0.f, 1.f, 0.f, 1.f), sizeof(_float4));
+		m_pShader->Set_RawValue("g_vColor", &_float4(.31f, .78f, .47f, 1.f), sizeof(_float4));
 		m_pShader->Begin(0);
 
 		for (auto& pCell : m_Cells)
@@ -126,9 +154,9 @@ HRESULT CNavigation::Render_Navigation()
 	}
 	else
 	{
-		WorldMatrix._24 = 0.1f; // Set Y Translation.
+		WorldMatrix._24 = .03f; // Set Y Translation.
 		m_pShader->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
-		m_pShader->Set_RawValue("g_vColor", &_float4(1.f, 0.f, 0.f, 1.f), sizeof(_float4));
+		m_pShader->Set_RawValue("g_vColor", &_float4(.88f, .19f, .38f, 1.f), sizeof(_float4));
 
 		m_pShader->Begin(0);
 		m_Cells[m_NavDesc.iCurrentCellIndex]->Render();
@@ -138,7 +166,7 @@ HRESULT CNavigation::Render_Navigation()
 }
 #endif // _DEBUG
 
-HRESULT CNavigation::SetUp_Neighbor()
+HRESULT CNavigation::Setup_Neighbors()
 {
 	for (auto& pSourCell : m_Cells)
 	{

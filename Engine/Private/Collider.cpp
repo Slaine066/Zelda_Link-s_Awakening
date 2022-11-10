@@ -1,6 +1,7 @@
 #include "Collider.h"
 #include "DebugDraw.h"
 #include "GameInstance.h"
+#include "HierarchyNode.h"
 
 CCollider::CCollider(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -79,16 +80,23 @@ HRESULT CCollider::Initialize(void * pArg)
 
 void CCollider::Update(_fmatrix WorldMatrix)
 {
+	_matrix TransformMatrix;
+
+	if (m_ColliderDesc.m_bIsAttachedToBone)
+		TransformMatrix = m_ColliderDesc.pSocket->Get_OffsetMatrix() * m_ColliderDesc.pSocket->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_ColliderDesc.pPivotMatrix) * WorldMatrix;
+	else
+		TransformMatrix = WorldMatrix;
+
 	switch (m_eType)
 	{
 	case TYPE_AABB:
-		m_pAABB[BOUNDING_ORIGINAL]->Transform(*m_pAABB[BOUNDING_WORLD], Remove_Rotation(WorldMatrix));
+		m_pAABB[BOUNDING_ORIGINAL]->Transform(*m_pAABB[BOUNDING_WORLD], Remove_Rotation(TransformMatrix));
 		break;
 	case TYPE_OBB:
-		m_pOBB[BOUNDING_ORIGINAL]->Transform(*m_pOBB[BOUNDING_WORLD], WorldMatrix);
+		m_pOBB[BOUNDING_ORIGINAL]->Transform(*m_pOBB[BOUNDING_WORLD], TransformMatrix);
 		break;
 	case TYPE_SPHERE:
-		m_pSphere[BOUNDING_ORIGINAL]->Transform(*m_pSphere[BOUNDING_WORLD], WorldMatrix);
+		m_pSphere[BOUNDING_ORIGINAL]->Transform(*m_pSphere[BOUNDING_WORLD], TransformMatrix);
 		break;
 	}
 }
@@ -107,7 +115,7 @@ HRESULT CCollider::Render()
 	m_pEffect->Apply(m_pContext);
 
 	// Render Green Collider when not Collided \ Render Red Collider when Collided.
-	_vector	vColor = m_isCollision == true ? XMVectorSet(1.f, 0.f, 0.f, 1.f) : XMVectorSet(0.f, 1.f, 0.f, 1.f);
+	_vector	vColor = m_isCollision == true ? XMVectorSet(.88f, .19f, .38f, 1.f) : XMVectorSet(.31f, .78f, .47f, 1.f);
 
 	switch (m_eType)
 	{

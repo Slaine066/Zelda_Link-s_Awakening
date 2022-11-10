@@ -21,6 +21,7 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
+	_float Get_NavigationHeight(_float3 vPosition);
 	_bool CanMove(_fvector vPosition);
 
 #ifdef _DEBUG
@@ -36,7 +37,7 @@ private:
 #endif // _DEBUG
 
 private:
-	HRESULT SetUp_Neighbor();
+	HRESULT Setup_Neighbors();
 
 public:
 	static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pNavigationData);

@@ -58,6 +58,8 @@ protected:
 	void Render_Colliders();
 	void Render_NavigationMesh();
 
+	void Sync_WithNavigationHeight();
+
 protected:
 	CShader* m_pShaderCom = nullptr;
 	CRenderer* m_pRendererCom = nullptr;

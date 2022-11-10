@@ -75,6 +75,7 @@ HRESULT CMainApp::Render()
 
 	m_pRenderer->Render_GameObjects();
 
+#ifdef _DEBUG
 	++m_iNumRender;
 
 	if (m_fTimeAcc > 1.0f)
@@ -86,6 +87,7 @@ HRESULT CMainApp::Render()
 	}
 
 	m_pGameInstance->Render_Font(TEXT("Quicksand-24"), m_szFPS, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+#endif // _DEBUG
 
 	m_pGameInstance->Present();
 

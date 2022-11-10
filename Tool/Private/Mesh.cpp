@@ -41,7 +41,7 @@ _uint CMesh::Tick(_float fTimeDelta)
 		_bool isFinished = false;
 		m_pModelCom->Play_Animation(fTimeDelta, isFinished);
 	}
-	/*else */if (m_bIsSelected)
+	else if (m_bIsSelected)
 	{
 		_float3 vPickedPosition = { 0.f, 0.f, 0.f };
 		Picking(vPickedPosition);
@@ -87,10 +87,13 @@ _bool CMesh::Picking(_float3& OutPos)
 		if (vMeshes[i]->Picking(m_pTransformCom, OutPos))
 		{
 			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-			if (pGameInstance->Key_Down(VK_LBUTTON))
+			if (pGameInstance->Key_Down(VK_RBUTTON))
 			{
 				CImGuiManager* pImGuiManager = GET_INSTANCE(CImGuiManager);
 				pImGuiManager->Set_PickedPosition(OutPos);
+
+				if (pImGuiManager->Get_IsNavigationActive())
+					pImGuiManager->Add_NavigationPoint(OutPos);
 				RELEASE_INSTANCE(CImGuiManager);
 				RELEASE_INSTANCE(CGameInstance);
 				return true;

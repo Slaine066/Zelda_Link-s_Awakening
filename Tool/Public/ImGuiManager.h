@@ -30,6 +30,7 @@ private:
 
 	void DrawEditor(_float fTimeDelta);
 	void DrawOverlayWindow();
+	void DrawNavigationMesh();
 
 	void DrawMapTool(_float fTimeDelta);
 	void DrawUITool();
@@ -55,6 +56,11 @@ private:
 public:
 	void Set_FramesPerSecond(_uint iFrames) { m_iFramesPerSecond = iFrames; }
 	void Set_PickedPosition(_float3 vPickedPosition) { m_vPositionPicked = vPickedPosition; }
+
+	// Navigation
+	_bool Get_IsNavigationActive() { return m_bIsNavigationActive; }
+	void Add_NavigationPoint(_float3 vPoint);
+	_bool Check_ExistingPoints(_float3 vNewPoint, OUT _float3& vExistingPoint, _float fDistance = .3f);
 
 private:
 	_uint m_iFramesPerSecond = 0;
@@ -90,6 +96,17 @@ private:
 	TRANSFORM_TYPE m_eObjAction = TRANS_TRANSLATION;
 	CTransform* m_pTransform = nullptr;
 	_float m_fX = 1.f, m_fY = 1.f, m_fZ = 1.f;
+
+	// Navigation Mesh
+	_bool m_bShowNavigationMesh = false;
+	_bool m_bIsNavigationActive = false;
+	_uint m_iCellIndex = 0;
+	vector<_float3x3> m_vNavigationCells;
+	vector<_float3> m_vCurrentCell;
+	
+	ID3D11InputLayout* m_pInputLayout = nullptr;
+	PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;
+	BasicEffect* m_pEffect = nullptr;
 
 	// UI TOOL
 	// TODO: ..

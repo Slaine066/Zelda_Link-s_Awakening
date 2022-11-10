@@ -23,9 +23,6 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_NavigationMesh()))
-		return E_FAIL;
-
 	/* For.Com_Navigation */
 	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation_Field"), (CComponent**)&m_pNavigationMesh)))
 		return E_FAIL;
@@ -56,7 +53,7 @@ HRESULT CLevel_GamePlay::Load_From_File()
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
-	HANDLE hFile = CreateFile(TEXT("../../Data/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE hFile = CreateFile(TEXT("../../Data/MapData/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (hFile == 0)
 		return E_FAIL;
 
@@ -79,7 +76,7 @@ HRESULT CLevel_GamePlay::Load_From_File()
 	m_vInstancedObjects.resize(iCounter);
 
 	// Second read to write in specific vector index (since we now the number of Objects and the vector is correctly resized).
-	hFile = CreateFile(TEXT("../../Data/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	hFile = CreateFile(TEXT("../../Data/MapData/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (hFile == 0)
 		return E_FAIL;
 
@@ -189,44 +186,44 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_NavigationMesh()
-{
-	HANDLE hFile = CreateFile(TEXT("../../Data/NavigationField.dat"), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-	if (!hFile)
-		return E_FAIL;
-
-	_float3	vPoints[3];
-	_ulong dwByte = 0;
-
-	/* Create Cells. */
-	ZeroMemory(vPoints, sizeof(_float3) * 3);
-	vPoints[0] = _float3(0.f, 0.f, 5.f);
-	vPoints[1] = _float3(5.f, 0.f, 0.f);
-	vPoints[2] = _float3(0.f, 0.f, 0.f);
-	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
-
-	ZeroMemory(vPoints, sizeof(_float3) * 3);
-	vPoints[0] = _float3(0.f, 0.f, 5.f);
-	vPoints[1] = _float3(5.f, 0.f, 5.f);
-	vPoints[2] = _float3(5.f, 0.f, 0.f);
-	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
-
-	ZeroMemory(vPoints, sizeof(_float3) * 3);
-	vPoints[0] = _float3(0.f, 0.f, 10.f);
-	vPoints[1] = _float3(5.f, 0.f, 5.f);
-	vPoints[2] = _float3(0.f, 0.f, 5.f);
-	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
-
-	ZeroMemory(vPoints, sizeof(_float3) * 3);
-	vPoints[0] = _float3(5.f, 0.f, 5.f);
-	vPoints[1] = _float3(10.f, 0.f, 0.f);
-	vPoints[2] = _float3(5.f, 0.f, 0.f);
-	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
-
-	CloseHandle(hFile);
-
-	return S_OK;
-}
+//HRESULT CLevel_GamePlay::Ready_NavigationMesh()
+//{
+//	HANDLE hFile = CreateFile(TEXT("../../Data/NavigationData/Field.dat"), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+//	if (!hFile)
+//		return E_FAIL;
+//
+//	_float3	vPoints[3];
+//	_ulong dwByte = 0;
+//
+//	/* Create Cells. */
+//	ZeroMemory(vPoints, sizeof(_float3) * 3);
+//	vPoints[0] = _float3(0.f, 0.f, 5.f);
+//	vPoints[1] = _float3(5.f, 0.f, 0.f);
+//	vPoints[2] = _float3(0.f, 0.f, 0.f);
+//	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+//
+//	ZeroMemory(vPoints, sizeof(_float3) * 3);
+//	vPoints[0] = _float3(0.f, 0.f, 5.f);
+//	vPoints[1] = _float3(5.f, 0.f, 5.f);
+//	vPoints[2] = _float3(5.f, 0.f, 0.f);
+//	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+//
+//	ZeroMemory(vPoints, sizeof(_float3) * 3);
+//	vPoints[0] = _float3(0.f, 0.f, 10.f);
+//	vPoints[1] = _float3(5.f, 0.f, 5.f);
+//	vPoints[2] = _float3(0.f, 0.f, 5.f);
+//	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+//
+//	ZeroMemory(vPoints, sizeof(_float3) * 3);
+//	vPoints[0] = _float3(5.f, 0.f, 5.f);
+//	vPoints[1] = _float3(10.f, 0.f, 0.f);
+//	vPoints[2] = _float3(5.f, 0.f, 0.f);
+//	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+//
+//	CloseHandle(hFile);
+//
+//	return S_OK;
+//}
 
 CLevel_GamePlay* CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

@@ -2,6 +2,7 @@
 
 #include "Player.h"
 #include "GameInstance.h"
+#include "HierarchyNode.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CActor(pDevice, pContext)
@@ -26,10 +27,6 @@ HRESULT CPlayer::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, .4f);
-	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, .4f);
-	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, .4f);
-
 	m_pModelCom->Set_CurrentAnimIndex(ANIM_IDLE);
 
 	return S_OK;
@@ -39,16 +36,22 @@ _uint CPlayer::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	// Collision Handling
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, this);
 
-	Handle_Input();				// Change STATE based on Input and CurrentState.
-	Execute_State(fTimeDelta);	// Execute Action based on STATE.
+	// Change STATE based on Input and CurrentState
+	Handle_Input();		
 
+	// Execute based on STATE
+	Execute_State(fTimeDelta);	
+
+	// Play Animation
 	m_bIsAnimationFinished = false;
 	m_pModelCom->Play_Animation(fTimeDelta, m_bIsAnimationFinished, Is_AnimationLoop(m_pModelCom->Get_CurrentAnimIndex()));
 
-	Reset_State();				// Change STATE when Animation ends.
+	// Change STATE when Animation ends
+	Reset_State();				
 
 	return OBJ_NOEVENT;
 }
@@ -119,14 +122,30 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_INPUT;
 	ColliderDesc.vScale = _float3(.8f, 1.3f, .8f);
 	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
+	ColliderDesc.m_bIsAttachedToBone = false;
 
-	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object
+	m_vCollidersCom.resize(2); // Numbers of Colliders needed for this Object
 
 	/* For.Com_Collider*/
-	if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+	if (FAILED(__super::Add_Components(TEXT("Com_ColliderPlayer"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
 		return E_FAIL;
 
-	
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_OUTPUT;
+	ColliderDesc.vScale = _float3(.3f, .3f, .6f);
+	ColliderDesc.m_bIsAttachedToBone = true;
+	ColliderDesc.pSocket = m_pModelCom->Get_BonePtr("itemA_L");
+
+	// For Objects attached to Bones a further X and Y offset is needed (not sure why.. ¤Ð¤Ð)
+	_float4x4 OffsetedPivot = m_pModelCom->Get_PivotFloat4x4(); 
+	OffsetedPivot._41 -= .5f;
+	OffsetedPivot._42 += .4f;
+	ColliderDesc.pPivotMatrix = OffsetedPivot;
+
+	/* For.Com_Collider*/
+	if (FAILED(__super::Add_Components(TEXT("Com_ColliderSword"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[1], &ColliderDesc)))
+		return E_FAIL;
+
 	CNavigation::NAVDESC NavDesc;
 	ZeroMemory(&NavDesc, sizeof(CNavigation::NAVDESC));
 	NavDesc.iCurrentCellIndex = 0;
@@ -228,6 +247,8 @@ void CPlayer::Execute_State(_float fTimeDelta)
 			m_pTransformCom->Go_Right(fTimeDelta, m_pNavigationCom);
 			break;
 		}
+
+		Sync_WithNavigationHeight();
 	}
 }
 

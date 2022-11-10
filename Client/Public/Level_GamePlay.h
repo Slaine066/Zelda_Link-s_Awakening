@@ -24,7 +24,7 @@ public:
 	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag);
 
 	// Navigation Mesh Test
-	HRESULT Ready_NavigationMesh();
+	/* HRESULT Ready_NavigationMesh(); */
 
 	vector<CActor::MODELDESC> m_vInstancedObjects;
 	
