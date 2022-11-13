@@ -49,6 +49,7 @@ private:
 		STATE_IDLE,
 		STATE_MOVING,
 		STATE_ATTACKING,
+		STATE_DAMAGED,
 		STATE_END
 	};
 
@@ -63,6 +64,7 @@ public:
 	virtual _uint Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual _float Take_Damage(float fDamage, void* DamageType, CGameObject* DamageCauser) override;
 
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;

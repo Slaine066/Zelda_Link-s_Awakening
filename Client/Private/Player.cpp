@@ -62,6 +62,22 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
+	if (m_eCurrentState == STATEID::STATE_ATTACKING && !m_bDidDamage)
+	{
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		vector<CGameObject*> pDamagedObjects;
+		pGameInstance->Collision_Check_Group_Multi(CCollision_Manager::COLLISION_GROUP::COLLISION_MONSTER, Get_Collider(CCollider::AIM::AIM_DAMAGE_OUTPUT), CCollider::AIM::AIM_DAMAGE_INPUT, pDamagedObjects);
+		RELEASE_INSTANCE(CGameInstance);
+
+		if (!pDamagedObjects.empty())
+		{
+			for (auto& pDamaged : pDamagedObjects)
+				pDamaged->Take_Damage(10.f, nullptr, this);
+
+			m_bDidDamage = true;
+		}
+	}
 }
 
 HRESULT CPlayer::Render()
@@ -132,15 +148,11 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_OUTPUT;
-	ColliderDesc.vScale = _float3(.3f, .3f, .6f);
+	ColliderDesc.vScale = _float3(.2f, .2f, 1.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, -.35f);
 	ColliderDesc.m_bIsAttachedToBone = true;
 	ColliderDesc.pSocket = m_pModelCom->Get_BonePtr("itemA_L");
-
-	// For Objects attached to Bones a further X and Y offset is needed (not sure why.. ¤Ð¤Ð)
-	_float4x4 OffsetedPivot = m_pModelCom->Get_PivotFloat4x4(); 
-	OffsetedPivot._41 -= .5f;
-	OffsetedPivot._42 += .4f;
-	ColliderDesc.pPivotMatrix = OffsetedPivot;
+	ColliderDesc.pPivotMatrix = m_pModelCom->Get_PivotFloat4x4();
 
 	/* For.Com_Collider*/
 	if (FAILED(__super::Add_Components(TEXT("Com_ColliderSword"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[1], &ColliderDesc)))
@@ -184,6 +196,7 @@ void CPlayer::Handle_Input()
 		{
 			m_eCurrentState = STATE_ATTACKING;
 			m_pModelCom->Set_CurrentAnimIndex(ANIM_SLASH);
+			m_bDidDamage = false;
 		}
 		else if (Move())
 		{
@@ -198,6 +211,7 @@ void CPlayer::Handle_Input()
 		{
 			m_eCurrentState = STATE_ATTACKING;
 			m_pModelCom->Set_CurrentAnimIndex(ANIM_SLASH);
+			m_bDidDamage = false;
 		}
 		else if (Move())
 		{
@@ -260,6 +274,7 @@ void CPlayer::Reset_State()
 		{
 		case ANIM_SLASH:
 			m_eCurrentState = STATE_IDLE;
+			m_bDidDamage = false;
 		}
 	}
 }

@@ -145,6 +145,7 @@ private:
 	DIRID m_eCurrentDir = DIR_STRAIGHT;
 
 	_bool m_bIsAnimationFinished = false;
+	_bool m_bDidDamage = false;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

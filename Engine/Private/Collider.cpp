@@ -83,7 +83,7 @@ void CCollider::Update(_fmatrix WorldMatrix)
 	_matrix TransformMatrix;
 
 	if (m_ColliderDesc.m_bIsAttachedToBone)
-		TransformMatrix = m_ColliderDesc.pSocket->Get_OffsetMatrix() * m_ColliderDesc.pSocket->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_ColliderDesc.pPivotMatrix) * WorldMatrix;
+		TransformMatrix = m_ColliderDesc.pSocket->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_ColliderDesc.pPivotMatrix) * WorldMatrix;
 	else
 		TransformMatrix = WorldMatrix;
 
@@ -115,7 +115,7 @@ HRESULT CCollider::Render()
 	m_pEffect->Apply(m_pContext);
 
 	// Render Green Collider when not Collided \ Render Red Collider when Collided.
-	_vector	vColor = m_isCollision == true ? XMVectorSet(.88f, .19f, .38f, 1.f) : XMVectorSet(.31f, .78f, .47f, 1.f);
+	_vector	vColor = /*m_isCollision == true ? XMVectorSet(.88f, .19f, .38f, 1.f) : */XMVectorSet(.31f, .78f, .47f, 1.f);
 
 	switch (m_eType)
 	{

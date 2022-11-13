@@ -34,15 +34,7 @@ _uint CMonster::Tick(_float fTimeDelta)
 	__super::Tick(fTimeDelta);
 
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_MONSTER, this);
-
-	// () ..? AI Function?
-	Execute_State(fTimeDelta);	// Execute Action based on STATE.
-
-	m_bIsAnimationFinished = false;
-	m_pModelCom->Play_Animation(fTimeDelta, m_bIsAnimationFinished, Is_AnimationLoop(m_pModelCom->Get_CurrentAnimIndex()));
-
-	Reset_State();				// Change STATE when Animation ends.
+	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_MONSTER, this);		
 
 	return OBJ_NOEVENT;
 }
