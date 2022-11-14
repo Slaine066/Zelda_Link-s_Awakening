@@ -12,6 +12,7 @@
 #include "Picking.h"
 #include "CollisionManager.h"
 #include "KeysManager.h"
+#include "FrustumCulling.h"
 
 BEGIN(Engine)
 class ENGINE_DLL CGameInstance final : public CBase
@@ -91,23 +92,27 @@ public: /* For.KeysManager */
 	_bool Key_Down(int _Key);
 	_bool Key_Pressing(int _Key);
 	_bool Key_Up(int _Key);
+
+public: /* For.FrustumCulling */
+	_bool IsIn_Frustum(_fvector vPosition, _float fRange = 0.f);
 	
 public:
 	static void Release_Engine();
 
 private:
-	CGraphic_Device*				m_pGraphic_Device = nullptr;
-	CInput_Device*					m_pInput_Device = nullptr;
-	CLevel_Manager*					m_pLevel_Manager = nullptr;
-	CObject_Manager*				m_pObject_Manager = nullptr;
-	CTimer_Manager*					m_pTimer_Manager = nullptr;
-	CComponent_Manager*				m_pComponent_Manager = nullptr;
-	CPipeLine*						m_pPipeLine = nullptr;
-	CLight_Manager*					m_pLight_Manager = nullptr;
-	CFont_Manager*					m_pFont_Manager = nullptr;
-	CPicking*						m_pPicking = nullptr;
-	CCollision_Manager*				m_pCollision_Manager = nullptr;
-	CKeysManager*					m_pKeys_Manager = nullptr;
+	CGraphic_Device*	m_pGraphic_Device = nullptr;
+	CInput_Device*		m_pInput_Device = nullptr;
+	CLevel_Manager*		m_pLevel_Manager = nullptr;
+	CObject_Manager*	m_pObject_Manager = nullptr;
+	CTimer_Manager*		m_pTimer_Manager = nullptr;
+	CComponent_Manager*	m_pComponent_Manager = nullptr;
+	CPipeLine*			m_pPipeLine = nullptr;
+	CLight_Manager*		m_pLight_Manager = nullptr;
+	CFont_Manager*		m_pFont_Manager = nullptr;
+	CPicking*			m_pPicking = nullptr;
+	CCollision_Manager*	m_pCollision_Manager = nullptr;
+	CKeysManager*		m_pKeys_Manager = nullptr;
+	CFrustumCulling*	m_pFrustumCulling = nullptr;
 
 public:
 	virtual void Free() override;

@@ -53,8 +53,13 @@ void CMoriblinSword::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
-	if (m_pRendererCom)
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	_bool bIsInFrustum = pGameInstance->IsIn_Frustum(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), .5f);
+
+	if (m_pRendererCom && bIsInFrustum)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+	
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CMoriblinSword::Render()

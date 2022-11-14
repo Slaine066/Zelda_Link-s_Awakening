@@ -15,7 +15,9 @@ CGameInstance::CGameInstance()
 	, m_pPicking(CPicking::Get_Instance())
 	, m_pCollision_Manager(CCollision_Manager::Get_Instance())
 	, m_pKeys_Manager(CKeysManager::Get_Instance())
+	, m_pFrustumCulling(CFrustumCulling::Get_Instance())
 {	
+	Safe_AddRef(m_pFrustumCulling);
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pLight_Manager);
 	Safe_AddRef(m_pPipeLine);
@@ -58,6 +60,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (FAILED(m_pComponent_Manager->Reserve_Container(iNumLevels)))
 		return E_FAIL;
 
+	if (FAILED(m_pFrustumCulling->Initialize()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -73,6 +78,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	m_pPipeLine->Update();
 	m_pPicking->Tick();
+	m_pFrustumCulling->Transform_ToWorldSpace();
 
 	m_pLevel_Manager->Late_Tick(fTimeDelta);
 	m_pObject_Manager->Late_Tick(fTimeDelta);
@@ -403,6 +409,14 @@ _bool CGameInstance::Key_Up(int _Key)
 	return m_pKeys_Manager->Key_Up(_Key);
 }
 
+_bool CGameInstance::IsIn_Frustum(_fvector vPosition, _float fRange)
+{
+	if (!m_pFrustumCulling)
+		return false;
+
+	return m_pFrustumCulling->IsIn_Frustum(vPosition, fRange);
+}
+
 _bool CGameInstance::Key_Down(int _Key)
 {
 	if (nullptr == m_pKeys_Manager)
@@ -425,11 +439,13 @@ void CGameInstance::Release_Engine()
 	CGraphic_Device::Get_Instance()->Destroy_Instance();
 	CPicking::Get_Instance()->Destroy_Instance();
 	CCollision_Manager::Get_Instance()->Destroy_Instance();
+	CFrustumCulling::Get_Instance()->Destroy_Instance();
 	CKeysManager::Get_Instance()->Destroy_Instance();
 }
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pFrustumCulling);
 	Safe_Release(m_pKeys_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pPicking);
