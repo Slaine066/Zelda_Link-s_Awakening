@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "GameInstance.h"
 #include "HierarchyNode.h"
+#include "PlayerState.h"
+#include "IdleState.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CActor(pDevice, pContext)
@@ -27,7 +29,8 @@ HRESULT CPlayer::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pModelCom->Set_CurrentAnimIndex(ANIM_IDLE);
+	/* State Pattern Code */
+	m_pPlayerState = new CIdleState();
 
 	return S_OK;
 }
@@ -40,18 +43,8 @@ _uint CPlayer::Tick(_float fTimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, this);
 
-	// Change STATE based on Input and CurrentState
-	Handle_Input();		
-
-	// Execute based on STATE
-	Execute_State(fTimeDelta);	
-
-	// Play Animation
-	m_bIsAnimationFinished = false;
-	m_pModelCom->Play_Animation(fTimeDelta, m_bIsAnimationFinished, Is_AnimationLoop(m_pModelCom->Get_CurrentAnimIndex()));
-
-	// Change STATE when Animation ends
-	Reset_State();				
+	HandleInput();
+	TickState(fTimeDelta);				
 
 	return OBJ_NOEVENT;
 }
@@ -63,21 +56,7 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
-	if (m_eCurrentState == STATEID::STATE_ATTACKING && !m_bDidDamage)
-	{
-		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-		vector<CGameObject*> pDamagedObjects;
-		pGameInstance->Collision_Check_Group_Multi(CCollision_Manager::COLLISION_GROUP::COLLISION_MONSTER, Get_Collider(CCollider::AIM::AIM_DAMAGE_OUTPUT), CCollider::AIM::AIM_DAMAGE_INPUT, pDamagedObjects);
-		RELEASE_INSTANCE(CGameInstance);
-
-		if (!pDamagedObjects.empty())
-		{
-			for (auto& pDamaged : pDamagedObjects)
-				pDamaged->Take_Damage(10.f, nullptr, this);
-
-			m_bDidDamage = true;
-		}
-	}
+	LateTickState(fTimeDelta);
 }
 
 HRESULT CPlayer::Render()
@@ -185,100 +164,6 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	return S_OK;
 }
 
-void CPlayer::Handle_Input()
-{
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-
-	switch (m_eCurrentState)
-	{
-	case STATE_IDLE:
-		if (pGameInstance->Key_Down('S'))
-		{
-			m_eCurrentState = STATE_ATTACKING;
-			m_pModelCom->Set_CurrentAnimIndex(ANIM_SLASH);
-			m_bDidDamage = false;
-		}
-		else if (Move())
-		{
-			m_eCurrentState = STATE_MOVING;
-			m_pModelCom->Set_CurrentAnimIndex(ANIM_RUN);
-		}
-		else
-			m_pModelCom->Set_CurrentAnimIndex(ANIM_IDLE);
-		break;
-	case STATE_MOVING:
-		if (pGameInstance->Key_Down('S'))
-		{
-			m_eCurrentState = STATE_ATTACKING;
-			m_pModelCom->Set_CurrentAnimIndex(ANIM_SLASH);
-			m_bDidDamage = false;
-		}
-		else if (Move())
-		{
-			m_eCurrentState = STATE_MOVING;
-			m_pModelCom->Set_CurrentAnimIndex(ANIM_RUN);
-		}
-		else
-		{
-			m_eCurrentState = STATE_IDLE;
-			m_pModelCom->Set_CurrentAnimIndex(ANIM_IDLE);
-		}
-		break;
-	case STATE_ATTACKING:
-		break;
-	}
-}
-
-void CPlayer::Execute_State(_float fTimeDelta)
-{
-	switch (m_eCurrentState)
-	{
-	case STATE_MOVING:
-		switch (m_eCurrentDir)
-		{
-		case DIR_STRAIGHT_LEFT:
-			m_pTransformCom->Go_Straight_Left(fTimeDelta, m_pNavigationCom);
-			break;
-		case DIR_STRAIGHT_RIGHT:
-			m_pTransformCom->Go_Straight_Right(fTimeDelta, m_pNavigationCom);
-			break;
-		case DIR_BACKWARD_LEFT:
-			m_pTransformCom->Go_Backward_Left(fTimeDelta, m_pNavigationCom);
-			break;
-		case DIR_BACKWARD_RIGHT:
-			m_pTransformCom->Go_Backward_Right(fTimeDelta, m_pNavigationCom);
-			break;
-		case DIR_STRAIGHT:
-			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
-			break;
-		case DIR_BACKWARD:
-			m_pTransformCom->Go_Backward(fTimeDelta, m_pNavigationCom);
-			break;
-		case DIR_LEFT:
-			m_pTransformCom->Go_Left(fTimeDelta, m_pNavigationCom);
-			break;
-		case DIR_RIGHT:
-			m_pTransformCom->Go_Right(fTimeDelta, m_pNavigationCom);
-			break;
-		}
-
-		Sync_WithNavigationHeight();
-	}
-}
-
-void CPlayer::Reset_State()
-{
-	if (m_bIsAnimationFinished)
-	{
-		switch ((ANIMID)m_pModelCom->Get_CurrentAnimIndex())
-		{
-		case ANIM_SLASH:
-			m_eCurrentState = STATE_IDLE;
-			m_bDidDamage = false;
-		}
-	}
-}
-
 _bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 {
 	switch ((ANIMID)eAnimId)
@@ -342,52 +227,46 @@ _bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 	}
 }
 
-_bool CPlayer::Move()
+void CPlayer::HandleInput()
 {
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	CPlayerState* pNewState = m_pPlayerState->HandleInput(this);
+	if (pNewState)
+	{
+		m_pPlayerState->Exit(this);
 
-	if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
-	{
-		m_eCurrentDir = DIR_STRAIGHT_LEFT;
-		return true;
-	}
-	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))
-	{
-		m_eCurrentDir = DIR_STRAIGHT_RIGHT;
-		return true;
-	}
-	else if (pGameInstance->Key_Pressing(VK_DOWN) && pGameInstance->Key_Pressing(VK_LEFT))
-	{
-		m_eCurrentDir = DIR_BACKWARD_LEFT;
-		return true;
-	}
-	else if (pGameInstance->Key_Pressing(VK_DOWN) && pGameInstance->Key_Pressing(VK_RIGHT))
-	{
-		m_eCurrentDir = DIR_BACKWARD_RIGHT;
-		return true;
-	}
-	else if (pGameInstance->Key_Pressing(VK_LEFT))
-	{
-		m_eCurrentDir = DIR_LEFT;
-		return true;
-	}
-	else if (pGameInstance->Key_Pressing(VK_RIGHT))
-	{
-		m_eCurrentDir = DIR_RIGHT;
-		return true;
-	}
-	else if (pGameInstance->Key_Pressing(VK_DOWN))
-	{
-		m_eCurrentDir = DIR_BACKWARD;
-		return true;
-	}
-	else if (pGameInstance->Key_Pressing(VK_UP))
-	{
-		m_eCurrentDir = DIR_STRAIGHT;
-		return true;
-	}
+		Safe_Delete(m_pPlayerState);
+		m_pPlayerState = pNewState;
 
-	return false;
+		m_pPlayerState->Enter(this);
+	}
+}
+
+void CPlayer::TickState(_float fTimeDelta)
+{
+	CPlayerState* pNewState = m_pPlayerState->Tick(this, fTimeDelta);
+	if (pNewState)
+	{
+		m_pPlayerState->Exit(this);
+
+		Safe_Delete(m_pPlayerState);
+		m_pPlayerState = pNewState;
+
+		m_pPlayerState->Enter(this);
+	}
+}
+
+void CPlayer::LateTickState(_float fTimeDelta)
+{
+	CPlayerState* pNewState = m_pPlayerState->LateTick(this, fTimeDelta);
+	if (pNewState)
+	{
+		m_pPlayerState->Exit(this);
+
+		Safe_Delete(m_pPlayerState);
+		m_pPlayerState = pNewState;
+
+		m_pPlayerState->Enter(this);
+	}
 }
 
 CPlayer* CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -419,4 +298,6 @@ CGameObject* CPlayer::Clone(void * pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+
+	Safe_Delete(m_pPlayerState);
 }

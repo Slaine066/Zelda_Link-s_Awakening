@@ -171,8 +171,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\ShaderFiles\Client_Shader_Defines.hpp" />
     <ClInclude Include="..\public\Actor.h" />
+    <ClInclude Include="..\Public\AttackState.h" />
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\IdleState.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
@@ -180,7 +182,9 @@
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\public\Monster.h" />
     <ClInclude Include="..\public\MoriblinSword.h" />
+    <ClInclude Include="..\Public\MoveState.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\public\PlayerState.h" />
     <ClInclude Include="..\public\StaticObject.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="Client.h" />
@@ -190,7 +194,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Actor.cpp" />
+    <ClCompile Include="..\Private\AttackState.cpp" />
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
+    <ClCompile Include="..\Private\IdleState.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
@@ -198,6 +204,7 @@
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
     <ClCompile Include="..\private\MoriblinSword.cpp" />
+    <ClCompile Include="..\Private\MoveState.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />

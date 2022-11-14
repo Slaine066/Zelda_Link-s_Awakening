@@ -22,7 +22,7 @@ Player Inputs
 BEGIN(Client)
 class CPlayer final : public CActor
 {
-private:
+public:
 	enum MESHID 
 	{
 		MESH_ARMS_LEGS,
@@ -115,6 +115,9 @@ private:
 		STATE_END
 	};
 
+public:
+	_bool Is_AnimationLoop(_uint eAnimId);
+
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayer(const CPlayer& rhs);
@@ -132,20 +135,12 @@ private:
 	virtual HRESULT SetUp_ShaderResources() override;
 
 private:
-	void Handle_Input();
-	void Execute_State(_float fTimeDelta);
-	void Reset_State();
-
-	_bool Move();  // Returns "true" if any of the moving Inputs are pressed, "false" if not.
-
-	_bool Is_AnimationLoop(_uint eAnimId);
+	void HandleInput();
+	void TickState(_float fTimeDelta);
+	void LateTickState(_float fTimeDelta);
 
 private:
-	STATEID m_eCurrentState = STATE_IDLE;
-	DIRID m_eCurrentDir = DIR_STRAIGHT;
-
-	_bool m_bIsAnimationFinished = false;
-	_bool m_bDidDamage = false;
+	class CPlayerState* m_pPlayerState = nullptr;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

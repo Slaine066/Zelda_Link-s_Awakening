@@ -73,6 +73,12 @@
     <Filter Include="02.GameObjects\00.Actor\01.Monster\Togezo">
       <UniqueIdentifier>{e2d4cb0d-a9ea-47c1-aa96-5b93366e3e7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Player\PlayerState">
+      <UniqueIdentifier>{52987783-23c2-4b22-ba6f-ce3c28fcea89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Player\PlayerState\States">
+      <UniqueIdentifier>{d449d63b-f7f3-45d7-b95f-1f3c951644fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -132,6 +138,18 @@
     <ClInclude Include="..\public\MoriblinSword.h">
       <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerState.h">
+      <Filter>02.GameObjects\00.Actor\00.Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\IdleState.h">
+      <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AttackState.h">
+      <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoveState.h">
+      <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -175,6 +193,15 @@
     </ClCompile>
     <ClCompile Include="..\private\MoriblinSword.cpp">
       <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AttackState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\IdleState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoveState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -47,18 +47,23 @@ protected:
 	CActor(const CActor& rhs);
 	virtual ~CActor() = default;
 
+public:
+	CModel* Get_Model() { return m_pModelCom; }
+	CTransform* Get_Transform() { return m_pTransformCom; }
+	CNavigation* Get_Navigation() { return m_pNavigationCom; }
+	CCollider* Get_Collider(CCollider::AIM eAim);
+
+	void Sync_WithNavigationHeight();
+
 protected:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _uint Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	virtual CCollider* Get_Collider(CCollider::AIM eAim) override;
 
 	void Render_Colliders();
 	void Render_NavigationMesh();
-
-	void Sync_WithNavigationHeight();
 
 protected:
 	CShader* m_pShaderCom = nullptr;
