@@ -26,8 +26,9 @@ HRESULT CMoriblinSword::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Rotation(_float3(0.f, 180.f, 0.f));
+	m_fRadius = .5f;
 
+	m_pTransformCom->Set_Rotation(_float3(0.f, 180.f, 0.f));
 	m_pModelCom->Set_CurrentAnimIndex(ANIM_WAIT);
 
 	return S_OK;
@@ -53,13 +54,8 @@ void CMoriblinSword::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	_bool bIsInFrustum = pGameInstance->IsIn_Frustum(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), .5f);
-
-	if (m_pRendererCom && bIsInFrustum)
+	if (m_pRendererCom && m_bIsInFrustum)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
-	
-	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CMoriblinSword::Render()
