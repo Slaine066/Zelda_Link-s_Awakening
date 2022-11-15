@@ -79,6 +79,12 @@
     <Filter Include="02.GameObjects\00.Actor\00.Player\PlayerState\States">
       <UniqueIdentifier>{d449d63b-f7f3-45d7-b95f-1f3c951644fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState">
+      <UniqueIdentifier>{308609ed-cc43-41f0-97ff-53bb13c1ac5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState\States">
+      <UniqueIdentifier>{b8471a3f-9f27-4c62-b3a5-656471aadc65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -141,14 +147,29 @@
     <ClInclude Include="..\public\PlayerState.h">
       <Filter>02.GameObjects\00.Actor\00.Player\PlayerState</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\IdleState.h">
+    <ClInclude Include="..\Public\MoriblinSwordState.h">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerMoveState.h">
       <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\AttackState.h">
+    <ClInclude Include="..\Public\PlayerIdleState.h">
       <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MoveState.h">
+    <ClInclude Include="..\Public\PlayerAttackState.h">
       <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MoriblinSwordIdleState.h">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MoriblinSwordMoveState.h">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MoriblinSwordAttackState.h">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MoriblinSwordHitState.h">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,14 +215,26 @@
     <ClCompile Include="..\private\MoriblinSword.cpp">
       <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\AttackState.cpp">
+    <ClCompile Include="..\Private\PlayerMoveState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\IdleState.cpp">
+    <ClCompile Include="..\Private\PlayerIdleState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MoveState.cpp">
+    <ClCompile Include="..\Private\PlayerAttackState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSwordIdleState.cpp">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSwordMoveState.cpp">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSwordAttackState.cpp">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSwordHitState.cpp">
+      <Filter>02.GameObjects\00.Actor\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

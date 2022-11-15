@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
-#include "MoveState.h"
+#include "PlayerMoveState.h"
 #include "GameInstance.h"
-#include "IdleState.h"
-#include "AttackState.h"
+#include "PlayerIdleState.h"
+#include "PlayerAttackState.h"
 
 CMoveState::CMoveState(DIRID eDir) : m_eDirection(eDir) 
 {
@@ -13,7 +13,9 @@ CPlayerState * CMoveState::HandleInput(CPlayer * pPlayer)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
-	if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
+	if (pGameInstance->Key_Down('S'))
+		return new CAttackState();
+	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))
 		return new CMoveState(DIR_STRAIGHT_RIGHT);
@@ -29,10 +31,8 @@ CPlayerState * CMoveState::HandleInput(CPlayer * pPlayer)
 		return new CMoveState(DIR_BACKWARD);
 	else if (pGameInstance->Key_Pressing(VK_UP))
 		return new CMoveState(DIR_STRAIGHT);
-	else if (pGameInstance->Key_Down('S'))
-		return new CAttackState();
-	else
-		return new CIdleState(); // When there are no Input.
+	else 
+		return new CIdleState();
 
 	return nullptr;
 }

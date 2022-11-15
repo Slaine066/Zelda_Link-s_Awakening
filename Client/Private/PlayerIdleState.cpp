@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
-#include "IdleState.h"
+#include "PlayerIdleState.h"
 #include "GameInstance.h"
-#include "AttackState.h"
-#include "MoveState.h"
+#include "PlayerAttackState.h"
+#include "PlayerMoveState.h"
 
 CIdleState::CIdleState()
 {
@@ -31,8 +31,6 @@ CPlayerState * CIdleState::HandleInput(CPlayer * pPlayer)
 		return new CMoveState(DIR_STRAIGHT);
 	else if (pGameInstance->Key_Down('S'))
 		return new CAttackState();
-	else
-		return new CIdleState(); // When there are no Input.
 
 	return nullptr;
 }

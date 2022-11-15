@@ -13,7 +13,7 @@ END
 BEGIN(Client)
 class CMoriblinSword final : public CMonster
 {
-private:
+public:
 	enum MESHID
 	{
 		MESH_LEGS,
@@ -32,26 +32,20 @@ private:
 		ANIM_DEAD_FRONT,
 		ANIM_DEAD_FIRE,
 		ANIM_FALL,
-		ANIM_FIND,
-		ANIM_GUARD,
+		ANIM_FIND,			// When Aggroed
+		ANIM_GUARD,			// When Hit
 		ANIM_KYOROKYORO,
-		ANIM_PIYO,
-		ANIM_STAGGER,
-		ANIM_STANCE_WAIT,
-		ANIM_STANCE_WALK,
-		ANIM_WAIT,
-		ANIM_WALK,
+		ANIM_PIYO,			// When Stunned		(from Powder?)
+		ANIM_STAGGER,		// When Break Guard
+		ANIM_STANCE_WAIT,	// Idle				(while in Aggro)
+		ANIM_STANCE_WALK,	// Move / Attack	(while in Aggro)
+		ANIM_WAIT,			// Idle
+		ANIM_WALK,			// Move
 		ANIM_END
 	};
 
-	enum STATEID
-	{
-		STATE_IDLE,
-		STATE_MOVING,
-		STATE_ATTACKING,
-		STATE_DAMAGED,
-		STATE_END
-	};
+public:
+	virtual _bool Is_AnimationLoop(_uint eAnimId) override;
 
 private:
 	CMoriblinSword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -71,13 +65,12 @@ private:
 	virtual HRESULT SetUp_ShaderResources() override;
 
 private:
-	virtual void Execute_State(_float fTimeDelta) override;
-	virtual void Reset_State() override;
-
-	virtual _bool Is_AnimationLoop(_uint eAnimId) override;
+	virtual void AI_Behavior() override;
+	virtual void TickState(_float fTimeDelta) override;
+	virtual void LateTickState(_float fTimeDelta) override;
 
 private:
-	STATEID m_eCurrentState = STATE_IDLE;
+	class CMoriblinSwordState* m_pMoriblinSwordState = nullptr;
 
 public:
 	static CMoriblinSword* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

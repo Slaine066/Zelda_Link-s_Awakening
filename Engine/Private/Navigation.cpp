@@ -63,6 +63,8 @@ HRESULT CNavigation::Initialize(void * pArg)
 	if (pArg)
 		memcpy(&m_NavDesc, pArg, sizeof(NAVDESC));
 
+	Compute_CurrentCell();
+
 	return S_OK;
 }
 
@@ -165,6 +167,33 @@ HRESULT CNavigation::Render_Navigation()
 	return S_OK;
 }
 #endif // _DEBUG
+
+void CNavigation::Compute_CurrentCell()
+{
+	_float fDistance = 0.f;
+
+	_vector vRayPos = XMLoadFloat3(&m_NavDesc.vInitialPosition);
+	vRayPos -= XMVectorSet(0.f, .5f, 0.f, 1.f);
+	vRayPos = XMVectorSetW(vRayPos, 1.f);
+
+	_vector vRayDir = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	for (_uint i = 0; i < m_Cells.size(); i++)
+	{
+		_vector vPointA = XMLoadFloat3(m_Cells[i]->Get_Point(CCell::POINT::POINT_A));
+		vPointA = XMVectorSetW(vPointA, 1.f);
+		_vector vPointB = XMLoadFloat3(m_Cells[i]->Get_Point(CCell::POINT::POINT_B));
+		vPointB = XMVectorSetW(vPointB, 1.f);
+		_vector vPointC = XMLoadFloat3(m_Cells[i]->Get_Point(CCell::POINT::POINT_C));
+		vPointC = XMVectorSetW(vPointC, 1.f);
+
+		if (TriangleTests::Intersects(vRayPos, vRayDir, vPointA, vPointB, vPointC, fDistance))
+		{
+			m_NavDesc.iCurrentCellIndex = i;
+			return;
+		}
+	}
+}
 
 HRESULT CNavigation::Setup_Neighbors()
 {

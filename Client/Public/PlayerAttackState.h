@@ -1,7 +1,6 @@
 #pragma once
 
 #include "PlayerState.h"
-#include "IdleState.h"
 
 BEGIN(Client)
 class CAttackState : public CPlayerState
@@ -17,7 +16,6 @@ public:
 	virtual void Exit(CPlayer* pPlayer) override;
 
 private:
-	_bool m_bIsAnimationFinished = false;
 	_bool m_bDidDamage = false;
 };
 END

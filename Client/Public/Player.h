@@ -107,14 +107,6 @@ public:
 		ANIM_END
 	};
 
-	enum STATEID
-	{
-		STATE_IDLE,
-		STATE_MOVING,
-		STATE_ATTACKING,
-		STATE_END
-	};
-
 public:
 	_bool Is_AnimationLoop(_uint eAnimId);
 

@@ -9,6 +9,7 @@ public:
 	typedef struct tagNavigationDesc
 	{
 		_int iCurrentCellIndex = -1;
+		_float3 vInitialPosition;
 	}NAVDESC;
 
 private:
@@ -27,6 +28,9 @@ public:
 #ifdef _DEBUG
 	HRESULT Render_Navigation();
 #endif // _DEBUG
+
+private:
+	void Compute_CurrentCell();
 
 private:
 	NAVDESC m_NavDesc;

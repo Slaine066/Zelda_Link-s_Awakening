@@ -4,7 +4,7 @@
 #include "GameInstance.h"
 #include "HierarchyNode.h"
 #include "PlayerState.h"
-#include "IdleState.h"
+#include "PlayerIdleState.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CActor(pDevice, pContext)
@@ -29,8 +29,8 @@ HRESULT CPlayer::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	/* State Pattern Code */
-	m_pPlayerState = new CIdleState();
+	CPlayerState* pState = new CIdleState();
+	m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
 
 	return S_OK;
 }
@@ -139,7 +139,7 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 
 	CNavigation::NAVDESC NavDesc;
 	ZeroMemory(&NavDesc, sizeof(CNavigation::NAVDESC));
-	NavDesc.iCurrentCellIndex = 0;
+	XMStoreFloat3(&NavDesc.vInitialPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
 	
 	/* For.Com_Navigation */
 	if (FAILED(__super::Add_Components(TEXT("Com_Navigation"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation_Field"), (CComponent**)&m_pNavigationCom, &NavDesc)))
@@ -231,42 +231,21 @@ void CPlayer::HandleInput()
 {
 	CPlayerState* pNewState = m_pPlayerState->HandleInput(this);
 	if (pNewState)
-	{
-		m_pPlayerState->Exit(this);
-
-		Safe_Delete(m_pPlayerState);
-		m_pPlayerState = pNewState;
-
-		m_pPlayerState->Enter(this);
-	}
+		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pNewState);
 }
 
 void CPlayer::TickState(_float fTimeDelta)
 {
 	CPlayerState* pNewState = m_pPlayerState->Tick(this, fTimeDelta);
 	if (pNewState)
-	{
-		m_pPlayerState->Exit(this);
-
-		Safe_Delete(m_pPlayerState);
-		m_pPlayerState = pNewState;
-
-		m_pPlayerState->Enter(this);
-	}
+		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pNewState);
 }
 
 void CPlayer::LateTickState(_float fTimeDelta)
 {
 	CPlayerState* pNewState = m_pPlayerState->LateTick(this, fTimeDelta);
 	if (pNewState)
-	{
-		m_pPlayerState->Exit(this);
-
-		Safe_Delete(m_pPlayerState);
-		m_pPlayerState = pNewState;
-
-		m_pPlayerState->Enter(this);
-	}
+		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pNewState);
 }
 
 CPlayer* CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

@@ -15,6 +15,18 @@ public:
 	virtual void Enter(CPlayer* pPlayer) {};
 	virtual void Exit(CPlayer* pPlayer) {};
 
+	CPlayerState* ChangeState(CPlayer* pPlayer, CPlayerState* pCurrentState, CPlayerState* pNewState)
+	{
+		if (pCurrentState)
+		{
+			pCurrentState->Exit(pPlayer);
+			Safe_Delete(pCurrentState);
+		}
+			
+		pNewState->Enter(pPlayer);
+		return pNewState;
+	}
+
 protected:
 	_bool m_bIsAnimationFinished = false;
 };

@@ -12,6 +12,9 @@ protected:
 	virtual ~CMonster() = default;
 
 public:
+	virtual _bool Is_AnimationLoop(_uint eAnimId) PURE;
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _uint Tick(_float fTimeDelta) override;
@@ -19,15 +22,9 @@ public:
 	virtual HRESULT Render() override;
 
 protected:
-	virtual void Execute_State(_float fTimeDelta) = 0;
-	virtual void Reset_State() = 0;
-
-	virtual _bool Is_AnimationLoop(_uint eAnimId) = 0;
-
-protected:
-	DIRID m_eCurrentDir = DIR_STRAIGHT;
-
-	_bool m_bIsAnimationFinished = false;
+	virtual void AI_Behavior() PURE;
+	virtual void TickState(_float fTimeDelta) PURE;
+	virtual void LateTickState(_float fTimeDelta) PURE;
 
 public:
 	virtual void Free() override;
