@@ -19,6 +19,7 @@ public:
 	_tchar* Get_LayerId() { return m_pLayerId; }
 	_float3 Get_Position() { return m_vPosition; }
 	_float Get_CamDistance() const { return m_fCamDistance; }
+	_float Get_Radius() const { return m_fRadius; }
 
 	void Set_Position(_float3 vPosition) { m_vPosition = vPosition; }
 	
@@ -50,7 +51,10 @@ protected:
 	map<const _tchar*, class CComponent*> m_Components;
 
 	_float3 m_vPosition;
-	float m_fCamDistance = 0.f;
+	_float m_fCamDistance = 0.f;
+
+	_bool m_bIsInFrustum = false;
+	_float m_fRadius = 0.f;
 
 public:	
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

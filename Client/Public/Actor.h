@@ -73,9 +73,6 @@ protected:
 	CNavigation* m_pNavigationCom = nullptr;
 	vector<CCollider*> m_vCollidersCom;
 
-	_bool m_bIsInFrustum = false;
-	_float m_fRadius = 0.f;
-
 protected:
 	MODELDESC m_tModelDesc;
 

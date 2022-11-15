@@ -38,20 +38,20 @@ _bool CCollision_Manager::Collision_with_Group(COLLISION_GROUP eGroup, CCollider
 	if (!pDamageCauser)
 		return false;
 
-	for (auto& iter : m_GameObjects[eGroup])
+	for (auto& pGameObj : m_GameObjects[eGroup])
 	{
-		/*if (nullptr != iter && CGameInstance::Get_Instance()->Is_In_Frustum(iter->Get_Position(), iter->Get_Radius()) == true)
-		{*/
-			CCollider* pDamaged = iter->Get_Collider(eCollisionAim);
+		if (pGameObj && CGameInstance::Get_Instance()->IsIn_Frustum(XMLoadFloat3(&pGameObj->Get_Position()), pGameObj->Get_Radius()) == true)
+		{
+			CCollider* pDamaged = pGameObj->Get_Collider(eCollisionAim);
 			if (!pDamaged)
 				continue;
 
 			if (pDamageCauser->Collision(pDamaged))
 			{
-				pDamagedObject = *iter;
+				pDamagedObject = *pGameObj;
 				return true;
 			}
-		/*}*/
+		}
 	}
 
 	return false;
@@ -62,17 +62,17 @@ _bool CCollision_Manager::Collision_Check_Group_Multi(COLLISION_GROUP eGroup, CC
 	if (!pDamageCauser)
 		return false;
 
-	for (auto& iter : m_GameObjects[eGroup])
+	for (auto& pGameObj : m_GameObjects[eGroup])
 	{
-		/*if (nullptr != iter && CGameInstance::Get_Instance()->Is_In_Frustum(iter->Get_Position(), iter->Get_Radius()) == true)
-		{*/
-			CCollider* pDamaged = iter->Get_Collider(eCollisionAim);
+		if (pGameObj && CGameInstance::Get_Instance()->IsIn_Frustum(XMLoadFloat3(&pGameObj->Get_Position()), pGameObj->Get_Radius()) == true)
+		{
+			CCollider* pDamaged = pGameObj->Get_Collider(eCollisionAim);
 			if (!pDamaged)
 				continue;
 
 			if (pDamageCauser->Collision(pDamaged))
-				pDamagedObjects.push_back(iter);
-		/*}*/
+				pDamagedObjects.push_back(pGameObj);
+		}
 	}
 
 	if (!pDamagedObjects.empty())
