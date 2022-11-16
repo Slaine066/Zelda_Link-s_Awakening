@@ -17,7 +17,7 @@ public:
 
 public:
 	// "Invalidate_TransformationMatrix" this function transforms the Channels (Bones of the Animations) based on Time and KeyFrames.
-	void Animate(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoop = true); 
+	_bool Animate(_float fTimeDelta, _bool bIsLoop = true); 
 
 private:
 	char m_szName[MAX_PATH] = "";
@@ -29,6 +29,8 @@ private:
 	/* Bones needed to drive this Animation. */
 	_uint m_iNumChannels = 0;
 	vector<class CChannel*> m_Channels; /* Channel <-> Bone */
+
+	_bool m_bIsFinished = false;
 
 public:
 	static CAnimation* Create(class CModel* pModel, aiAnimation* pAIAnimation);

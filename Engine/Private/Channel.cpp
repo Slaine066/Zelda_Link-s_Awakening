@@ -59,7 +59,7 @@ HRESULT CChannel::Initialize(CModel* pModel, aiNodeAnim * pAIChannel)
 void CChannel::Invalidate_TransformationMatrix(_float fCurrentTime)
 {
 	_vector	vScale, vRotation, vPosition;
-	KEYFRAME LastKeyframe = m_KeyFrames.back();
+	KEYFRAME LastKeyframe = /*m_KeyFrames.back()*/ m_KeyFrames[m_KeyFrames.size() - 2]; // So nasty.., but every animations last frames are fucked up. ¤Ð¤Ð
 
 	if (fCurrentTime >= LastKeyframe.fTime)	
 	{

@@ -2,6 +2,8 @@
 
 #include "Engine_Defines.h"
 #include "MoriblinSword.h"
+#include "GameInstance.h"
+#include "Player.h"
 
 BEGIN(Client)
 class CMoriblinSwordState
@@ -28,8 +30,26 @@ public:
 	}
 
 protected:
+	virtual void Find_Target(CMoriblinSword * pMoriblinSword, _bool bHasAggro = false)
+	{
+		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+		CGameObject* pGameObject = pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pGameObject);
+		if (!pPlayer)
+			return;
+
+		if (bHasAggro)
+			m_pTarget = pPlayer;
+		else
+		{
+			_float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&pGameObject->Get_Position()) - XMLoadFloat3(&pMoriblinSword->Get_Position())));
+			if (fDistance < pMoriblinSword->Get_AggroRadius())
+				m_pTarget = pPlayer;
+		}
+	}
+
+protected:
 	_bool m_bIsAnimationFinished = false;
-	_bool m_bHasAggro = false;
-	class CPlayer* m_pTarget = nullptr;
+	class CPlayer* m_pTarget = nullptr;		/* If TRUE, has Aggro. */
 };
 END

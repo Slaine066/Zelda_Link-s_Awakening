@@ -19,10 +19,10 @@ public:
 private:
 	void Set_MoveTarget(CMoriblinSword* pMoriblinSword);
 	void Move(CMoriblinSword* pMoriblinSword, _float fTimeDelta);
-	_bool Is_ArrivedToTarget(CMoriblinSword* pMoriblinSword);
 
 private:
 	_float3 m_vMoveTarget;
+	_bool m_bIsArrived = false;
 };
 END
 END

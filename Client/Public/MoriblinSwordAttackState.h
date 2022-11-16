@@ -17,6 +17,9 @@ public:
 	virtual void Exit(CMoriblinSword* pMoriblinSword) override;
 
 private:
+	void Move(CMoriblinSword* pMoriblinSword, _float fTimeDelta);
+
+private:
 	_bool m_bDidDamage = false;
 };
 END

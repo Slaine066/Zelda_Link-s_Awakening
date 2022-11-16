@@ -28,7 +28,7 @@ CMoriblinSwordState * CMoveState::Tick(CMoriblinSword * pMoriblinSword, _float f
 
 CMoriblinSwordState * CMoveState::LateTick(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 {
-	if (Is_ArrivedToTarget(pMoriblinSword))
+	if (m_bIsArrived)
 		return new CIdleState();
 
 	return nullptr;
@@ -42,7 +42,7 @@ void CMoveState::Enter(CMoriblinSword * pMoriblinSword)
 
 void CMoveState::Exit(CMoriblinSword * pMoriblinSword)
 {
-
+	m_bIsArrived = false;
 }
 
 void CMoveState::Set_MoveTarget(CMoriblinSword * pMoriblinSword)
@@ -67,12 +67,7 @@ void CMoveState::Set_MoveTarget(CMoriblinSword * pMoriblinSword)
 
 void CMoveState::Move(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 {
-	// Set Direction
-
-	pMoriblinSword->Get_Transform()->Go_TargetPosition(fTimeDelta, m_vMoveTarget, _float3(0.f, 0.f, 0.f), pMoriblinSword->Get_Navigation());
-}
-
-_bool CMoveState::Is_ArrivedToTarget(CMoriblinSword * pMoriblinSword)
-{
-	return false;
+	_vector vMoveTarget = XMVectorSet(m_vMoveTarget.x, pMoriblinSword->Get_Position().y, m_vMoveTarget.z, 1.f);
+	pMoriblinSword->Get_Transform()->LookAt(vMoveTarget);
+	m_bIsArrived = pMoriblinSword->Get_Transform()->Go_TargetPosition(fTimeDelta, m_vMoveTarget, 0.f, pMoriblinSword->Get_Navigation());
 }

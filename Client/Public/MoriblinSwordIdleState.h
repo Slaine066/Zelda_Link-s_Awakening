@@ -7,7 +7,7 @@ BEGIN(MoriblinSword)
 class CIdleState : public CMoriblinSwordState
 {
 public:  
-	CIdleState();
+	CIdleState(_bool bHasAggro = false);
 
 	virtual CMoriblinSwordState* AI_Behavior(CMoriblinSword* pMoriblinSword) override;
 	virtual CMoriblinSwordState* Tick(CMoriblinSword* pMoriblinSword, _float fTimeDelta) override;
@@ -17,10 +17,9 @@ public:
 	virtual void Exit(CMoriblinSword* pMoriblinSword) override;
 
 private:
-	void Find_Target();
-
-private:
-	_float m_fIdleTimer = 0.f;
+	_float m_fIdleMoveTimer = 0.f;
+	_float m_fIdleAttackTimer = 2.f;
+	_bool m_bHasAggro = false;
 };
 END
 END

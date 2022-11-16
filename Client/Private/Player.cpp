@@ -5,6 +5,7 @@
 #include "HierarchyNode.h"
 #include "PlayerState.h"
 #include "PlayerIdleState.h"
+#include "PlayerHitState.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CActor(pDevice, pContext)
@@ -84,6 +85,17 @@ HRESULT CPlayer::Render()
 	Render_NavigationMesh();
 
 	return S_OK;
+}
+
+_float CPlayer::Take_Damage(float fDamage, void * DamageType, CGameObject * DamageCauser)
+{
+	if (fDamage > 0.f)
+	{
+		CPlayerState* pState = new CHitState(DamageCauser->Get_Position());
+		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
+	}
+
+	return 0.f;
 }
 
 HRESULT CPlayer::Ready_Components(void* pArg)

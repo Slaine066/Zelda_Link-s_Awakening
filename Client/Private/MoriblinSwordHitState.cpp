@@ -39,7 +39,7 @@ void CHitState::Enter(CMoriblinSword * pMoriblinSword)
 
 void CHitState::Exit(CMoriblinSword * pMoriblinSword)
 {
-	m_bHasAggro = true;
+	
 }
 
 _bool CHitState::Compute_HitPosition(CMoriblinSword * pMoriblinSword)

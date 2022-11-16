@@ -171,6 +171,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\ShaderFiles\Client_Shader_Defines.hpp" />
     <ClInclude Include="..\public\Actor.h" />
+    <ClInclude Include="..\public\MoriblinSpear.h" />
+    <ClInclude Include="..\public\MoriblinSpearAttackState.h" />
+    <ClInclude Include="..\public\MoriblinSpearHitState.h" />
+    <ClInclude Include="..\public\MoriblinSpearIdleState.h" />
+    <ClInclude Include="..\public\MoriblinSpearMoveState.h" />
+    <ClInclude Include="..\Public\MoriblinSpearState.h" />
     <ClInclude Include="..\public\MoriblinSwordAttackState.h" />
     <ClInclude Include="..\public\MoriblinSwordHitState.h" />
     <ClInclude Include="..\public\MoriblinSwordIdleState.h" />
@@ -178,6 +184,7 @@
     <ClInclude Include="..\Public\PlayerAttackState.h" />
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\public\PlayerHitState.h" />
     <ClInclude Include="..\Public\PlayerIdleState.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -199,12 +206,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Actor.cpp" />
+    <ClCompile Include="..\private\MoriblinSpear.cpp" />
+    <ClCompile Include="..\private\MoriblinSpearAttackState.cpp" />
+    <ClCompile Include="..\private\MoriblinSpearHitState.cpp" />
+    <ClCompile Include="..\private\MoriblinSpearIdleState.cpp" />
+    <ClCompile Include="..\private\MoriblinSpearMoveState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordAttackState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordHitState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordIdleState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordMoveState.cpp" />
     <ClCompile Include="..\Private\PlayerAttackState.cpp" />
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
+    <ClCompile Include="..\private\PlayerHitState.cpp" />
     <ClCompile Include="..\Private\PlayerIdleState.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />

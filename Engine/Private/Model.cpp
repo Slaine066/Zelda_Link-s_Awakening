@@ -122,7 +122,7 @@ HRESULT CModel::SetUp_Material(CShader * pShader, const char * pConstantName, _u
 HRESULT CModel::Play_Animation(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoop)
 {
 	/* Update Bone m_TransformationMatrix. */
-	m_Animations[m_iCurrentAnimIndex]->Animate(fTimeDelta, bIsFinished, bIsLoop);
+	bIsFinished = m_Animations[m_iCurrentAnimIndex]->Animate(fTimeDelta, bIsLoop);
 
 	/* Update Bone m_CombinedTransformationMatrix. */
 	for (auto& pBoneNode : m_Bones)

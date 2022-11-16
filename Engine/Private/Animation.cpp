@@ -28,7 +28,9 @@ HRESULT CAnimation::Initialize(CModel* pModel, aiAnimation * pAIAnimation)
 	return S_OK;
 }
 
-void CAnimation::Animate(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoop)
+/* Animate function returns a _bool which tells you if the Current Animation just finished.
+Support both Loop and non-Loop Animations. */
+_bool CAnimation::Animate(_float fTimeDelta, _bool bIsLoop)
 {
 	m_fCurrentTime += m_fTickPerSecond * fTimeDelta;
 
@@ -36,13 +38,13 @@ void CAnimation::Animate(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoo
 	if (m_fCurrentTime >= m_fDuration)
 	{
 		m_fCurrentTime = 0.f;
-		bIsFinished = true;
+		m_bIsFinished = true;
 	}
 
 	for (auto& pChannel : m_Channels)
 	{
 		// If the Animation is finished > Set CurrentAnimationIndex back to 0.
-		if (bIsFinished)
+		if (m_bIsFinished)
 		{
 			pChannel->Reset();
 			
@@ -55,8 +57,13 @@ void CAnimation::Animate(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoo
 	}
 
 	// If the Animation is finished and it's a Loop Animation > Toggle back m_isFinished to true (since the Animation needs to start again).
-	if (bIsFinished && bIsLoop)
-		bIsFinished = false;
+	if (m_bIsFinished)
+	{
+		m_bIsFinished = false;
+		return true;
+	}
+
+	return false;
 }
 
 CAnimation * CAnimation::Create( CModel* pModel, aiAnimation * pAIAnimation)

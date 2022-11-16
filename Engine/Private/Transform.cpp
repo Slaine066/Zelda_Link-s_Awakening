@@ -167,20 +167,26 @@ void CTransform::Attach_ToTarget(_fvector fTargetPosition, _fvector fDistance)
 	Set_State(CTransform::STATE_TRANSLATION, XMLoadFloat4(&vTranslation));
 }
 
-void CTransform::Go_TargetPosition(_float fTimeDelta, _float3 fTargetPosition, _float3 fDistance, CNavigation* pNavigation)
+_bool CTransform::Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, _float fDistance, CNavigation* pNavigation)
 {
-	_vector vPosition = Get_State(CTransform::STATE::STATE_TRANSLATION);
+	_vector vPos = Get_State(CTransform::STATE::STATE_TRANSLATION);
+	_float3 vTargetPos = { vTargetPosition.x, vTargetPosition.y, vTargetPosition.z };
 
-	_float3 vNewPosition = { fTargetPosition.x + fDistance.x, fTargetPosition.y + fDistance.y, fTargetPosition.z + fDistance.z };
-	_vector vDirection = XMLoadFloat3(&vNewPosition) - vPosition;
-
+	_vector vDirection = XMLoadFloat3(&vTargetPos) - vPos;
 	vDirection = XMVector4Normalize(vDirection);
-	vPosition += vDirection * fTimeDelta * m_TransformDesc.fSpeedPerSec;
+
+	vPos += vDirection * fTimeDelta * m_TransformDesc.fSpeedPerSec;
+
+	_float fDist = XMVectorGetX(XMVector3Length(vPos - XMLoadFloat3(&vTargetPos)));
+	if (fDist < fDistance + 0.1f) /* Need to add 0.1f in case "fDistance" is 0. */
+		return true;
 
 	if (!pNavigation)
-		Set_State(CTransform::STATE_TRANSLATION, vPosition);
-	else if (pNavigation->CanMove(vPosition))
-		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+		Set_State(CTransform::STATE_TRANSLATION, vPos);
+	else if (pNavigation->CanMove(vPos))
+		Set_State(CTransform::STATE_TRANSLATION, vPos);
+
+	return false;
 }
 
 CTransform* CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

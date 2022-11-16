@@ -68,7 +68,7 @@ public:
 	
 	void LookAt(_fvector vAt);
 	void Attach_ToTarget(_fvector fTargetPosition, _fvector fDistance);
-	void Go_TargetPosition(_float fTimeDelta, _float3 fTargetPosition, _float3 fDistance, class CNavigation* pNavigation);
+	_bool Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, _float fDistance, class CNavigation* pNavigation);
 
 private:			
 	TRANSFORMDESC m_TransformDesc;
