@@ -39,7 +39,6 @@ CPlayerState * CAttackState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 		}
 	}
 
-	// Change State when Animation ends.
 	if (m_bIsAnimationFinished)
 		return new CIdleState();
 

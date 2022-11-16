@@ -38,6 +38,7 @@ public:
 
 		// Transform Infos
 		_float4x4 mWorldMatrix;
+		_float3 vRotation;
 	}MODELDESC;
 
 public:

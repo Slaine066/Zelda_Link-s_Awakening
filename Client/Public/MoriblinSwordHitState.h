@@ -17,7 +17,7 @@ public:
 	virtual void Exit(CMoriblinSword* pMoriblinSword) override;
 
 private:
-	_bool Compute_HitPosition();
+	_bool Compute_HitPosition(CMoriblinSword * pMoriblinSword);
 
 private:
 	_float3 m_vDamageCauserPosition;

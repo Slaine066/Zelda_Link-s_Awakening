@@ -25,6 +25,8 @@ HRESULT CMesh::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
+	m_pTransformCom->Set_Rotation(m_tModelDesc.vRotation);
+
 	return S_OK;
 }
 

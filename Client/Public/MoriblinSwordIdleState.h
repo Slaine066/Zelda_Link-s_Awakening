@@ -15,6 +15,12 @@ public:
 
 	virtual void Enter(CMoriblinSword* pMoriblinSword) override;
 	virtual void Exit(CMoriblinSword* pMoriblinSword) override;
+
+private:
+	void Find_Target();
+
+private:
+	_float m_fIdleTimer = 0.f;
 };
 END
 END

@@ -23,6 +23,7 @@ public:
 
 public:
 	_float Get_NavigationHeight(_float3 vPosition);
+	_bool Get_PointOnNavigation(OUT _float3 vPosition);
 	_bool CanMove(_fvector vPosition);
 
 #ifdef _DEBUG

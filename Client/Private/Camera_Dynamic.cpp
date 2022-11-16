@@ -87,7 +87,7 @@ void CCamera_Dynamic::Attach_ToPlayer()
 	vPosition = XMVectorSetW(vPosition, 1.0f);
 
 	m_pTransform->LookAt(vPosition);
-	m_pTransform->Follow_Target(vPosition, XMVectorSet(0.f, 3.5f, -2.5, 1.f));
+	m_pTransform->Attach_ToTarget(vPosition, XMVectorSet(0.f, 3.5f, -2.5, 1.f));
 }
 
 CCamera_Dynamic * CCamera_Dynamic::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

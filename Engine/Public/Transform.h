@@ -11,7 +11,7 @@ public:
 public:
 	typedef struct tagTransformDesc
 	{
-		_float4x4		vInitialWorldMatrix;
+		_float4x4	vInitialWorldMatrix;
 		float		fSpeedPerSec;
 		float		fRotationPerSec;
 	}TRANSFORMDESC;
@@ -22,6 +22,7 @@ private:
 	virtual ~CTransform() = default;
 
 public:
+	TRANSFORMDESC Get_TransformDesc() { return m_TransformDesc; }
 	void Set_TransformDesc(const TRANSFORMDESC& TransformDesc) { m_TransformDesc = TransformDesc; }
 
 	/* 리턴받은 행렬을 이용해 연산을 해야할 때. */
@@ -60,19 +61,14 @@ public:
 	void Move_Right(_float fTimeDelta);
 
 	void Go_Straight(_float fTimeDelta, class CNavigation* pNavigation);
-	void Go_Backward(_float fTimeDelta, class CNavigation* pNavigation);
-	void Go_Left(_float fTimeDelta, class CNavigation* pNavigation);
-	void Go_Right(_float fTimeDelta, class CNavigation* pNavigation);
-	void Go_Straight_Left(_float fTimeDelta, class CNavigation* pNavigation);
-	void Go_Straight_Right(_float fTimeDelta, class CNavigation* pNavigation);
-	void Go_Backward_Left(_float fTimeDelta, class CNavigation* pNavigation);
-	void Go_Backward_Right(_float fTimeDelta, class CNavigation* pNavigation);
 
 	void Turn(_fvector vAxis, _float fTimeDelta);
 	void Set_Rotation(_float3 fAngle);
+	void Set_RotationY(_float fAngleY);
 	
 	void LookAt(_fvector vAt);
-	void Follow_Target(_fvector fTargetPosition, _fvector fDistance);
+	void Attach_ToTarget(_fvector fTargetPosition, _fvector fDistance);
+	void Go_TargetPosition(_float fTimeDelta, _float3 fTargetPosition, _float3 fDistance, class CNavigation* pNavigation);
 
 private:			
 	TRANSFORMDESC m_TransformDesc;

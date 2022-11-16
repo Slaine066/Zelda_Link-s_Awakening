@@ -881,6 +881,7 @@ void CImGuiManager::Read_NonAnimModels_Name(_tchar* cFolderPath)
 				wcscpy_s(tModelDesc.wcObjPrototypeId, MAX_PATH, wcObjectPrototypeId);	// "Prototype_GameObject_Player"					
 
 				XMStoreFloat4x4(&tModelDesc.mWorldMatrix, XMMatrixIdentity());
+				tModelDesc.vRotation = _float3(0.f, 0.f, 0.f);
 
 				m_lObjects.push_back(tModelDesc);
 			}
@@ -946,6 +947,7 @@ void CImGuiManager::Read_AnimModels_Name(_tchar * cFolderPath)
 				wcscpy_s(tModelDesc.wcObjPrototypeId, MAX_PATH, wcObjectPrototypeId);	// "Prototype_GameObject_Player"	
 
 				XMStoreFloat4x4(&tModelDesc.mWorldMatrix, XMMatrixIdentity());
+				tModelDesc.vRotation = _float3(0.f, 0.f, 0.f);
 
 				m_lObjects.push_back(tModelDesc);
 			}
@@ -1057,7 +1059,7 @@ _bool CImGuiManager::SaveData()
 				return !wcscmp(pObject->Get_ObjName(), tDesc.wcObjName);
 			});
 
-			// Make a new MODELDESC (based on the already existing MODELDESC of the Object) which will be updated with Layer and WorldMatrix data.
+			// Make a new MODELDESC (based on the already existing MODELDESC of the Object) which will be updated with Layer, WorldMatrix and Rotation Data.
 			// (The already existing MODELDESC of the Object cannot be used cause it's universal, setting a specific Layer or WorldMatrix for that Object would be wrong).
 
 			CMesh::MODELDESC tNewModelDesc; 
@@ -1080,6 +1082,9 @@ _bool CImGuiManager::SaveData()
 
 			mWorldMatrix = pTransform->Get_World4x4();
 			tNewModelDesc.mWorldMatrix = mWorldMatrix;
+
+			// Add Rotation of the Object to New MODELDESC
+			tNewModelDesc.vRotation = _float3(pTransform->Get_CurrentRotationX(), pTransform->Get_CurrentRotationY(), pTransform->Get_CurrentRotationZ());
 
 			WriteFile(hFileMap, &tNewModelDesc, sizeof(CMesh::MODELDESC), &dwByte, nullptr);
 		}	

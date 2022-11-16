@@ -23,6 +23,10 @@ HRESULT CActor::Initialize(void * pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
+	/* -180¡Æ to revert the PivotMatrix and set same Rotation which was set in MapTool. */
+	if (m_tModelDesc.eModelType == CModel::TYPE::TYPE_ANIM)
+		m_pTransformCom->Set_Rotation(_float3(m_tModelDesc.vRotation.x, m_tModelDesc.vRotation.y - 180.f, m_tModelDesc.vRotation.z)); 
+
 	return S_OK;
 }
 

@@ -67,28 +67,30 @@ void CMoveState::Move(CPlayer * pPlayer, _float fTimeDelta)
 	switch (m_eDirection)
 	{
 	case DIR_STRAIGHT_LEFT:
-		pPlayer->Get_Transform()->Go_Straight_Left(fTimeDelta, pPlayer->Get_Navigation());
+		pPlayer->Get_Transform()->Set_RotationY(305.f);
 		break;
 	case DIR_STRAIGHT_RIGHT:
-		pPlayer->Get_Transform()->Go_Straight_Right(fTimeDelta, pPlayer->Get_Navigation());
+		pPlayer->Get_Transform()->Set_RotationY(45.f);
 		break;
 	case DIR_BACKWARD_LEFT:
-		pPlayer->Get_Transform()->Go_Backward_Left(fTimeDelta, pPlayer->Get_Navigation());
+		pPlayer->Get_Transform()->Set_RotationY(225.f);
 		break;
 	case DIR_BACKWARD_RIGHT:
-		pPlayer->Get_Transform()->Go_Backward_Right(fTimeDelta, pPlayer->Get_Navigation());
+		pPlayer->Get_Transform()->Set_RotationY(135.f);
 		break;
 	case DIR_STRAIGHT:
-		pPlayer->Get_Transform()->Go_Straight(fTimeDelta, pPlayer->Get_Navigation());
+		pPlayer->Get_Transform()->Set_RotationY(0.f);
 		break;
 	case DIR_BACKWARD:
-		pPlayer->Get_Transform()->Go_Backward(fTimeDelta, pPlayer->Get_Navigation());
+		pPlayer->Get_Transform()->Set_RotationY(180.f);
 		break;
 	case DIR_LEFT:
-		pPlayer->Get_Transform()->Go_Left(fTimeDelta, pPlayer->Get_Navigation());
+		pPlayer->Get_Transform()->Set_RotationY(270.f);
 		break;
 	case DIR_RIGHT:
-		pPlayer->Get_Transform()->Go_Right(fTimeDelta, pPlayer->Get_Navigation());
+		pPlayer->Get_Transform()->Set_RotationY(90.f);
 		break;
 	}
+
+	pPlayer->Get_Transform()->Go_Straight(fTimeDelta, pPlayer->Get_Navigation());
 }

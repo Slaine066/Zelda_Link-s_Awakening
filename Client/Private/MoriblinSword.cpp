@@ -31,8 +31,9 @@ HRESULT CMoriblinSword::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Rotation(_float3(0.f, 180.f, 0.f));
 	m_fRadius = .5f;
+	m_fAggroRadius = 2.f;
+	m_fPatrolRadius = 2.f;
 
 	CMoriblinSwordState* pState = new CIdleState();
 	m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
@@ -124,10 +125,22 @@ HRESULT CMoriblinSword::Ready_Components(void * pArg)
 	ColliderDesc.vScale = _float3(1.4f, 1.4f, 1.2f);
 	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
 
-	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object
+	m_vCollidersCom.resize(2); // Numbers of Colliders needed for this Object
 
 	/* For.Com_Collider*/
 	if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_OUTPUT;
+	ColliderDesc.vScale = _float3(.3f, .2f, 1.4f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, -.5f);
+	ColliderDesc.m_bIsAttachedToBone = true;
+	ColliderDesc.pSocket = m_pModelCom->Get_BonePtr("attach_L");
+	ColliderDesc.pPivotMatrix = m_pModelCom->Get_PivotFloat4x4();
+
+	/* For.Com_Collider*/
+	if (FAILED(__super::Add_Components(TEXT("Com_ColliderSword"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[1], &ColliderDesc)))
 		return E_FAIL;
 
 	CNavigation::NAVDESC NavDesc;

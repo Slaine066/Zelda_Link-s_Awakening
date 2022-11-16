@@ -29,5 +29,7 @@ public:
 
 protected:
 	_bool m_bIsAnimationFinished = false;
+	_bool m_bHasAggro = false;
+	class CPlayer* m_pTarget = nullptr;
 };
 END

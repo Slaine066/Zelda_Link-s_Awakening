@@ -12,6 +12,9 @@ protected:
 	virtual ~CMonster() = default;
 
 public:
+	_float Get_AggroRadius() { return m_fAggroRadius; }
+	_float Get_PatrolRadius() { return m_fPatrolRadius; }
+
 	virtual _bool Is_AnimationLoop(_uint eAnimId) PURE;
 
 public:
@@ -25,6 +28,10 @@ protected:
 	virtual void AI_Behavior() PURE;
 	virtual void TickState(_float fTimeDelta) PURE;
 	virtual void LateTickState(_float fTimeDelta) PURE;
+
+protected:
+	_float m_fAggroRadius = 0.f;
+	_float m_fPatrolRadius = 0.f;
 
 public:
 	virtual void Free() override;
