@@ -13,6 +13,7 @@ protected:
 public:
 	_float Get_AggroRadius() { return m_fAggroRadius; }
 	_float Get_PatrolRadius() { return m_fPatrolRadius; }
+	_float Get_AttackRadius() { return m_fAttackRadius; }
 
 	virtual _bool Is_AnimationLoop(_uint eAnimId) PURE;
 
@@ -31,6 +32,7 @@ protected:
 protected:
 	_float m_fAggroRadius = 0.f;
 	_float m_fPatrolRadius = 0.f;
+	_float m_fAttackRadius = 0.f;
 
 public:
 	virtual void Free() override;

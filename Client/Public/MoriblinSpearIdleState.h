@@ -7,7 +7,7 @@ BEGIN(MoriblinSpear)
 class CIdleState : public CMoriblinSpearState
 {
 public:
-	CIdleState(_bool bHasAggro = false);
+	CIdleState(CPlayer* pTarget = nullptr);
 
 	virtual CMoriblinSpearState* AI_Behavior(CMoriblinSpear* pMoriblinSword) override;
 	virtual CMoriblinSpearState* Tick(CMoriblinSpear* pMoriblinSword, _float fTimeDelta) override;
@@ -18,8 +18,6 @@ public:
 
 private:
 	_float m_fIdleMoveTimer = 0.f;
-	_float m_fIdleAttackTimer = 2.f;
-	_bool m_bHasAggro = false;
 };
 END
 END

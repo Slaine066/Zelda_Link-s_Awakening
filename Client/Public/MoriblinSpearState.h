@@ -52,8 +52,21 @@ protected:
 		}
 	}
 
+	_bool Is_InAttackRadius(CMoriblinSpear * pMoriblinSpear)
+	{
+		if (!m_pTarget)
+			return false;
+
+		_float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_pTarget->Get_Position()) - XMLoadFloat3(&pMoriblinSpear->Get_Position())));
+		if (fDistance <= pMoriblinSpear->Get_AttackRadius())
+			return true;
+		else
+			return false;
+	}
+
 protected:
 	_bool m_bIsAnimationFinished = false;
 	class CPlayer* m_pTarget = nullptr;		/* If TRUE, has Aggro. */
+	_float m_fIdleAttackTimer = 2.f;
 };
 END

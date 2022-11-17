@@ -53,6 +53,11 @@ CHierarchyNode* CModel::Get_BonePtr(const char * pBoneName) const
 	return *iter;
 }
 
+void CModel::Reset_CurrentAnimation()
+{
+	m_Animations[m_iCurrentAnimIndex]->Reset_Animation();
+}
+
 HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix)
 {
 	m_eModelType = eModelType;

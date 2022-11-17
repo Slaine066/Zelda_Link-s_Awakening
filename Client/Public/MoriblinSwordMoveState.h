@@ -7,7 +7,7 @@ BEGIN(MoriblinSword)
 class CMoveState : public CMoriblinSwordState
 {
 public:
-	CMoveState();
+	CMoveState(CPlayer* pTarget = nullptr);
 
 	virtual CMoriblinSwordState* AI_Behavior(CMoriblinSword* pMoriblinSword) override;
 	virtual CMoriblinSwordState* Tick(CMoriblinSword* pMoriblinSword, _float fTimeDelta) override;
@@ -18,10 +18,10 @@ public:
 
 private:
 	void Set_MoveTarget(CMoriblinSword* pMoriblinSword);
-	void Move(CMoriblinSword* pMoriblinSword, _float fTimeDelta);
+	void Patrol(CMoriblinSword* pMoriblinSword, _float fTimeDelta);
 
 private:
-	_float3 m_vMoveTarget;
+	_float3 m_vPatrolPosition;
 	_bool m_bIsArrived = false;
 };
 END

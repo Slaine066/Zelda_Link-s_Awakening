@@ -4,21 +4,24 @@
 
 BEGIN(Client)
 BEGIN(MoriblinSword)
-class CIdleState : public CMoriblinSwordState
+class CDieState : public CMoriblinSwordState
 {
-public:  
-	CIdleState(CPlayer* pTarget = nullptr);
+public:
+	CDieState(_float3 vDamageCauserPosition);
 
 	virtual CMoriblinSwordState* AI_Behavior(CMoriblinSword* pMoriblinSword) override;
 	virtual CMoriblinSwordState* Tick(CMoriblinSword* pMoriblinSword, _float fTimeDelta) override;
-	virtual CMoriblinSwordState* LateTick(CMoriblinSword* pMoriblinSword, _float fTimeDelta) override;
+	virtual CMoriblinSwordState* LateTick(CMoriblinSword* pMoriblinSword, _float fTimeDelta);
 
 	virtual void Enter(CMoriblinSword* pMoriblinSword) override;
 	virtual void Exit(CMoriblinSword* pMoriblinSword) override;
 
 private:
-	_float m_fIdleMoveTimer = 0.f;
-	_float m_fIdleAttackTimer = 2.f;
+	_bool Compute_HitPosition(CMoriblinSword * pMoriblinSword);
+
+private:
+	_float3 m_vDamageCauserPosition;
+	_float m_fDeadTimer = 0.f;
 };
 END
 END

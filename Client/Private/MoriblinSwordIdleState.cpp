@@ -6,13 +6,13 @@
 
 using namespace MoriblinSword;
 
-CIdleState::CIdleState(_bool bHasAggro) : m_bHasAggro(bHasAggro)
+CIdleState::CIdleState(CPlayer* pTarget) 
 {
+	m_pTarget = pTarget;
 }
 
 CMoriblinSwordState * CIdleState::AI_Behavior(CMoriblinSword * pMoriblinSword)
 {
-	/* Populate "m_pTarget". */
 	Find_Target(pMoriblinSword); 
 
 	return nullptr;
@@ -48,7 +48,7 @@ CMoriblinSwordState * CIdleState::LateTick(CMoriblinSword * pMoriblinSword, _flo
 
 void CIdleState::Enter(CMoriblinSword * pMoriblinSword)
 {
-	if (m_bHasAggro)
+	if (m_pTarget)
 	{
 		pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(CMoriblinSword::ANIMID::ANIM_STANCE_WAIT);
 		m_fIdleAttackTimer = 0.f;

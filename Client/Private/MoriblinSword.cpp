@@ -5,6 +5,7 @@
 #include "MoriblinSwordState.h"
 #include "MoriblinSwordIdleState.h"
 #include "MoriblinSwordHitState.h"
+#include "MoriblinSwordDieState.h"
 
 using namespace MoriblinSword;
 
@@ -40,6 +41,7 @@ HRESULT CMoriblinSword::Initialize(void * pArg)
 	m_fRadius = .5f;
 	m_fAggroRadius = 2.f;
 	m_fPatrolRadius = 2.f;
+	m_fAttackRadius = .5f;
 
 	CMoriblinSwordState* pState = new CIdleState();
 	m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
@@ -50,6 +52,9 @@ HRESULT CMoriblinSword::Initialize(void * pArg)
 _uint CMoriblinSword::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (m_bShouldDestroy)
+		return OBJ_DESTROY;
 
 	AI_Behavior();
 	TickState(fTimeDelta);
@@ -92,8 +97,22 @@ _float CMoriblinSword::Take_Damage(float fDamage, void * DamageType, CGameObject
 {
 	if (fDamage > 0.f)
 	{
-		CMoriblinSwordState* pState = new CHitState(DamageCauser->Get_Position());
-		m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
+		if (m_tStats.m_fCurrentHp - fDamage <= 0.f)
+		{
+			m_tStats.m_fCurrentHp = 0.f;
+
+			m_pModelCom->Reset_CurrentAnimation();
+			CMoriblinSwordState* pState = new CDieState(DamageCauser->Get_Position());
+			m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
+		}
+		else
+		{
+			m_tStats.m_fCurrentHp -= fDamage;
+
+			m_pModelCom->Reset_CurrentAnimation();
+			CMoriblinSwordState* pState = new CHitState(DamageCauser->Get_Position());
+			m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
+		}
 	}
 
 	return 0.f;

@@ -66,6 +66,14 @@ _bool CAnimation::Animate(_float fTimeDelta, _bool bIsLoop)
 	return false;
 }
 
+void CAnimation::Reset_Animation()
+{
+	m_fCurrentTime = 0.f;
+
+	for (auto& pChannel : m_Channels)
+		pChannel->Reset();
+}
+
 CAnimation * CAnimation::Create( CModel* pModel, aiAnimation * pAIAnimation)
 {
 	CAnimation*	pInstance = new CAnimation();

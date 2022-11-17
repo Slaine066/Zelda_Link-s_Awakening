@@ -2,6 +2,7 @@
 
 #include "MoriblinSpearAttackState.h"
 #include "MoriblinSpearIdleState.h"
+#include "MoriblinSpearMoveState.h"
 
 using namespace MoriblinSpear;
 
@@ -11,15 +12,21 @@ CAttackState::CAttackState()
 
 CMoriblinSpearState * CAttackState::AI_Behavior(CMoriblinSpear * pMoriblinSpear)
 {
-	/* Populate "m_pTarget". */
 	Find_Target(pMoriblinSpear, true);
+
+	if (!Is_InAttackRadius(pMoriblinSpear))
+	{
+		pMoriblinSpear->Get_Model()->Reset_CurrentAnimation();
+		return new CMoveState(m_pTarget);
+	}
 
 	return nullptr;
 }
 
 CMoriblinSpearState * CAttackState::Tick(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 {
-	Move(pMoriblinSpear, fTimeDelta);
+	_vector vTargetPosition = XMVectorSet(m_pTarget->Get_Position().x, pMoriblinSpear->Get_Position().y, m_pTarget->Get_Position().z, 1.f);
+	pMoriblinSpear->Get_Transform()->LookAt(vTargetPosition);
 
 	pMoriblinSpear->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSpear->Is_AnimationLoop(pMoriblinSpear->Get_Model()->Get_CurrentAnimIndex()));
 	pMoriblinSpear->Sync_WithNavigationHeight();
@@ -39,14 +46,14 @@ CMoriblinSpearState * CAttackState::LateTick(CMoriblinSpear * pMoriblinSpear, _f
 		if (!pDamagedObjects.empty())
 		{
 			for (auto& pDamaged : pDamagedObjects)
-				pDamaged->Take_Damage(10.f, nullptr, pMoriblinSpear);
+				pDamaged->Take_Damage(pMoriblinSpear->Get_Stats().m_fAttackPower, nullptr, pMoriblinSpear);
 
 			m_bDidDamage = true;
 		}
 	}
 
-	if (m_bIsAnimationFinished && m_bDidDamage)
-		return new CIdleState(true);
+	if (m_bIsAnimationFinished)
+		return new CIdleState(m_pTarget);
 
 	return nullptr;
 }
@@ -72,6 +79,6 @@ void CAttackState::Move(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 	_float3 vPosition;
 	XMStoreFloat3(&vPosition, vTargetPosition);
 
-	_float fRadius = pMoriblinSpear->Get_Radius();
-	pMoriblinSpear->Get_Transform()->Go_TargetPosition(fTimeDelta, vPosition, fRadius, pMoriblinSpear->Get_Navigation());
+	_float fAttackRadius = pMoriblinSpear->Get_AttackRadius();
+	pMoriblinSpear->Get_Transform()->Go_TargetPosition(fTimeDelta, vPosition, fAttackRadius, pMoriblinSpear->Get_Navigation());
 }

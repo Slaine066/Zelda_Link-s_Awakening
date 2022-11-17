@@ -6,13 +6,13 @@
 
 using namespace MoriblinSpear;
 
-CIdleState::CIdleState(_bool bHasAggro) : m_bHasAggro(bHasAggro)
+CIdleState::CIdleState(CPlayer* pTarget)
 {
+	m_pTarget = pTarget;
 }
 
 CMoriblinSpearState * CIdleState::AI_Behavior(CMoriblinSpear * pMoriblinSpear)
 {
-	/* Populate "m_pTarget". */
 	Find_Target(pMoriblinSpear);
 
 	return nullptr;
@@ -25,10 +25,18 @@ CMoriblinSpearState * CIdleState::Tick(CMoriblinSpear * pMoriblinSpear, _float f
 
 	if (m_pTarget)
 	{
-		if (m_fIdleAttackTimer > 2.f)
-			return new CAttackState();
+		_vector vTargetPosition = XMVectorSet(m_pTarget->Get_Position().x, pMoriblinSpear->Get_Position().y, m_pTarget->Get_Position().z, 1.f);
+		pMoriblinSpear->Get_Transform()->LookAt(vTargetPosition);
+
+		if (Is_InAttackRadius(pMoriblinSpear))
+		{
+			if (m_fIdleAttackTimer > 2.f)
+				return new CAttackState();
+			else
+				m_fIdleAttackTimer += fTimeDelta;
+		}
 		else
-			m_fIdleAttackTimer += fTimeDelta;
+			return new CMoveState(m_pTarget);
 	}
 	else
 	{
@@ -48,7 +56,7 @@ CMoriblinSpearState * CIdleState::LateTick(CMoriblinSpear * pMoriblinSpear, _flo
 
 void CIdleState::Enter(CMoriblinSpear * pMoriblinSpear)
 {
-	if (m_bHasAggro)
+	if (m_pTarget)
 	{
 		pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_STANCE_WAIT);
 		m_fIdleAttackTimer = 0.f;
@@ -57,7 +65,7 @@ void CIdleState::Enter(CMoriblinSpear * pMoriblinSpear)
 		pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_WAIT);
 }
 
-void CIdleState::Exit(CMoriblinSpear * pPlayer)
+void CIdleState::Exit(CMoriblinSpear * pMoriblinSpear)
 {
 	m_fIdleMoveTimer = 0.f;
 	m_fIdleAttackTimer = 0.f;

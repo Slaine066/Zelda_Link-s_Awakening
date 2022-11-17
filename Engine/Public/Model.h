@@ -29,6 +29,7 @@ public:
 
 	_uint Get_CurrentAnimIndex() { return m_iCurrentAnimIndex; }
 	void Set_CurrentAnimIndex(_uint iAnimIndex) { m_iCurrentAnimIndex = iAnimIndex; }
+	void Reset_CurrentAnimation();
 
 	_float4x4 Get_PivotFloat4x4() const { return m_PivotMatrix; }
 

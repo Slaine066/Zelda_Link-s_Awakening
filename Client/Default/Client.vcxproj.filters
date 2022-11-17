@@ -210,6 +210,12 @@
     <ClInclude Include="..\public\Character.h">
       <Filter>02.GameObjects\00.Actor\00.Character</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MoriblinSpearDieState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSpear\MoriblinSpearState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MoriblinSwordDieState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -298,6 +304,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Character.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSpearDieState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSpear\MoriblinSpearState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSwordDieState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

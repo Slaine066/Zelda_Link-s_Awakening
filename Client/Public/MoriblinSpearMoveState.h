@@ -7,7 +7,7 @@ BEGIN(MoriblinSpear)
 class CMoveState : public CMoriblinSpearState
 {
 public:
-	CMoveState();
+	CMoveState(CPlayer* pTarget = nullptr);
 
 	virtual CMoriblinSpearState* AI_Behavior(CMoriblinSpear* pMoriblinSpear) override;
 	virtual CMoriblinSpearState* Tick(CMoriblinSpear* pMoriblinSpear, _float fTimeDelta) override;
@@ -18,10 +18,11 @@ public:
 
 private:
 	void Set_MoveTarget(CMoriblinSpear* pMoriblinSpear);
-	void Move(CMoriblinSpear* pMoriblinSpear, _float fTimeDelta);
+	void Patrol(CMoriblinSpear* pMoriblinSpear, _float fTimeDelta);
+	void Follow_Target(CMoriblinSpear* pMoriblinSpear, _float fTimeDelta);
 
 private:
-	_float3 m_vMoveTarget;
+	_float3 m_vPatrolPosition;
 	_bool m_bIsArrived = false;
 };
 END

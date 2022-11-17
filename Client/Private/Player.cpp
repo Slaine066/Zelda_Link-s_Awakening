@@ -97,6 +97,7 @@ _float CPlayer::Take_Damage(float fDamage, void * DamageType, CGameObject * Dama
 {
 	if (fDamage > 0.f)
 	{
+		m_pModelCom->Reset_CurrentAnimation();
 		CPlayerState* pState = new CHitState(DamageCauser->Get_Position());
 		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
 	}

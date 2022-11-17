@@ -22,7 +22,8 @@ public:
 	_float Get_Radius() const { return m_fRadius; }
 
 	void Set_Position(_float3 vPosition) { m_vPosition = vPosition; }
-	
+	void Set_ShouldDestroy(_bool bShouldDestroy) { m_bShouldDestroy = bShouldDestroy; }
+
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -55,6 +56,8 @@ protected:
 
 	_bool m_bIsInFrustum = false;
 	_float m_fRadius = 0.f;
+
+	_bool m_bShouldDestroy = false;
 
 public:	
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

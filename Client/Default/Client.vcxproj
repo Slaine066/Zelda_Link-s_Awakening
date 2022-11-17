@@ -174,11 +174,13 @@
     <ClInclude Include="..\public\Character.h" />
     <ClInclude Include="..\public\MoriblinSpear.h" />
     <ClInclude Include="..\public\MoriblinSpearAttackState.h" />
+    <ClInclude Include="..\public\MoriblinSpearDieState.h" />
     <ClInclude Include="..\public\MoriblinSpearHitState.h" />
     <ClInclude Include="..\public\MoriblinSpearIdleState.h" />
     <ClInclude Include="..\public\MoriblinSpearMoveState.h" />
     <ClInclude Include="..\Public\MoriblinSpearState.h" />
     <ClInclude Include="..\public\MoriblinSwordAttackState.h" />
+    <ClInclude Include="..\public\MoriblinSwordDieState.h" />
     <ClInclude Include="..\public\MoriblinSwordHitState.h" />
     <ClInclude Include="..\public\MoriblinSwordIdleState.h" />
     <ClInclude Include="..\public\MoriblinSwordMoveState.h" />
@@ -211,10 +213,12 @@
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\MoriblinSpear.cpp" />
     <ClCompile Include="..\private\MoriblinSpearAttackState.cpp" />
+    <ClCompile Include="..\private\MoriblinSpearDieState.cpp" />
     <ClCompile Include="..\private\MoriblinSpearHitState.cpp" />
     <ClCompile Include="..\private\MoriblinSpearIdleState.cpp" />
     <ClCompile Include="..\private\MoriblinSpearMoveState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordAttackState.cpp" />
+    <ClCompile Include="..\private\MoriblinSwordDieState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordHitState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordIdleState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordMoveState.cpp" />

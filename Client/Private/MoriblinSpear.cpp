@@ -5,6 +5,7 @@
 #include "MoriblinSpearState.h"
 #include "MoriblinSpearIdleState.h"
 #include "MoriblinSpearHitState.h"
+#include "MoriblinSpearDieState.h"
 #include "Spear.h"
 
 using namespace MoriblinSpear;
@@ -44,6 +45,7 @@ HRESULT CMoriblinSpear::Initialize(void * pArg)
 	m_fRadius = .5f;
 	m_fAggroRadius = 2.f;
 	m_fPatrolRadius = 2.f;
+	m_fAttackRadius = 2.f;
 
 	CMoriblinSpearState* pState = new CIdleState();
 	m_pMoriblinSpearState = m_pMoriblinSpearState->ChangeState(this, m_pMoriblinSpearState, pState);
@@ -54,6 +56,9 @@ HRESULT CMoriblinSpear::Initialize(void * pArg)
 _uint CMoriblinSpear::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (m_bShouldDestroy)
+		return OBJ_DESTROY;
 
 	for (auto& pParts : m_vParts)
 		pParts->Tick(fTimeDelta);
@@ -105,8 +110,22 @@ _float CMoriblinSpear::Take_Damage(float fDamage, void * DamageType, CGameObject
 {
 	if (fDamage > 0.f)
 	{
-		CMoriblinSpearState* pState = new CHitState(DamageCauser->Get_Position());
-		m_pMoriblinSpearState = m_pMoriblinSpearState->ChangeState(this, m_pMoriblinSpearState, pState);
+		if (m_tStats.m_fCurrentHp - fDamage <= 0.f)
+		{
+			m_tStats.m_fCurrentHp = 0.f;
+
+			m_pModelCom->Reset_CurrentAnimation();
+			CMoriblinSpearState* pState = new CDieState(DamageCauser->Get_Position());
+			m_pMoriblinSpearState = m_pMoriblinSpearState->ChangeState(this, m_pMoriblinSpearState, pState);
+		}
+		else
+		{
+			m_tStats.m_fCurrentHp -= fDamage;
+
+			m_pModelCom->Reset_CurrentAnimation();
+			CMoriblinSpearState* pState = new CHitState(DamageCauser->Get_Position());
+			m_pMoriblinSpearState = m_pMoriblinSpearState->ChangeState(this, m_pMoriblinSpearState, pState);
+		}
 	}
 
 	return 0.f;

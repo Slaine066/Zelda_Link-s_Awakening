@@ -199,10 +199,10 @@ void CNavigation::Compute_CurrentCell()
 	_float fDistance = 0.f;
 
 	_vector vRayPos = XMLoadFloat3(&m_NavDesc.vInitialPosition);
-	vRayPos -= XMVectorSet(0.f, .5f, 0.f, 1.f);
+	vRayPos += XMVectorSet(0.f, 10.f, 0.f, 1.f);
 	vRayPos = XMVectorSetW(vRayPos, 1.f);
 
-	_vector vRayDir = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector vRayDir = XMVectorSet(0.f, -1.f, 0.f, 0.f);
 
 	for (_uint i = 0; i < m_Cells.size(); i++)
 	{

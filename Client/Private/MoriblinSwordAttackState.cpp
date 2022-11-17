@@ -11,7 +11,6 @@ CAttackState::CAttackState()
 
 CMoriblinSwordState * CAttackState::AI_Behavior(CMoriblinSword * pMoriblinSword)
 {
-	/* Populate "m_pTarget". */
 	Find_Target(pMoriblinSword, true);
 
 	return nullptr;
@@ -39,14 +38,14 @@ CMoriblinSwordState * CAttackState::LateTick(CMoriblinSword * pMoriblinSword, _f
 		if (!pDamagedObjects.empty())
 		{
 			for (auto& pDamaged : pDamagedObjects)
-				pDamaged->Take_Damage(10.f, nullptr, pMoriblinSword);
+				pDamaged->Take_Damage(pMoriblinSword->Get_Stats().m_fAttackPower, nullptr, pMoriblinSword);
 
 			m_bDidDamage = true;
 		}
 	}
 
 	if (m_bIsAnimationFinished && m_bDidDamage)
-		return new CIdleState(true);
+		return new CIdleState(m_pTarget);
 
 	return nullptr;
 }
@@ -72,6 +71,6 @@ void CAttackState::Move(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 	_float3 vPosition;
 	XMStoreFloat3(&vPosition, vTargetPosition);
 
-	_float fRadius = pMoriblinSword->Get_Radius();
-	pMoriblinSword->Get_Transform()->Go_TargetPosition(fTimeDelta, vPosition, fRadius, pMoriblinSword->Get_Navigation());
+	_float fAttackRadius = pMoriblinSword->Get_AttackRadius();
+	pMoriblinSword->Get_Transform()->Go_TargetPosition(fTimeDelta, vPosition, fAttackRadius, pMoriblinSword->Get_Navigation());
 }

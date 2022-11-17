@@ -2,13 +2,15 @@
 
 #include "MoriblinSpearMoveState.h"
 #include "MoriblinSpearIdleState.h"
+#include "MoriblinSpearAttackState.h"
 #include "Navigation.h"
 #include "Transform.h"
 
 using namespace MoriblinSpear;
 
-CMoveState::CMoveState()
+CMoveState::CMoveState(CPlayer* pTarget)
 {
+	m_pTarget = pTarget;
 }
 
 CMoriblinSpearState * CMoveState::AI_Behavior(CMoriblinSpear * pMoriblinSpear)
@@ -18,7 +20,15 @@ CMoriblinSpearState * CMoveState::AI_Behavior(CMoriblinSpear * pMoriblinSpear)
 
 CMoriblinSpearState * CMoveState::Tick(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 {
-	Move(pMoriblinSpear, fTimeDelta);
+	if (m_pTarget)
+	{
+		if (Is_InAttackRadius(pMoriblinSpear))
+			return new CAttackState();
+		else
+			Follow_Target(pMoriblinSpear, fTimeDelta);
+	}
+	else
+		Patrol(pMoriblinSpear, fTimeDelta);
 
 	pMoriblinSpear->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSpear->Is_AnimationLoop(pMoriblinSpear->Get_Model()->Get_CurrentAnimIndex()));
 	pMoriblinSpear->Sync_WithNavigationHeight();
@@ -36,13 +46,19 @@ CMoriblinSpearState * CMoveState::LateTick(CMoriblinSpear * pMoriblinSpear, _flo
 
 void CMoveState::Enter(CMoriblinSpear * pMoriblinSpear)
 {
-	Set_MoveTarget(pMoriblinSpear);
-	pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_WALK);
+	if (m_pTarget)
+		pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_STANCE_WALK_FRONT);
+	else
+	{
+		Set_MoveTarget(pMoriblinSpear);
+		pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_WALK);
+	}
 }
 
 void CMoveState::Exit(CMoriblinSpear * pMoriblinSpear)
 {
 	m_bIsArrived = false;
+	m_fIdleAttackTimer = 2.f;
 }
 
 void CMoveState::Set_MoveTarget(CMoriblinSpear * pMoriblinSpear)
@@ -57,17 +73,31 @@ void CMoveState::Set_MoveTarget(CMoriblinSpear * pMoriblinSpear)
 
 		_float4 vInitialPosition = (_float4)pMoriblinSpear->Get_Transform()->Get_TransformDesc().vInitialWorldMatrix.m[3];
 
-		m_vMoveTarget.x = bSignX ? (vInitialPosition.x + fOffsetX) : (vInitialPosition.x - fOffsetX);
-		m_vMoveTarget.y = pMoriblinSpear->Get_Position().y;
-		m_vMoveTarget.z = bSignZ ? (vInitialPosition.z + fOffsetZ) : (vInitialPosition.z - fOffsetZ);
+		m_vPatrolPosition.x = bSignX ? (vInitialPosition.x + fOffsetX) : (vInitialPosition.x - fOffsetX);
+		m_vPatrolPosition.y = pMoriblinSpear->Get_Position().y;
+		m_vPatrolPosition.z = bSignZ ? (vInitialPosition.z + fOffsetZ) : (vInitialPosition.z - fOffsetZ);
 
-		bIsPointValid = pMoriblinSpear->Get_Navigation()->Get_PointOnNavigation(m_vMoveTarget);
+		bIsPointValid = pMoriblinSpear->Get_Navigation()->Get_PointOnNavigation(m_vPatrolPosition);
 	} while (!bIsPointValid);
 }
 
-void CMoveState::Move(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
+void CMoveState::Patrol(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 {
-	_vector vMoveTarget = XMVectorSet(m_vMoveTarget.x, pMoriblinSpear->Get_Position().y, m_vMoveTarget.z, 1.f);
-	pMoriblinSpear->Get_Transform()->LookAt(vMoveTarget);
-	m_bIsArrived = pMoriblinSpear->Get_Transform()->Go_TargetPosition(fTimeDelta, m_vMoveTarget, 0.f, pMoriblinSpear->Get_Navigation());
+	_vector vPatrolPosition = XMVectorSet(m_vPatrolPosition.x, pMoriblinSpear->Get_Position().y, m_vPatrolPosition.z, 1.f);
+	pMoriblinSpear->Get_Transform()->LookAt(vPatrolPosition);
+	m_bIsArrived = pMoriblinSpear->Get_Transform()->Go_TargetPosition(fTimeDelta, m_vPatrolPosition, 0.f, pMoriblinSpear->Get_Navigation());
+}
+
+void CMoveState::Follow_Target(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
+{
+	if (!m_pTarget)
+		return;
+
+	_vector vTargetPosition = XMVectorSet(m_pTarget->Get_Position().x, pMoriblinSpear->Get_Position().y, m_pTarget->Get_Position().z, 1.f);
+	pMoriblinSpear->Get_Transform()->LookAt(vTargetPosition);
+
+	_float3 vPosition;
+	XMStoreFloat3(&vPosition, vTargetPosition);
+
+	pMoriblinSpear->Get_Transform()->Go_Straight(fTimeDelta, pMoriblinSpear->Get_Navigation());
 }
