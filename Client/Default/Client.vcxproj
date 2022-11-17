@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\ShaderFiles\Client_Shader_Defines.hpp" />
     <ClInclude Include="..\public\Actor.h" />
+    <ClInclude Include="..\public\Character.h" />
     <ClInclude Include="..\public\MoriblinSpear.h" />
     <ClInclude Include="..\public\MoriblinSpearAttackState.h" />
     <ClInclude Include="..\public\MoriblinSpearHitState.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="..\Public\PlayerMoveState.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\PlayerState.h" />
+    <ClInclude Include="..\public\Spear.h" />
     <ClInclude Include="..\public\StaticObject.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="Client.h" />
@@ -206,6 +208,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Actor.cpp" />
+    <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\MoriblinSpear.cpp" />
     <ClCompile Include="..\private\MoriblinSpearAttackState.cpp" />
     <ClCompile Include="..\private\MoriblinSpearHitState.cpp" />
@@ -228,6 +231,7 @@
     <ClCompile Include="..\private\MoriblinSword.cpp" />
     <ClCompile Include="..\Private\PlayerMoveState.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\private\Spear.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="Client.cpp" />

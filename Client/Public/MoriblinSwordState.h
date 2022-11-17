@@ -44,7 +44,11 @@ protected:
 		{
 			_float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&pGameObject->Get_Position()) - XMLoadFloat3(&pMoriblinSword->Get_Position())));
 			if (fDistance < pMoriblinSword->Get_AggroRadius())
+			{
 				m_pTarget = pPlayer;
+
+				pMoriblinSword->Get_Transform()->Change_Speed(pMoriblinSword->Get_Stats().m_fRunSpeed);
+			}
 		}
 	}
 

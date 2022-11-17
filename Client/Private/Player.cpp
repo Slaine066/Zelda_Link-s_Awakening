@@ -8,12 +8,12 @@
 #include "PlayerHitState.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CActor(pDevice, pContext)
+	: CCharacter(pDevice, pContext)
 {
 }
 
 CPlayer::CPlayer(const CPlayer & rhs)
-	: CActor(rhs)
+	: CCharacter(rhs)
 {
 }
 
@@ -21,6 +21,12 @@ HRESULT CPlayer::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
+
+	m_tStats.m_fMaxHp = 4;
+	m_tStats.m_fCurrentHp = m_tStats.m_fMaxHp;
+	m_tStats.m_fAttackPower = 1;
+	m_tStats.m_fWalkSpeed = .75f;
+	m_tStats.m_fRunSpeed = 1.5f;
 
 	return S_OK;
 }
@@ -109,7 +115,7 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 	CTransform::TRANSFORMDESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 	TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
-	TransformDesc.fSpeedPerSec = 1.5f;
+	TransformDesc.fSpeedPerSec = m_tStats.m_fRunSpeed;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
 	/* For.Com_Transform */

@@ -63,6 +63,11 @@ protected:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual HRESULT Ready_Components(void* pArg) PURE;
+	virtual HRESULT SetUp_ShaderResources() PURE;
+
+	virtual void Update_Colliders();
+
 	void Render_Colliders();
 	void Render_NavigationMesh();
 
@@ -76,10 +81,6 @@ protected:
 
 protected:
 	MODELDESC m_tModelDesc;
-
-protected:
-	virtual HRESULT Ready_Components(void* pArg) = 0;
-	virtual HRESULT SetUp_ShaderResources() = 0;
 
 public:
 	virtual void Free() override;

@@ -1,0 +1,189 @@
+#include "stdafx.h"
+
+#include "Spear.h"
+#include "GameInstance.h"
+
+CSpear::CSpear(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CActor(pDevice, pContext)
+{
+}
+
+CSpear::CSpear(const CSpear & rhs)
+	: CActor(rhs)
+{
+}
+
+HRESULT CSpear::Initialize_Prototype()
+{
+	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CSpear::Initialize(void * pArg)
+{
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
+
+	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, .4f);
+	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, .4f);
+	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, .4f);
+
+	return S_OK;
+}
+
+_uint CSpear::Tick(_float fTimeDelta)
+{
+	__super::Tick(fTimeDelta);
+
+	// Collision Handling
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_MONSTER, this);
+
+	// Assemble CombinedWorldMatrix
+	_matrix	SocketMatrix = m_WeaponDesc.pSocket->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_WeaponDesc.SocketPivotMatrix) * XMLoadFloat4x4(m_WeaponDesc.pParentWorldMatrix);
+	SocketMatrix.r[0] = XMVector3Normalize(SocketMatrix.r[0]);
+	SocketMatrix.r[1] = XMVector3Normalize(SocketMatrix.r[1]);
+	SocketMatrix.r[2] = XMVector3Normalize(SocketMatrix.r[2]);
+
+	XMStoreFloat4x4(&m_CombinedWorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
+
+	return OBJ_NOEVENT;
+}
+
+void CSpear::Late_Tick(_float fTimeDelta)
+{
+	__super::Late_Tick(fTimeDelta);
+}
+
+HRESULT CSpear::Render()
+{
+	if (!m_pShaderCom || !m_pModelCom)
+		return E_FAIL;
+
+	if (FAILED(SetUp_ShaderResources()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshContainers();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0)))
+			return E_FAIL;
+	}
+
+	// Only in Debug
+	Render_Colliders();
+
+	return S_OK;
+}
+
+HRESULT CSpear::Ready_Components(void * pArg)
+{
+	if (pArg)
+		memcpy(&m_WeaponDesc, pArg, sizeof(WEAPONDESC));
+
+	/* For.Com_Renderer */
+	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
+		return E_FAIL;
+
+	CTransform::TRANSFORMDESC TransformDesc;
+	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
+	TransformDesc.fSpeedPerSec = 5.f;
+	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
+	XMStoreFloat4x4(&TransformDesc.vInitialWorldMatrix, XMMatrixIdentity());
+
+	/* For.Com_Transform */
+	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_STATIC, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
+		return E_FAIL;
+
+	/* For.Com_Shader */
+	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
+		return E_FAIL;
+
+	/* For.Com_Model*/
+	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Spear"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
+
+	CCollider::COLLIDERDESC	ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_OUTPUT;
+	ColliderDesc.vScale = _float3(.3f, .2f, 1.5f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, -.25f);
+
+	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object
+
+	/* For.Com_Collider*/
+	if (FAILED(__super::Add_Components(TEXT("Com_ColliderSpear"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CSpear::SetUp_ShaderResources()
+{
+	if (!m_pShaderCom)
+		return E_FAIL;
+
+	_float4x4 WorldMatrix;
+	XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4))))
+		return E_FAIL;
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+void CSpear::Update_Colliders()
+{
+	for (auto& pCollider : m_vCollidersCom)
+		if (pCollider)
+			pCollider->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
+}
+
+CSpear * CSpear::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+{
+	CSpear* pInstance = new CSpear(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		ERR_MSG(TEXT("Failed to Create: CSpear"));
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject * CSpear::Clone(void * pArg)
+{
+	CSpear* pInstance = new CSpear(*this);
+
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		ERR_MSG(TEXT("Failed to Clone: CSpear"));
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CSpear::Free()
+{
+	__super::Free();
+
+	Safe_Release(m_WeaponDesc.pSocket);
+}

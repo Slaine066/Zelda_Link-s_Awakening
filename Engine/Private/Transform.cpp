@@ -172,7 +172,7 @@ _bool CTransform::Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, 
 	_vector vPos = Get_State(CTransform::STATE::STATE_TRANSLATION);
 	_float3 vTargetPos = { vTargetPosition.x, vTargetPosition.y, vTargetPosition.z };
 
-	_vector vDirection = XMLoadFloat3(&vTargetPos) - vPos;
+	_vector vDirection = XMVectorSet(vTargetPos.x, vTargetPos.y, vTargetPos.z, 1.f) - vPos;
 	vDirection = XMVector4Normalize(vDirection);
 
 	vPos += vDirection * fTimeDelta * m_TransformDesc.fSpeedPerSec;

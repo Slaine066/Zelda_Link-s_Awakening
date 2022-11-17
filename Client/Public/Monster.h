@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Client_Defines.h"
-#include "Actor.h"
+#include "Character.h"
 
 BEGIN(Client)
-class CMonster abstract : public CActor
+class CMonster abstract : public CCharacter
 {
 protected:
 	CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

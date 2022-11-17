@@ -4,12 +4,12 @@
 #include "GameInstance.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CActor(pDevice, pContext)
+	: CCharacter(pDevice, pContext)
 {
 }
 
 CMonster::CMonster(const CMonster & rhs)
-	: CActor(rhs)
+	: CCharacter(rhs)
 {
 }
 

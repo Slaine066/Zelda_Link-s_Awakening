@@ -44,6 +44,12 @@ public:
 		ANIM_END
 	};
 
+	enum PARTS 
+	{ 
+		PARTS_SPEAR, 
+		PARTS_END 
+	};
+
 public:
 	virtual _bool Is_AnimationLoop(_uint eAnimId) override;
 
@@ -61,6 +67,7 @@ public:
 	virtual _float Take_Damage(float fDamage, void* DamageType, CGameObject* DamageCauser) override;
 
 private:
+	HRESULT Ready_Parts();
 	virtual HRESULT Ready_Components(void* pArg) override;
 	virtual HRESULT SetUp_ShaderResources() override;
 
@@ -71,6 +78,7 @@ private:
 
 private:
 	class CMoriblinSpearState* m_pMoriblinSpearState = nullptr;
+	vector<CGameObject*> m_vParts;
 
 public:
 	static CMoriblinSpear* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

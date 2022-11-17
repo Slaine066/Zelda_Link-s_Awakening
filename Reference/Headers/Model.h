@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "HierarchyNode.h"
 
 BEGIN(Engine)
 class ENGINE_DLL CModel final : public CComponent

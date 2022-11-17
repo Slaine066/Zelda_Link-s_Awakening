@@ -78,6 +78,15 @@ HRESULT CObject_Manager::Add_GameObject(const _tchar* pObjName, const _tchar * p
 	return S_OK;
 }
 
+CGameObject * CObject_Manager::Clone_GameObject(const _tchar * pPrototypeTag, void * pArg)
+{
+	CGameObject* pPrototype = Find_Prototype(pPrototypeTag);
+	if (!pPrototype)
+		return nullptr;
+	
+	return pPrototype->Clone(pArg);
+}
+
 HRESULT CObject_Manager::Remove_GameObject(CGameObject* pGameObj, _uint iLevelIndex, const _tchar * pLayerTag)
 {
 	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);

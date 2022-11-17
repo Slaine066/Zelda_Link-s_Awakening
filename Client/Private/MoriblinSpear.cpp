@@ -5,6 +5,7 @@
 #include "MoriblinSpearState.h"
 #include "MoriblinSpearIdleState.h"
 #include "MoriblinSpearHitState.h"
+#include "Spear.h"
 
 using namespace MoriblinSpear;
 
@@ -23,12 +24,21 @@ HRESULT CMoriblinSpear::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	m_tStats.m_fMaxHp = 2;
+	m_tStats.m_fCurrentHp = m_tStats.m_fMaxHp;
+	m_tStats.m_fAttackPower = .5f;
+	m_tStats.m_fWalkSpeed = .5f;
+	m_tStats.m_fRunSpeed = 1.f;
+
 	return S_OK;
 }
 
 HRESULT CMoriblinSpear::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Parts()))
 		return E_FAIL;
 
 	m_fRadius = .5f;
@@ -45,6 +55,9 @@ _uint CMoriblinSpear::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	for (auto& pParts : m_vParts)
+		pParts->Tick(fTimeDelta);
+
 	AI_Behavior();
 	TickState(fTimeDelta);
 
@@ -56,7 +69,13 @@ void CMoriblinSpear::Late_Tick(_float fTimeDelta)
 	__super::Late_Tick(fTimeDelta);
 
 	if (m_pRendererCom && m_bIsInFrustum)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, m_vParts[PARTS_SPEAR]);
+	}
+
+	for (auto& pParts : m_vParts)
+		pParts->Late_Tick(fTimeDelta);
 
 	LateTickState(fTimeDelta);
 }
@@ -93,6 +112,32 @@ _float CMoriblinSpear::Take_Damage(float fDamage, void * DamageType, CGameObject
 	return 0.f;
 }
 
+HRESULT CMoriblinSpear::Ready_Parts()
+{
+	m_vParts.resize(PARTS_END);
+
+	/* For.Spear */
+	CHierarchyNode*	pSocket = m_pModelCom->Get_BonePtr("attach_L");
+	if (!pSocket)
+		return E_FAIL;
+
+	CSpear::WEAPONDESC WeaponDesc;
+	WeaponDesc.pSocket = pSocket;
+	WeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_World4x4Ptr();
+	WeaponDesc.SocketPivotMatrix = m_pModelCom->Get_PivotFloat4x4();
+	
+	Safe_AddRef(pSocket);
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	m_vParts[PARTS_SPEAR] = pGameInstance->Clone_GameObject(TEXT("Prototype_GameObject_Spear"), &WeaponDesc);
+	if (!m_vParts[PARTS_SPEAR])
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
 HRESULT CMoriblinSpear::Ready_Components(void * pArg)
 {
 	memcpy(&m_tModelDesc, pArg, sizeof(MODELDESC));
@@ -104,7 +149,7 @@ HRESULT CMoriblinSpear::Ready_Components(void * pArg)
 	CTransform::TRANSFORMDESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 	TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
-	TransformDesc.fSpeedPerSec = 1.5f;
+	TransformDesc.fSpeedPerSec = m_tStats.m_fWalkSpeed;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
 	/* For.Com_Transform */
@@ -236,4 +281,9 @@ void CMoriblinSpear::Free()
 	__super::Free();
 	
 	Safe_Delete(m_pMoriblinSpearState);
+
+	for (auto& pGameObject : m_vParts)
+		Safe_Release(pGameObject);
+
+	m_vParts.clear();
 }

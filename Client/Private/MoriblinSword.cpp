@@ -23,6 +23,12 @@ HRESULT CMoriblinSword::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	m_tStats.m_fMaxHp = 2;
+	m_tStats.m_fCurrentHp = m_tStats.m_fMaxHp;
+	m_tStats.m_fAttackPower = .5f;
+	m_tStats.m_fWalkSpeed = .5f;
+	m_tStats.m_fRunSpeed = 1.f;
+
 	return S_OK;
 }
 
@@ -104,7 +110,7 @@ HRESULT CMoriblinSword::Ready_Components(void * pArg)
 	CTransform::TRANSFORMDESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 	TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
-	TransformDesc.fSpeedPerSec = 1.5f;
+	TransformDesc.fSpeedPerSec = m_tStats.m_fWalkSpeed;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
 	/* For.Com_Transform */

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Client_Defines.h"
-#include "Actor.h"
+#include "Character.h"
 
 /* 
 Player Inputs
@@ -20,7 +19,7 @@ Player Inputs
 */
 
 BEGIN(Client)
-class CPlayer final : public CActor
+class CPlayer final : public CCharacter
 {
 public:
 	enum MESHID 
