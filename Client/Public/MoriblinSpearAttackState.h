@@ -18,9 +18,7 @@ public:
 
 private:
 	void Move(CMoriblinSpear* pMoriblinSpear, _float fTimeDelta);
-
-private:
-	_bool m_bDidDamage = false;
+	void Create_Projectile(CMoriblinSpear * pMoriblinSpear);
 };
 END
 END

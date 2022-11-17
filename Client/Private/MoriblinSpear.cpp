@@ -6,7 +6,7 @@
 #include "MoriblinSpearIdleState.h"
 #include "MoriblinSpearHitState.h"
 #include "MoriblinSpearDieState.h"
-#include "Spear.h"
+#include "Weapon.h"
 
 using namespace MoriblinSpear;
 
@@ -76,7 +76,9 @@ void CMoriblinSpear::Late_Tick(_float fTimeDelta)
 	if (m_pRendererCom && m_bIsInFrustum)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, m_vParts[PARTS_SPEAR]);
+
+		if (!m_bIsProjectileAlive)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, m_vParts[PARTS_SPEAR]);
 	}
 
 	for (auto& pParts : m_vParts)
@@ -103,7 +105,7 @@ HRESULT CMoriblinSpear::Render()
 
 	Render_Colliders();
 
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 _float CMoriblinSpear::Take_Damage(float fDamage, void * DamageType, CGameObject * DamageCauser)
@@ -140,15 +142,25 @@ HRESULT CMoriblinSpear::Ready_Parts()
 	if (!pSocket)
 		return E_FAIL;
 
-	CSpear::WEAPONDESC WeaponDesc;
+	CWeapon::WEAPONDESC WeaponDesc;
 	WeaponDesc.pSocket = pSocket;
 	WeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_World4x4Ptr();
 	WeaponDesc.SocketPivotMatrix = m_pModelCom->Get_PivotFloat4x4();
+	WeaponDesc.bIsPlayerWeapon = false;
+	WeaponDesc.pModelPrototypeId = TEXT("Prototype_Component_Model_Spear");
+
+	CCollider::COLLIDERDESC tColliderDesc;
+	ZeroMemory(&tColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	tColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_OUTPUT;
+	tColliderDesc.vScale = _float3(.3f, .2f, 1.5f);
+	tColliderDesc.vPosition = _float3(0.f, 0.f, .25f);
+
+	WeaponDesc.tColliderDesc = tColliderDesc;
 	
 	Safe_AddRef(pSocket);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	m_vParts[PARTS_SPEAR] = pGameInstance->Clone_GameObject(TEXT("Prototype_GameObject_Spear"), &WeaponDesc);
+	m_vParts[PARTS_SPEAR] = pGameInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc);
 	if (!m_vParts[PARTS_SPEAR])
 		return E_FAIL;
 

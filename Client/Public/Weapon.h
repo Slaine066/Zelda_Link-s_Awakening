@@ -13,7 +13,7 @@ class CHierarchyNode;
 END
 
 BEGIN(Client)
-class CSpear final : public CActor
+class CWeapon final : public CActor
 {
 public:
 	typedef struct tagWeaponDesc
@@ -21,11 +21,18 @@ public:
 		CHierarchyNode*	pSocket = nullptr;
 		const _float4x4* pParentWorldMatrix;
 		_float4x4 SocketPivotMatrix;
+		_tchar* pModelPrototypeId;
+		_bool bIsPlayerWeapon;
+		CCollider::COLLIDERDESC tColliderDesc;
 	}WEAPONDESC;
+
 private:
-	CSpear(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CSpear(const CSpear& rhs);
-	virtual ~CSpear() = default;
+	CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CWeapon(const CWeapon& rhs);
+	virtual ~CWeapon() = default;
+
+public:
+	_float4x4 Get_CombinedWorldMatrix() { return m_CombinedWorldMatrix; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -45,7 +52,7 @@ private:
 	_float4x4 m_CombinedWorldMatrix;
 
 public:
-	static CSpear* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr);
 	virtual void Free() override;
 };

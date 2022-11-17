@@ -59,6 +59,11 @@ private:
 	virtual ~CMoriblinSpear() = default;
 
 public:
+	_bool Get_IsProjectileAlive() { return m_bIsProjectileAlive; }
+	void Set_IsProjectileAlive(_bool bIsAlive) { m_bIsProjectileAlive = bIsAlive; }
+	CGameObject* Get_Part(CMoriblinSpear::PARTS ePart) { return m_vParts[ePart]; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _uint Tick(_float fTimeDelta) override;
@@ -79,6 +84,9 @@ private:
 private:
 	class CMoriblinSpearState* m_pMoriblinSpearState = nullptr;
 	vector<CGameObject*> m_vParts;
+
+private:
+	_bool m_bIsProjectileAlive = false;
 
 public:
 	static CMoriblinSpear* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

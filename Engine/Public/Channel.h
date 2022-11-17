@@ -11,6 +11,10 @@ private:
 	virtual ~CChannel() = default;
 
 public:
+	char* Get_ChannelName() { return m_szName; }
+	_uint Get_CurrentKeyframe() { return m_iCurrentKeyFrameIndex; }
+
+public:
 	HRESULT Initialize(class CModel* pModel, aiNodeAnim* pAIChannel);
 	void Invalidate_TransformationMatrix(_float fCurrentTime);
 	void Reset();

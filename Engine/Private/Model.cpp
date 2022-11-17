@@ -53,6 +53,11 @@ CHierarchyNode* CModel::Get_BonePtr(const char * pBoneName) const
 	return *iter;
 }
 
+_bool CModel::Is_Keyframe(char* pChannelName, _uint iKeyframe)
+{
+	return m_Animations[m_iCurrentAnimIndex]->Is_Keyframe(pChannelName, iKeyframe);
+}
+
 void CModel::Reset_CurrentAnimation()
 {
 	m_Animations[m_iCurrentAnimIndex]->Reset_Animation();

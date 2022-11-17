@@ -115,7 +115,7 @@ CStaticObject* CStaticObject::Create(ID3D11Device * pDevice, ID3D11DeviceContext
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		ERR_MSG(TEXT("Failed to Created : CStaticObject"));
+		ERR_MSG(TEXT("Failed to Create: CStaticObject"));
 		Safe_Release(pInstance);
 	}
 
@@ -128,7 +128,7 @@ CGameObject* CStaticObject::Clone(void * pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		ERR_MSG(TEXT("Failed to Cloned : CStaticObject"));
+		ERR_MSG(TEXT("Failed to Clone: CStaticObject"));
 		Safe_Release(pInstance);
 	}
 

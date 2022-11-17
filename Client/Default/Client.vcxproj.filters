@@ -82,9 +82,6 @@
     <Filter Include="02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSpear\MoriblinSpearState\States">
       <UniqueIdentifier>{c96f151d-6342-4ad3-ad75-7aa074b4eb40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSpear\Spear">
-      <UniqueIdentifier>{b9232b79-1351-4302-96ac-21bb59a3c15e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\00.Actor\00.Character\01.Monster\Stalfos">
       <UniqueIdentifier>{dfdd52c7-c11e-41e2-8b22-eebec33e414d}</UniqueIdentifier>
     </Filter>
@@ -96,6 +93,12 @@
     </Filter>
     <Filter Include="02.GameObjects\00.Actor\01.StaticObject">
       <UniqueIdentifier>{d5de4b50-4b93-48e2-bcb8-755b793ba4ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\02.Projectile">
+      <UniqueIdentifier>{f279f72b-34e4-4814-8a6c-90323861b232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\03.Weapon">
+      <UniqueIdentifier>{a0bc7f6a-4750-4359-8559-2c2971c88d9a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -204,9 +207,6 @@
     <ClInclude Include="..\public\MoriblinSpearHitState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSpear\MoriblinSpearState\States</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Spear.h">
-      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSpear\Spear</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Character.h">
       <Filter>02.GameObjects\00.Actor\00.Character</Filter>
     </ClInclude>
@@ -215,6 +215,12 @@
     </ClInclude>
     <ClInclude Include="..\public\MoriblinSwordDieState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Projectile.h">
+      <Filter>02.GameObjects\00.Actor\02.Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Weapon.h">
+      <Filter>02.GameObjects\00.Actor\03.Weapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -299,9 +305,6 @@
     <ClCompile Include="..\private\MoriblinSpearHitState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSpear\MoriblinSpearState\States</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Spear.cpp">
-      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSpear\Spear</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Character.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character</Filter>
     </ClCompile>
@@ -310,6 +313,12 @@
     </ClCompile>
     <ClCompile Include="..\private\MoriblinSwordDieState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile.cpp">
+      <Filter>02.GameObjects\00.Actor\02.Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon.cpp">
+      <Filter>02.GameObjects\00.Actor\03.Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

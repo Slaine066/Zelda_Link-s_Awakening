@@ -200,7 +200,8 @@
     <ClInclude Include="..\Public\PlayerMoveState.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\PlayerState.h" />
-    <ClInclude Include="..\public\Spear.h" />
+    <ClInclude Include="..\public\Projectile.h" />
+    <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\StaticObject.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="Client.h" />
@@ -235,7 +236,8 @@
     <ClCompile Include="..\private\MoriblinSword.cpp" />
     <ClCompile Include="..\Private\PlayerMoveState.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
-    <ClCompile Include="..\private\Spear.cpp" />
+    <ClCompile Include="..\private\Projectile.cpp" />
+    <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="Client.cpp" />

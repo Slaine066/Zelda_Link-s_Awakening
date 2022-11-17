@@ -15,23 +15,30 @@ CMoveState::CMoveState(CPlayer* pTarget)
 
 CMoriblinSpearState * CMoveState::AI_Behavior(CMoriblinSpear * pMoriblinSpear)
 {
+	Find_Target(pMoriblinSpear);
+
 	return nullptr;
 }
 
 CMoriblinSpearState * CMoveState::Tick(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 {
+	pMoriblinSpear->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSpear->Is_AnimationLoop(pMoriblinSpear->Get_Model()->Get_CurrentAnimIndex()));
+	pMoriblinSpear->Sync_WithNavigationHeight();
+
 	if (m_pTarget)
 	{
 		if (Is_InAttackRadius(pMoriblinSpear))
-			return new CAttackState();
+		{
+			if (!pMoriblinSpear->Get_IsProjectileAlive())
+				return new CAttackState();
+			else
+				return new CIdleState(m_pTarget);
+		}
 		else
 			Follow_Target(pMoriblinSpear, fTimeDelta);
 	}
 	else
 		Patrol(pMoriblinSpear, fTimeDelta);
-
-	pMoriblinSpear->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSpear->Is_AnimationLoop(pMoriblinSpear->Get_Model()->Get_CurrentAnimIndex()));
-	pMoriblinSpear->Sync_WithNavigationHeight();
 
 	return nullptr;
 }

@@ -8,7 +8,8 @@
 #include "Player.h"
 #include "MoriblinSword.h"
 #include "MoriblinSpear.h"
-#include "Spear.h"
+#include "Weapon.h"
+#include "Projectile.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -179,7 +180,7 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 		return E_FAIL;
 
 	/*For.Prototype_Component_Model_Spear*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Spear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinSpear/MoriblinSpear.fbx"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Spear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinSpear/MoriblinSpear.fbx", PivotMatrix))))
 		return E_FAIL;
 
 	/*For.Prototype_Component_Model_Field_** */
@@ -401,8 +402,12 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSpear"), CMoriblinSpear::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/*For.Prototype_GameObject_Spear */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Spear"), CSpear::Create(m_pDevice, m_pContext))))
+	/*For.Prototype_GameObject_Weapon */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon"), CWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/*For.Prototype_GameObject_Projectile */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Projectile"), CProjectile::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// >

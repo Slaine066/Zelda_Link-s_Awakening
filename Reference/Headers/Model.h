@@ -19,19 +19,23 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
+	_float4x4 Get_PivotFloat4x4() const { return m_PivotMatrix; }
+
+	/* For.Meshes */
 	char* Get_MeshName(_uint iMeshIndex);
-	char* Get_AnimationName(_uint iAnimationIndex);
-	char* Get_CurrentAnimationName();
 	_uint Get_NumMeshContainers() const { return m_iNumMeshes; }
 	vector<class CMeshContainer*> Get_MeshContainers() const { return m_Meshes; }
-	
+
+	/* For.Bones*/
 	class CHierarchyNode* Get_BonePtr(const char* pBoneName) const;
 
+	/* For.Animations */
+	char* Get_AnimationName(_uint iAnimationIndex);
+	char* Get_CurrentAnimationName();
 	_uint Get_CurrentAnimIndex() { return m_iCurrentAnimIndex; }
 	void Set_CurrentAnimIndex(_uint iAnimIndex) { m_iCurrentAnimIndex = iAnimIndex; }
+	_bool Is_Keyframe(char* pChannelName, _uint iKeyframe);
 	void Reset_CurrentAnimation();
-
-	_float4x4 Get_PivotFloat4x4() const { return m_PivotMatrix; }
 
 public:
 	HRESULT SetUp_Material(class CShader* pShader, const char* pConstantName, _uint iMeshIndex, aiTextureType eType);

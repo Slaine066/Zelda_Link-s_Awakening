@@ -58,7 +58,8 @@ public:
 	void Move_Left(_float fTimeDelta);
 	void Move_Right(_float fTimeDelta);
 
-	void Go_Straight(_float fTimeDelta, class CNavigation* pNavigation);
+	void Go_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	_bool Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, _float fDistance, class CNavigation* pNavigation = nullptr);
 
 	void Turn(_fvector vAxis, _float fTimeDelta);
 	void Set_Rotation(_float3 fAngle);
@@ -66,7 +67,7 @@ public:
 	
 	void LookAt(_fvector vAt);
 	void Attach_ToTarget(_fvector fTargetPosition, _fvector fDistance);
-	_bool Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, _float fDistance, class CNavigation* pNavigation);
+	
 
 private:			
 	TRANSFORMDESC m_TransformDesc;

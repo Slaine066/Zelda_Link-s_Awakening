@@ -3,6 +3,9 @@
 #include "MoriblinSpearAttackState.h"
 #include "MoriblinSpearIdleState.h"
 #include "MoriblinSpearMoveState.h"
+#include "Projectile.h"
+#include "Collider.h"
+#include "Weapon.h"
 
 using namespace MoriblinSpear;
 
@@ -25,33 +28,25 @@ CMoriblinSpearState * CAttackState::AI_Behavior(CMoriblinSpear * pMoriblinSpear)
 
 CMoriblinSpearState * CAttackState::Tick(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 {
+	pMoriblinSpear->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSpear->Is_AnimationLoop(pMoriblinSpear->Get_Model()->Get_CurrentAnimIndex()));
+	pMoriblinSpear->Sync_WithNavigationHeight();
+
+	/* Look At Target. */
 	_vector vTargetPosition = XMVectorSet(m_pTarget->Get_Position().x, pMoriblinSpear->Get_Position().y, m_pTarget->Get_Position().z, 1.f);
 	pMoriblinSpear->Get_Transform()->LookAt(vTargetPosition);
 
-	pMoriblinSpear->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSpear->Is_AnimationLoop(pMoriblinSpear->Get_Model()->Get_CurrentAnimIndex()));
-	pMoriblinSpear->Sync_WithNavigationHeight();
+	/* Create Projectile on the 8th Keyframes (only IF there are no other Projectiles alive).  */
+	if ((pMoriblinSpear->Get_Model()->Is_Keyframe("hand_L", 8)) == true && !pMoriblinSpear->Get_IsProjectileAlive())
+	{
+		Create_Projectile(pMoriblinSpear);
+		pMoriblinSpear->Set_IsProjectileAlive(true);
+	}
 
 	return nullptr;
 }
 
 CMoriblinSpearState * CAttackState::LateTick(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 {
-	if (!m_bDidDamage)
-	{
-		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-		vector<CGameObject*> pDamagedObjects;
-		pGameInstance->Collision_Check_Group_Multi(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, pMoriblinSpear->Get_Collider(CCollider::AIM::AIM_DAMAGE_OUTPUT), CCollider::AIM::AIM_DAMAGE_INPUT, pDamagedObjects);
-		RELEASE_INSTANCE(CGameInstance);
-
-		if (!pDamagedObjects.empty())
-		{
-			for (auto& pDamaged : pDamagedObjects)
-				pDamaged->Take_Damage(pMoriblinSpear->Get_Stats().m_fAttackPower, nullptr, pMoriblinSpear);
-
-			m_bDidDamage = true;
-		}
-	}
-
 	if (m_bIsAnimationFinished)
 		return new CIdleState(m_pTarget);
 
@@ -65,7 +60,6 @@ void CAttackState::Enter(CMoriblinSpear * pMoriblinSpear)
 
 void CAttackState::Exit(CMoriblinSpear * pMoriblinSpear)
 {
-	m_bDidDamage = false;
 }
 
 void CAttackState::Move(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
@@ -81,4 +75,38 @@ void CAttackState::Move(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 
 	_float fAttackRadius = pMoriblinSpear->Get_AttackRadius();
 	pMoriblinSpear->Get_Transform()->Go_TargetPosition(fTimeDelta, vPosition, fAttackRadius, pMoriblinSpear->Get_Navigation());
+}
+
+void CAttackState::Create_Projectile(CMoriblinSpear * pMoriblinSpear)
+{
+	CProjectile::PROJECTILEDESC tProjectileDesc;
+	ZeroMemory(&tProjectileDesc, sizeof(CProjectile::PROJECTILEDESC));
+	tProjectileDesc.pOwner = pMoriblinSpear;
+	tProjectileDesc.eProjectileType = CProjectile::PROJECTILE_TYPE::PROJECTILE_SPEAR;
+	tProjectileDesc.bIsPlayerProjectile = false;
+	tProjectileDesc.fProjectileSpeed = 1.6f;
+	tProjectileDesc.pModelPrototypeId = TEXT("Prototype_Component_Model_Spear");
+	tProjectileDesc.vTargetPosition = m_pTarget->Get_Position();
+
+	CGameObject* pGameObject = pMoriblinSpear->Get_Part(CMoriblinSpear::PARTS::PARTS_SPEAR);
+	if (!pGameObject)
+		return;
+	CWeapon* pWeapon = dynamic_cast<CWeapon*>(pGameObject);
+	if (!pWeapon)
+		return;
+	tProjectileDesc.mWorldMatrix = pWeapon->Get_CombinedWorldMatrix();
+
+	CCollider::COLLIDERDESC tColliderDesc;
+	ZeroMemory(&tColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	tColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_OUTPUT;
+	tColliderDesc.vScale = _float3(.3f, .2f, 1.5f);
+	tColliderDesc.vPosition = _float3(0.f, 0.f, .25f);
+	tProjectileDesc.tColliderDesc = tColliderDesc;
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Spear_Projectile"), TEXT("Prototype_GameObject_Projectile"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Projectile"), &tProjectileDesc)))
+		return;
+
+	RELEASE_INSTANCE(CGameInstance);
 }
