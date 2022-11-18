@@ -10,13 +10,19 @@ CDieState::CDieState(_float3 vDamageCauserPosition) : m_vDamageCauserPosition(vD
 
 CMoriblinSpearState * CDieState::AI_Behavior(CMoriblinSpear * pMoriblinSpear)
 {
+	Find_Target(pMoriblinSpear, true);
+
 	return nullptr;
 }
 
 CMoriblinSpearState * CDieState::Tick(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 {
 	if (!m_bIsAnimationFinished)
+	{
 		pMoriblinSpear->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSpear->Is_AnimationLoop(pMoriblinSpear->Get_Model()->Get_CurrentAnimIndex()));
+		
+		BounceBack(pMoriblinSpear, fTimeDelta);
+	}
 	else
 	{
 		if (m_fDeadTimer > 2.f)
@@ -24,8 +30,6 @@ CMoriblinSpearState * CDieState::Tick(CMoriblinSpear * pMoriblinSpear, _float fT
 		else
 			m_fDeadTimer += fTimeDelta;
 	}
-
-	pMoriblinSpear->Sync_WithNavigationHeight();
 
 	return nullptr;
 }
@@ -43,7 +47,6 @@ void CDieState::Enter(CMoriblinSpear * pMoriblinSpear)
 
 void CDieState::Exit(CMoriblinSpear * pMoriblinSpear)
 {
-	
 }
 
 _bool CDieState::Compute_HitPosition(CMoriblinSpear * pMoriblinSpear)
@@ -62,4 +65,15 @@ _bool CDieState::Compute_HitPosition(CMoriblinSpear * pMoriblinSpear)
 		return true;
 
 	return false;
+}
+
+void CDieState::BounceBack(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
+{
+	_vector vTargetPosition = m_pTarget->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+	_vector vPosition = pMoriblinSpear->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+	
+	_vector BounceDir = vPosition - vTargetPosition;
+	BounceDir = XMVector4Normalize(BounceDir);
+
+	pMoriblinSpear->Get_Transform()->Move_Direction(BounceDir, fTimeDelta);
 }

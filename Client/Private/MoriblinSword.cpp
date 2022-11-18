@@ -6,6 +6,7 @@
 #include "MoriblinSwordIdleState.h"
 #include "MoriblinSwordHitState.h"
 #include "MoriblinSwordDieState.h"
+#include "MoriblinSwordGuardState.h"
 
 using namespace MoriblinSword;
 
@@ -97,21 +98,30 @@ _float CMoriblinSword::Take_Damage(float fDamage, void * DamageType, CGameObject
 {
 	if (fDamage > 0.f)
 	{
-		if (m_tStats.m_fCurrentHp - fDamage <= 0.f)
+		CIdleState* pIdleState = dynamic_cast<CIdleState*>(m_pMoriblinSwordState);
+		if (pIdleState && pIdleState->Has_Aggro())
 		{
-			m_tStats.m_fCurrentHp = 0.f;
-
-			m_pModelCom->Reset_CurrentAnimation();
-			CMoriblinSwordState* pState = new CDieState(DamageCauser->Get_Position());
+			CMoriblinSwordState* pState = new CGuardState();
 			m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
 		}
 		else
 		{
-			m_tStats.m_fCurrentHp -= fDamage;
+			if (m_tStats.m_fCurrentHp - fDamage <= 0.f)
+			{
+				m_tStats.m_fCurrentHp = 0.f;
 
-			m_pModelCom->Reset_CurrentAnimation();
-			CMoriblinSwordState* pState = new CHitState(DamageCauser->Get_Position());
-			m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
+				m_pModelCom->Reset_CurrentAnimation();
+				CMoriblinSwordState* pState = new CDieState(DamageCauser->Get_Position());
+				m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
+			}
+			else
+			{
+				m_tStats.m_fCurrentHp -= fDamage;
+
+				m_pModelCom->Reset_CurrentAnimation();
+				CMoriblinSwordState* pState = new CHitState(DamageCauser->Get_Position());
+				m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
+			}
 		}
 	}
 
@@ -141,7 +151,7 @@ HRESULT CMoriblinSword::Ready_Components(void * pArg)
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_GAMEPLAY, m_tModelDesc.wcModelPrototypeId, (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_STATIC, m_tModelDesc.wcModelPrototypeId, (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	CCollider::COLLIDERDESC	ColliderDesc;

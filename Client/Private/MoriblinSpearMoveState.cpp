@@ -15,8 +15,6 @@ CMoveState::CMoveState(CPlayer* pTarget)
 
 CMoriblinSpearState * CMoveState::AI_Behavior(CMoriblinSpear * pMoriblinSpear)
 {
-	Find_Target(pMoriblinSpear);
-
 	return nullptr;
 }
 

@@ -67,6 +67,7 @@ protected:
 protected:
 	_bool m_bIsAnimationFinished = false;
 	class CPlayer* m_pTarget = nullptr;		/* If TRUE, has Aggro. */
+	_bool m_bHasSpottedTarget = false;
 	_float m_fIdleAttackTimer = 2.f;
 };
 END

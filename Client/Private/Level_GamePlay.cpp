@@ -3,6 +3,7 @@
 #include "Level_GamePlay.h"
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
+#include "TriggerBox.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -95,7 +96,6 @@ HRESULT CLevel_GamePlay::Load_From_File()
 	}
 
 	Safe_Release(pGameInstance);
-
 	return S_OK;
 }
 

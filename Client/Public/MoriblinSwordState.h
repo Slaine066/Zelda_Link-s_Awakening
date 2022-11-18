@@ -29,6 +29,9 @@ public:
 		return pNewState;
 	}
 
+public:
+	_bool Has_Aggro() { return m_pTarget; }
+
 protected:
 	virtual void Find_Target(CMoriblinSword * pMoriblinSword, _bool bHasAggro = false)
 	{
@@ -55,5 +58,6 @@ protected:
 protected:
 	_bool m_bIsAnimationFinished = false;
 	class CPlayer* m_pTarget = nullptr;		/* If TRUE, has Aggro. */
+	_bool m_bHasSpottedTarget = false;
 };
 END

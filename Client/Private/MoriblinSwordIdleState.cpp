@@ -3,6 +3,7 @@
 #include "MoriblinSwordIdleState.h"
 #include "MoriblinSwordAttackState.h"
 #include "MoriblinSwordMoveState.h"
+#include "MoriblinSwordAggroState.h"
 
 using namespace MoriblinSword;
 
@@ -25,8 +26,16 @@ CMoriblinSwordState * CIdleState::Tick(CMoriblinSword * pMoriblinSword, _float f
 
 	if (m_pTarget)
 	{
+		_vector vTargetPosition = XMVectorSet(m_pTarget->Get_Position().x, pMoriblinSword->Get_Position().y, m_pTarget->Get_Position().z, 1.f);
+		pMoriblinSword->Get_Transform()->LookAt(vTargetPosition);
+
 		if (m_fIdleAttackTimer > 2.f)
-			return new CAttackState();
+		{
+			if (!m_bHasSpottedTarget)
+				return new CAggroState();
+			else
+				return new CAttackState();
+		}
 		else
 			m_fIdleAttackTimer += fTimeDelta;
 	}
@@ -52,6 +61,7 @@ void CIdleState::Enter(CMoriblinSword * pMoriblinSword)
 	{
 		pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(CMoriblinSword::ANIMID::ANIM_STANCE_WAIT);
 		m_fIdleAttackTimer = 0.f;
+		m_bHasSpottedTarget = true;
 	}
 	else
 		pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(CMoriblinSword::ANIMID::ANIM_WAIT);

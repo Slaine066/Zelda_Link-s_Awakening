@@ -40,7 +40,11 @@ private:
 	virtual ~CCollider() = default;
 
 public:
+	TYPE Get_Type() { return m_eType; }
 	COLLIDERDESC Get_ColliderDesc() { return m_ColliderDesc; }
+	BoundingBox* Get_AABB() { return m_pAABB[BOUNDING_WORLD]; }
+	BoundingOrientedBox* Get_OBB() { return m_pOBB[BOUNDING_WORLD]; }
+	BoundingSphere* Get_Sphere() { return m_pSphere[BOUNDING_WORLD]; }
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType);

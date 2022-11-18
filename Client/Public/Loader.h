@@ -22,7 +22,7 @@ public:
 	HRESULT Initialize(LEVEL eNextLevel);
 
 public:
-	HRESULT Loading_ForLogoLevel();
+	HRESULT Loading_ForStaticLevel();
 	HRESULT Loading_ForGamePlayLevel();
 
 private:

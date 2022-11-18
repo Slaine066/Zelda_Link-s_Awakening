@@ -171,14 +171,22 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\ShaderFiles\Client_Shader_Defines.hpp" />
     <ClInclude Include="..\public\Actor.h" />
+    <ClInclude Include="..\public\Bossblin.h" />
+    <ClInclude Include="..\public\BossblinAttackState.h" />
+    <ClInclude Include="..\public\BossblinDieState.h" />
+    <ClInclude Include="..\public\BossblinMoveState.h" />
+    <ClInclude Include="..\public\BossblinState.h" />
     <ClInclude Include="..\public\Character.h" />
+    <ClInclude Include="..\public\MoriblinSwordGuardState.h" />
     <ClInclude Include="..\public\MoriblinSpear.h" />
+    <ClInclude Include="..\public\MoriblinSpearAggroState.h" />
     <ClInclude Include="..\public\MoriblinSpearAttackState.h" />
     <ClInclude Include="..\public\MoriblinSpearDieState.h" />
     <ClInclude Include="..\public\MoriblinSpearHitState.h" />
     <ClInclude Include="..\public\MoriblinSpearIdleState.h" />
     <ClInclude Include="..\public\MoriblinSpearMoveState.h" />
     <ClInclude Include="..\Public\MoriblinSpearState.h" />
+    <ClInclude Include="..\public\MoriblinSwordAggroState.h" />
     <ClInclude Include="..\public\MoriblinSwordAttackState.h" />
     <ClInclude Include="..\public\MoriblinSwordDieState.h" />
     <ClInclude Include="..\public\MoriblinSwordHitState.h" />
@@ -204,6 +212,7 @@
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\StaticObject.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="BossblinIdleState.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -211,13 +220,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Actor.cpp" />
+    <ClCompile Include="..\private\Bossblin.cpp" />
+    <ClCompile Include="..\private\BossblinAttackState.cpp" />
+    <ClCompile Include="..\private\BossblinDieState.cpp" />
+    <ClCompile Include="..\private\BossblinMoveState.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
+    <ClCompile Include="..\private\MoriblinSwordGuardState.cpp" />
     <ClCompile Include="..\private\MoriblinSpear.cpp" />
+    <ClCompile Include="..\private\MoriblinSpearAggroState.cpp" />
     <ClCompile Include="..\private\MoriblinSpearAttackState.cpp" />
     <ClCompile Include="..\private\MoriblinSpearDieState.cpp" />
     <ClCompile Include="..\private\MoriblinSpearHitState.cpp" />
     <ClCompile Include="..\private\MoriblinSpearIdleState.cpp" />
     <ClCompile Include="..\private\MoriblinSpearMoveState.cpp" />
+    <ClCompile Include="..\private\MoriblinSwordAggroState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordAttackState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordDieState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordHitState.cpp" />
@@ -240,6 +256,7 @@
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="BossblinIdleState.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

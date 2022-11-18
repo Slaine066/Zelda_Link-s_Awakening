@@ -122,7 +122,7 @@ HRESULT CProjectile::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_GAMEPLAY, m_tProjectileDesc.pModelPrototypeId, (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_STATIC, m_tProjectileDesc.pModelPrototypeId, (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object

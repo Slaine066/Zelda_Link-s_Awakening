@@ -58,6 +58,8 @@ public:
 	void Move_Left(_float fTimeDelta);
 	void Move_Right(_float fTimeDelta);
 
+	void Move_Direction(_vector vDirection, _float fTimeDelta);
+
 	void Go_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
 	_bool Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, _float fDistance, class CNavigation* pNavigation = nullptr);
 

@@ -3,6 +3,7 @@
 #include "MoriblinSpearIdleState.h"
 #include "MoriblinSpearAttackState.h"
 #include "MoriblinSpearMoveState.h"
+#include "MoriblinSpearAggroState.h"
 
 using namespace MoriblinSpear;
 
@@ -31,7 +32,12 @@ CMoriblinSpearState * CIdleState::Tick(CMoriblinSpear * pMoriblinSpear, _float f
 		if (Is_InAttackRadius(pMoriblinSpear))
 		{
 			if (m_fIdleAttackTimer > 2.f)
-				return new CAttackState();
+			{
+				if (!m_bHasSpottedTarget)
+					return new CAggroState();
+				else
+					return new CAttackState();
+			}
 			else
 				m_fIdleAttackTimer += fTimeDelta;
 		}
@@ -60,6 +66,7 @@ void CIdleState::Enter(CMoriblinSpear * pMoriblinSpear)
 	{
 		pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_STANCE_WAIT);
 		m_fIdleAttackTimer = 0.f;
+		m_bHasSpottedTarget = true;
 	}
 	else
 		pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_WAIT);

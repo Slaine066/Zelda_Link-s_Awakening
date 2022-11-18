@@ -100,6 +100,12 @@
     <Filter Include="02.GameObjects\00.Actor\03.Weapon">
       <UniqueIdentifier>{a0bc7f6a-4750-4359-8559-2c2971c88d9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState">
+      <UniqueIdentifier>{4bf38a38-8a1f-4ca3-b48a-05717acfb805}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States">
+      <UniqueIdentifier>{1bfb5630-4ddd-4c4e-9251-d2330f2b14ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -222,6 +228,33 @@
     <ClInclude Include="..\public\Weapon.h">
       <Filter>02.GameObjects\00.Actor\03.Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MoriblinSwordAggroState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MoriblinSpearAggroState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSpear\MoriblinSpearState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bossblin.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossblinState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState</Filter>
+    </ClInclude>
+    <ClInclude Include="BossblinIdleState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossblinMoveState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossblinAttackState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossblinDieState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MoriblinSwordGuardState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -319,6 +352,30 @@
     </ClCompile>
     <ClCompile Include="..\private\Weapon.cpp">
       <Filter>02.GameObjects\00.Actor\03.Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSwordAggroState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSpearAggroState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSpear\MoriblinSpearState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bossblin.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin</Filter>
+    </ClCompile>
+    <ClCompile Include="BossblinIdleState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossblinMoveState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossblinAttackState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossblinDieState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSwordGuardState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

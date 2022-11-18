@@ -4,10 +4,12 @@
 #include "GameInstance.h"
 #include "Navigation.h"
 #include "Camera_Dynamic.h"
+#include "TriggerBox.h"
 #include "StaticObject.h"
 #include "Player.h"
 #include "MoriblinSword.h"
 #include "MoriblinSpear.h"
+#include "Bossblin.h"
 #include "Weapon.h"
 #include "Projectile.h"
 
@@ -28,7 +30,7 @@ unsigned int APIENTRY Thread_Main(void* pArg)
 	switch (pLoader->Get_NextLevelID())
 	{
 	case LEVEL_LOGO:
-		pLoader->Loading_ForLogoLevel();
+		pLoader->Loading_ForStaticLevel();
 		break;
 	case LEVEL_GAMEPLAY:
 		pLoader->Loading_ForGamePlayLevel();
@@ -55,7 +57,7 @@ HRESULT CLoader::Initialize(LEVEL eNextLevel)
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_ForLogoLevel()
+HRESULT CLoader::Loading_ForStaticLevel()
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	if (!pGameInstance)
@@ -76,11 +78,9 @@ HRESULT CLoader::Loading_ForLogoLevel()
 	/* For.Prototype_Component_VIBuffer_Rect */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
 	/* For.Prototype_Component_Transform */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), CTransform::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
 	/* For.Prototype_Component_Collider_AABB */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Collider_AABB"), CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_AABB))))
 		return E_FAIL;
@@ -97,6 +97,21 @@ HRESULT CLoader::Loading_ForLogoLevel()
 
 #pragma region Loading_Models
 	lstrcpy(m_szLoadingText, TEXT("Loading Models.."));
+
+	_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+	/*For.Prototype_Component_Model_Link*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Link"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Player_Link/Link.fbx", PivotMatrix))))
+		return E_FAIL;
+	/*For.Prototype_Component_Model_MoriblinSword*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_MoriblinSword"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_MoriblinSword/MoriblinSword.fbx", PivotMatrix))))
+		return E_FAIL;
+	/*For.Prototype_Component_Model_MoriblinSpear*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_MoriblinSpear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_MoriblinSpear/MoriblinSpear.fbx", PivotMatrix))))
+		return E_FAIL;
+	/*For.Prototype_Component_Model_Spear*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Spear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinSpear/Spear.fbx", PivotMatrix))))
+		return E_FAIL;
 
 	// >
 	// .. Add Above ..
@@ -125,6 +140,31 @@ HRESULT CLoader::Loading_ForLogoLevel()
 #pragma region Loading_Objects
 	lstrcpy(m_szLoadingText, TEXT("Loading Objects.."));
 	
+	/* For.Prototype_GameObject_Camera_Dynamic */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_TriggerBox */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TriggerBox"), CTriggerBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_StaticObject */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Player */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_MoriblinSword */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSword"), CMoriblinSword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_MoriblinSpear */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSpear"), CMoriblinSpear::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Weapon */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon"), CWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Projectile */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Projectile"), CProjectile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	// >
 	// .. Add Above ..
 #pragma endregion Loading_Objects
@@ -167,24 +207,12 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 
 	_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 
-	/*For.Prototype_Component_Model_Link*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Link"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Player_Link/Link.fbx", PivotMatrix))))
-	return E_FAIL;
-
-	/*For.Prototype_Component_Model_MoriblinSword*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_MoriblinSword"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_MoriblinSword/MoriblinSword.fbx", PivotMatrix))))
-		return E_FAIL;
-
-	/*For.Prototype_Component_Model_MoriblinSpear*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_MoriblinSpear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_MoriblinSpear/MoriblinSpear.fbx", PivotMatrix))))
-		return E_FAIL;
-
-	/*For.Prototype_Component_Model_Spear*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Spear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinSpear/MoriblinSpear.fbx", PivotMatrix))))
+	/*For.Prototype_Component_Model_Bossblin*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Bossblin"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_Bossblin/Bossblin.fbx", PivotMatrix))))
 		return E_FAIL;
 
 	/*For.Prototype_Component_Model_Field_** */
-	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_2A"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_2A.fbx"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_2A"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_2A.fbx"))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_2B"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_2B.fbx"))))
 		return E_FAIL;
@@ -311,7 +339,7 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_9G"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_9G.fbx"))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_9H"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_9H.fbx"))))
-		return E_FAIL;*/
+		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_10A"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_10A.fbx"))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_10B"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_10B.fbx"))))
@@ -336,7 +364,7 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_12D"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_12D.fbx"))))
 		return E_FAIL;
-	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_13A"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_13A.fbx"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_13A"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_13A.fbx"))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_13B"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_13B.fbx"))))
 		return E_FAIL;
@@ -367,7 +395,7 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_16C"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_16C.fbx"))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Field_16D"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_16D.fbx"))))
-		return E_FAIL;*/
+		return E_FAIL;
 	// >
 	// .. Add Above ..
 #pragma endregion Loading_Models
@@ -382,32 +410,8 @@ HRESULT CLoader::Loading_ForGamePlayLevel()
 #pragma region Loading_Objects
 	lstrcpy(m_szLoadingText, TEXT("Loading_Objects.."));
 
-	/*For.Prototype_GameObject_Camera_Dynamic */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/*For.Prototype_GameObject_StaticObject*/
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/*For.Prototype_GameObject_Player*/
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/*For.Prototype_GameObject_MoriblinSword*/
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSword"), CMoriblinSword::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	
-	/*For.Prototype_GameObject_MoriblinSpear*/
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSpear"), CMoriblinSpear::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/*For.Prototype_GameObject_Weapon */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon"), CWeapon::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/*For.Prototype_GameObject_Projectile */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Projectile"), CProjectile::Create(m_pDevice, m_pContext))))
+	/*For.Prototype_GameObject_Bossblin */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Bossblin"), CBossblin::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// >

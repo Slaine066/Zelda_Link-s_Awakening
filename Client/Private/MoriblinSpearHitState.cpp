@@ -12,6 +12,8 @@ CHitState::CHitState(_float3 vDamageCauserPosition) : m_vDamageCauserPosition(vD
 
 CMoriblinSpearState * CHitState::AI_Behavior(CMoriblinSpear * pMoriblinSpear)
 {
+	Find_Target(pMoriblinSpear, true);
+
 	return nullptr;
 }
 
@@ -26,7 +28,7 @@ CMoriblinSpearState * CHitState::Tick(CMoriblinSpear * pMoriblinSpear, _float fT
 CMoriblinSpearState * CHitState::LateTick(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 {
 	if (m_bIsAnimationFinished)
-		return new CIdleState();
+		return new CIdleState(m_pTarget);
 
 	return nullptr;
 }

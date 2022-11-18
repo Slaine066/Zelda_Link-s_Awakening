@@ -10,13 +10,19 @@ CDieState::CDieState(_float3 vDamageCauserPosition) : m_vDamageCauserPosition(vD
 
 CMoriblinSwordState * CDieState::AI_Behavior(CMoriblinSword * pMoriblinSword)
 {
+	Find_Target(pMoriblinSword, true);
+
 	return nullptr;
 }
 
 CMoriblinSwordState * CDieState::Tick(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 {
 	if (!m_bIsAnimationFinished)
+	{
 		pMoriblinSword->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSword->Is_AnimationLoop(pMoriblinSword->Get_Model()->Get_CurrentAnimIndex()));
+
+		BounceBack(pMoriblinSword, fTimeDelta);
+	}
 	else
 	{
 		if (m_fDeadTimer > 2.f)
@@ -24,8 +30,6 @@ CMoriblinSwordState * CDieState::Tick(CMoriblinSword * pMoriblinSword, _float fT
 		else
 			m_fDeadTimer += fTimeDelta;
 	}
-
-	pMoriblinSword->Sync_WithNavigationHeight();
 
 	return nullptr;
 }
@@ -62,4 +66,15 @@ _bool CDieState::Compute_HitPosition(CMoriblinSword * pMoriblinSword)
 		return true;
 
 	return false;
+}
+
+void CDieState::BounceBack(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
+{
+	_vector vTargetPosition = m_pTarget->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+	_vector vPosition = pMoriblinSword->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+
+	_vector BounceDir = vPosition - vTargetPosition;
+	BounceDir = XMVector4Normalize(BounceDir);
+
+	pMoriblinSword->Get_Transform()->Move_Direction(BounceDir, fTimeDelta);
 }
