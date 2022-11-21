@@ -37,8 +37,10 @@ public:
 			Safe_Delete(pCurrentState);
 		}
 
-		pNewState->Enter(pMoriblinSpear);
-		return pNewState;
+		pCurrentState = pNewState;
+		pCurrentState->Enter(pMoriblinSpear);
+
+		return pCurrentState;
 	}
 
 public:

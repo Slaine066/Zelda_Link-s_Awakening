@@ -40,7 +40,7 @@ HRESULT CBossblin::Initialize(void * pArg)
 	m_fAttackRadius = .5f;
 
 	/*CBossblinState* pState = new CIdleState();
-	m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pState);*/
+	m_pBossblinState->ChangeState(this, m_pBossblinState, pState);*/
 
 	return S_OK;
 }
@@ -99,7 +99,7 @@ _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * Da
 
 			m_pModelCom->Reset_CurrentAnimation();
 			CBossblinState* pState = new CDieState(DamageCauser->Get_Position());
-			m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pState);
+			m_pBossblinState->ChangeState(this, m_pBossblinState, pState);
 		}
 		else
 		{
@@ -107,7 +107,7 @@ _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * Da
 
 			m_pModelCom->Reset_CurrentAnimation();
 			CBossblinState* pState = new CHitState(DamageCauser->Get_Position());
-			m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pState);
+			m_pBossblinState->ChangeState(this, m_pBossblinState, pState);
 		}*/
 	}
 
@@ -183,21 +183,21 @@ void CBossblin::AI_Behavior()
 {
 	/*CBossblinState* pNewState = m_pBossblinState->AI_Behavior(this);
 	if (pNewState)
-		m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pNewState);*/
+		m_pBossblinState->ChangeState(this, m_pBossblinState, pNewState);*/
 }
 
 void CBossblin::TickState(_float fTimeDelta)
 {
 	/*CBossblinState* pNewState = m_pBossblinState->Tick(this, fTimeDelta);
 	if (pNewState)
-		m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pNewState);*/
+		m_pBossblinState->ChangeState(this, m_pBossblinState, pNewState);*/
 }
 
 void CBossblin::LateTickState(_float fTimeDelta)
 {
 	/*CBossblinState* pNewState = m_pBossblinState->LateTick(this, fTimeDelta);
 	if (pNewState)
-		m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pNewState);*/
+		m_pBossblinState->ChangeState(this, m_pBossblinState, pNewState);*/
 }
 
 _bool CBossblin::Is_AnimationLoop(_uint eAnimId)

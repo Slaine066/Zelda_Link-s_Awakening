@@ -15,6 +15,8 @@ CPlayerState * CGuardMoveState::HandleInput(CPlayer * pPlayer)
 
 	if (pGameInstance->Key_Up('W'))
 		return new CGuardState(STATETYPE_END);
+	else if (pGameInstance->Key_Up('S'))
+		return new CAttackState();
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CGuardMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))

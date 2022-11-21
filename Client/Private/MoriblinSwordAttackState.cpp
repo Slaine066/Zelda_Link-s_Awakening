@@ -2,6 +2,9 @@
 
 #include "MoriblinSwordAttackState.h"
 #include "MoriblinSwordIdleState.h"
+#include "MoriblinSwordStaggerState.h"
+#include "PlayerState.h"
+#include "PlayerGuardState.h"
 
 using namespace MoriblinSword;
 
@@ -46,8 +49,24 @@ CMoriblinSwordState * CAttackState::LateTick(CMoriblinSword * pMoriblinSword, _f
 		if (!pDamagedObjects.empty())
 		{
 			for (auto& pDamaged : pDamagedObjects)
-				pDamaged->Take_Damage(pMoriblinSword->Get_Stats().m_fAttackPower, nullptr, pMoriblinSword);
+			{
+				CPlayer* pPlayer = dynamic_cast<CPlayer*>(pDamaged);
+				if (!pPlayer)
+					continue;
 
+				if (pPlayer->Get_State()->Get_StateId() == CPlayerState::STATE_ID::STATE_GUARD ||
+					pPlayer->Get_State()->Get_StateId() == CPlayerState::STATE_ID::STATE_GUARD_MOVE)
+				{
+					pPlayer->Get_Model()->Reset_CurrentAnimation();
+					CPlayerState* pGuardState = new CGuardState(CPlayerState::STATETYPE::STATETYPE_START);
+					pPlayer->Set_State(pPlayer->Get_State()->ChangeState(pPlayer, pPlayer->Get_State(), pGuardState));
+
+					pMoriblinSword->Get_Model()->Reset_CurrentAnimation();
+					return new CStaggerState();
+				}
+				else
+					pPlayer->Take_Damage(pMoriblinSword->Get_Stats().m_fAttackPower, nullptr, pMoriblinSword);
+			}
 			m_bDidDamage = true;
 		}
 	}

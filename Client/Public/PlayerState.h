@@ -43,10 +43,15 @@ public:
 			pCurrentState->Exit(pPlayer);
 			Safe_Delete(pCurrentState);
 		}
-			
-		pNewState->Enter(pPlayer);
-		return pNewState;
+		
+		pCurrentState = pNewState;
+		pCurrentState->Enter(pPlayer);
+		
+		return pCurrentState;
 	}
+
+public:
+	STATE_ID Get_StateId() { return m_eStateId; }
 
 protected:
 	STATETYPE m_eStateType = STATETYPE_DEFAULT;

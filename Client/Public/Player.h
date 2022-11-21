@@ -22,7 +22,7 @@ BEGIN(Client)
 class CPlayer final : public CCharacter
 {
 public:
-	enum MESHID 
+	enum MESHID
 	{
 		MESH_ARMS_LEGS,
 		MESH_SWORD_B_HANDLE,
@@ -107,6 +107,8 @@ public:
 	};
 
 public:
+	class CPlayerState* Get_State();
+	void Set_State(class CPlayerState* pPlayerState) { m_pPlayerState = pPlayerState; }
 	_bool Is_AnimationLoop(_uint eAnimId);
 
 private:

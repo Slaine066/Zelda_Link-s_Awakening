@@ -17,6 +17,7 @@ public:
 		STATE_ATTACK,
 		STATE_HIT,
 		STATE_GUARD,
+		STATE_STAGGER,
 		STATE_DIE,
 		STATE_END,
 	};
@@ -38,8 +39,10 @@ public:
 			Safe_Delete(pCurrentState);
 		}
 
-		pNewState->Enter(pMoriblinSword);
-		return pNewState;
+		pCurrentState = pNewState;
+		pCurrentState->Enter(pMoriblinSword);
+
+		return pCurrentState;
 	}
 
 public:

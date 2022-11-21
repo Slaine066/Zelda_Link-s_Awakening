@@ -192,6 +192,7 @@
     <ClInclude Include="..\public\MoriblinSwordHitState.h" />
     <ClInclude Include="..\public\MoriblinSwordIdleState.h" />
     <ClInclude Include="..\public\MoriblinSwordMoveState.h" />
+    <ClInclude Include="..\public\MoriblinSwordStaggerState.h" />
     <ClInclude Include="..\Public\PlayerAttackState.h" />
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="..\private\MoriblinSwordHitState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordIdleState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordMoveState.cpp" />
+    <ClCompile Include="..\private\MoriblinSwordStaggerState.cpp" />
     <ClCompile Include="..\Private\PlayerAttackState.cpp" />
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\private\PlayerGuardMoveState.cpp" />

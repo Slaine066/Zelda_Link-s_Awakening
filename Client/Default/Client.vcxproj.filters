@@ -261,6 +261,9 @@
     <ClInclude Include="..\public\PlayerGuardMoveState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MoriblinSwordStaggerState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -388,6 +391,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PlayerGuardMoveState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MoriblinSwordStaggerState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

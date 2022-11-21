@@ -183,6 +183,11 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	return S_OK;
 }
 
+CPlayerState * CPlayer::Get_State()
+{
+	return m_pPlayerState;
+}
+
 _bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 {
 	switch ((ANIMID)eAnimId)

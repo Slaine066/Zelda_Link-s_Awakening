@@ -3,6 +3,9 @@
 #include "Projectile.h"
 #include "GameInstance.h"
 #include "MoriblinSpear.h"
+#include "Player.h"
+#include "PlayerState.h"
+#include "PlayerGuardState.h"
 
 CProjectile::CProjectile(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CActor(pDevice, pContext)
@@ -174,7 +177,26 @@ void CProjectile::Spear_Collision()
 			return;
 
 		for (auto& pDamaged : pDamagedObjects)
-			pDamaged->Take_Damage(pMoriblinSpear->Get_Stats().m_fAttackPower, nullptr, m_tProjectileDesc.pOwner);
+		{
+			if (m_tProjectileDesc.bIsPlayerProjectile)
+				pDamaged->Take_Damage(pMoriblinSpear->Get_Stats().m_fAttackPower, nullptr, m_tProjectileDesc.pOwner);
+			else
+			{
+				CPlayer* pPlayer = dynamic_cast<CPlayer*>(pDamaged);
+				if (!pPlayer)
+					continue;
+
+				if (pPlayer->Get_State()->Get_StateId() == CPlayerState::STATE_ID::STATE_GUARD ||
+					pPlayer->Get_State()->Get_StateId() == CPlayerState::STATE_ID::STATE_GUARD_MOVE)
+				{
+					pPlayer->Get_Model()->Reset_CurrentAnimation();
+					CPlayerState* pGuardState = new CGuardState(CPlayerState::STATETYPE::STATETYPE_START);
+					pPlayer->Set_State(pPlayer->Get_State()->ChangeState(pPlayer, pPlayer->Get_State(), pGuardState));
+				}
+				else
+					pDamaged->Take_Damage(pMoriblinSpear->Get_Stats().m_fAttackPower, nullptr, m_tProjectileDesc.pOwner);
+			}
+		}
 
 		m_bShouldDestroy = true;
 		pMoriblinSpear->Set_IsProjectileAlive(false);
