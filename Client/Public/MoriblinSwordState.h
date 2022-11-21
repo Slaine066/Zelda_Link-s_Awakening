@@ -9,6 +9,19 @@ BEGIN(Client)
 class CMoriblinSwordState
 {
 public:
+	enum STATE_ID
+	{
+		STATE_IDLE,
+		STATE_MOVE,
+		STATE_AGGRO,
+		STATE_ATTACK,
+		STATE_HIT,
+		STATE_GUARD,
+		STATE_DIE,
+		STATE_END,
+	};
+
+public:
 	virtual ~CMoriblinSwordState() {};
 	virtual CMoriblinSwordState* AI_Behavior(CMoriblinSword* pMoriblinSword) { return nullptr; };
 	virtual CMoriblinSwordState* Tick(CMoriblinSword* pMoriblinSword, _float fTimeDelta) { return nullptr; };
@@ -30,6 +43,7 @@ public:
 	}
 
 public:
+	STATE_ID Get_StateId() { return m_eStateId; }
 	_bool Has_Aggro() { return m_pTarget; }
 
 protected:
@@ -56,6 +70,7 @@ protected:
 	}
 
 protected:
+	STATE_ID m_eStateId = STATE_END;
 	_bool m_bIsAnimationFinished = false;
 	class CPlayer* m_pTarget = nullptr;		/* If TRUE, has Aggro. */
 	_bool m_bHasSpottedTarget = false;

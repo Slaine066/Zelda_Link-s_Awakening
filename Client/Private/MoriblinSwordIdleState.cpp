@@ -29,7 +29,7 @@ CMoriblinSwordState * CIdleState::Tick(CMoriblinSword * pMoriblinSword, _float f
 		_vector vTargetPosition = XMVectorSet(m_pTarget->Get_Position().x, pMoriblinSword->Get_Position().y, m_pTarget->Get_Position().z, 1.f);
 		pMoriblinSword->Get_Transform()->LookAt(vTargetPosition);
 
-		if (m_fIdleAttackTimer > 2.f)
+		if (m_fIdleAttackTimer > 1.5f)
 		{
 			if (!m_bHasSpottedTarget)
 				return new CAggroState();
@@ -57,6 +57,8 @@ CMoriblinSwordState * CIdleState::LateTick(CMoriblinSword * pMoriblinSword, _flo
 
 void CIdleState::Enter(CMoriblinSword * pMoriblinSword)
 {
+	m_eStateId = STATE_ID::STATE_IDLE;
+
 	if (m_pTarget)
 	{
 		pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(CMoriblinSword::ANIMID::ANIM_STANCE_WAIT);

@@ -7,7 +7,26 @@ BEGIN(Client)
 class CPlayerState
 {
 public:
-	enum STATETYPE { STATE_START, STATE_MAIN, STATE_END, STATE_DEFAULT };
+	enum STATETYPE 
+	{ 
+		STATETYPE_START, 
+		STATETYPE_MAIN,
+		STATETYPE_END,
+		STATETYPE_DEFAULT
+	};
+
+	enum STATE_ID
+	{
+		STATE_IDLE,
+		STATE_MOVE,
+		STATE_ATTACK,
+		STATE_HIT,
+		STATE_GUARD,
+		STATE_GUARD_MOVE,
+		STATE_DIE,
+		STATE_END
+	};
+
 public:
 	virtual ~CPlayerState() {};
 	virtual CPlayerState* HandleInput(CPlayer* pPlayer) { return nullptr; };
@@ -30,7 +49,8 @@ public:
 	}
 
 protected:
-	STATETYPE m_eStateType = STATE_DEFAULT;
+	STATETYPE m_eStateType = STATETYPE_DEFAULT;
+	STATE_ID m_eStateId = STATE_END;
 	_bool m_bIsAnimationFinished = false;
 };
 END

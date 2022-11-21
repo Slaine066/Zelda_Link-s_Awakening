@@ -57,6 +57,8 @@ CPlayerState * CAttackState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 
 void CAttackState::Enter(CPlayer * pPlayer)
 {
+	m_eStateId = STATE_ID::STATE_ATTACK;
+
 	pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SLASH);
 }
 

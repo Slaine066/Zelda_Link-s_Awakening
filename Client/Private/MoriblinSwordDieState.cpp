@@ -31,6 +31,8 @@ CMoriblinSwordState * CDieState::Tick(CMoriblinSword * pMoriblinSword, _float fT
 			m_fDeadTimer += fTimeDelta;
 	}
 
+	pMoriblinSword->Sync_WithNavigationHeight();
+
 	return nullptr;
 }
 
@@ -41,6 +43,10 @@ CMoriblinSwordState * CDieState::LateTick(CMoriblinSword * pMoriblinSword, _floa
 
 void CDieState::Enter(CMoriblinSword * pMoriblinSword)
 {
+	m_eStateId = STATE_ID::STATE_DIE;
+
+	pMoriblinSword->Set_Dead(true);
+
 	_bool bIsFront = Compute_HitPosition(pMoriblinSword);
 	pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CMoriblinSword::ANIMID::ANIM_DEAD_FRONT : CMoriblinSword::ANIMID::ANIM_DEAD_BACK);
 }
@@ -76,5 +82,5 @@ void CDieState::BounceBack(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 	_vector BounceDir = vPosition - vTargetPosition;
 	BounceDir = XMVector4Normalize(BounceDir);
 
-	pMoriblinSword->Get_Transform()->Move_Direction(BounceDir, fTimeDelta);
+	pMoriblinSword->Get_Transform()->Move_Direction(BounceDir, fTimeDelta, pMoriblinSword->Get_Navigation());
 }

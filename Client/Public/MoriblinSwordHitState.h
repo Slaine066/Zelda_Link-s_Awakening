@@ -18,6 +18,7 @@ public:
 
 private:
 	_bool Compute_HitPosition(CMoriblinSword * pMoriblinSword);
+	void BounceBack(CMoriblinSword * pMoriblinSpear, _float fTimeDelta);
 
 private:
 	_float3 m_vDamageCauserPosition;

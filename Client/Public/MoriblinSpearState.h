@@ -9,6 +9,18 @@ BEGIN(Client)
 class CMoriblinSpearState
 {
 public:
+	enum STATE_ID
+	{
+		STATE_IDLE,
+		STATE_MOVE,
+		STATE_AGGRO,
+		STATE_ATTACK,
+		STATE_HIT,
+		STATE_DIE,
+		STATE_END,
+	};
+
+public:
 	virtual ~CMoriblinSpearState() {};
 	virtual CMoriblinSpearState* AI_Behavior(CMoriblinSpear* pMoriblinSpear) { return nullptr; };
 	virtual CMoriblinSpearState* Tick(CMoriblinSpear* pMoriblinSpear, _float fTimeDelta) { return nullptr; };
@@ -28,6 +40,9 @@ public:
 		pNewState->Enter(pMoriblinSpear);
 		return pNewState;
 	}
+
+public:
+	STATE_ID Get_StateId() { return m_eStateId; }
 
 protected:
 	virtual void Find_Target(CMoriblinSpear * pMoriblinSpear, _bool bHasAggro = false)
@@ -65,9 +80,10 @@ protected:
 	}
 
 protected:
+	STATE_ID m_eStateId = STATE_END;
 	_bool m_bIsAnimationFinished = false;
 	class CPlayer* m_pTarget = nullptr;		/* If TRUE, has Aggro. */
 	_bool m_bHasSpottedTarget = false;
-	_float m_fIdleAttackTimer = 2.f;
+	_float m_fIdleAttackTimer = 1.5f;
 };
 END

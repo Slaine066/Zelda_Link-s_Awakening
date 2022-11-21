@@ -37,6 +37,8 @@ CMoriblinSwordState * CMoveState::LateTick(CMoriblinSword * pMoriblinSword, _flo
 
 void CMoveState::Enter(CMoriblinSword * pMoriblinSword)
 {
+	m_eStateId = STATE_ID::STATE_MOVE;
+
 	Set_MoveTarget(pMoriblinSword);
 	pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(CMoriblinSword::ANIMID::ANIM_WALK);
 }

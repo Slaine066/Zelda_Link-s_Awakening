@@ -14,7 +14,7 @@ CPlayerState * CGuardMoveState::HandleInput(CPlayer * pPlayer)
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
 	if (pGameInstance->Key_Up('W'))
-		return new CGuardState(STATE_END);
+		return new CGuardState(STATETYPE_END);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CGuardMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))
@@ -32,7 +32,7 @@ CPlayerState * CGuardMoveState::HandleInput(CPlayer * pPlayer)
 	else if (pGameInstance->Key_Pressing(VK_UP))
 		return new CGuardMoveState(DIR_STRAIGHT);
 	else
-		return new CGuardState(STATE_MAIN);
+		return new CGuardState(STATETYPE_MAIN);
 
 	return nullptr;
 }
@@ -54,6 +54,8 @@ CPlayerState * CGuardMoveState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 
 void CGuardMoveState::Enter(CPlayer * pPlayer)
 {
+	m_eStateId = STATE_ID::STATE_GUARD_MOVE;
+
 	pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SHIELD_HOLD_FRONT);
 	pPlayer->Get_Transform()->Change_Speed(pPlayer->Get_Stats().m_fWalkSpeed);
 }

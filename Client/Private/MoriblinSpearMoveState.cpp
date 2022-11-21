@@ -51,6 +51,8 @@ CMoriblinSpearState * CMoveState::LateTick(CMoriblinSpear * pMoriblinSpear, _flo
 
 void CMoveState::Enter(CMoriblinSpear * pMoriblinSpear)
 {
+	m_eStateId = STATE_ID::STATE_MOVE;
+
 	if (m_pTarget)
 		pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_STANCE_WALK_FRONT);
 	else
@@ -63,7 +65,7 @@ void CMoveState::Enter(CMoriblinSpear * pMoriblinSpear)
 void CMoveState::Exit(CMoriblinSpear * pMoriblinSpear)
 {
 	m_bIsArrived = false;
-	m_fIdleAttackTimer = 2.f;
+	m_fIdleAttackTimer = 1.5f;
 }
 
 void CMoveState::Set_MoveTarget(CMoriblinSpear * pMoriblinSpear)

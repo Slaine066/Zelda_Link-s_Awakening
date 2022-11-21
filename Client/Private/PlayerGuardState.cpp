@@ -18,9 +18,9 @@ CPlayerState * CGuardState::HandleInput(CPlayer * pPlayer)
 
 	switch (m_eStateType)
 	{
-		case STATE_MAIN:
+		case STATETYPE_MAIN:
 			if (pGameInstance->Key_Up('W'))
-				return new CGuardState(STATE_END);
+				return new CGuardState(STATETYPE_END);
 			else if (pGameInstance->Key_Pressing(VK_LEFT))
 				return new CGuardMoveState(DIR_LEFT);
 			else if (pGameInstance->Key_Pressing(VK_RIGHT))
@@ -67,8 +67,8 @@ CPlayerState * CGuardState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 	{
 		switch (m_eStateType)
 		{
-		case STATE_START:
-			return new CGuardState(STATE_MAIN);
+		case STATETYPE_START:
+			return new CGuardState(STATETYPE_MAIN);
 			break;
 		case STATE_END:
 			return new CIdleState();
@@ -81,12 +81,14 @@ CPlayerState * CGuardState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 
 void CGuardState::Enter(CPlayer * pPlayer)
 {
+	m_eStateId = STATE_ID::STATE_GUARD;
+
 	switch (m_eStateType)
 	{
-	case STATE_START:
+	case STATETYPE_START:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SHIELD_START);
 		break;
-	case STATE_MAIN:
+	case STATETYPE_MAIN:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SHIELD_LOOP);
 		break;
 	case STATE_END:

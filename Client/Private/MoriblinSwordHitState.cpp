@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "MoriblinSwordHitState.h"
-#include "MoriblinSwordIdleState.h"
+#include "MoriblinSwordAttackState.h"
 #include "Transform.h"
 
 using namespace MoriblinSword;
@@ -22,19 +22,23 @@ CMoriblinSwordState * CHitState::Tick(CMoriblinSword * pMoriblinSword, _float fT
 	pMoriblinSword->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSword->Is_AnimationLoop(pMoriblinSword->Get_Model()->Get_CurrentAnimIndex()));
 	pMoriblinSword->Sync_WithNavigationHeight();
 
+	BounceBack(pMoriblinSword, fTimeDelta);
+
 	return nullptr;
 }
 
 CMoriblinSwordState * CHitState::LateTick(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 {
 	if (m_bIsAnimationFinished)
-		return new CIdleState(m_pTarget);
+		return new CAttackState();
 
 	return nullptr;
 }
 
 void CHitState::Enter(CMoriblinSword * pMoriblinSword)
 {
+	m_eStateId = STATE_ID::STATE_HIT;
+
 	_bool bIsFront = Compute_HitPosition(pMoriblinSword);
 	pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CMoriblinSword::ANIMID::ANIM_DAMAGE_FRONT : CMoriblinSword::ANIMID::ANIM_DAMAGE_BACK);
 }
@@ -60,4 +64,15 @@ _bool CHitState::Compute_HitPosition(CMoriblinSword * pMoriblinSword)
 		return true;
 
 	return false;
+}
+
+void CHitState::BounceBack(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
+{
+	_vector vTargetPosition = m_pTarget->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+	_vector vPosition = pMoriblinSword->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+
+	_vector BounceDir = vPosition - vTargetPosition;
+	BounceDir = XMVector4Normalize(BounceDir);
+
+	pMoriblinSword->Get_Transform()->Move_Direction(BounceDir, fTimeDelta, pMoriblinSword->Get_Navigation());
 }

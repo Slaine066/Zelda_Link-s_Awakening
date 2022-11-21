@@ -32,6 +32,8 @@ CMoriblinSpearState * CAggroState::LateTick(CMoriblinSpear * pMoriblinSpear, _fl
 
 void CAggroState::Enter(CMoriblinSpear * pMoriblinSpear)
 {
+	m_eStateId = STATE_ID::STATE_AGGRO;
+
 	pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_FIND);
 }
 

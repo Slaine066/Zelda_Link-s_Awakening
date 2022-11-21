@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "MoriblinSpearHitState.h"
-#include "MoriblinSpearIdleState.h"
+#include "MoriblinSpearAttackState.h"
 #include "Transform.h"
 
 using namespace MoriblinSpear;
@@ -22,19 +22,23 @@ CMoriblinSpearState * CHitState::Tick(CMoriblinSpear * pMoriblinSpear, _float fT
 	pMoriblinSpear->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSpear->Is_AnimationLoop(pMoriblinSpear->Get_Model()->Get_CurrentAnimIndex()));
 	pMoriblinSpear->Sync_WithNavigationHeight();
 
+	BounceBack(pMoriblinSpear, fTimeDelta);
+
 	return nullptr;
 }
 
 CMoriblinSpearState * CHitState::LateTick(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 {
 	if (m_bIsAnimationFinished)
-		return new CIdleState(m_pTarget);
+		return new CAttackState();
 
 	return nullptr;
 }
 
 void CHitState::Enter(CMoriblinSpear * pMoriblinSpear)
 {
+	m_eStateId = STATE_ID::STATE_HIT;
+
 	_bool bIsFront = Compute_HitPosition(pMoriblinSpear);
 	pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CMoriblinSpear::ANIMID::ANIM_DAMAGE_FRONT : CMoriblinSpear::ANIMID::ANIM_DAMAGE_BACK);
 }
@@ -60,4 +64,15 @@ _bool CHitState::Compute_HitPosition(CMoriblinSpear * pMoriblinSpear)
 		return true;
 
 	return false;
+}
+
+void CHitState::BounceBack(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
+{
+	_vector vTargetPosition = m_pTarget->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+	_vector vPosition = pMoriblinSpear->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+
+	_vector BounceDir = vPosition - vTargetPosition;
+	BounceDir = XMVector4Normalize(BounceDir);
+
+	pMoriblinSpear->Get_Transform()->Move_Direction(BounceDir, fTimeDelta, pMoriblinSpear->Get_Navigation());
 }

@@ -7,7 +7,7 @@ BEGIN(MoriblinSword)
 class CAttackState : public CMoriblinSwordState
 {
 public:
-	CAttackState();
+	CAttackState(_bool bIsHit = false);
 
 	virtual CMoriblinSwordState* AI_Behavior(CMoriblinSword* pMoriblinSword) override;
 	virtual CMoriblinSwordState* Tick(CMoriblinSword* pMoriblinSword, _float fTimeDelta) override;
@@ -18,8 +18,11 @@ public:
 
 private:
 	void Move(CMoriblinSword* pMoriblinSword, _float fTimeDelta);
+	void BounceBack(CMoriblinSword * pMoriblinSpear, _float fTimeDelta);
 
 private:
+	_bool m_bIsHit = false;
+	_float m_fPushBackTimer = 0.f;
 	_bool m_bDidDamage = false;
 };
 END

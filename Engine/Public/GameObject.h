@@ -20,8 +20,11 @@ public:
 	_float3 Get_Position() { return m_vPosition; }
 	_float Get_CamDistance() const { return m_fCamDistance; }
 	_float Get_Radius() const { return m_fRadius; }
+	_bool Get_Dead() { return m_bDead; }
+	_bool Get_ShouldDestroy() { return m_bShouldDestroy; }
 
 	void Set_Position(_float3 vPosition) { m_vPosition = vPosition; }
+	void Set_Dead(_bool bDead) { m_bDead = bDead; }
 	void Set_ShouldDestroy(_bool bShouldDestroy) { m_bShouldDestroy = bShouldDestroy; }
 
 public:
@@ -57,6 +60,7 @@ protected:
 	_bool m_bIsInFrustum = false;
 	_float m_fRadius = 0.f;
 
+	_bool m_bDead = false;
 	_bool m_bShouldDestroy = false;
 
 public:	

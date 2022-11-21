@@ -33,6 +33,8 @@ CPlayerState * CHitState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 
 void CHitState::Enter(CPlayer * pPlayer)
 {
+	m_eStateId = STATE_ID::STATE_HIT;
+
 	_bool bIsFront = Compute_HitPosition(pPlayer);
 	pPlayer->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CPlayer::ANIMID::ANIM_DAMAGE_FRONT : CPlayer::ANIMID::ANIM_DAMAGE_BACK);
 }

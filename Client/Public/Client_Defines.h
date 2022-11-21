@@ -4,8 +4,8 @@
 
 namespace Client
 {
-	const unsigned int g_iWinSizeX = 1580;
-	const unsigned int g_iWinSizeY = 720;
+	const unsigned int g_iWinSizeX = 1920;
+	const unsigned int g_iWinSizeY = 1080;
 
 	enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_END };
 	enum DIRID { DIR_STRAIGHT, DIR_BACKWARD, DIR_LEFT, DIR_RIGHT, DIR_STRAIGHT_LEFT, DIR_STRAIGHT_RIGHT, DIR_BACKWARD_LEFT, DIR_BACKWARD_RIGHT, DIR_END };

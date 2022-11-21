@@ -31,7 +31,7 @@ CMoriblinSpearState * CIdleState::Tick(CMoriblinSpear * pMoriblinSpear, _float f
 
 		if (Is_InAttackRadius(pMoriblinSpear))
 		{
-			if (m_fIdleAttackTimer > 2.f)
+			if (m_fIdleAttackTimer > 1.5f)
 			{
 				if (!m_bHasSpottedTarget)
 					return new CAggroState();
@@ -62,6 +62,8 @@ CMoriblinSpearState * CIdleState::LateTick(CMoriblinSpear * pMoriblinSpear, _flo
 
 void CIdleState::Enter(CMoriblinSpear * pMoriblinSpear)
 {
+	m_eStateId = STATE_ID::STATE_IDLE;
+
 	if (m_pTarget)
 	{
 		pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_STANCE_WAIT);

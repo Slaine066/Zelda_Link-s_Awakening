@@ -43,7 +43,7 @@ _bool CCollision_Manager::Collision_with_Group(COLLISION_GROUP eGroup, CCollider
 		if (pGameObj && CGameInstance::Get_Instance()->IsIn_Frustum(XMLoadFloat3(&pGameObj->Get_Position()), pGameObj->Get_Radius()) == true)
 		{
 			CCollider* pDamaged = pGameObj->Get_Collider(eCollisionAim);
-			if (!pDamaged)
+			if (!pDamaged || pGameObj->Get_Dead())
 				continue;
 
 			if (pDamageCauser->Collision(pDamaged))
@@ -67,7 +67,7 @@ _bool CCollision_Manager::Collision_Check_Group_Multi(COLLISION_GROUP eGroup, CC
 		if (pGameObj && CGameInstance::Get_Instance()->IsIn_Frustum(XMLoadFloat3(&pGameObj->Get_Position()), pGameObj->Get_Radius()) == true)
 		{
 			CCollider* pDamaged = pGameObj->Get_Collider(eCollisionAim);
-			if (!pDamaged)
+			if (!pDamaged || pGameObj->Get_Dead())
 				continue;
 
 			if (pDamageCauser->Collision(pDamaged))

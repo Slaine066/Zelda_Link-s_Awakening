@@ -55,6 +55,8 @@ CMoriblinSpearState * CAttackState::LateTick(CMoriblinSpear * pMoriblinSpear, _f
 
 void CAttackState::Enter(CMoriblinSpear * pMoriblinSpear)
 {
+	m_eStateId = STATE_ID::STATE_ATTACK;
+
 	pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(CMoriblinSpear::ANIMID::ANIM_SPEAR_THROW);
 }
 

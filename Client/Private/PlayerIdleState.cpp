@@ -17,7 +17,7 @@ CPlayerState * CIdleState::HandleInput(CPlayer * pPlayer)
 	if (pGameInstance->Key_Down('S'))
 		return new CAttackState();
 	else if (pGameInstance->Key_Down('W'))
-		return new CGuardState(STATE_START);
+		return new CGuardState(STATETYPE_START);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))
@@ -53,6 +53,8 @@ CPlayerState * CIdleState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 
 void CIdleState::Enter(CPlayer * pPlayer)
 {
+	m_eStateId = STATE_ID::STATE_IDLE;
+
 	pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_IDLE);
 }
 

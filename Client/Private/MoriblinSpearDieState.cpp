@@ -31,6 +31,8 @@ CMoriblinSpearState * CDieState::Tick(CMoriblinSpear * pMoriblinSpear, _float fT
 			m_fDeadTimer += fTimeDelta;
 	}
 
+	pMoriblinSpear->Sync_WithNavigationHeight();
+
 	return nullptr;
 }
 
@@ -41,6 +43,10 @@ CMoriblinSpearState * CDieState::LateTick(CMoriblinSpear * pMoriblinSpear, _floa
 
 void CDieState::Enter(CMoriblinSpear * pMoriblinSpear)
 {
+	m_eStateId = STATE_ID::STATE_DIE;
+
+	pMoriblinSpear->Set_Dead(true);
+
 	_bool bIsFront = Compute_HitPosition(pMoriblinSpear);
 	pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CMoriblinSpear::ANIMID::ANIM_DEAD_FRONT : CMoriblinSpear::ANIMID::ANIM_DEAD_BACK);
 }
@@ -75,5 +81,5 @@ void CDieState::BounceBack(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 	_vector BounceDir = vPosition - vTargetPosition;
 	BounceDir = XMVector4Normalize(BounceDir);
 
-	pMoriblinSpear->Get_Transform()->Move_Direction(BounceDir, fTimeDelta);
+	pMoriblinSpear->Get_Transform()->Move_Direction(BounceDir, fTimeDelta, pMoriblinSpear->Get_Navigation());
 }

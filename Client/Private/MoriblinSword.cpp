@@ -7,6 +7,7 @@
 #include "MoriblinSwordHitState.h"
 #include "MoriblinSwordDieState.h"
 #include "MoriblinSwordGuardState.h"
+#include "MoriblinSwordAttackState.h"
 
 using namespace MoriblinSword;
 
@@ -98,11 +99,16 @@ _float CMoriblinSword::Take_Damage(float fDamage, void * DamageType, CGameObject
 {
 	if (fDamage > 0.f)
 	{
-		CIdleState* pIdleState = dynamic_cast<CIdleState*>(m_pMoriblinSwordState);
-		if (pIdleState && pIdleState->Has_Aggro())
+		if (m_pMoriblinSwordState->Get_StateId() == CMoriblinSwordState::STATE_ID::STATE_IDLE || 
+			m_pMoriblinSwordState->Get_StateId() == CMoriblinSwordState::STATE_ID::STATE_ATTACK || 
+			m_pMoriblinSwordState->Get_StateId() == CMoriblinSwordState::STATE_ID::STATE_GUARD)
 		{
-			CMoriblinSwordState* pState = new CGuardState();
-			m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
+			if (m_pMoriblinSwordState->Has_Aggro())
+			{
+				m_pModelCom->Reset_CurrentAnimation();
+				CMoriblinSwordState* pState = new CGuardState();
+				m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
+			}
 		}
 		else
 		{

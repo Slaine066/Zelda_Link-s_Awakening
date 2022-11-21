@@ -32,6 +32,8 @@ CMoriblinSwordState * CAggroState::LateTick(CMoriblinSword * pMoriblinSword, _fl
 
 void CAggroState::Enter(CMoriblinSword * pMoriblinSword)
 {
+	m_eStateId = STATE_ID::STATE_AGGRO;
+
 	pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(CMoriblinSword::ANIMID::ANIM_FIND);
 }
 

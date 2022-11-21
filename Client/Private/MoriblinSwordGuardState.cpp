@@ -35,6 +35,8 @@ CMoriblinSwordState * CGuardState::LateTick(CMoriblinSword * pMoriblinSword, _fl
 
 void CGuardState::Enter(CMoriblinSword * pMoriblinSword)
 {
+	m_eStateId = STATE_ID::STATE_GUARD;
+
 	pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(CMoriblinSword::ANIMID::ANIM_GUARD);
 }
 
