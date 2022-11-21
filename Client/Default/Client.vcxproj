@@ -195,6 +195,8 @@
     <ClInclude Include="..\Public\PlayerAttackState.h" />
     <ClInclude Include="..\Public\Camera_Dynamic.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\public\PlayerGuardMoveState.h" />
+    <ClInclude Include="..\public\PlayerGuardState.h" />
     <ClInclude Include="..\public\PlayerHitState.h" />
     <ClInclude Include="..\Public\PlayerIdleState.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -241,6 +243,8 @@
     <ClCompile Include="..\private\MoriblinSwordMoveState.cpp" />
     <ClCompile Include="..\Private\PlayerAttackState.cpp" />
     <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
+    <ClCompile Include="..\private\PlayerGuardMoveState.cpp" />
+    <ClCompile Include="..\private\PlayerGuardState.cpp" />
     <ClCompile Include="..\private\PlayerHitState.cpp" />
     <ClCompile Include="..\Private\PlayerIdleState.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />

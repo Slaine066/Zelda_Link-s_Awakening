@@ -10,6 +10,16 @@ CAttackState::CAttackState()
 
 CPlayerState * CAttackState::HandleInput(CPlayer * pPlayer)
 {
+	if ((pPlayer->Get_Model()->Over_Keyframe("hand_L", 9)) == true)
+	{
+		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+		if (pGameInstance->Key_Down('S'))
+		{
+			pPlayer->Get_Model()->Reset_CurrentAnimation();
+			return new CAttackState();
+		}
+	}
+
 	return nullptr;
 }
 

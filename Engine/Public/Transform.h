@@ -53,14 +53,13 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
-	void Move_Straight(_float fTimeDelta);
-	void Move_Backward(_float fTimeDelta);
-	void Move_Left(_float fTimeDelta);
-	void Move_Right(_float fTimeDelta);
+	void Move_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Move_Backward(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Move_Left(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Move_Right(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
 
-	void Move_Direction(_vector vDirection, _float fTimeDelta);
+	void Move_Direction(_vector vDirection, _float fTimeDelta, class CNavigation* pNavigation = nullptr);
 
-	void Go_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
 	_bool Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, _float fDistance, class CNavigation* pNavigation = nullptr);
 
 	void Turn(_fvector vAxis, _float fTimeDelta);
@@ -69,7 +68,6 @@ public:
 	
 	void LookAt(_fvector vAt);
 	void Attach_ToTarget(_fvector fTargetPosition, _fvector fDistance);
-	
 
 private:			
 	TRANSFORMDESC m_TransformDesc;

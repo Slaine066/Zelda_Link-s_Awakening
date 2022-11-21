@@ -1,46 +1,43 @@
 #include "stdafx.h"
 
-#include "PlayerMoveState.h"
+#include "PlayerGuardMoveState.h"
 #include "GameInstance.h"
-#include "PlayerIdleState.h"
-#include "PlayerAttackState.h"
 #include "PlayerGuardState.h"
+#include "PlayerAttackState.h"
 
-CMoveState::CMoveState(DIRID eDir) : m_eDirection(eDir) 
+CGuardMoveState::CGuardMoveState(DIRID eDir) : m_eDirection(eDir)
 {
 }
 
-CPlayerState * CMoveState::HandleInput(CPlayer * pPlayer)
+CPlayerState * CGuardMoveState::HandleInput(CPlayer * pPlayer)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
-	if (pGameInstance->Key_Down('S'))
-		return new CAttackState();
-	else if (pGameInstance->Key_Down('W'))
-		return new CGuardState(STATE_START);
+	if (pGameInstance->Key_Up('W'))
+		return new CGuardState(STATE_END);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
-		return new CMoveState(DIR_STRAIGHT_LEFT);
+		return new CGuardMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))
-		return new CMoveState(DIR_STRAIGHT_RIGHT);
+		return new CGuardMoveState(DIR_STRAIGHT_RIGHT);
 	else if (pGameInstance->Key_Pressing(VK_DOWN) && pGameInstance->Key_Pressing(VK_LEFT))
-		return new CMoveState(DIR_BACKWARD_LEFT);
+		return new CGuardMoveState(DIR_BACKWARD_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_DOWN) && pGameInstance->Key_Pressing(VK_RIGHT))
-		return new CMoveState(DIR_BACKWARD_RIGHT);
+		return new CGuardMoveState(DIR_BACKWARD_RIGHT);
 	else if (pGameInstance->Key_Pressing(VK_LEFT))
-		return new CMoveState(DIR_LEFT);
+		return new CGuardMoveState(DIR_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_RIGHT))
-		return new CMoveState(DIR_RIGHT);
+		return new CGuardMoveState(DIR_RIGHT);
 	else if (pGameInstance->Key_Pressing(VK_DOWN))
-		return new CMoveState(DIR_BACKWARD);
+		return new CGuardMoveState(DIR_BACKWARD);
 	else if (pGameInstance->Key_Pressing(VK_UP))
-		return new CMoveState(DIR_STRAIGHT);
-	else 
-		return new CIdleState();
+		return new CGuardMoveState(DIR_STRAIGHT);
+	else
+		return new CGuardState(STATE_MAIN);
 
 	return nullptr;
 }
 
-CPlayerState * CMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
+CPlayerState * CGuardMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 {
 	Move(pPlayer, fTimeDelta);
 
@@ -50,22 +47,23 @@ CPlayerState * CMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 	return nullptr;
 }
 
-CPlayerState * CMoveState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
+CPlayerState * CGuardMoveState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 {
 	return nullptr;
 }
 
-void CMoveState::Enter(CPlayer * pPlayer)
+void CGuardMoveState::Enter(CPlayer * pPlayer)
 {
-	pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_RUN);
+	pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SHIELD_HOLD_FRONT);
+	pPlayer->Get_Transform()->Change_Speed(pPlayer->Get_Stats().m_fWalkSpeed);
 }
 
-void CMoveState::Exit(CPlayer * pPlayer)
+void CGuardMoveState::Exit(CPlayer * pPlayer)
 {
-
+	pPlayer->Get_Transform()->Change_Speed(pPlayer->Get_Stats().m_fRunSpeed);
 }
 
-void CMoveState::Move(CPlayer * pPlayer, _float fTimeDelta)
+void CGuardMoveState::Move(CPlayer * pPlayer, _float fTimeDelta)
 {
 	switch (m_eDirection)
 	{

@@ -132,6 +132,7 @@ private:
 	void LateTickState(_float fTimeDelta);
 
 private:
+	DIRID m_eDirection = DIRID::DIR_END;
 	class CPlayerState* m_pPlayerState = nullptr;
 
 public:

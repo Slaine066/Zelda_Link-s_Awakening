@@ -183,7 +183,7 @@ void CProjectile::Spear_Collision()
 
 void CProjectile::Spear_Tick(_float fTimeDelta)
 {
-	m_pTransformCom->Go_Straight(fTimeDelta);
+	m_pTransformCom->Move_Straight(fTimeDelta);
 
 	if (m_fAliveTimer > 1.5f)
 	{

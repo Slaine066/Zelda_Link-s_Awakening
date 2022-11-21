@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "PlayerAttackState.h"
 #include "PlayerMoveState.h"
+#include "PlayerGuardState.h"
 
 CIdleState::CIdleState()
 {
@@ -12,8 +13,12 @@ CIdleState::CIdleState()
 CPlayerState * CIdleState::HandleInput(CPlayer * pPlayer)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	
-	if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
+
+	if (pGameInstance->Key_Down('S'))
+		return new CAttackState();
+	else if (pGameInstance->Key_Down('W'))
+		return new CGuardState(STATE_START);
+	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))
 		return new CMoveState(DIR_STRAIGHT_RIGHT);
@@ -29,8 +34,6 @@ CPlayerState * CIdleState::HandleInput(CPlayer * pPlayer)
 		return new CMoveState(DIR_BACKWARD);
 	else if (pGameInstance->Key_Pressing(VK_UP))
 		return new CMoveState(DIR_STRAIGHT);
-	else if (pGameInstance->Key_Down('S'))
-		return new CAttackState();
 
 	return nullptr;
 }

@@ -84,6 +84,24 @@ _bool CAnimation::Is_Keyframe(char* pChannelName, _uint iKeyframe)
 	}
 }
 
+_bool CAnimation::Over_Keyframe(char * pChannelName, _uint iKeyframe)
+{
+	auto iter = find_if(m_Channels.begin(), m_Channels.end(), [&](CChannel* pChannel)
+	{
+		return !strcmp(pChannelName, pChannel->Get_ChannelName());
+	});
+
+	if (iter == m_Channels.end())
+		return false;
+	else
+	{
+		if ((*iter)->Get_CurrentKeyframe() >= iKeyframe)
+			return true;
+		else
+			return false;
+	}
+}
+
 void CAnimation::Reset_Animation()
 {
 	m_fCurrentTime = 0.f;

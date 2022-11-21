@@ -104,5 +104,5 @@ void CMoveState::Follow_Target(CMoriblinSpear * pMoriblinSpear, _float fTimeDelt
 	_float3 vPosition;
 	XMStoreFloat3(&vPosition, vTargetPosition);
 
-	pMoriblinSpear->Get_Transform()->Go_Straight(fTimeDelta, pMoriblinSpear->Get_Navigation());
+	pMoriblinSpear->Get_Transform()->Move_Straight(fTimeDelta, pMoriblinSpear->Get_Navigation());
 }
