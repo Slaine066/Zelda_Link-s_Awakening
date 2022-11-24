@@ -46,8 +46,10 @@ public: /* For.Timer_Manager */
 	void Update_TimeDelta(const _tchar* pTimerTag);
 
 public: /* For.Level_Manager */
-	HRESULT Open_Level(unsigned int iLevelIndex, class CLevel* pNewLevel);
+	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	_uint Get_CurrentLevelIndex();
+	_uint Get_NextLevelIndex();
+	void Set_NextLevel(_uint iNextLevelIndex);
 	HRESULT Render_NavigationMesh();
 
 public: /* For.Object_Manager */

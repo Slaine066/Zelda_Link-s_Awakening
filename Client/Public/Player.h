@@ -132,10 +132,14 @@ private:
 	void HandleInput();
 	void TickState(_float fTimeDelta);
 	void LateTickState(_float fTimeDelta);
+	void HandleInvincibility(_float fTimeDelta);
 
 private:
 	DIRID m_eDirection = DIRID::DIR_END;
 	class CPlayerState* m_pPlayerState = nullptr;
+
+	_float m_fInvincibleTimer = 0.f;
+	_bool m_bIsInvincible = false;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

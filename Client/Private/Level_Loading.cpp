@@ -1,11 +1,12 @@
 #include "stdafx.h"
-#include "..\Public\Level_Loading.h"
 
+#include "Level_Loading.h"
 #include "GameInstance.h"
 #include "Loader.h"
 #include "Level_Logo.h"
-#include "Level_GamePlay.h"
-
+#include "Level_Field.h"
+#include "Level_MoriblinCave.h"
+#include "Level_BottleGrotto.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -30,36 +31,38 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);	
 
-	if (true == m_pLoader->Get_Finished())
+	if (m_pLoader->Get_Finished())
 	{
-		if (GetKeyState(VK_RETURN) & 0x8000)
+		CLevel* pNewLevel = nullptr;
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		
+		switch (m_eNextLevel)
 		{
-			/* 넥스트레벨에 대한 준비가 끝나면 실제 넥스트레벨을 할당한다. */
-			CLevel*			pNewLevel = nullptr;
+		case LEVEL_LOGO:
+			pGameInstance->Set_NextLevel(m_eNextLevel);
+			pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_FIELD:
+			pGameInstance->Set_NextLevel(m_eNextLevel);
+			pNewLevel = CLevel_Field::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_MORIBLINCAVE:
+			pGameInstance->Set_NextLevel(m_eNextLevel);
+			pNewLevel = CLevel_MoriblinCave::Create(m_pDevice, m_pContext);
+			break;
+		/*case LEVEL_BOTTLEGROTTO:
+			pNewLevel = CLevel_BottleGrotto::Create(m_pDevice, m_pContext);
+			break;*/
+		}
 
-			switch (m_eNextLevel)
-			{
-			case LEVEL_LOGO:
-				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_GAMEPLAY:
-				pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
-				break;
-			}
+		if (!pNewLevel)
+			return;
 
-			if (nullptr == pNewLevel)
-				return;
+		if (FAILED(pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
+			return;
 
-			CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-			if (nullptr == pGameInstance)
-				return;
-			Safe_AddRef(pGameInstance);
-
-			if (FAILED(pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
-				return;
-
-			Safe_Release(pGameInstance);
-		}		
+		RELEASE_INSTANCE(CGameInstance);
 	}
 }
 
@@ -76,7 +79,7 @@ CLevel_Loading * CLevel_Loading::Create(ID3D11Device* pDevice, ID3D11DeviceConte
 
 	if (FAILED(pInstance->Initialize(eNextLevel)))
 	{
-		ERR_MSG(TEXT("Failed to Created : CLevel_Loading"));
+		ERR_MSG(TEXT("Failed to Create: CLevel_Loading"));
 		Safe_Release(pInstance);
 	}
 

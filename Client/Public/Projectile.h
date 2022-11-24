@@ -9,7 +9,8 @@ class CProjectile final : public CActor
 public:
 	enum PROJECTILE_TYPE
 	{
-		PROJECTILE_SPEAR,
+		PROJECTILE_MORIBLINSPEAR,
+		PROJECTILE_BOSSBLINSPEAR,
 		PROJECTILE_END
 	};
 
@@ -42,8 +43,10 @@ private:
 	virtual HRESULT SetUp_ShaderResources() override;
 
 private:
-	void Spear_Tick(_float fTimeDelta);
-	void Spear_Collision();
+	void MoriblinSpear_Tick(_float fTimeDelta);
+	void BossblinSpear_Tick(_float fTimeDelta);
+	void MoriblinSpear_Collision();
+	void BossblinSpear_Collision();
 
 private:
 	PROJECTILEDESC m_tProjectileDesc;

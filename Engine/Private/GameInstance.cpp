@@ -180,7 +180,7 @@ void CGameInstance::Update_TimeDelta(const _tchar * pTimerTag)
 	m_pTimer_Manager->Update(pTimerTag);
 }
 
-HRESULT CGameInstance::Open_Level(unsigned int iLevelIndex, CLevel * pNewLevel)
+HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
@@ -194,6 +194,22 @@ _uint CGameInstance::Get_CurrentLevelIndex()
 		return E_FAIL;
 
 	return m_pLevel_Manager->Get_CurrentLevelIndex();
+}
+
+_uint CGameInstance::Get_NextLevelIndex()
+{
+	if (nullptr == m_pLevel_Manager)
+		return E_FAIL;
+
+	return m_pLevel_Manager->Get_NextLevelIndex();
+}
+
+void CGameInstance::Set_NextLevel(_uint iNextLevelIndex)
+{
+	if (nullptr == m_pLevel_Manager)
+		return;
+
+	return m_pLevel_Manager->Set_NextLevelIndex(iNextLevelIndex);
 }
 
 HRESULT CGameInstance::Render_NavigationMesh()

@@ -2,7 +2,6 @@
 
 #include "MoriblinSpearAttackState.h"
 #include "MoriblinSpearIdleState.h"
-#include "MoriblinSpearMoveState.h"
 #include "Projectile.h"
 #include "Collider.h"
 #include "Weapon.h"
@@ -16,12 +15,6 @@ CAttackState::CAttackState()
 CMoriblinSpearState * CAttackState::AI_Behavior(CMoriblinSpear * pMoriblinSpear)
 {
 	Find_Target(pMoriblinSpear, true);
-
-	if (!Is_InAttackRadius(pMoriblinSpear))
-	{
-		pMoriblinSpear->Get_Model()->Reset_CurrentAnimation();
-		return new CMoveState(m_pTarget);
-	}
 
 	return nullptr;
 }
@@ -64,27 +57,12 @@ void CAttackState::Exit(CMoriblinSpear * pMoriblinSpear)
 {
 }
 
-void CAttackState::Move(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
-{
-	if (!m_pTarget)
-		return;
-
-	_vector vTargetPosition = XMVectorSet(m_pTarget->Get_Position().x, pMoriblinSpear->Get_Position().y, m_pTarget->Get_Position().z, 1.f);
-	pMoriblinSpear->Get_Transform()->LookAt(vTargetPosition);
-
-	_float3 vPosition;
-	XMStoreFloat3(&vPosition, vTargetPosition);
-
-	_float fAttackRadius = pMoriblinSpear->Get_AttackRadius();
-	pMoriblinSpear->Get_Transform()->Go_TargetPosition(fTimeDelta, vPosition, fAttackRadius, pMoriblinSpear->Get_Navigation());
-}
-
 void CAttackState::Create_Projectile(CMoriblinSpear * pMoriblinSpear)
 {
 	CProjectile::PROJECTILEDESC tProjectileDesc;
 	ZeroMemory(&tProjectileDesc, sizeof(CProjectile::PROJECTILEDESC));
 	tProjectileDesc.pOwner = pMoriblinSpear;
-	tProjectileDesc.eProjectileType = CProjectile::PROJECTILE_TYPE::PROJECTILE_SPEAR;
+	tProjectileDesc.eProjectileType = CProjectile::PROJECTILE_TYPE::PROJECTILE_MORIBLINSPEAR;
 	tProjectileDesc.bIsPlayerProjectile = false;
 	tProjectileDesc.fProjectileSpeed = 1.6f;
 	tProjectileDesc.pModelPrototypeId = TEXT("Prototype_Component_Model_Spear");

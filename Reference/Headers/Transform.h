@@ -53,21 +53,21 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
-	void Move_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
-	void Move_Backward(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
-	void Move_Left(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
-	void Move_Right(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
-
-	void Move_Direction(_vector vDirection, _float fTimeDelta, class CNavigation* pNavigation = nullptr);
-
-	_bool Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, _float fDistance, class CNavigation* pNavigation = nullptr);
-
+	/* Rotation Functions */
 	void Turn(_fvector vAxis, _float fTimeDelta);
 	void Set_Rotation(_float3 fAngle);
 	void Set_RotationY(_float fAngleY);
+
+	/* Translation Functions */
+	void Move_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);													/* Look + */
+	void Move_Backward(_float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);													/* Look - */
+	void Move_Left(_float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);														/* Right + */
+	void Move_Right(_float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);														/* Right - */
+	_bool Move_Direction(_vector vDirection, _float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);							/* Specific Direction + */
+	_bool Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, _float fDistance, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);	/* Go to Specific Position. */
+	void Attach_ToTarget(_fvector fTargetPosition, _fvector fDistance);																						/* Immediately attach to Specific Position. */
 	
 	void LookAt(_fvector vAt);
-	void Attach_ToTarget(_fvector fTargetPosition, _fvector fDistance);
 
 private:			
 	TRANSFORMDESC m_TransformDesc;

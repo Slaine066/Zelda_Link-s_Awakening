@@ -17,6 +17,9 @@ public:
 
 public:
 	_uint Get_CurrentLevelIndex() { return m_iLevelIndex; }
+	_uint Get_NextLevelIndex() { return m_iNextLevelIndex; }
+
+	void Set_NextLevelIndex(_uint iNextLevelIndex) { m_iNextLevelIndex = iNextLevelIndex; }
 
 public:
 	HRESULT Open_Level(unsigned int iLevelIndex, class CLevel* pNewLevel);
@@ -28,6 +31,7 @@ public:
 private:
 	class CLevel* m_pCurrentLevel = nullptr;
 	_uint m_iLevelIndex;
+	_uint m_iNextLevelIndex;
 
 public:
 	virtual void Free() override;

@@ -3,6 +3,7 @@
 #include "PlayerState.h"
 
 BEGIN(Client)
+BEGIN(Player)
 class CGuardState : public CPlayerState
 {
 public:
@@ -15,4 +16,5 @@ public:
 	virtual void Enter(CPlayer* pPlayer) override;
 	virtual void Exit(CPlayer* pPlayer) override;
 };
+END
 END

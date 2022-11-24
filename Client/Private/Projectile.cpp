@@ -3,9 +3,12 @@
 #include "Projectile.h"
 #include "GameInstance.h"
 #include "MoriblinSpear.h"
+#include "Bossblin.h"
 #include "Player.h"
 #include "PlayerState.h"
 #include "PlayerGuardState.h"
+
+using namespace Player;
 
 CProjectile::CProjectile(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CActor(pDevice, pContext)
@@ -30,7 +33,8 @@ HRESULT CProjectile::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (m_tProjectileDesc.eProjectileType == PROJECTILE_TYPE::PROJECTILE_SPEAR)
+	if (m_tProjectileDesc.eProjectileType == PROJECTILE_TYPE::PROJECTILE_MORIBLINSPEAR ||
+		m_tProjectileDesc.eProjectileType == PROJECTILE_TYPE::PROJECTILE_BOSSBLINSPEAR)
 	{
 		_float4 vPosition;
 		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
@@ -56,8 +60,11 @@ _uint CProjectile::Tick(_float fTimeDelta)
 
 	switch (m_tProjectileDesc.eProjectileType)
 	{
-		case PROJECTILE_SPEAR:
-			Spear_Tick(fTimeDelta);
+		case PROJECTILE_MORIBLINSPEAR:
+			MoriblinSpear_Tick(fTimeDelta);
+			break;
+		case PROJECTILE_BOSSBLINSPEAR:
+			BossblinSpear_Tick(fTimeDelta);
 	}
 
 	return OBJ_NOEVENT;
@@ -72,8 +79,12 @@ void CProjectile::Late_Tick(_float fTimeDelta)
 
 	switch (m_tProjectileDesc.eProjectileType)
 	{
-		case PROJECTILE_SPEAR:
-			Spear_Collision();
+		case PROJECTILE_MORIBLINSPEAR:
+			MoriblinSpear_Collision();
+			break;
+		case PROJECTILE_BOSSBLINSPEAR:
+			BossblinSpear_Collision();
+			break;
 	}
 }
 
@@ -162,7 +173,7 @@ HRESULT CProjectile::SetUp_ShaderResources()
 	return S_OK;
 }
 
-void CProjectile::Spear_Collision()
+void CProjectile::MoriblinSpear_Collision()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	vector<CGameObject*> pDamagedObjects;
@@ -190,7 +201,7 @@ void CProjectile::Spear_Collision()
 					pPlayer->Get_State()->Get_StateId() == CPlayerState::STATE_ID::STATE_GUARD_MOVE)
 				{
 					pPlayer->Get_Model()->Reset_CurrentAnimation();
-					CPlayerState* pGuardState = new CGuardState(CPlayerState::STATETYPE::STATETYPE_START);
+					CPlayerState* pGuardState = new Player::CGuardState(CPlayerState::STATETYPE::STATETYPE_START);
 					pPlayer->Set_State(pPlayer->Get_State()->ChangeState(pPlayer, pPlayer->Get_State(), pGuardState));
 				}
 				else
@@ -203,7 +214,48 @@ void CProjectile::Spear_Collision()
 	}
 }
 
-void CProjectile::Spear_Tick(_float fTimeDelta)
+void CProjectile::BossblinSpear_Collision()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	vector<CGameObject*> pDamagedObjects;
+	pGameInstance->Collision_Check_Group_Multi(m_tProjectileDesc.bIsPlayerProjectile ? CCollision_Manager::COLLISION_MONSTER : CCollision_Manager::COLLISION_PLAYER,
+		Get_Collider(CCollider::AIM::AIM_DAMAGE_OUTPUT), CCollider::AIM::AIM_DAMAGE_INPUT, pDamagedObjects);
+	RELEASE_INSTANCE(CGameInstance);
+
+	if (!pDamagedObjects.empty())
+	{
+		CBossblin* pBossblin = dynamic_cast<CBossblin*>(m_tProjectileDesc.pOwner);
+		if (!pBossblin)
+			return;
+
+		for (auto& pDamaged : pDamagedObjects)
+		{
+			if (m_tProjectileDesc.bIsPlayerProjectile)
+				pDamaged->Take_Damage(pBossblin->Get_Stats().m_fAttackPower, nullptr, m_tProjectileDesc.pOwner);
+			else
+			{
+				CPlayer* pPlayer = dynamic_cast<CPlayer*>(pDamaged);
+				if (!pPlayer)
+					continue;
+
+				if (pPlayer->Get_State()->Get_StateId() == CPlayerState::STATE_ID::STATE_GUARD ||
+					pPlayer->Get_State()->Get_StateId() == CPlayerState::STATE_ID::STATE_GUARD_MOVE)
+				{
+					pPlayer->Get_Model()->Reset_CurrentAnimation();
+					CPlayerState* pGuardState = new Player::CGuardState(CPlayerState::STATETYPE::STATETYPE_START);
+					pPlayer->Set_State(pPlayer->Get_State()->ChangeState(pPlayer, pPlayer->Get_State(), pGuardState));
+				}
+				else
+					pDamaged->Take_Damage(pBossblin->Get_Stats().m_fAttackPower, nullptr, m_tProjectileDesc.pOwner);
+			}
+		}
+
+		m_bShouldDestroy = true;
+		pBossblin->Set_IsProjectileAlive(false);
+	}
+}
+
+void CProjectile::MoriblinSpear_Tick(_float fTimeDelta)
 {
 	m_pTransformCom->Move_Straight(fTimeDelta);
 
@@ -214,6 +266,22 @@ void CProjectile::Spear_Tick(_float fTimeDelta)
 		CMoriblinSpear* pMoriblinSpear = dynamic_cast<CMoriblinSpear*>(m_tProjectileDesc.pOwner);
 		if (pMoriblinSpear)
 			pMoriblinSpear->Set_IsProjectileAlive(false);
+	}
+	else
+		m_fAliveTimer += fTimeDelta;
+}
+
+void CProjectile::BossblinSpear_Tick(_float fTimeDelta)
+{
+	m_pTransformCom->Move_Straight(fTimeDelta);
+
+	if (m_fAliveTimer > 1.5f)
+	{
+		m_bShouldDestroy = true;
+
+		CBossblin* pBossblin = dynamic_cast<CBossblin*>(m_tProjectileDesc.pOwner);
+		if (pBossblin)
+			pBossblin->Set_IsProjectileAlive(false);
 	}
 	else
 		m_fAliveTimer += fTimeDelta;

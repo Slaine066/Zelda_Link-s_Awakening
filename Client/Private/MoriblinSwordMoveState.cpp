@@ -72,5 +72,5 @@ void CMoveState::Patrol(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 {
 	_vector vPatrolPosition = XMVectorSet(m_vPatrolPosition.x, pMoriblinSword->Get_Position().y, m_vPatrolPosition.z, 1.f);
 	pMoriblinSword->Get_Transform()->LookAt(vPatrolPosition);
-	m_bIsArrived = pMoriblinSword->Get_Transform()->Go_TargetPosition(fTimeDelta, m_vPatrolPosition, 0.f, pMoriblinSword->Get_Navigation());
+	m_bIsArrived = pMoriblinSword->Get_Transform()->Go_TargetPosition(fTimeDelta, m_vPatrolPosition, 0.f, pMoriblinSword->Get_Navigation(), pMoriblinSword->Get_Radius());
 }

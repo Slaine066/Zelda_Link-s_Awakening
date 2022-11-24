@@ -74,5 +74,5 @@ void CHitState::BounceBack(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 	_vector BounceDir = vPosition - vTargetPosition;
 	BounceDir = XMVector4Normalize(BounceDir);
 
-	pMoriblinSpear->Get_Transform()->Move_Direction(BounceDir, fTimeDelta, pMoriblinSpear->Get_Navigation());
+	pMoriblinSpear->Get_Transform()->Move_Direction(BounceDir, fTimeDelta, pMoriblinSpear->Get_Navigation(), pMoriblinSpear->Get_Radius());
 }

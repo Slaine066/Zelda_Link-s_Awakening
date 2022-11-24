@@ -31,7 +31,8 @@ HRESULT CWeapon::Initialize(void * pArg)
 	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, .4f);
 
 	/* Revert PivotMatrix. */
-	m_pTransformCom->Set_RotationY(180.f);
+	if (wcscmp(m_WeaponDesc.pModelPrototypeId, TEXT("Prototype_Component_Model_BossblinSpear"))) /* PivotMatrix has not been applied to Bossblin Spear.*/
+		m_pTransformCom->Set_RotationY(180.f);
 
 	return S_OK;
 }
@@ -106,6 +107,8 @@ HRESULT CWeapon::Ready_Components(void * pArg)
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
+
+	_uint iNextLevelIndex = CGameInstance::Get_Instance()->Get_NextLevelIndex();
 
 	/* For.Com_Model*/
 	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_STATIC, m_WeaponDesc.pModelPrototypeId, (CComponent**)&m_pModelCom)))

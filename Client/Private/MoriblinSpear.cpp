@@ -42,7 +42,7 @@ HRESULT CMoriblinSpear::Initialize(void * pArg)
 	if (FAILED(Ready_Parts()))
 		return E_FAIL;
 
-	m_fRadius = .5f;
+	m_fRadius = .25f;
 	m_fAggroRadius = 2.f;
 	m_fPatrolRadius = 2.f;
 	m_fAttackRadius = 2.f;
@@ -211,8 +211,10 @@ HRESULT CMoriblinSpear::Ready_Components(void * pArg)
 	ZeroMemory(&NavDesc, sizeof(CNavigation::NAVDESC));
 	XMStoreFloat3(&NavDesc.vInitialPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
 
+	_uint iLevelIndex = CGameInstance::Get_Instance()->Get_NextLevelIndex();
+
 	/* For.Com_Navigation */
-	if (FAILED(__super::Add_Components(TEXT("Com_Navigation"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation_Field"), (CComponent**)&m_pNavigationCom, &NavDesc)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Navigation"), iLevelIndex, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationCom, &NavDesc)))
 		return E_FAIL;
 
 	return S_OK;

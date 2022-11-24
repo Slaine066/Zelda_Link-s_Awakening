@@ -9,6 +9,29 @@ BEGIN(Client)
 class CBossblinState
 {
 public:
+	enum STATETYPE
+	{
+		STATETYPE_START,
+		STATETYPE_MAIN,
+		STATETYPE_END,
+		STATETYPE_DEFAULT
+	};
+
+	enum STATE_ID
+	{
+		STATE_IDLE,
+		STATE_MOVE,
+		STATE_BREAK,
+		STATE_ATTACK_TACKLE,
+		STATE_ATTACK_SPEAR,
+		STATE_HIT,
+		STATE_GUARD,
+		STATE_DOWN,
+		STATE_DIE,
+		STATE_END,
+	};
+
+public:
 	virtual ~CBossblinState() {};
 	virtual CBossblinState* AI_Behavior(CBossblin* pBossblin) { return nullptr; };
 	virtual CBossblinState* Tick(CBossblin* pBossblin, _float fTimeDelta) { return nullptr; };
@@ -28,6 +51,11 @@ public:
 		pNewState->Enter(pBossblin);
 		return pNewState;
 	}
+
+public:
+	STATE_ID Get_StateId() { return m_eStateId; }
+	STATETYPE Get_StateType() { return m_eStateType; }
+	_bool Has_Aggro() { return m_pTarget; }
 
 protected:
 	virtual void Find_Target(CBossblin * pBossblin, _bool bHasAggro = false)
@@ -52,7 +80,21 @@ protected:
 		}
 	}
 
+	_bool Is_InAttackRadius(CBossblin * pBossblin)
+	{
+		if (!m_pTarget)
+			return false;
+
+		_float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_pTarget->Get_Position()) - XMLoadFloat3(&pBossblin->Get_Position())));
+		if (fDistance <= pBossblin->Get_AttackRadius())
+			return true;
+		else
+			return false;
+	}
+
 protected:
+	STATETYPE m_eStateType = STATETYPE_DEFAULT;
+	STATE_ID m_eStateId = STATE_END;
 	_bool m_bIsAnimationFinished = false;
 	class CPlayer* m_pTarget = nullptr;		/* If TRUE, has Aggro. */
 };

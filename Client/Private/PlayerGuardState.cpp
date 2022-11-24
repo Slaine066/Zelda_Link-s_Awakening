@@ -7,6 +7,8 @@
 #include "PlayerIdleState.h"
 #include "PlayerGuardMoveState.h"
 
+using namespace Player;
+
 CGuardState::CGuardState(STATETYPE eStateType)
 {
 	m_eStateType = eStateType;
@@ -74,7 +76,7 @@ CPlayerState * CGuardState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 		case STATETYPE_START:
 			return new CGuardState(STATETYPE_MAIN);
 			break;
-		case STATE_END:
+		case STATETYPE_END:
 			return new CIdleState();
 			break;
 		}
@@ -95,7 +97,7 @@ void CGuardState::Enter(CPlayer * pPlayer)
 	case STATETYPE_MAIN:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SHIELD_LOOP);
 		break;
-	case STATE_END:
+	case STATETYPE_END:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SHIELD_END);
 		break;
 	}

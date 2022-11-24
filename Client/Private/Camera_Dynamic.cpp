@@ -96,7 +96,7 @@ CCamera_Dynamic * CCamera_Dynamic::Create(ID3D11Device* pDevice, ID3D11DeviceCon
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		ERR_MSG(TEXT("Failed to Created : CCamera_Dynamic"));
+		ERR_MSG(TEXT("Failed to Create: CCamera_Dynamic"));
 		Safe_Release(pInstance);
 	}
 
@@ -109,7 +109,7 @@ CGameObject * CCamera_Dynamic::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		ERR_MSG(TEXT("Failed to Cloned : CCamera_Dynamic"));
+		ERR_MSG(TEXT("Failed to Clone: CCamera_Dynamic"));
 		Safe_Release(pInstance);
 	}
 

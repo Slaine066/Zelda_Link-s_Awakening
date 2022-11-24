@@ -22,6 +22,8 @@ HRESULT CPlayer::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	m_fRadius = 0.15f;
+
 	m_tStats.m_fMaxHp = 4;
 	m_tStats.m_fCurrentHp = m_tStats.m_fMaxHp;
 	m_tStats.m_fAttackPower = 1;
@@ -50,8 +52,10 @@ _uint CPlayer::Tick(_float fTimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, this);
 
+	HandleInvincibility(fTimeDelta);
+
 	HandleInput();
-	TickState(fTimeDelta);				
+	TickState(fTimeDelta);		
 
 	return OBJ_NOEVENT;
 }
@@ -95,11 +99,13 @@ HRESULT CPlayer::Render()
 
 _float CPlayer::Take_Damage(float fDamage, void * DamageType, CGameObject * DamageCauser)
 {
-	if (fDamage > 0.f)
+	if (fDamage > 0.f && !m_bIsInvincible)
 	{
 		m_pModelCom->Reset_CurrentAnimation();
 		CPlayerState* pState = new CHitState(DamageCauser->Get_Position());
 		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
+
+		m_bIsInvincible = true;
 	}
 
 	return 0.f;
@@ -134,8 +140,8 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 	CCollider::COLLIDERDESC	ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_INPUT;
-	ColliderDesc.vScale = _float3(.8f, 1.3f, .8f);
-	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
+	ColliderDesc.vScale = _float3(.8f, 1.4f, .8f);
+	ColliderDesc.vPosition = _float3(0.f, 0.75f, 0.f);
 	ColliderDesc.m_bIsAttachedToBone = false;
 
 	m_vCollidersCom.resize(2); // Numbers of Colliders needed for this Object
@@ -160,8 +166,10 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 	ZeroMemory(&NavDesc, sizeof(CNavigation::NAVDESC));
 	XMStoreFloat3(&NavDesc.vInitialPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
 	
+	_uint iLevelIndex = CGameInstance::Get_Instance()->Get_NextLevelIndex();
+
 	/* For.Com_Navigation */
-	if (FAILED(__super::Add_Components(TEXT("Com_Navigation"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation_Field"), (CComponent**)&m_pNavigationCom, &NavDesc)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Navigation"), iLevelIndex, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationCom, &NavDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -270,6 +278,20 @@ void CPlayer::LateTickState(_float fTimeDelta)
 	CPlayerState* pNewState = m_pPlayerState->LateTick(this, fTimeDelta);
 	if (pNewState)
 		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pNewState);
+}
+
+void CPlayer::HandleInvincibility(_float fTimeDelta)
+{
+	if (m_bIsInvincible)
+	{
+		m_fInvincibleTimer += fTimeDelta;
+
+		if (m_fInvincibleTimer > 1.f) /* 1 second of Invincibility every time you get hit. */
+		{
+			m_bIsInvincible = false;
+			m_fInvincibleTimer = 0.f;
+		}
+	}
 }
 
 CPlayer* CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

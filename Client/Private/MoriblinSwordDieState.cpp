@@ -82,5 +82,5 @@ void CDieState::BounceBack(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 	_vector BounceDir = vPosition - vTargetPosition;
 	BounceDir = XMVector4Normalize(BounceDir);
 
-	pMoriblinSword->Get_Transform()->Move_Direction(BounceDir, fTimeDelta, pMoriblinSword->Get_Navigation());
+	pMoriblinSword->Get_Transform()->Move_Direction(BounceDir, fTimeDelta, pMoriblinSword->Get_Navigation(), pMoriblinSword->Get_Radius());
 }

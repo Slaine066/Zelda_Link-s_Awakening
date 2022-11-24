@@ -65,23 +65,23 @@ HRESULT CTerrain::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNorTex"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_FIELD, TEXT("Prototype_Component_Shader_VtxNorTex"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom[TYPE_DIFFUSE])))
+	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_FIELD, TEXT("Prototype_Component_Texture_Terrain"), (CComponent**)&m_pTextureCom[TYPE_DIFFUSE])))
 		return E_FAIL;
 
 	/* For.Com_Brush */
-	if (FAILED(__super::Add_Components(TEXT("Com_Brush"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Brush"), (CComponent**)&m_pTextureCom[TYPE_BRUSH])))
+	if (FAILED(__super::Add_Components(TEXT("Com_Brush"), LEVEL_FIELD, TEXT("Prototype_Component_Texture_Brush"), (CComponent**)&m_pTextureCom[TYPE_BRUSH])))
 		return E_FAIL;
 
 	/* For.Com_Filter */
-	if (FAILED(__super::Add_Components(TEXT("Com_Filter"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Filter"), (CComponent**)&m_pTextureCom[TYPE_FILTER])))
+	if (FAILED(__super::Add_Components(TEXT("Com_Filter"), LEVEL_FIELD, TEXT("Prototype_Component_Texture_Filter"), (CComponent**)&m_pTextureCom[TYPE_FILTER])))
 		return E_FAIL;	
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), (CComponent**)&m_pVIBufferCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), LEVEL_FIELD, TEXT("Prototype_Component_VIBuffer_Terrain"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	return S_OK;

@@ -18,7 +18,6 @@ public:
 
 private:
 	void Move(CMoriblinSword* pMoriblinSword, _float fTimeDelta);
-	void BounceBack(CMoriblinSword * pMoriblinSpear, _float fTimeDelta);
 
 private:
 	_bool m_bIsHit = false;

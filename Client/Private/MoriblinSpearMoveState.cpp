@@ -92,7 +92,7 @@ void CMoveState::Patrol(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
 {
 	_vector vPatrolPosition = XMVectorSet(m_vPatrolPosition.x, pMoriblinSpear->Get_Position().y, m_vPatrolPosition.z, 1.f);
 	pMoriblinSpear->Get_Transform()->LookAt(vPatrolPosition);
-	m_bIsArrived = pMoriblinSpear->Get_Transform()->Go_TargetPosition(fTimeDelta, m_vPatrolPosition, 0.f, pMoriblinSpear->Get_Navigation());
+	m_bIsArrived = pMoriblinSpear->Get_Transform()->Go_TargetPosition(fTimeDelta, m_vPatrolPosition, 0.f, pMoriblinSpear->Get_Navigation(), pMoriblinSpear->Get_Radius());
 }
 
 void CMoveState::Follow_Target(CMoriblinSpear * pMoriblinSpear, _float fTimeDelta)
@@ -106,5 +106,5 @@ void CMoveState::Follow_Target(CMoriblinSpear * pMoriblinSpear, _float fTimeDelt
 	_float3 vPosition;
 	XMStoreFloat3(&vPosition, vTargetPosition);
 
-	pMoriblinSpear->Get_Transform()->Move_Straight(fTimeDelta, pMoriblinSpear->Get_Navigation());
+	pMoriblinSpear->Get_Transform()->Move_Straight(fTimeDelta, pMoriblinSpear->Get_Navigation(), pMoriblinSpear->Get_Radius());
 }

@@ -6,6 +6,8 @@
 #include "PlayerMoveState.h"
 #include "PlayerGuardState.h"
 
+using namespace Player;
+
 CIdleState::CIdleState()
 {
 }

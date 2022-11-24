@@ -1,16 +1,15 @@
 #include "stdafx.h"
 
-#include "Level_GamePlay.h"
+#include "Level_MoriblinCave.h"
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
-#include "TriggerBox.h"
 
-CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_MoriblinCave::CLevel_MoriblinCave(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
 }
 
-HRESULT CLevel_GamePlay::Initialize()
+HRESULT CLevel_MoriblinCave::Initialize()
 {
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
@@ -25,42 +24,42 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 
 	/* For.Com_Navigation */
-	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation_Field"), (CComponent**)&m_pNavigationMesh)))
+	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationMesh)))
 		return E_FAIL;
 
 	/*if (FAILED(Ready_Layer_UI()))
-		return E_FAIL;*/
+	return E_FAIL;*/
 
 	/*if (FAILED(Ready_Layer_Effect()))
-		return E_FAIL;*/
+	return E_FAIL;*/
 
 	return S_OK;
 }
 
-void CLevel_GamePlay::Tick(_float fTimeDelta)
+void CLevel_MoriblinCave::Tick(_float fTimeDelta)
 {
-	__super::Tick(fTimeDelta);	
+	__super::Tick(fTimeDelta);
 }
 
-void CLevel_GamePlay::Late_Tick(_float fTimeDelta)
+void CLevel_MoriblinCave::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
-	SetWindowText(g_hWnd, TEXT("Gameplay Level."));
+	SetWindowText(g_hWnd, TEXT("MoriblinCave Level."));
 }
 
-HRESULT CLevel_GamePlay::Load_From_File()
+HRESULT CLevel_MoriblinCave::Load_From_File()
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
-	HANDLE hFile = CreateFile(TEXT("../../Data/MapData/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE hFile = CreateFile(TEXT("../../Data/MapData/MoriblinCave.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (hFile == 0)
 		return E_FAIL;
 
 	// First read to get Objects count, so we can resize the vector.
 	_ulong dwByte = 0;
- 	_uint iCounter = 0;
+	_uint iCounter = 0;
 
 	CActor::MODELDESC tModelDesc;
 	ZeroMemory(&tModelDesc, sizeof(CActor::MODELDESC));
@@ -77,7 +76,7 @@ HRESULT CLevel_GamePlay::Load_From_File()
 	m_vInstancedObjects.resize(iCounter);
 
 	// Second read to write in specific vector index (since we now the number of Objects and the vector is correctly resized).
-	hFile = CreateFile(TEXT("../../Data/MapData/Field.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	hFile = CreateFile(TEXT("../../Data/MapData/MoriblinCave.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (hFile == 0)
 		return E_FAIL;
 
@@ -85,21 +84,27 @@ HRESULT CLevel_GamePlay::Load_From_File()
 	{
 		ReadFile(hFile, &m_vInstancedObjects[i], sizeof(CActor::MODELDESC), nullptr, nullptr);
 
-		if (wcsstr(m_vInstancedObjects[i].wcObjName, TEXT("Field")))
-			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_GAMEPLAY, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+		if (wcsstr(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinCave")))
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Link")))
-			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Player"), LEVEL_GAMEPLAY, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Player"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSword")))
-			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSword"), LEVEL_GAMEPLAY, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSword"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSpear")))
-			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSpear"), LEVEL_GAMEPLAY, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSpear"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Bossblin")))
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Bossblin"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("CaveRock")))
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Treasure")))
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_STATIC, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 	}
 
 	Safe_Release(pGameInstance);
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
+HRESULT CLevel_MoriblinCave::Ready_Layer_UI(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
@@ -111,7 +116,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Lights()
+HRESULT CLevel_MoriblinCave::Ready_Lights()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -124,7 +129,7 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);	
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
@@ -147,7 +152,7 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
+HRESULT CLevel_MoriblinCave::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
@@ -168,7 +173,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Dynamic"), TEXT("Prototype_GameObject_Camera_Dynamic"), LEVEL_GAMEPLAY, pLayerTag, &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Dynamic"), TEXT("Prototype_GameObject_Camera_Dynamic"), LEVEL_MORIBLINCAVE, pLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -176,7 +181,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar * pLayerTag)
+HRESULT CLevel_MoriblinCave::Ready_Layer_Effect(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
@@ -184,63 +189,24 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _tchar * pLayerTag)
 	// ..
 
 	Safe_Release(pGameInstance);
-	
+
 	return S_OK;
 }
 
-//HRESULT CLevel_GamePlay::Ready_NavigationMesh()
-//{
-//	HANDLE hFile = CreateFile(TEXT("../../Data/NavigationData/Field.dat"), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-//	if (!hFile)
-//		return E_FAIL;
-//
-//	_float3	vPoints[3];
-//	_ulong dwByte = 0;
-//
-//	/* Create Cells. */
-//	ZeroMemory(vPoints, sizeof(_float3) * 3);
-//	vPoints[0] = _float3(0.f, 0.f, 5.f);
-//	vPoints[1] = _float3(5.f, 0.f, 0.f);
-//	vPoints[2] = _float3(0.f, 0.f, 0.f);
-//	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
-//
-//	ZeroMemory(vPoints, sizeof(_float3) * 3);
-//	vPoints[0] = _float3(0.f, 0.f, 5.f);
-//	vPoints[1] = _float3(5.f, 0.f, 5.f);
-//	vPoints[2] = _float3(5.f, 0.f, 0.f);
-//	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
-//
-//	ZeroMemory(vPoints, sizeof(_float3) * 3);
-//	vPoints[0] = _float3(0.f, 0.f, 10.f);
-//	vPoints[1] = _float3(5.f, 0.f, 5.f);
-//	vPoints[2] = _float3(0.f, 0.f, 5.f);
-//	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
-//
-//	ZeroMemory(vPoints, sizeof(_float3) * 3);
-//	vPoints[0] = _float3(5.f, 0.f, 5.f);
-//	vPoints[1] = _float3(10.f, 0.f, 0.f);
-//	vPoints[2] = _float3(5.f, 0.f, 0.f);
-//	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
-//
-//	CloseHandle(hFile);
-//
-//	return S_OK;
-//}
-
-CLevel_GamePlay* CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_MoriblinCave* CLevel_MoriblinCave::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CLevel_GamePlay* pInstance = new CLevel_GamePlay(pDevice, pContext);
+	CLevel_MoriblinCave* pInstance = new CLevel_MoriblinCave(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		ERR_MSG(TEXT("Failed to Created : CLevel_GamePlay"));
+		ERR_MSG(TEXT("Failed to Create: CLevel_MoriblinCave"));
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CLevel_GamePlay::Free()
+void CLevel_MoriblinCave::Free()
 {
 	__super::Free();
 }

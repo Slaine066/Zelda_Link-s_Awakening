@@ -5,6 +5,8 @@
 #include "PlayerGuardState.h"
 #include "PlayerAttackState.h"
 
+using namespace Player;
+
 CGuardMoveState::CGuardMoveState(DIRID eDir) : m_eDirection(eDir)
 {
 }
@@ -97,5 +99,5 @@ void CGuardMoveState::Move(CPlayer * pPlayer, _float fTimeDelta)
 		break;
 	}
 
-	pPlayer->Get_Transform()->Move_Straight(fTimeDelta, pPlayer->Get_Navigation());
+	pPlayer->Get_Transform()->Move_Straight(fTimeDelta, pPlayer->Get_Navigation(), pPlayer->Get_Radius());
 }

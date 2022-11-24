@@ -28,7 +28,7 @@ HRESULT CStaticObject::Initialize(void * pArg)
 
 _uint CStaticObject::Tick(_float fTimeDelta)
 {
-	return OBJ_NOEVENT;
+	return S_OK;
 }
 
 void CStaticObject::Late_Tick(_float fTimeDelta)
@@ -81,8 +81,10 @@ HRESULT CStaticObject::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+	_uint iLevelIndex = Compute_LevelIndex(m_tModelDesc.wcObjName);
+
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_GAMEPLAY, m_tModelDesc.wcModelPrototypeId, (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Model"), iLevelIndex, m_tModelDesc.wcModelPrototypeId, (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -107,6 +109,14 @@ HRESULT CStaticObject::SetUp_ShaderResources()
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
+}
+
+_uint CStaticObject::Compute_LevelIndex(_tchar * pObjName)
+{
+	if (!wcscmp(pObjName, TEXT("Treasure")))
+		return 0;
+
+	return CGameInstance::Get_Instance()->Get_NextLevelIndex();
 }
 
 CStaticObject* CStaticObject::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

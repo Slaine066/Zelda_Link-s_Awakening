@@ -19,14 +19,14 @@ HRESULT CLevel_Logo::Initialize()
 
 void CLevel_Logo::Tick(_float fTimeDelta)
 {
-	__super::Tick(fTimeDelta);	
+	__super::Tick(fTimeDelta);
 
-	if (GetKeyState(VK_SPACE) & 0x8000)
+	if (GetKeyState(VK_RETURN) & 0x8000)
 	{
 		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 		Safe_AddRef(pGameInstance);
 
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
+		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, /*LEVEL_FIELD*/LEVEL_MORIBLINCAVE))))
 			return;
 
 		Safe_Release(pGameInstance);
@@ -46,7 +46,7 @@ CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		ERR_MSG(TEXT("Failed to Created : CLevel_Logo"));
+		ERR_MSG(TEXT("Failed to Create: CLevel_Logo"));
 		Safe_Release(pInstance);
 	}
 

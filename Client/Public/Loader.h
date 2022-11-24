@@ -24,6 +24,8 @@ public:
 public:
 	HRESULT Loading_ForStaticLevel();
 	HRESULT Loading_ForGamePlayLevel();
+	HRESULT Loading_ForMoriblinCave();
+	HRESULT Loading_ForBottleGrotto();
 
 private:
 	LEVEL					m_eNextLevel = LEVEL_END;

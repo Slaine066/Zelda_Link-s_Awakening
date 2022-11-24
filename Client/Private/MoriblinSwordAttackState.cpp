@@ -21,15 +21,7 @@ CMoriblinSwordState * CAttackState::AI_Behavior(CMoriblinSword * pMoriblinSword)
 
 CMoriblinSwordState * CAttackState::Tick(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 {
-	if (m_bIsHit)
-		BounceBack(pMoriblinSword, fTimeDelta);
-	else
-		Move(pMoriblinSword, fTimeDelta);
-
-	if (m_bIsHit && m_fPushBackTimer < 0.6f)
-		m_fPushBackTimer += fTimeDelta;
-	else
-		m_bIsHit = false;
+	Move(pMoriblinSword, fTimeDelta);
 
 	pMoriblinSword->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSword->Is_AnimationLoop(pMoriblinSword->Get_Model()->Get_CurrentAnimIndex()));
 	pMoriblinSword->Sync_WithNavigationHeight();
@@ -58,7 +50,7 @@ CMoriblinSwordState * CAttackState::LateTick(CMoriblinSword * pMoriblinSword, _f
 					pPlayer->Get_State()->Get_StateId() == CPlayerState::STATE_ID::STATE_GUARD_MOVE)
 				{
 					pPlayer->Get_Model()->Reset_CurrentAnimation();
-					CPlayerState* pGuardState = new CGuardState(CPlayerState::STATETYPE::STATETYPE_START);
+					CPlayerState* pGuardState = new Player::CGuardState(CPlayerState::STATETYPE::STATETYPE_START);
 					pPlayer->Set_State(pPlayer->Get_State()->ChangeState(pPlayer, pPlayer->Get_State(), pGuardState));
 
 					pMoriblinSword->Get_Model()->Reset_CurrentAnimation();
@@ -101,16 +93,5 @@ void CAttackState::Move(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 	XMStoreFloat3(&vPosition, vTargetPosition);
 
 	_float fAttackRadius = pMoriblinSword->Get_AttackRadius();
-	pMoriblinSword->Get_Transform()->Go_TargetPosition(fTimeDelta, vPosition, fAttackRadius, pMoriblinSword->Get_Navigation());
-}
-
-void CAttackState::BounceBack(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
-{
-	_vector vTargetPosition = m_pTarget->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
-	_vector vPosition = pMoriblinSword->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
-
-	_vector BounceDir = vPosition - vTargetPosition;
-	BounceDir = XMVector4Normalize(BounceDir);
-
-	pMoriblinSword->Get_Transform()->Move_Direction(BounceDir, fTimeDelta, pMoriblinSword->Get_Navigation());
+	pMoriblinSword->Get_Transform()->Go_TargetPosition(fTimeDelta, vPosition, fAttackRadius, pMoriblinSword->Get_Navigation(), pMoriblinSword->Get_Radius());
 }

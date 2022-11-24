@@ -22,9 +22,6 @@
     <Filter Include="01.Levels\01.Logo">
       <UniqueIdentifier>{5267b1be-398c-4f1f-8043-c7305aa0e1d2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\02.GamePlay">
-      <UniqueIdentifier>{35c5c360-0a21-4524-b3bd-78fd1a809214}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97.ShaderFiles">
       <UniqueIdentifier>{ffd39a2b-4897-4694-bc2f-d9c96bf2d061}</UniqueIdentifier>
     </Filter>
@@ -94,17 +91,29 @@
     <Filter Include="02.GameObjects\00.Actor\01.StaticObject">
       <UniqueIdentifier>{d5de4b50-4b93-48e2-bcb8-755b793ba4ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.Actor\02.Projectile">
-      <UniqueIdentifier>{f279f72b-34e4-4814-8a6c-90323861b232}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\00.Actor\03.Weapon">
-      <UniqueIdentifier>{a0bc7f6a-4750-4359-8559-2c2971c88d9a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState">
       <UniqueIdentifier>{4bf38a38-8a1f-4ca3-b48a-05717acfb805}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States">
       <UniqueIdentifier>{1bfb5630-4ddd-4c4e-9251-d2330f2b14ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\02.Field">
+      <UniqueIdentifier>{35c5c360-0a21-4524-b3bd-78fd1a809214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\03.MoriblinCave">
+      <UniqueIdentifier>{bd0d530c-06eb-4ae5-a3ac-d3d29f7de258}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\04.BottleGrotto">
+      <UniqueIdentifier>{2f7c194d-db72-4caa-96da-091d58297368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\03.Projectile">
+      <UniqueIdentifier>{f279f72b-34e4-4814-8a6c-90323861b232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\04.Weapon">
+      <UniqueIdentifier>{a0bc7f6a-4750-4359-8559-2c2971c88d9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\02.InteractableObject">
+      <UniqueIdentifier>{e9429ddd-49ea-471f-b83a-3dbda1a24f8a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -128,9 +137,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Client_Defines.h">
       <Filter>99.Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_GamePlay.h">
-      <Filter>01.Levels\02.GamePlay</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>01.Levels\00.Loader</Filter>
@@ -223,10 +229,10 @@
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Projectile.h">
-      <Filter>02.GameObjects\00.Actor\02.Projectile</Filter>
+      <Filter>02.GameObjects\00.Actor\03.Projectile</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Weapon.h">
-      <Filter>02.GameObjects\00.Actor\03.Weapon</Filter>
+      <Filter>02.GameObjects\00.Actor\04.Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\public\MoriblinSwordAggroState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
@@ -264,6 +270,33 @@
     <ClInclude Include="..\public\MoriblinSwordStaggerState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Field.h">
+      <Filter>01.Levels\02.Field</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_MoriblinCave.h">
+      <Filter>01.Levels\03.MoriblinCave</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_BottleGrotto.h">
+      <Filter>01.Levels\04.BottleGrotto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossblinHitState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossblinGuardState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossblinTackleState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossblinBreakState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossblinDownState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\InteractableObject.h">
+      <Filter>02.GameObjects\00.Actor\02.InteractableObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -274,9 +307,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\MainApp.cpp">
       <Filter>00.MainApp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_GamePlay.cpp">
-      <Filter>01.Levels\02.GamePlay</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Loading.cpp">
       <Filter>01.Levels\00.Loader</Filter>
@@ -357,10 +387,10 @@
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Projectile.cpp">
-      <Filter>02.GameObjects\00.Actor\02.Projectile</Filter>
+      <Filter>02.GameObjects\00.Actor\03.Projectile</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Weapon.cpp">
-      <Filter>02.GameObjects\00.Actor\03.Weapon</Filter>
+      <Filter>02.GameObjects\00.Actor\04.Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\private\MoriblinSwordAggroState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
@@ -394,6 +424,33 @@
     </ClCompile>
     <ClCompile Include="..\private\MoriblinSwordStaggerState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Field.cpp">
+      <Filter>01.Levels\02.Field</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_MoriblinCave.cpp">
+      <Filter>01.Levels\03.MoriblinCave</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_BottleGrotto.cpp">
+      <Filter>01.Levels\04.BottleGrotto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossblinHitState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossblinGuardState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossblinTackleState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossblinBreakState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossblinDownState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\InteractableObject.cpp">
+      <Filter>02.GameObjects\00.Actor\02.InteractableObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
