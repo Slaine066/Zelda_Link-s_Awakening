@@ -474,6 +474,9 @@ HRESULT CLoader::Loading_ForMoriblinCave()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_MoriblinCaveRock */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Model_CaveTile"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinCaveTile/CaveTile.fbx"))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_MoriblinCaveRock */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Model_CaveRock"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinCaveRock/CaveRock.fbx"))))
 		return E_FAIL;
 

@@ -21,10 +21,7 @@ public:
 	HRESULT Ready_Layer_UI(const _tchar* pLayerTag);
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag);
-
-	// Navigation Mesh Test
-	/* HRESULT Ready_NavigationMesh(); */
+	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag); 
 
 	vector<CActor::MODELDESC> m_vInstancedObjects;
 

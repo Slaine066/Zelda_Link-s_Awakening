@@ -16,9 +16,6 @@
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{6545733c-14dc-4cec-8e7c-3e5b0ad75c3f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\00.Loader">
-      <UniqueIdentifier>{d34b4313-2969-4649-ac63-5be3b1783f75}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\01.Logo">
       <UniqueIdentifier>{5267b1be-398c-4f1f-8043-c7305aa0e1d2}</UniqueIdentifier>
     </Filter>
@@ -115,6 +112,12 @@
     <Filter Include="02.GameObjects\00.Actor\02.InteractableObject">
       <UniqueIdentifier>{e9429ddd-49ea-471f-b83a-3dbda1a24f8a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\00.Loading">
+      <UniqueIdentifier>{d34b4313-2969-4649-ac63-5be3b1783f75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\00.Loading\Loader">
+      <UniqueIdentifier>{5f5b0b84-3f62-41a7-9873-7f921731484d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -139,10 +142,7 @@
       <Filter>99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
-      <Filter>01.Levels\00.Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Loader.h">
-      <Filter>01.Levels\00.Loader</Filter>
+      <Filter>01.Levels\00.Loading</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Logo.h">
       <Filter>01.Levels\01.Logo</Filter>
@@ -297,6 +297,9 @@
     <ClInclude Include="..\public\InteractableObject.h">
       <Filter>02.GameObjects\00.Actor\02.InteractableObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>01.Levels\00.Loading\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -309,10 +312,7 @@
       <Filter>00.MainApp</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Loading.cpp">
-      <Filter>01.Levels\00.Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Loader.cpp">
-      <Filter>01.Levels\00.Loader</Filter>
+      <Filter>01.Levels\00.Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Logo.cpp">
       <Filter>01.Levels\01.Logo</Filter>
@@ -451,6 +451,9 @@
     </ClCompile>
     <ClCompile Include="..\private\InteractableObject.cpp">
       <Filter>02.GameObjects\00.Actor\02.InteractableObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader.cpp">
+      <Filter>01.Levels\00.Loading\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
