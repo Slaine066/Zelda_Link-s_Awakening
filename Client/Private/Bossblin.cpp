@@ -33,7 +33,7 @@ HRESULT CBossblin::Initialize_Prototype()
 	m_tStats.m_fCurrentHp = m_tStats.m_fMaxHp;
 	m_tStats.m_fAttackPower = 1.f;
 	m_tStats.m_fWalkSpeed = .5f;
-	m_tStats.m_fRunSpeed = 1.f;
+	m_tStats.m_fRunSpeed = 1.4f;
 
 	return S_OK;
 }

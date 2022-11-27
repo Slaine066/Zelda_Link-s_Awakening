@@ -67,7 +67,7 @@ void CAttackState::Create_Projectile(CBossblin * pBossblin)
 	tProjectileDesc.pOwner = pBossblin;
 	tProjectileDesc.eProjectileType = CProjectile::PROJECTILE_TYPE::PROJECTILE_BOSSBLINSPEAR;
 	tProjectileDesc.bIsPlayerProjectile = false;
-	tProjectileDesc.fProjectileSpeed = 1.6f;
+	tProjectileDesc.fProjectileSpeed = 2.2f;
 	tProjectileDesc.pModelPrototypeId = TEXT("Prototype_Component_Model_BossblinSpear");
 	tProjectileDesc.vTargetPosition = m_pTarget->Get_Position();
 

@@ -64,7 +64,7 @@ void CAttackState::Create_Projectile(CMoriblinSpear * pMoriblinSpear)
 	tProjectileDesc.pOwner = pMoriblinSpear;
 	tProjectileDesc.eProjectileType = CProjectile::PROJECTILE_TYPE::PROJECTILE_MORIBLINSPEAR;
 	tProjectileDesc.bIsPlayerProjectile = false;
-	tProjectileDesc.fProjectileSpeed = 1.6f;
+	tProjectileDesc.fProjectileSpeed = 2.2f;
 	tProjectileDesc.pModelPrototypeId = TEXT("Prototype_Component_Model_Spear");
 	tProjectileDesc.vTargetPosition = m_pTarget->Get_Position();
 
