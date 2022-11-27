@@ -96,6 +96,9 @@ _bool CMesh::Picking(_float3& OutPos)
 
 				if (pImGuiManager->Get_IsNavigationActive())
 					pImGuiManager->Add_NavigationPoint(OutPos);
+				else if (pImGuiManager->Get_IsTriggerActive())
+					pImGuiManager->Set_TriggerPosition(OutPos);
+
 				RELEASE_INSTANCE(CImGuiManager);
 				RELEASE_INSTANCE(CGameInstance);
 				return true;

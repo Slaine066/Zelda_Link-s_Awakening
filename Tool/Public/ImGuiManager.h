@@ -11,6 +11,13 @@ class CImGuiManager final : public CBase
 {
 	DECLARE_SINGLETON(CImGuiManager)
 
+	typedef struct tagTriggerBoxDescription
+	{
+		char pTriggerName[MAX_PATH];
+		_float4x4 mWorldMatrix;
+		BoundingBox* pTriggerBox;
+	} TRIGGERBOXDESC;
+
 public:
 	enum TRANSFORM_TYPE { TRANS_TRANSLATION, TRANS_ROTATION, TRANS_SCALE };
 
@@ -31,6 +38,7 @@ private:
 	void DrawEditor(_float fTimeDelta);
 	void DrawOverlayWindow();
 	void DrawNavigationMesh();
+	void DrawTriggerBox();
 
 	void DrawMapTool(_float fTimeDelta);
 	void DrawUITool();
@@ -61,6 +69,11 @@ public:
 	_bool Get_IsNavigationActive() { return m_bIsNavigationActive; }
 	void Add_NavigationPoint(_float3 vPoint);
 	_bool Check_ExistingPoints(_float3 vNewPoint, OUT _float3& vExistingPoint, _float fDistance = .3f);
+
+	// Trigger
+	_bool Get_IsTriggerActive() { return m_bIsTriggerActive; }
+	void Set_TriggerPosition(_float3 vPosition);
+	void Add_Trigger(const char* pTriggerName);
 
 private:
 	_uint m_iFramesPerSecond = 0;
@@ -103,6 +116,15 @@ private:
 	_uint m_iCellIndex = 0;
 	vector<_float3x3> m_vNavigationCells;
 	vector<_float3> m_vCurrentCell;
+
+	// Trigger Box
+	_bool m_vShowTriggerBox = false;
+	_bool m_bIsTriggerActive = false;
+	_bool m_bCurrentActive = false;
+	_float3 m_vCurrentTrigger;				// "bool" indicating whether or not a Position for the next Trigger Box has been selected.
+	vector<TRIGGERBOXDESC> m_vTriggers;		// Position for the next Trigger Box.
+	TRIGGERBOXDESC* m_tSelectedTrigger;
+	_float m_fTriggerBoxScale = 1.f;
 	
 	ID3D11InputLayout* m_pInputLayout = nullptr;
 	PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;

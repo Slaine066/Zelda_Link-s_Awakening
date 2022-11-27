@@ -140,6 +140,9 @@ void CImGuiManager::Render(_float fTimeDelta)
 	if (m_bShowNavigationMesh)
 		DrawNavigationMesh();
 
+	if (m_vShowTriggerBox)
+		DrawTriggerBox();
+
 	ImGui::EndFrame();
 
 	// Render
@@ -245,6 +248,38 @@ void CImGuiManager::DrawNavigationMesh()
 
 		DX::DrawTriangle(m_pBatch, vPointA, vPointB, vPointC, vColor);
 	}
+
+	m_pBatch->End();
+}
+
+void CImGuiManager::DrawTriggerBox()
+{
+	if (m_vTriggers.empty() && !m_bCurrentActive)
+		return;
+
+	m_pBatch->Begin();
+	m_pContext->IASetInputLayout(m_pInputLayout);
+	m_pEffect->SetWorld(XMMatrixIdentity());
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	m_pEffect->SetView(pGameInstance->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+	m_pEffect->SetProjection(pGameInstance->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+	RELEASE_INSTANCE(CGameInstance);
+
+	m_pEffect->Apply(m_pContext);
+
+	// Render Blue Cubes
+	_vector	vColor = XMVectorSet(.39f, .58f, .92f, 1.f);
+
+	if (m_bCurrentActive)
+	{
+		_float3 vTriggerCenter = m_vCurrentTrigger;
+		vTriggerCenter.y += .02f;
+		DX::DrawRing(m_pBatch, XMLoadFloat3(&vTriggerCenter), XMVectorSet(.05f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 0.f, .05f, 0.f), vColor);
+	}
+	
+	for (auto& vTriggerBox : m_vTriggers)
+		DX::Draw(m_pBatch, *vTriggerBox.pTriggerBox, vColor);
 
 	m_pBatch->End();
 }
@@ -684,14 +719,15 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		ImGui::NewLine();
 	}
 	
+	// Navigation Mesh
 	if (ImGui::CollapsingHeader("Navigation Mesh"/*, TreeNodeFlags*/))
 	{
 		if (ImGui::Checkbox("Show Navigation Mesh", &m_bShowNavigationMesh))
 			m_bShowNavigationMesh != m_bShowNavigationMesh;
 		ImGui::NewLine();
 
-		if (ImGui::Button(m_bIsNavigationActive ? "End" : "Start", ImVec2(0, 24)))
-			m_bIsNavigationActive = m_bIsNavigationActive ? false : true;			
+		if (ImGui::Button(m_bIsNavigationActive ? "End Navigation" : "Start Navigation", ImVec2(0, 24)))
+			m_bIsNavigationActive = !m_bIsNavigationActive;			
 
 		if (ImGui::Button("Undo", ImVec2(0, 24)))
 		{
@@ -700,8 +736,81 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 			else if (!m_vNavigationCells.empty())
 				m_vNavigationCells.pop_back();
 		}
+		ImGui::NewLine();
 	}
 	
+	// Trigger Box
+	if (ImGui::CollapsingHeader("Trigger Box" /*, TreeNodeFlags*/))
+	{
+		if (ImGui::Checkbox("Show Trigger Box", &m_vShowTriggerBox))
+			m_vShowTriggerBox != m_vShowTriggerBox;
+		ImGui::NewLine();
+
+		if (ImGui::Button(m_bIsTriggerActive ? "End Trigger" : "Start Trigger", ImVec2(0, 24)))
+			m_bIsTriggerActive = !m_bIsTriggerActive;
+
+		if (ImGui::Button("Create Trigger", ImVec2(0, 24)))
+			ImGui::OpenPopup("Add Trigger Box");
+		ImGui::NewLine();
+
+		ImGui::Separator();
+
+		// Trigger Box List
+		ImGui::Text("Created Trigger Boxes");
+		if (ImGui::BeginListBox("##Trigger Box List", ImVec2(-FLT_MIN, 4 * ImGui::GetTextLineHeightWithSpacing())))
+		{
+			for (auto& tTrigger : m_vTriggers)
+			{
+				if (ImGui::Selectable(tTrigger.pTriggerName, m_tSelectedTrigger == &tTrigger))
+					m_tSelectedTrigger = &tTrigger;
+
+				if (m_tSelectedTrigger == &tTrigger)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+
+		// Trigger Scale Drag
+		ImGui::NewLine();
+		ImGui::Text("Scale:");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60);
+		if (ImGui::DragFloat("##TriggerBoxScale", &m_fTriggerBoxScale, 0.005f, 0.f, 0.f, "%.03f"))
+		{
+			if (m_tSelectedTrigger)
+			{
+				_float3 vTriggerPosition = (_float3)m_tSelectedTrigger->mWorldMatrix.m[3];
+
+				// Firstly, Reset any Transformation 
+				_matrix WorldMatrixInverse = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_tSelectedTrigger->mWorldMatrix));
+				m_tSelectedTrigger->pTriggerBox->Transform(*m_tSelectedTrigger->pTriggerBox, WorldMatrixInverse);
+
+				_matrix TranslationMatrix = XMMatrixTranslation(vTriggerPosition.x, vTriggerPosition.y, vTriggerPosition.z);
+				_matrix ScaleMatrix = XMMatrixScaling(m_fTriggerBoxScale, m_fTriggerBoxScale, m_fTriggerBoxScale);
+
+				_matrix WorldMatrix = ScaleMatrix * TranslationMatrix;
+
+				// Then, apply the new Transformation
+				m_tSelectedTrigger->pTriggerBox->Transform(*m_tSelectedTrigger->pTriggerBox, WorldMatrix);
+				XMStoreFloat4x4(&m_tSelectedTrigger->mWorldMatrix, WorldMatrix);
+			}
+		}
+
+		ImGui::NewLine();
+		if (ImGui::Button("Delete Trigger", ImVec2(0, 24)))
+		{
+			for (auto& iter = m_vTriggers.begin(); iter != m_vTriggers.end(); iter++)
+			{
+				if (!strcmp(iter->pTriggerName, m_tSelectedTrigger->pTriggerName))
+				{
+					m_vTriggers.erase(iter);
+					m_tSelectedTrigger = nullptr;
+					break;
+				}
+			}
+		}
+	}
+
 	DrawMapModals();
 
 	ImGui::EndTabItem();
@@ -792,6 +901,29 @@ void CImGuiManager::DrawMapModals()
 			if (m_sCurrentLayer.empty())
 				m_sCurrentLayer = cLayer;
 
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SetItemDefaultFocus();
+		ImGui::EndPopup();
+	}
+
+	// Add Trigger Box Modal
+	ImGui::SetNextWindowPos(pCenter, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Center Window when appearing
+	if (ImGui::BeginPopupModal("Add Trigger Box", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::Text("Trigger Box Name");
+		static char cTriggerBox[MAX_PATH] = "";
+		ImGui::PushItemWidth(200);
+		ImGui::InputText("##AddTriggerBox", cTriggerBox, MAX_PATH);
+		ImGui::PopItemWidth();
+		ImGui::Separator();
+
+		if (ImGui::Button("OK", ImVec2(120, 0)))
+		{
+			Add_Trigger(cTriggerBox);
+
+			memset(cTriggerBox, 0, MAX_PATH);
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -1346,6 +1478,34 @@ _bool CImGuiManager::Check_ExistingPoints(_float3 vNewPoint, OUT _float3& vExist
 	
 	/* New Point does NOT refer to an already existing Point. */
 	return false;
+}
+
+void CImGuiManager::Set_TriggerPosition(_float3 vPosition)
+{
+	m_bCurrentActive = true;  
+	m_vCurrentTrigger = vPosition;
+}
+
+void CImGuiManager::Add_Trigger(const char* pTriggerName)
+{
+	_matrix	ScaleMatrix, TranslationMatrix;
+	ScaleMatrix = XMMatrixIdentity();
+	TranslationMatrix = XMMatrixTranslation(m_vCurrentTrigger.x, m_vCurrentTrigger.y, m_vCurrentTrigger.z);
+
+	_matrix WorldMatrix = ScaleMatrix * TranslationMatrix;
+
+	BoundingBox* pTrigger = new BoundingBox(_float3(0.f, 0.5f, 0.f), _float3(0.5f, 0.5f, 0.5f));
+	pTrigger->Transform(*pTrigger, WorldMatrix);
+
+	TRIGGERBOXDESC tTriggerBoxDesc;
+	ZeroMemory(&tTriggerBoxDesc, sizeof(TRIGGERBOXDESC));
+	strcpy_s((char*)tTriggerBoxDesc.pTriggerName, MAX_PATH, pTriggerName);
+	XMStoreFloat4x4(&tTriggerBoxDesc.mWorldMatrix, WorldMatrix);
+	tTriggerBoxDesc.pTriggerBox = pTrigger;
+
+	m_vTriggers.push_back(tTriggerBoxDesc);
+
+	m_bCurrentActive = false;
 }
 
 void CImGuiManager::Free()
