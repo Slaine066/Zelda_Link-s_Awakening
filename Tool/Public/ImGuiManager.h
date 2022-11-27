@@ -15,7 +15,7 @@ class CImGuiManager final : public CBase
 	{
 		char pTriggerName[MAX_PATH];
 		_float4x4 mWorldMatrix;
-		BoundingBox* pTriggerBox;
+		BoundingBox pTriggerBox;
 	} TRIGGERBOXDESC;
 
 public:

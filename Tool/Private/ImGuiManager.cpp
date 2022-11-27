@@ -279,7 +279,7 @@ void CImGuiManager::DrawTriggerBox()
 	}
 	
 	for (auto& vTriggerBox : m_vTriggers)
-		DX::Draw(m_pBatch, *vTriggerBox.pTriggerBox, vColor);
+		DX::Draw(m_pBatch, vTriggerBox.pTriggerBox, vColor);
 
 	m_pBatch->End();
 }
@@ -762,7 +762,10 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 			for (auto& tTrigger : m_vTriggers)
 			{
 				if (ImGui::Selectable(tTrigger.pTriggerName, m_tSelectedTrigger == &tTrigger))
+				{
 					m_tSelectedTrigger = &tTrigger;
+					m_fTriggerBoxScale = XMVectorGetX(XMVector3Length(XMLoadFloat4x4(&m_tSelectedTrigger->mWorldMatrix).r[0]));
+				}
 
 				if (m_tSelectedTrigger == &tTrigger)
 					ImGui::SetItemDefaultFocus();
@@ -783,7 +786,7 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 
 				// Firstly, Reset any Transformation 
 				_matrix WorldMatrixInverse = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_tSelectedTrigger->mWorldMatrix));
-				m_tSelectedTrigger->pTriggerBox->Transform(*m_tSelectedTrigger->pTriggerBox, WorldMatrixInverse);
+				m_tSelectedTrigger->pTriggerBox.Transform(m_tSelectedTrigger->pTriggerBox, WorldMatrixInverse);
 
 				_matrix TranslationMatrix = XMMatrixTranslation(vTriggerPosition.x, vTriggerPosition.y, vTriggerPosition.z);
 				_matrix ScaleMatrix = XMMatrixScaling(m_fTriggerBoxScale, m_fTriggerBoxScale, m_fTriggerBoxScale);
@@ -791,7 +794,7 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 				_matrix WorldMatrix = ScaleMatrix * TranslationMatrix;
 
 				// Then, apply the new Transformation
-				m_tSelectedTrigger->pTriggerBox->Transform(*m_tSelectedTrigger->pTriggerBox, WorldMatrix);
+				m_tSelectedTrigger->pTriggerBox.Transform(m_tSelectedTrigger->pTriggerBox, WorldMatrix);
 				XMStoreFloat4x4(&m_tSelectedTrigger->mWorldMatrix, WorldMatrix);
 			}
 		}
@@ -1252,6 +1255,32 @@ _bool CImGuiManager::SaveData()
 
 		CloseHandle(hFileNavigation);
 	}
+
+	// Save Trigger Data
+	if (!m_vTriggers.empty())
+	{
+		HANDLE hFileTrigger = nullptr;
+		_tchar LoadPathTrigger[MAX_PATH] = TEXT("../../Data/TriggerData/");
+		wcscat_s(LoadPathTrigger, MAX_PATH, wsCurrentMap.c_str()); // ../../Data/TriggerData/Field.dat
+
+		hFileTrigger = CreateFile(LoadPathTrigger, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+		if (hFileTrigger == INVALID_HANDLE_VALUE)
+			return false;
+
+		dwByte = 0;
+		TRIGGERBOXDESC tTriggerBox;
+
+		for (TRIGGERBOXDESC tTrigger : m_vTriggers)
+		{
+			ZeroMemory(&tTriggerBox, sizeof(TRIGGERBOXDESC));
+			memcpy(&tTriggerBox, &tTrigger, sizeof(TRIGGERBOXDESC));
+			
+			WriteFile(hFileTrigger, &tTriggerBox, sizeof(TRIGGERBOXDESC), &dwByte, nullptr);
+		}
+
+		CloseHandle(hFileTrigger);
+	}
 	
 	return true;
 }
@@ -1372,7 +1401,7 @@ _bool CImGuiManager::LoadData()
 
 	while (true)
 	{
-		ReadFile(hFileMap, &vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+		ReadFile(hFileNavigation, &vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
 
 		if (!dwByte)
 			break;
@@ -1387,6 +1416,32 @@ _bool CImGuiManager::LoadData()
 	}
 
 	CloseHandle(hFileNavigation);
+
+	// Load Trigger Data
+	HANDLE hFileTrigger = nullptr;
+	_tchar LoadPathTrigger[MAX_PATH] = TEXT("../../Data/TriggerData/");
+	wcscat_s(LoadPathTrigger, MAX_PATH, wsCurrentMap.c_str()); // ../../Data/TriggerData/Field.dat
+
+	hFileTrigger = CreateFile(LoadPathTrigger, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (hFileTrigger == INVALID_HANDLE_VALUE)
+		return false;
+
+	dwByte = 0;
+	TRIGGERBOXDESC tTriggerBox;
+
+	while (true)
+	{
+		ZeroMemory(&tTriggerBox, sizeof(TRIGGERBOXDESC));
+		ReadFile(hFileTrigger, &tTriggerBox, sizeof(TRIGGERBOXDESC), &dwByte, nullptr);
+
+		if (!dwByte)
+			break;
+
+		m_vTriggers.push_back(tTriggerBox);
+	}
+
+	CloseHandle(hFileTrigger);
 
 	return true;
 }
@@ -1501,7 +1556,7 @@ void CImGuiManager::Add_Trigger(const char* pTriggerName)
 	ZeroMemory(&tTriggerBoxDesc, sizeof(TRIGGERBOXDESC));
 	strcpy_s((char*)tTriggerBoxDesc.pTriggerName, MAX_PATH, pTriggerName);
 	XMStoreFloat4x4(&tTriggerBoxDesc.mWorldMatrix, WorldMatrix);
-	tTriggerBoxDesc.pTriggerBox = pTrigger;
+	tTriggerBoxDesc.pTriggerBox = *pTrigger;
 
 	m_vTriggers.push_back(tTriggerBoxDesc);
 
