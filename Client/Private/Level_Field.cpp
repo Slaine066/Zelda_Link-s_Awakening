@@ -97,6 +97,7 @@ HRESULT CLevel_Field::Load_Objects_FromFile()
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSpear")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSpear"), LEVEL_FIELD, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 	}
+	CloseHandle(hFile);
 
 	Safe_Release(pGameInstance);
 	return S_OK;

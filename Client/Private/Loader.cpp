@@ -149,37 +149,8 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	// .. Add Above ..
 #pragma endregion Loading_Shaders
 
-#pragma region Loading_Objects
-	lstrcpy(m_szLoadingText, TEXT("Loading Objects.."));
-	
-	/* For.Prototype_GameObject_Camera_Dynamic */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_pDevice, m_pContext))))
+	if (FAILED(Load_GameObject_Prototypes()))
 		return E_FAIL;
-	/* For.Prototype_GameObject_TriggerBox_Dynamic */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TriggerBox_Dynamic"), CTriggerBox_Dynamic::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_StaticObject */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_Player */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_MoriblinSword */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSword"), CMoriblinSword::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_MoriblinSpear */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSpear"), CMoriblinSpear::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_Weapon */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon"), CWeapon::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_Projectile */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Projectile"), CProjectile::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	// >
-	// .. Add Above ..
-#pragma endregion Loading_Objects
 
 	m_isFinished = true;
 	lstrcpy(m_szLoadingText, TEXT("Loading Completed."));
@@ -495,17 +466,6 @@ HRESULT CLoader::Loading_ForMoriblinCave()
 	// .. Add Above ..
 #pragma endregion Loading_Shaders
 
-#pragma region Loading_Objects
-	lstrcpy(m_szLoadingText, TEXT("Loading_Object.."));
-
-	/*For.Prototype_GameObject_Bossblin */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Bossblin"), CBossblin::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	// >
-	// .. Add Above ..
-#pragma endregion Loading_Objects
-
 	m_isFinished = true;
 	lstrcpy(m_szLoadingText, TEXT("Loading Completed."));
 
@@ -552,17 +512,56 @@ HRESULT CLoader::Loading_ForBottleGrotto()
 	// .. Add Above ..
 #pragma endregion Loading_Shaders
 
-#pragma region Loading_Objects
-	lstrcpy(m_szLoadingText, TEXT("Loading_Object.."));
-
-	// >
-	// .. Add Above ..
-#pragma endregion Loading_Objects
-
 	m_isFinished = true;
 	lstrcpy(m_szLoadingText, TEXT("Loading Completed."));
 
 	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLoader::Load_GameObject_Prototypes()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	if (pGameInstance == nullptr)
+		return E_FAIL;
+
+#pragma region Loading_Objects
+	lstrcpy(m_szLoadingText, TEXT("Loading_Object.."));
+
+	/* For.Prototype_GameObject_Camera_Dynamic */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_TriggerBox_Dynamic */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TriggerBox_Dynamic"), CTriggerBox_Dynamic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_StaticObject */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Player */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_MoriblinSword */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSword"), CMoriblinSword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_MoriblinSpear */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSpear"), CMoriblinSpear::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/*For.Prototype_GameObject_Bossblin */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Bossblin"), CBossblin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Weapon */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon"), CWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Projectile */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Projectile"), CProjectile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Objects
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }

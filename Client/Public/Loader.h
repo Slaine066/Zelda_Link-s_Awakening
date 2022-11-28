@@ -27,6 +27,8 @@ public:
 	HRESULT Loading_ForMoriblinCave();
 	HRESULT Loading_ForBottleGrotto();
 
+	HRESULT Load_GameObject_Prototypes();
+
 private:
 	LEVEL					m_eNextLevel = LEVEL_END;
 	_bool					m_isFinished = false;
