@@ -48,9 +48,7 @@ _uint CPlayer::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	// Collision Handling
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, this);
+	CGameInstance::Get_Instance()->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, this);
 
 	HandleInvincibility(fTimeDelta);
 
@@ -60,7 +58,7 @@ _uint CPlayer::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CPlayer::Late_Tick(_float fTimeDelta)
+_uint CPlayer::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
@@ -68,6 +66,8 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 	LateTickState(fTimeDelta);
+
+	return OBJ_NOEVENT;
 }
 
 HRESULT CPlayer::Render()

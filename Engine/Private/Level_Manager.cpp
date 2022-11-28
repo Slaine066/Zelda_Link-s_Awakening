@@ -53,6 +53,14 @@ void CLevel_Manager::Render_NavigationMesh()
 	m_pCurrentLevel->Render_NavigationMesh();
 }
 
+void CLevel_Manager::Render_TriggerBox()
+{
+	if (!m_pCurrentLevel)
+		return;
+
+	m_pCurrentLevel->Render_TriggerBox();
+}
+
 void CLevel_Manager::Free()
 {
 	Safe_Release(m_pCurrentLevel);

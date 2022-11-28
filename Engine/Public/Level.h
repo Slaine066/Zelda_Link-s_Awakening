@@ -6,6 +6,7 @@
 
 BEGIN(Engine)
 class CComponent;
+class CTriggerBox;
 class ENGINE_DLL CLevel abstract : public CBase
 {
 protected:
@@ -21,6 +22,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta);
 
 	void Render_NavigationMesh();
+	void Render_TriggerBox();
 
 protected:
 	ID3D11Device* m_pDevice = nullptr; 
@@ -30,6 +32,9 @@ protected:
 	Can't store it in the Terrain Class cause Meshes are used instead.
 	However can't even store in the Mesh Class cause the Map is composed by many Meshes. */
 	CComponent* m_pNavigationMesh = nullptr;
+
+	/* Trigger Boxes are also stored inside the Level Class. */
+	list<CTriggerBox*> m_TriggerBoxes;
 
 	HRESULT Add_NavigationMesh(const _tchar* pNavigationMeshTag, _uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent** ppOut, void* pArg = nullptr);
 

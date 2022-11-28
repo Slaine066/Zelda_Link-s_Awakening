@@ -220,6 +220,7 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\PlayerState.h" />
     <ClInclude Include="..\public\Projectile.h" />
+    <ClInclude Include="..\public\TriggerBox_Dynamic.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\StaticObject.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="..\Private\PlayerMoveState.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\Projectile.cpp" />
+    <ClCompile Include="..\private\TriggerBox_Dynamic.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />

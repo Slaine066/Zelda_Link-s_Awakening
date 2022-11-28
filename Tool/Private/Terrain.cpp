@@ -31,10 +31,12 @@ _uint CTerrain::Tick(_float fTimeDelta)
 	return S_OK;
 }
 
-void CTerrain::Late_Tick(_float fTimeDelta)
+_uint CTerrain::Late_Tick(_float fTimeDelta)
 {
 	if (m_pRendererCom != nullptr)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
+	return S_OK;
 }
 
 HRESULT CTerrain::Render()

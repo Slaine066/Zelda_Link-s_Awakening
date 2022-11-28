@@ -118,6 +118,9 @@
     <Filter Include="01.Levels\00.Loading\Loader">
       <UniqueIdentifier>{5f5b0b84-3f62-41a7-9873-7f921731484d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.TriggerBox">
+      <UniqueIdentifier>{7876b483-80f5-4906-b79b-505254d54f55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -300,6 +303,9 @@
     <ClInclude Include="..\Public\Loader.h">
       <Filter>01.Levels\00.Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TriggerBox_Dynamic.h">
+      <Filter>02.GameObjects\03.TriggerBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -454,6 +460,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Loader.cpp">
       <Filter>01.Levels\00.Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TriggerBox_Dynamic.cpp">
+      <Filter>02.GameObjects\03.TriggerBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

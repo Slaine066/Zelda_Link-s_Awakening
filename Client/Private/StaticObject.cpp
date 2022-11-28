@@ -31,10 +31,12 @@ _uint CStaticObject::Tick(_float fTimeDelta)
 	return S_OK;
 }
 
-void CStaticObject::Late_Tick(_float fTimeDelta)
+_uint CStaticObject::Late_Tick(_float fTimeDelta)
 {
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
+	return S_OK;
 }
 
 HRESULT CStaticObject::Render()

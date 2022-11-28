@@ -72,7 +72,7 @@ _uint CBossblin::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CBossblin::Late_Tick(_float fTimeDelta)
+_uint CBossblin::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
@@ -90,6 +90,8 @@ void CBossblin::Late_Tick(_float fTimeDelta)
 	LateTickState(fTimeDelta);
 
 	Check_Collision();
+
+	return OBJ_NOEVENT;
 }
 
 HRESULT CBossblin::Render()
@@ -110,7 +112,7 @@ HRESULT CBossblin::Render()
 
 	Render_Colliders();
 
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * DamageCauser)

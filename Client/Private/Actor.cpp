@@ -40,13 +40,15 @@ _uint CActor::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CActor::Late_Tick(_float fTimeDelta)
+_uint CActor::Late_Tick(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	m_bIsInFrustum = pGameInstance->IsIn_Frustum(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION), m_fRadius);
 	RELEASE_INSTANCE(CGameInstance);
 
 	Update_Colliders();
+
+	return OBJ_NOEVENT;
 }
 
 HRESULT CActor::Render()

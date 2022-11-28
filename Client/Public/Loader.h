@@ -23,7 +23,7 @@ public:
 
 public:
 	HRESULT Loading_ForStaticLevel();
-	HRESULT Loading_ForGamePlayLevel();
+	HRESULT Loading_ForField();
 	HRESULT Loading_ForMoriblinCave();
 	HRESULT Loading_ForBottleGrotto();
 

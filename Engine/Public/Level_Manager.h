@@ -27,6 +27,7 @@ public:
 	void Late_Tick(_float fTimeDelta);
 
 	void Render_NavigationMesh();
+	void Render_TriggerBox();
 
 private:
 	class CLevel* m_pCurrentLevel = nullptr;

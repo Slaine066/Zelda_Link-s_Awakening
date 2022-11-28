@@ -5,18 +5,12 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "Mesh.h"
+#include "TriggerBox.h"
 
 BEGIN(Tool)
 class CImGuiManager final : public CBase
 {
 	DECLARE_SINGLETON(CImGuiManager)
-
-	typedef struct tagTriggerBoxDescription
-	{
-		char pTriggerName[MAX_PATH];
-		_float4x4 mWorldMatrix;
-		BoundingBox pTriggerBox;
-	} TRIGGERBOXDESC;
 
 public:
 	enum TRANSFORM_TYPE { TRANS_TRANSLATION, TRANS_ROTATION, TRANS_SCALE };
@@ -122,8 +116,8 @@ private:
 	_bool m_bIsTriggerActive = false;
 	_bool m_bCurrentActive = false;
 	_float3 m_vCurrentTrigger;				// "bool" indicating whether or not a Position for the next Trigger Box has been selected.
-	vector<TRIGGERBOXDESC> m_vTriggers;		// Position for the next Trigger Box.
-	TRIGGERBOXDESC* m_tSelectedTrigger;
+	vector<CTriggerBox::TRIGGERBOXDESC> m_vTriggers;		// Position for the next Trigger Box.
+	CTriggerBox::TRIGGERBOXDESC* m_tSelectedTrigger;
 	_float m_fTriggerBoxScale = 1.f;
 	
 	ID3D11InputLayout* m_pInputLayout = nullptr;

@@ -1269,14 +1269,14 @@ _bool CImGuiManager::SaveData()
 			return false;
 
 		dwByte = 0;
-		TRIGGERBOXDESC tTriggerBox;
+		CTriggerBox::TRIGGERBOXDESC tTriggerBox;
 
-		for (TRIGGERBOXDESC tTrigger : m_vTriggers)
+		for (CTriggerBox::TRIGGERBOXDESC tTrigger : m_vTriggers)
 		{
-			ZeroMemory(&tTriggerBox, sizeof(TRIGGERBOXDESC));
-			memcpy(&tTriggerBox, &tTrigger, sizeof(TRIGGERBOXDESC));
+			ZeroMemory(&tTriggerBox, sizeof(CTriggerBox::TRIGGERBOXDESC));
+			memcpy(&tTriggerBox, &tTrigger, sizeof(CTriggerBox::TRIGGERBOXDESC));
 			
-			WriteFile(hFileTrigger, &tTriggerBox, sizeof(TRIGGERBOXDESC), &dwByte, nullptr);
+			WriteFile(hFileTrigger, &tTriggerBox, sizeof(CTriggerBox::TRIGGERBOXDESC), &dwByte, nullptr);
 		}
 
 		CloseHandle(hFileTrigger);
@@ -1428,12 +1428,12 @@ _bool CImGuiManager::LoadData()
 		return false;
 
 	dwByte = 0;
-	TRIGGERBOXDESC tTriggerBox;
+	CTriggerBox::TRIGGERBOXDESC tTriggerBox;
 
 	while (true)
 	{
-		ZeroMemory(&tTriggerBox, sizeof(TRIGGERBOXDESC));
-		ReadFile(hFileTrigger, &tTriggerBox, sizeof(TRIGGERBOXDESC), &dwByte, nullptr);
+		ZeroMemory(&tTriggerBox, sizeof(CTriggerBox::TRIGGERBOXDESC));
+		ReadFile(hFileTrigger, &tTriggerBox, sizeof(CTriggerBox::TRIGGERBOXDESC), &dwByte, nullptr);
 
 		if (!dwByte)
 			break;
@@ -1552,8 +1552,8 @@ void CImGuiManager::Add_Trigger(const char* pTriggerName)
 	BoundingBox* pTrigger = new BoundingBox(_float3(0.f, 0.5f, 0.f), _float3(0.5f, 0.5f, 0.5f));
 	pTrigger->Transform(*pTrigger, WorldMatrix);
 
-	TRIGGERBOXDESC tTriggerBoxDesc;
-	ZeroMemory(&tTriggerBoxDesc, sizeof(TRIGGERBOXDESC));
+	CTriggerBox::TRIGGERBOXDESC tTriggerBoxDesc;
+	ZeroMemory(&tTriggerBoxDesc, sizeof(CTriggerBox::TRIGGERBOXDESC));
 	strcpy_s((char*)tTriggerBoxDesc.pTriggerName, MAX_PATH, pTriggerName);
 	XMStoreFloat4x4(&tTriggerBoxDesc.mWorldMatrix, WorldMatrix);
 	tTriggerBoxDesc.pTriggerBox = *pTrigger;

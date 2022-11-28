@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Navigation.h"
 #include "Camera_Dynamic.h"
+#include "TriggerBox_Dynamic.h"
 #include "StaticObject.h"
 #include "Player.h"
 #include "MoriblinSword.h"
@@ -32,7 +33,7 @@ unsigned int APIENTRY Thread_Main(void* pArg)
 		pLoader->Loading_ForStaticLevel();
 		break;
 	case LEVEL_FIELD:
-		pLoader->Loading_ForGamePlayLevel();
+		pLoader->Loading_ForField();
 		break;
 	case LEVEL_MORIBLINCAVE:
 		pLoader->Loading_ForMoriblinCave();
@@ -154,6 +155,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/* For.Prototype_GameObject_Camera_Dynamic */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Dynamic::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	/* For.Prototype_GameObject_TriggerBox_Dynamic */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TriggerBox_Dynamic"), CTriggerBox_Dynamic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	/* For.Prototype_GameObject_StaticObject */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -185,7 +189,7 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_ForGamePlayLevel()
+HRESULT CLoader::Loading_ForField()
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	if (pGameInstance == nullptr)

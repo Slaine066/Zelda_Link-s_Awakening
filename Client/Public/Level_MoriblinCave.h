@@ -17,7 +17,8 @@ public:
 	virtual void Late_Tick(_float fTimeDelta);
 
 public:
-	HRESULT Load_From_File();
+	HRESULT Load_Objects_FromFile();
+	HRESULT Load_Triggers_FromFile();
 	HRESULT Ready_Layer_UI(const _tchar* pLayerTag);
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);

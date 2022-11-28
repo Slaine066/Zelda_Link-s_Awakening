@@ -39,9 +39,11 @@ _uint CMonster::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CMonster::Late_Tick(_float fTimeDelta)
+_uint CMonster::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
+
+	return OBJ_NOEVENT;
 }
 
 HRESULT CMonster::Render()

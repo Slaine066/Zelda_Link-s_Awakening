@@ -38,9 +38,11 @@ _uint CCharacter::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CCharacter::Late_Tick(_float fTimeDelta)
+_uint CCharacter::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
+
+	return OBJ_NOEVENT;
 }
 
 HRESULT CCharacter::Render()

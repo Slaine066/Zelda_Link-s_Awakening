@@ -69,7 +69,7 @@ _uint CMoriblinSpear::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CMoriblinSpear::Late_Tick(_float fTimeDelta)
+_uint CMoriblinSpear::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
@@ -85,6 +85,8 @@ void CMoriblinSpear::Late_Tick(_float fTimeDelta)
 		pParts->Late_Tick(fTimeDelta);
 
 	LateTickState(fTimeDelta);
+
+	return OBJ_NOEVENT;
 }
 
 HRESULT CMoriblinSpear::Render()

@@ -124,6 +124,9 @@
     <ClCompile Include="..\private\FrustumCulling.cpp">
       <Filter>01.Utility\10.FrustumCulling</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\TriggerBox.cpp">
+      <Filter>01.Utility\02.GameObjects\02.TriggerBox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -261,6 +264,9 @@
     <ClInclude Include="..\public\FrustumCulling.h">
       <Filter>01.Utility\10.FrustumCulling</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TriggerBox.h">
+      <Filter>01.Utility\02.GameObjects\02.TriggerBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -391,6 +397,9 @@
     </Filter>
     <Filter Include="01.Utility\10.FrustumCulling">
       <UniqueIdentifier>{593a4edf-7c6b-485f-adde-6b36ed5bbc56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\02.GameObjects\02.TriggerBox">
+      <UniqueIdentifier>{b316164b-48cc-4ffb-88ac-2c0e9631d54d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -222,6 +222,16 @@ HRESULT CGameInstance::Render_NavigationMesh()
 	return S_OK;
 }
 
+HRESULT CGameInstance::Render_TriggerBox()
+{
+	if (!m_pLevel_Manager)
+		return E_FAIL;
+
+	m_pLevel_Manager->Render_TriggerBox();
+
+	return S_OK;
+}
+
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr == m_pObject_Manager)
@@ -307,7 +317,7 @@ void CGameInstance::Out_CollisionGroup(CCollision_Manager::COLLISION_GROUP eColl
 	m_pCollision_Manager->Remove_CollisionGroup(eCollisionGroup, pGameObject);
 }
 
-_bool CGameInstance::Collision_with_Group(CCollision_Manager::COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT CGameObject& pDamagedObject)
+_bool CGameInstance::Collision_with_Group(CCollision_Manager::COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT CGameObject* pDamagedObject)
 {
 	if (!m_pCollision_Manager)
 		return false;

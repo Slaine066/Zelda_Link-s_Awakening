@@ -56,7 +56,7 @@ public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _uint Tick(_float fTimeDelta) override;
-	virtual void Late_Tick(_float fTimeDelta) override;
+	virtual _uint Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual _float Take_Damage(float fDamage, void* DamageType, CGameObject* DamageCauser) override;
 

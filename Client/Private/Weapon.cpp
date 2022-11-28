@@ -56,9 +56,11 @@ _uint CWeapon::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CWeapon::Late_Tick(_float fTimeDelta)
+_uint CWeapon::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
+
+	return OBJ_NOEVENT;
 }
 
 HRESULT CWeapon::Render()

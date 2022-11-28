@@ -115,7 +115,9 @@ HRESULT CCollider::Render()
 	m_pEffect->Apply(m_pContext);
 
 	// Render Green Collider when not Collided \ Render Red Collider when Collided.
-	_vector	vColor = /*m_isCollision == true ? XMVectorSet(.88f, .19f, .38f, 1.f) : */XMVectorSet(.31f, .78f, .47f, 1.f);
+	/*_vector	vColor = m_isCollision == true ? XMVectorSet(.88f, .19f, .38f, 1.f) : XMVectorSet(.31f, .78f, .47f, 1.f);*/
+
+	_vector	vColor = m_ColliderDesc.eAim == AIM::AIM_TRIGGER_BOX ? XMVectorSet(.39f, .58f, .92f, 1.f) : XMVectorSet(.31f, .78f, .47f, 1.f);
 
 	switch (m_eType)
 	{

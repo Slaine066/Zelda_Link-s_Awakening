@@ -32,8 +32,9 @@ _uint CGameObject::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CGameObject::Late_Tick(_float fTimeDelta)
+_uint CGameObject::Late_Tick(_float fTimeDelta)
 {
+	return OBJ_NOEVENT;
 }
 
 HRESULT CGameObject::Render()

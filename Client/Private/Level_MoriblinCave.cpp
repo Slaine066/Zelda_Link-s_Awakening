@@ -3,6 +3,7 @@
 #include "Level_MoriblinCave.h"
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
+#include "TriggerBox_Dynamic.h"
 
 CLevel_MoriblinCave::CLevel_MoriblinCave(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -14,7 +15,10 @@ HRESULT CLevel_MoriblinCave::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	if (FAILED(Load_From_File()))
+	if (FAILED(Load_Objects_FromFile()))
+		return E_FAIL;
+
+	if (FAILED(Load_Triggers_FromFile()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
@@ -48,7 +52,7 @@ void CLevel_MoriblinCave::Late_Tick(_float fTimeDelta)
 	SetWindowText(g_hWnd, TEXT("MoriblinCave Level."));
 }
 
-HRESULT CLevel_MoriblinCave::Load_From_File()
+HRESULT CLevel_MoriblinCave::Load_Objects_FromFile()
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
@@ -101,6 +105,36 @@ HRESULT CLevel_MoriblinCave::Load_From_File()
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Treasure")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_STATIC, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 	}
+
+	Safe_Release(pGameInstance);
+	return S_OK;
+}
+
+HRESULT CLevel_MoriblinCave::Load_Triggers_FromFile()
+{
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	HANDLE hFile = CreateFile(TEXT("../../Data/TriggerData/MoriblinCave.dat"), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	if (hFile == 0)
+		return E_FAIL;
+
+	_ulong dwByte = 0;
+
+	CTriggerBox::TRIGGERBOXDESC tTriggerBoxDesc;
+	
+	while (true)
+	{
+		ZeroMemory(&tTriggerBoxDesc, sizeof(CTriggerBox::TRIGGERBOXDESC));
+		ReadFile(hFile, &tTriggerBoxDesc, sizeof(CTriggerBox::TRIGGERBOXDESC), &dwByte, nullptr);
+
+		if (!dwByte)
+			break;
+		
+		CGameObject* pTriggerBox = pGameInstance->Clone_GameObject(TEXT("Prototype_GameObject_TriggerBox_Dynamic"), &tTriggerBoxDesc);
+		m_TriggerBoxes.push_back((CTriggerBox*)pTriggerBox);
+	}
+	CloseHandle(hFile);
 
 	Safe_Release(pGameInstance);
 	return S_OK;

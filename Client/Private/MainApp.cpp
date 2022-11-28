@@ -72,24 +72,22 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_DepthStencil_View();
 
 #ifdef _DEBUG
-	m_pGameInstance->Render_NavigationMesh();
-#endif // _DEBUG
-
-	m_pRenderer->Render_GameObjects();
-
-#ifdef _DEBUG
 	++m_iNumRender;
 
 	if (m_fTimeAcc > 1.0f)
 	{
 		wsprintf(m_szFPS, TEXT("FPS: %d"), m_iNumRender);
-		
+
 		m_fTimeAcc = 0.f;
 		m_iNumRender = 0;
 	}
 
 	m_pGameInstance->Render_Font(TEXT("Quicksand-24"), m_szFPS, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+	m_pGameInstance->Render_NavigationMesh();
+	m_pGameInstance->Render_TriggerBox();
 #endif // _DEBUG
+
+	m_pRenderer->Render_GameObjects();
 
 	m_pGameInstance->Present();
 

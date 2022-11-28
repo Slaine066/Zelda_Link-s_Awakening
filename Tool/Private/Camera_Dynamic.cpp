@@ -59,10 +59,11 @@ _uint CCamera_Dynamic::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CCamera_Dynamic::Late_Tick(_float fTimeDelta)
+_uint CCamera_Dynamic::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
+	return OBJ_NOEVENT;
 }
 
 HRESULT CCamera_Dynamic::Render()

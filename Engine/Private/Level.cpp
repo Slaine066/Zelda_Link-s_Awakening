@@ -1,5 +1,6 @@
 #include "Level.h"
 #include "GameInstance.h"
+#include "TriggerBox.h"
 
 CLevel::CLevel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice), m_pContext(pContext)
@@ -15,10 +16,15 @@ HRESULT CLevel::Initialize()
 
 void CLevel::Tick(_float fTimeDelta)
 {
+	for (auto& pTriggerBox : m_TriggerBoxes)
+		pTriggerBox->Tick(fTimeDelta);
 }
 
 void CLevel::Late_Tick(_float fTimeDelta)
 {
+	for (auto& pTriggerBox : m_TriggerBoxes)
+		if (pTriggerBox->Late_Tick(fTimeDelta))
+			break;
 }
 
 void CLevel::Render_NavigationMesh()
@@ -27,6 +33,15 @@ void CLevel::Render_NavigationMesh()
 		return;
 
 	((CNavigation*)m_pNavigationMesh)->Render_Navigation();
+}
+
+void CLevel::Render_TriggerBox()
+{
+	if (m_TriggerBoxes.empty())
+		return;
+
+	for (auto& pTriggerBox : m_TriggerBoxes)
+		pTriggerBox->Render();
 }
 
 HRESULT CLevel::Add_NavigationMesh(const _tchar* pNavigationMeshTag, _uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent** ppOut, void* pArg)
@@ -51,4 +66,9 @@ void CLevel::Free()
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
+
+	for (auto& pTrigger : m_TriggerBoxes)
+		Safe_Release(pTrigger);
+
+	m_TriggerBoxes.clear();
 }

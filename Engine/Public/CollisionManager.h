@@ -16,7 +16,7 @@ class CCollision_Manager final : public CBase
 	DECLARE_SINGLETON(CCollision_Manager)
 
 public:
-	enum COLLISION_GROUP { COLLISION_PLAYER, COLLISION_MONSTER, COLLISION_OBJECT, COLLISION_BLOCK, COLLISION_PUSH, COLLISION_GROUPEND };
+	enum COLLISION_GROUP { COLLISION_PLAYER, COLLISION_MONSTER, COLLISION_TRIGGER_BOX, COLLISION_GROUPEND };
 
 private:
 	CCollision_Manager();
@@ -30,7 +30,7 @@ public:
 
 	/* Collision Functions */
 	// Collision between Object and first Collided Object (1:1 Collision)
-	_bool Collision_with_Group(COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT CGameObject& pDamagedObject);
+	_bool Collision_with_Group(COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT CGameObject* pDamagedObject);
 	// Collision between Object and all Collided Object (1:N Collisions) - Preferrable to use 
 	_bool Collision_Check_Group_Multi(COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT vector<CGameObject*>& pDamagedObjects);
 

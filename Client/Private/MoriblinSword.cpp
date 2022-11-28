@@ -64,7 +64,7 @@ _uint CMoriblinSword::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CMoriblinSword::Late_Tick(_float fTimeDelta)
+_uint CMoriblinSword::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
@@ -72,6 +72,8 @@ void CMoriblinSword::Late_Tick(_float fTimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 	LateTickState(fTimeDelta);
+
+	return OBJ_NOEVENT;
 }
 
 HRESULT CMoriblinSword::Render()

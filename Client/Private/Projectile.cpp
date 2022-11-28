@@ -70,7 +70,7 @@ _uint CProjectile::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CProjectile::Late_Tick(_float fTimeDelta)
+_uint CProjectile::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
@@ -86,6 +86,8 @@ void CProjectile::Late_Tick(_float fTimeDelta)
 			BossblinSpear_Collision();
 			break;
 	}
+
+	return OBJ_NOEVENT;
 }
 
 HRESULT CProjectile::Render()

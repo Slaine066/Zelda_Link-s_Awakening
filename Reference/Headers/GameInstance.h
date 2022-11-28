@@ -51,6 +51,7 @@ public: /* For.Level_Manager */
 	_uint Get_NextLevelIndex();
 	void Set_NextLevel(_uint iNextLevelIndex);
 	HRESULT Render_NavigationMesh();
+	HRESULT Render_TriggerBox();
 
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
@@ -69,7 +70,7 @@ public: /* For.Component_Manager */
 public: /* For. Collider Manager */
 	HRESULT Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP eCollisionGroup, class CGameObject* pGameObject);
 	void Out_CollisionGroup(CCollision_Manager::COLLISION_GROUP eCollisionGroup, class CGameObject* pGameObject);
-	_bool Collision_with_Group(CCollision_Manager::COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT CGameObject& pDamagedObject);
+	_bool Collision_with_Group(CCollision_Manager::COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT CGameObject* pDamagedObject);
 	_bool Collision_Check_Group_Multi(CCollision_Manager::COLLISION_GROUP eGroup, class CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT vector<CGameObject*>& pDamagedObjects);
 
 	// Damage Functions
