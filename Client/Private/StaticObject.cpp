@@ -115,7 +115,7 @@ HRESULT CStaticObject::SetUp_ShaderResources()
 
 _uint CStaticObject::Compute_LevelIndex(_tchar * pObjName)
 {
-	if (!wcscmp(pObjName, TEXT("Treasure")))
+	if (wcsstr(pObjName, TEXT("Field")) || !wcscmp(pObjName, TEXT("Treasure")))
 		return 0;
 
 	return CGameInstance::Get_Instance()->Get_NextLevelIndex();

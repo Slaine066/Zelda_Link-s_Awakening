@@ -119,6 +119,7 @@ private:
 	vector<CTriggerBox::TRIGGERBOXDESC> m_vTriggers;		// Position for the next Trigger Box.
 	CTriggerBox::TRIGGERBOXDESC* m_tSelectedTrigger;
 	_float m_fTriggerBoxScale = 1.f;
+	_float m_fTriggerBoxX = 1.f, m_fTriggerBoxY = 1.f, m_fTriggerBoxZ = 1.f;
 	
 	ID3D11InputLayout* m_pInputLayout = nullptr;
 	PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;

@@ -8,6 +8,25 @@ CLevel_Manager::CLevel_Manager()
 {
 }
 
+CTriggerBox * CLevel_Manager::Get_TriggerBox(char * pTriggerBoxName)
+{
+	if (m_pCurrentLevel == nullptr)
+		return nullptr;
+
+	return m_pCurrentLevel->Get_TriggerBox(pTriggerBoxName);
+}
+
+void CLevel_Manager::Set_SpawnTriggerBox(char * pSpawnTriggerBox)
+{
+	if (!pSpawnTriggerBox)
+	{
+		pSpawnTriggerBox = "";
+		return;
+	}
+	else
+		strcpy_s(m_pSpawnTriggerBoxName, MAX_PATH, pSpawnTriggerBox);
+}
+
 HRESULT CLevel_Manager::Open_Level(unsigned int iLevelIndex, CLevel * pNewLevel)
 {
 	if (nullptr != m_pCurrentLevel)

@@ -22,6 +22,8 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
+	void Compute_CurrentCell();
+	void Set_InitialPosition(_float3 vPosition) { m_NavDesc.vInitialPosition = vPosition; }
 	_float Get_NavigationHeight(_float3 vPosition);
 	_bool Get_PointOnNavigation(OUT _float3 vPosition);
 	_bool CanMove(_fvector vPosition);
@@ -29,9 +31,6 @@ public:
 #ifdef _DEBUG
 	HRESULT Render_Navigation();
 #endif // _DEBUG
-
-private:
-	void Compute_CurrentCell();
 
 private:
 	NAVDESC m_NavDesc;

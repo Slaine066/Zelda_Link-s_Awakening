@@ -15,6 +15,7 @@ protected:
 
 public:
 	CComponent* Get_NavigationMesh() { return m_pNavigationMesh; }
+	CTriggerBox* Get_TriggerBox(char* pTriggerBoxName);
 
 public:
 	virtual HRESULT Initialize();

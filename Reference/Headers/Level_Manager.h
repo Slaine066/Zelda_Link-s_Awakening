@@ -18,8 +18,13 @@ public:
 public:
 	_uint Get_CurrentLevelIndex() { return m_iLevelIndex; }
 	_uint Get_NextLevelIndex() { return m_iNextLevelIndex; }
+	_bool Get_IsJustSpawned() { return m_bIsJustSpawned; }
+	class CTriggerBox* Get_TriggerBox(char* pTriggerBoxName);
+	char* Get_SpawnTriggerBoxName() { return m_pSpawnTriggerBoxName; }
 
 	void Set_NextLevelIndex(_uint iNextLevelIndex) { m_iNextLevelIndex = iNextLevelIndex; }
+	void Set_IsJustSpawned(_bool bIsJustSpawned) { m_bIsJustSpawned = bIsJustSpawned; }
+	void Set_SpawnTriggerBox(char* pSpawnTriggerBox);
 
 public:
 	HRESULT Open_Level(unsigned int iLevelIndex, class CLevel* pNewLevel);
@@ -33,6 +38,9 @@ private:
 	class CLevel* m_pCurrentLevel = nullptr;
 	_uint m_iLevelIndex;
 	_uint m_iNextLevelIndex;
+
+	char m_pSpawnTriggerBoxName[MAX_PATH] = "";
+	_bool m_bIsJustSpawned = false;
 
 public:
 	virtual void Free() override;

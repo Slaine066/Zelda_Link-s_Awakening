@@ -9,6 +9,17 @@ CLevel::CLevel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	Safe_AddRef(m_pContext);
 }
 
+CTriggerBox * CLevel::Get_TriggerBox(char * pTriggerBoxName)
+{
+	for (auto& pTrigger : m_TriggerBoxes)
+	{
+		if (!strcmp(pTrigger->Get_TriggerBoxDesc().pTriggerName, pTriggerBoxName))
+			return pTrigger;
+	}
+
+	return nullptr;
+}
+
 HRESULT CLevel::Initialize()
 {
 	return S_OK;

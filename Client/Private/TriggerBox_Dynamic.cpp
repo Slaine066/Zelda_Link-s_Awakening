@@ -39,7 +39,7 @@ HRESULT CTriggerBox_Dynamic::Initialize(void* pArg)
 	ColliderDesc.vPosition = vTriggerBoxPosition;
 
 	/* For.Com_Collider*/
-	if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_pCollider, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_AABB"), (CComponent**)&m_pCollider, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -58,11 +58,22 @@ _uint CTriggerBox_Dynamic::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
+	/* Should not run on the FirstFrame after spawn, to give other Objects time to update. */
+	if (m_bIsFirstFrame)
+	{
+		m_bIsFirstFrame = false;
+		return OBJ_NOEVENT;
+	}
+
 	CGameObject* pCollidedObject = nullptr;
 	_bool bIsCollided = CGameInstance::Get_Instance()->Collision_with_Group(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, m_pCollider, CCollider::AIM::AIM_DAMAGE_INPUT, pCollidedObject);
 	
 	if (bIsCollided)
 	{
+		_bool bIsJustSpawned = CGameInstance::Get_Instance()->Get_IsJustSpawned();
+		if (bIsJustSpawned)
+			return OBJ_NOEVENT;
+
 		switch (CGameInstance::Get_Instance()->Get_CurrentLevelIndex())
 		{
 		case LEVEL_FIELD:
@@ -75,8 +86,13 @@ _uint CTriggerBox_Dynamic::Late_Tick(_float fTimeDelta)
 			BottleGrotto_Triggers();
 			break;
 		}
-		
+
 		return OBJ_DESTROY;
+	}
+	else
+	{
+		CGameInstance::Get_Instance()->Set_IsJustSpawned(false);
+		CGameInstance::Get_Instance()->Set_SpawnTriggerBox(nullptr);
 	}
 
 	return OBJ_NOEVENT;
@@ -98,6 +114,9 @@ void CTriggerBox_Dynamic::Field_Triggers()
 	{	
 		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MORIBLINCAVE))))
 			return;
+
+		pGameInstance->Set_SpawnTriggerBox("MoriblinCave_Entrance");
+		pGameInstance->Set_IsJustSpawned(true);
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -111,6 +130,9 @@ void CTriggerBox_Dynamic::MoriblinCave_Triggers()
 	{
 		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FIELD))))
 			return;
+
+		pGameInstance->Set_SpawnTriggerBox("MoriblinCave_Entrance");
+		pGameInstance->Set_IsJustSpawned(true);
 	}
 
 	RELEASE_INSTANCE(CGameInstance);

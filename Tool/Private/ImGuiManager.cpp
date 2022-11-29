@@ -765,6 +765,10 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 				{
 					m_tSelectedTrigger = &tTrigger;
 					m_fTriggerBoxScale = XMVectorGetX(XMVector3Length(XMLoadFloat4x4(&m_tSelectedTrigger->mWorldMatrix).r[0]));
+					_float3 vTriggerPosition = (_float3)m_tSelectedTrigger->mWorldMatrix.m[3];
+					m_fTriggerBoxX = vTriggerPosition.x;
+					m_fTriggerBoxY = vTriggerPosition.y;
+					m_fTriggerBoxZ = vTriggerPosition.z;
 				}
 
 				if (m_tSelectedTrigger == &tTrigger)
@@ -794,6 +798,75 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 				_matrix WorldMatrix = ScaleMatrix * TranslationMatrix;
 
 				// Then, apply the new Transformation
+				m_tSelectedTrigger->pTriggerBox.Transform(m_tSelectedTrigger->pTriggerBox, WorldMatrix);
+				XMStoreFloat4x4(&m_tSelectedTrigger->mWorldMatrix, WorldMatrix);
+			}
+		}
+
+		// Trigger Translation Drag
+		ImGui::Text("Translation:");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60);
+		if (ImGui::DragFloat("##TriggerBoxTranslationX", &m_fTriggerBoxX, 0.005f, 0.f, 0.f, "%.03f"))
+		{
+			if (m_tSelectedTrigger)
+			{
+				_float3 vTriggerPosition = (_float3)m_tSelectedTrigger->mWorldMatrix.m[3];
+
+				// Firstly, Reset any Transformation 
+				_matrix WorldMatrixInverse = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_tSelectedTrigger->mWorldMatrix));
+				m_tSelectedTrigger->pTriggerBox.Transform(m_tSelectedTrigger->pTriggerBox, WorldMatrixInverse);
+
+				// Then, apply the new Transformation
+				_matrix TranslationMatrix = XMMatrixTranslation(m_fTriggerBoxX, vTriggerPosition.y, vTriggerPosition.z);
+				_matrix ScaleMatrix = XMMatrixScaling(m_fTriggerBoxScale, m_fTriggerBoxScale, m_fTriggerBoxScale);
+
+				_matrix WorldMatrix = ScaleMatrix * TranslationMatrix;
+
+				m_tSelectedTrigger->pTriggerBox.Transform(m_tSelectedTrigger->pTriggerBox, WorldMatrix);
+				XMStoreFloat4x4(&m_tSelectedTrigger->mWorldMatrix, WorldMatrix);
+			}
+		}
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60);
+		if (ImGui::DragFloat("##TriggerBoxTranslationY", &m_fTriggerBoxY, 0.005f, 0.f, 0.f, "%.03f"))
+		{
+			if (m_tSelectedTrigger)
+			{
+				_float3 vTriggerPosition = (_float3)m_tSelectedTrigger->mWorldMatrix.m[3];
+
+				// Firstly, Reset any Transformation 
+				_matrix WorldMatrixInverse = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_tSelectedTrigger->mWorldMatrix));
+				m_tSelectedTrigger->pTriggerBox.Transform(m_tSelectedTrigger->pTriggerBox, WorldMatrixInverse);
+
+				// Then, apply the new Transformation
+				_matrix TranslationMatrix = XMMatrixTranslation(vTriggerPosition.x, m_fTriggerBoxY, vTriggerPosition.z);
+				_matrix ScaleMatrix = XMMatrixScaling(m_fTriggerBoxScale, m_fTriggerBoxScale, m_fTriggerBoxScale);
+
+				_matrix WorldMatrix = ScaleMatrix * TranslationMatrix;
+
+				m_tSelectedTrigger->pTriggerBox.Transform(m_tSelectedTrigger->pTriggerBox, WorldMatrix);
+				XMStoreFloat4x4(&m_tSelectedTrigger->mWorldMatrix, WorldMatrix);
+			}
+		}
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60);
+		if (ImGui::DragFloat("##TriggerBoxTranslationZ", &m_fTriggerBoxZ, 0.005f, 0.f, 0.f, "%.03f"))
+		{
+			if (m_tSelectedTrigger)
+			{
+				_float3 vTriggerPosition = (_float3)m_tSelectedTrigger->mWorldMatrix.m[3];
+
+				// Firstly, Reset any Transformation 
+				_matrix WorldMatrixInverse = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_tSelectedTrigger->mWorldMatrix));
+				m_tSelectedTrigger->pTriggerBox.Transform(m_tSelectedTrigger->pTriggerBox, WorldMatrixInverse);
+
+				// Then, apply the new Transformation
+				_matrix TranslationMatrix = XMMatrixTranslation(vTriggerPosition.x, vTriggerPosition.y, m_fTriggerBoxZ);
+				_matrix ScaleMatrix = XMMatrixScaling(m_fTriggerBoxScale, m_fTriggerBoxScale, m_fTriggerBoxScale);
+
+				_matrix WorldMatrix = ScaleMatrix * TranslationMatrix;
+
 				m_tSelectedTrigger->pTriggerBox.Transform(m_tSelectedTrigger->pTriggerBox, WorldMatrix);
 				XMStoreFloat4x4(&m_tSelectedTrigger->mWorldMatrix, WorldMatrix);
 			}

@@ -20,6 +20,11 @@ protected:
 	virtual ~CTriggerBox() = default;
 
 public:
+	TRIGGERBOXDESC Get_TriggerBoxDesc() { return m_tTriggerBoxDesc; }
+
+	void Set_IsFirstFrame(_bool bIsFirstFrame) { m_bIsFirstFrame = bIsFirstFrame; }
+
+public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 	virtual _uint Tick(_float fTimeDelta);
@@ -29,6 +34,7 @@ public:
 protected:
 	TRIGGERBOXDESC m_tTriggerBoxDesc;
 	CCollider* m_pCollider = nullptr;
+	_bool m_bIsFirstFrame = false;
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

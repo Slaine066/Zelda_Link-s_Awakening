@@ -16,6 +16,9 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 
 private:
+	void Compute_SpawnPosition(_float fTimeDelta);
+
+private:
 	LEVEL m_eNextLevel = LEVEL_END;
 	class CLoader* m_pLoader = nullptr;
 

@@ -49,7 +49,12 @@ public: /* For.Level_Manager */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	_uint Get_CurrentLevelIndex();
 	_uint Get_NextLevelIndex();
+	_bool Get_IsJustSpawned();
+	class CTriggerBox* Get_TriggerBox(char* pTriggerBoxName);
+	char* Get_SpawnTriggerBoxName();
 	void Set_NextLevel(_uint iNextLevelIndex);
+	void Set_IsJustSpawned(_bool bIsJustSpawned);
+	void Set_SpawnTriggerBox(char* pTriggerBoxName);
 	HRESULT Render_NavigationMesh();
 	HRESULT Render_TriggerBox();
 

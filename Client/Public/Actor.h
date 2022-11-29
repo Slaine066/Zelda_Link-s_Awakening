@@ -53,6 +53,7 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	CNavigation* Get_Navigation() { return m_pNavigationCom; }
 	CCollider* Get_Collider(CCollider::AIM eAim);
+	virtual void Update_Colliders();
 
 	void Sync_WithNavigationHeight();
 
@@ -65,8 +66,6 @@ protected:
 
 	virtual HRESULT Ready_Components(void* pArg) PURE;
 	virtual HRESULT SetUp_ShaderResources() PURE;
-
-	virtual void Update_Colliders();
 
 	void Render_Colliders();
 	void Render_NavigationMesh();

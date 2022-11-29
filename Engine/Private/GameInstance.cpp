@@ -204,12 +204,52 @@ _uint CGameInstance::Get_NextLevelIndex()
 	return m_pLevel_Manager->Get_NextLevelIndex();
 }
 
+_bool CGameInstance::Get_IsJustSpawned()
+{
+	if (nullptr == m_pLevel_Manager)
+		return E_FAIL;
+
+	return m_pLevel_Manager->Get_IsJustSpawned();
+}
+
+CTriggerBox * CGameInstance::Get_TriggerBox(char * pTriggerBoxName)
+{
+	if (nullptr == m_pLevel_Manager)
+		return nullptr;
+
+	return m_pLevel_Manager->Get_TriggerBox(pTriggerBoxName);
+}
+
+char * CGameInstance::Get_SpawnTriggerBoxName()
+{
+	if (nullptr == m_pLevel_Manager)
+		return nullptr;
+
+	return m_pLevel_Manager->Get_SpawnTriggerBoxName();
+}
+
 void CGameInstance::Set_NextLevel(_uint iNextLevelIndex)
 {
 	if (nullptr == m_pLevel_Manager)
 		return;
 
 	return m_pLevel_Manager->Set_NextLevelIndex(iNextLevelIndex);
+}
+
+void CGameInstance::Set_IsJustSpawned(_bool bIsJustSpawned)
+{
+	if (nullptr == m_pLevel_Manager)
+		return;
+
+	return m_pLevel_Manager->Set_IsJustSpawned(bIsJustSpawned);
+}
+
+void CGameInstance::Set_SpawnTriggerBox(char * pTriggerBoxName)
+{
+	if (nullptr == m_pLevel_Manager)
+		return;
+
+	return m_pLevel_Manager->Set_SpawnTriggerBox(pTriggerBoxName);
 }
 
 HRESULT CGameInstance::Render_NavigationMesh()
