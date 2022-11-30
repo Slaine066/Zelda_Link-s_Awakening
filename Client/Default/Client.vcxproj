@@ -181,6 +181,8 @@
     <ClInclude Include="..\public\BossblinMoveState.h" />
     <ClInclude Include="..\public\BossblinState.h" />
     <ClInclude Include="..\public\BossblinTackleState.h" />
+    <ClInclude Include="..\public\CameraManager.h" />
+    <ClInclude Include="..\public\Camera_Dungeon.h" />
     <ClInclude Include="..\public\Character.h" />
     <ClInclude Include="..\public\InteractableObject.h" />
     <ClInclude Include="..\public\Level_BottleGrotto.h" />
@@ -202,7 +204,7 @@
     <ClInclude Include="..\public\MoriblinSwordMoveState.h" />
     <ClInclude Include="..\public\MoriblinSwordStaggerState.h" />
     <ClInclude Include="..\Public\PlayerAttackState.h" />
-    <ClInclude Include="..\Public\Camera_Dynamic.h" />
+    <ClInclude Include="..\Public\Camera_Player.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\public\PlayerGuardMoveState.h" />
     <ClInclude Include="..\public\PlayerGuardState.h" />
@@ -241,6 +243,8 @@
     <ClCompile Include="..\private\BossblinHitState.cpp" />
     <ClCompile Include="..\private\BossblinMoveState.cpp" />
     <ClCompile Include="..\private\BossblinTackleState.cpp" />
+    <ClCompile Include="..\private\CameraManager.cpp" />
+    <ClCompile Include="..\private\Camera_Dungeon.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\InteractableObject.cpp" />
     <ClCompile Include="..\private\Level_BottleGrotto.cpp" />
@@ -261,7 +265,7 @@
     <ClCompile Include="..\private\MoriblinSwordMoveState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordStaggerState.cpp" />
     <ClCompile Include="..\Private\PlayerAttackState.cpp" />
-    <ClCompile Include="..\Private\Camera_Dynamic.cpp" />
+    <ClCompile Include="..\Private\Camera_Player.cpp" />
     <ClCompile Include="..\private\PlayerGuardMoveState.cpp" />
     <ClCompile Include="..\private\PlayerGuardState.cpp" />
     <ClCompile Include="..\private\PlayerHitState.cpp" />

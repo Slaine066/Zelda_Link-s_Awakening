@@ -10,17 +10,17 @@ class ENGINE_DLL CCamera abstract : public CGameObject
 public:
 	typedef struct tagCameraDesc
 	{	
-		_float4				vEye;
-		_float4				vAt;
+		_float4 vEye;
+		_float4	vAt;
 
-		_float				fAspect;
-		_float				fFovy;
-		_float				fNear;
-		_float				fFar;
+		_float fAspect;
+		_float fFovy;
+		_float fNear;
+		_float fFar;
 
-		CTransform::TRANSFORMDESC		TransformDesc;
-
+		CTransform::TRANSFORMDESC TransformDesc;
 	}CAMERADESC;
+
 protected:
 	CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CCamera(const CCamera& rhs);
@@ -34,18 +34,16 @@ public:
 	virtual HRESULT Render();
 
 protected:
-	static _tchar*					m_pTransformTag;
-	class CTransform*				m_pTransform = nullptr;
-	CAMERADESC						m_CameraDesc;
-	class CPipeLine*				m_pPipeLine = nullptr;
+	static _tchar* m_pTransformTag;
+	class CTransform* m_pTransform = nullptr;
+	class CPipeLine* m_pPipeLine = nullptr;
+	CAMERADESC m_CameraDesc;
 
 protected:
 	HRESULT Bind_OnPipeLine();
-
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;
 	virtual void Free() override;
 };
-
 END

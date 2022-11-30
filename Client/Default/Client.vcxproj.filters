@@ -121,6 +121,15 @@
     <Filter Include="02.GameObjects\03.TriggerBox">
       <UniqueIdentifier>{7876b483-80f5-4906-b79b-505254d54f55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Camera\Manager">
+      <UniqueIdentifier>{ff7c2fba-fc4b-456d-ad97-5e9461c33494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Camera\00.PlayerCamera">
+      <UniqueIdentifier>{3e83a06b-9b4e-43b3-9cfa-6371c6f7089a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Camera\01.DungeonCamera">
+      <UniqueIdentifier>{fd532923-ec4e-4a43-adef-c6da7d183122}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -158,9 +167,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Player.h">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Camera_Dynamic.h">
-      <Filter>02.GameObjects\01.Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Monster.h">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster</Filter>
@@ -306,6 +312,15 @@
     <ClInclude Include="..\public\TriggerBox_Dynamic.h">
       <Filter>02.GameObjects\03.TriggerBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CameraManager.h">
+      <Filter>02.GameObjects\01.Camera\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Camera_Dungeon.h">
+      <Filter>02.GameObjects\01.Camera\01.DungeonCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Camera_Player.h">
+      <Filter>02.GameObjects\01.Camera\00.PlayerCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -328,9 +343,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Camera_Dynamic.cpp">
-      <Filter>02.GameObjects\01.Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Monster.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster</Filter>
@@ -463,6 +475,15 @@
     </ClCompile>
     <ClCompile Include="..\private\TriggerBox_Dynamic.cpp">
       <Filter>02.GameObjects\03.TriggerBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CameraManager.cpp">
+      <Filter>02.GameObjects\01.Camera\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_Dungeon.cpp">
+      <Filter>02.GameObjects\01.Camera\01.DungeonCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera_Player.cpp">
+      <Filter>02.GameObjects\01.Camera\00.PlayerCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

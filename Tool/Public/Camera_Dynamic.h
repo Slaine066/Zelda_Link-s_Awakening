@@ -3,16 +3,12 @@
 #include "Tool_Defines.h"
 #include "Camera.h"
 
-BEGIN(Engine)
-END
-
 BEGIN(Tool)
 class CCamera_Dynamic final : public CCamera
 {
 public:
 	typedef struct tagCameraDesc_Derived
 	{
-		_uint iTest;
 		CCamera::CAMERADESC	CameraDesc;
 	}CAMERADESC_DERIVED;
 

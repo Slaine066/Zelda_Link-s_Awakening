@@ -158,8 +158,6 @@ HRESULT CMainTool::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CCamera_Dynamic::CAMERADESC_DERIVED CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera_Dynamic::CAMERADESC_DERIVED));
 
-	CameraDesc.iTest = 10;
-
 	CameraDesc.CameraDesc.vEye = _float4(5.f, 8.0f, -5.f, 1.f);
 	CameraDesc.CameraDesc.vAt = _float4(5.f, 0.f, 5.f, 1.f);
 

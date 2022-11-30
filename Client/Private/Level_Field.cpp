@@ -2,7 +2,8 @@
 
 #include "Level_Field.h"
 #include "GameInstance.h"
-#include "Camera_Dynamic.h"
+#include "CameraManager.h"
+#include "Camera_Player.h"
 #include "TriggerBox_Dynamic.h"
 
 CLevel_Field::CLevel_Field(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -37,6 +38,8 @@ HRESULT CLevel_Field::Initialize()
 	/*if (FAILED(Ready_Layer_Effect()))
 		return E_FAIL;*/
 
+	CCameraManager::Get_Instance()->Ready_Camera(LEVEL::LEVEL_FIELD, CCameraManager::CAM_STATE::CAM_PLAYER);
+
 	return S_OK;
 }
 
@@ -50,6 +53,22 @@ void CLevel_Field::Late_Tick(_float fTimeDelta)
 	__super::Late_Tick(fTimeDelta);
 
 	SetWindowText(g_hWnd, TEXT("Field Level."));
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (pGameInstance->Key_Down('C'))
+	{
+		CCamera_Player* pCamera = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+		pCamera->Set_ModeZoom(true);
+		pCamera->Set_ZoomPosition(_float3(0.f, 0.f, -5.f));
+	}
+	if (pGameInstance->Key_Down('V'))
+	{
+		CCamera_Player* pCamera = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+		pCamera->Set_ModeZoom(false);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CLevel_Field::Load_Objects_FromFile()
@@ -186,10 +205,8 @@ HRESULT CLevel_Field::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
-	CCamera_Dynamic::CAMERADESC_DERIVED CameraDesc;
-	ZeroMemory(&CameraDesc, sizeof(CCamera_Dynamic::CAMERADESC_DERIVED));
-
-	CameraDesc.iTest = 10;
+	CCamera_Player::CAMERADESC_DERIVED CameraDesc;
+	ZeroMemory(&CameraDesc, sizeof(CCamera_Player::CAMERADESC_DERIVED));
 
 	CameraDesc.CameraDesc.vEye = _float4(0.f, 10.0f, -10.f, 1.f);
 	CameraDesc.CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);

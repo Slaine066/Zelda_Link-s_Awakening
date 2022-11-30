@@ -2,7 +2,8 @@
 
 #include "Level_MoriblinCave.h"
 #include "GameInstance.h"
-#include "Camera_Dynamic.h"
+#include "CameraManager.h"
+#include "Camera_Player.h"
 #include "TriggerBox_Dynamic.h"
 
 CLevel_MoriblinCave::CLevel_MoriblinCave(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -37,6 +38,8 @@ HRESULT CLevel_MoriblinCave::Initialize()
 	/*if (FAILED(Ready_Layer_Effect()))
 	return E_FAIL;*/
 
+	CCameraManager::Get_Instance()->Ready_Camera(LEVEL::LEVEL_MORIBLINCAVE, CCameraManager::CAM_STATE::CAM_DUNGEON);
+
 	return S_OK;
 }
 
@@ -50,6 +53,27 @@ void CLevel_MoriblinCave::Late_Tick(_float fTimeDelta)
 	__super::Late_Tick(fTimeDelta);
 
 	SetWindowText(g_hWnd, TEXT("MoriblinCave Level."));
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (pGameInstance->Key_Down('C'))
+	{
+		CCamera_Player* pCamera = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+		pCamera->Set_ModeZoom(true);
+		pCamera->Set_ZoomPosition(_float3(0.f, 0.f, -5.f));
+	}
+	if (pGameInstance->Key_Down('V'))
+	{
+		CCamera_Player* pCamera = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+		pCamera->Set_ModeZoom(false);
+	}
+	if (pGameInstance->Key_Down('B'))
+	{
+		CCamera_Player* pCamera = (CCamera_Player*)(CCameraManager::Get_Instance()->Get_CurrentCamera());
+		pCamera->Set_ModeShake(0.5f, 0.1f, 0.01f);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CLevel_MoriblinCave::Load_Objects_FromFile()
@@ -194,10 +218,8 @@ HRESULT CLevel_MoriblinCave::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
-	CCamera_Dynamic::CAMERADESC_DERIVED CameraDesc;
-	ZeroMemory(&CameraDesc, sizeof(CCamera_Dynamic::CAMERADESC_DERIVED));
-
-	CameraDesc.iTest = 10;
+	CCamera_Player::CAMERADESC_DERIVED CameraDesc;
+	ZeroMemory(&CameraDesc, sizeof(CCamera_Player::CAMERADESC_DERIVED));
 
 	CameraDesc.CameraDesc.vEye = _float4(0.f, 10.0f, -10.f, 1.f);
 	CameraDesc.CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);

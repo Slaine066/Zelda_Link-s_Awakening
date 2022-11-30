@@ -28,7 +28,7 @@ HRESULT CPlayer::Initialize_Prototype()
 	m_tStats.m_fCurrentHp = m_tStats.m_fMaxHp;
 	m_tStats.m_fAttackPower = 1;
 	m_tStats.m_fWalkSpeed = .7f;
-	m_tStats.m_fRunSpeed = 1.4f;
+	m_tStats.m_fRunSpeed = 14.4f;
 
 	return S_OK;
 }
