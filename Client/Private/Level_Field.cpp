@@ -53,22 +53,6 @@ void CLevel_Field::Late_Tick(_float fTimeDelta)
 	__super::Late_Tick(fTimeDelta);
 
 	SetWindowText(g_hWnd, TEXT("Field Level."));
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	if (pGameInstance->Key_Down('C'))
-	{
-		CCamera_Player* pCamera = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
-		pCamera->Set_ModeZoom(true);
-		pCamera->Set_ZoomPosition(_float3(0.f, 0.f, -5.f));
-	}
-	if (pGameInstance->Key_Down('V'))
-	{
-		CCamera_Player* pCamera = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
-		pCamera->Set_ModeZoom(false);
-	}
-
-	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CLevel_Field::Load_Objects_FromFile()
@@ -202,8 +186,7 @@ HRESULT CLevel_Field::Ready_Lights()
 
 HRESULT CLevel_Field::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	Safe_AddRef(pGameInstance);
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	CCamera_Player::CAMERADESC_DERIVED CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera_Player::CAMERADESC_DERIVED));
@@ -219,10 +202,10 @@ HRESULT CLevel_Field::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Dynamic"), TEXT("Prototype_GameObject_Camera_Dynamic"), LEVEL_FIELD, pLayerTag, &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Player"), TEXT("Prototype_GameObject_Camera_Player"), LEVEL_FIELD, pLayerTag, &CameraDesc)))
 		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }

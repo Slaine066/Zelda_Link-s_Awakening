@@ -38,6 +38,7 @@ enum DIMM { DIMM_X, DIMM_Y, DIMM_WHEEL, DIMM_END };
 #include <unordered_set>
 #include <algorithm>
 #include <typeinfo.h>
+#include <numeric>
 using namespace std;
 
 

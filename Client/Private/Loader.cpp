@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Navigation.h"
 #include "Camera_Player.h"
+#include "Camera_Dungeon.h"
 #include "TriggerBox_Dynamic.h"
 #include "StaticObject.h"
 #include "Player.h"
@@ -527,8 +528,11 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 #pragma region Loading_Objects
 	lstrcpy(m_szLoadingText, TEXT("Loading_Object.."));
 
-	/* For.Prototype_GameObject_Camera_Dynamic */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dynamic"), CCamera_Player::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_GameObject_Camera_Player */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Player"), CCamera_Player::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Camera_Dungeon */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dungeon"), CCamera_Dungeon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_TriggerBox_Dynamic */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TriggerBox_Dynamic"), CTriggerBox_Dynamic::Create(m_pDevice, m_pContext))))

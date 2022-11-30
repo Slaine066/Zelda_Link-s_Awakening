@@ -71,6 +71,4 @@ namespace Engine
 			return false;
 		}
 	};
-
-
 }

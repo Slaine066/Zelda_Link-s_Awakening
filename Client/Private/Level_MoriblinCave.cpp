@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "CameraManager.h"
 #include "Camera_Player.h"
+#include "Camera_Dungeon.h"
 #include "TriggerBox_Dynamic.h"
 
 CLevel_MoriblinCave::CLevel_MoriblinCave(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -37,8 +38,6 @@ HRESULT CLevel_MoriblinCave::Initialize()
 
 	/*if (FAILED(Ready_Layer_Effect()))
 	return E_FAIL;*/
-
-	CCameraManager::Get_Instance()->Ready_Camera(LEVEL::LEVEL_MORIBLINCAVE, CCameraManager::CAM_STATE::CAM_DUNGEON);
 
 	return S_OK;
 }
@@ -215,27 +214,58 @@ HRESULT CLevel_MoriblinCave::Ready_Lights()
 
 HRESULT CLevel_MoriblinCave::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	Safe_AddRef(pGameInstance);
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	CCamera_Player::CAMERADESC_DERIVED CameraDesc;
-	ZeroMemory(&CameraDesc, sizeof(CCamera_Player::CAMERADESC_DERIVED));
+#pragma region Player_Camera
+	CCamera_Player::CAMERADESC_DERIVED PlayerCamera;
+	ZeroMemory(&PlayerCamera, sizeof(CCamera_Player::CAMERADESC_DERIVED));
 
-	CameraDesc.CameraDesc.vEye = _float4(0.f, 10.0f, -10.f, 1.f);
-	CameraDesc.CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+	PlayerCamera.CameraDesc.vEye = _float4(0.f, 10.0f, -10.f, 1.f);
+	PlayerCamera.CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 
-	CameraDesc.CameraDesc.fFovy = XMConvertToRadians(60.0f);
-	CameraDesc.CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
-	CameraDesc.CameraDesc.fNear = 0.2f;
-	CameraDesc.CameraDesc.fFar = 500.f;
+	PlayerCamera.CameraDesc.fFovy = XMConvertToRadians(60.0f);
+	PlayerCamera.CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
+	PlayerCamera.CameraDesc.fNear = 0.2f;
+	PlayerCamera.CameraDesc.fFar = 500.f;
 
-	CameraDesc.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
-	CameraDesc.CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
+	PlayerCamera.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
+	PlayerCamera.CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Dynamic"), TEXT("Prototype_GameObject_Camera_Dynamic"), LEVEL_MORIBLINCAVE, pLayerTag, &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Player"), TEXT("Prototype_GameObject_Camera_Player"), LEVEL_MORIBLINCAVE, pLayerTag, &PlayerCamera)))
+		return E_FAIL;
+#pragma endregion Player_Camera
+
+#pragma region Dungeon_Camera
+	CCamera_Dungeon::CAMERADESC_DERIVED DungeonCamera;
+	ZeroMemory(&DungeonCamera, sizeof(CCamera_Dungeon::CAMERADESC_DERIVED));
+	
+	DungeonCamera.CameraDesc.vEye = _float4(0.f, 10.0f, -10.f, 1.f);
+	DungeonCamera.CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+	DungeonCamera.CameraDesc.fFovy = XMConvertToRadians(60.0f);
+	DungeonCamera.CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
+	DungeonCamera.CameraDesc.fNear = 0.2f;
+	DungeonCamera.CameraDesc.fFar = 500.f;
+
+	DungeonCamera.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
+	DungeonCamera.CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
+
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Dungeon"), TEXT("Prototype_GameObject_Camera_Dungeon"), LEVEL_MORIBLINCAVE, pLayerTag, &DungeonCamera)))
+		return E_FAIL;
+#pragma endregion Dungeon_Camera
+
+	CCameraManager::Get_Instance()->Ready_Camera(LEVEL::LEVEL_MORIBLINCAVE, CCameraManager::CAM_STATE::CAM_DUNGEON);
+	CCamera_Dungeon* pCameraDungeon = dynamic_cast<CCamera_Dungeon*>(CGameInstance::Get_Instance()->Find_Object(LEVEL_MORIBLINCAVE, TEXT("Layer_Camera"), CCameraManager::CAM_DUNGEON));
+	if (!pCameraDungeon)
 		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	pCameraDungeon->Add_RoomCamera(_float3(0.f, 0.f, 0.f));		// MoriblinCave_1A
+	pCameraDungeon->Add_RoomCamera(_float3(6.f, 0.f, 0.f));		// MoriblinCave_1B
+	pCameraDungeon->Add_RoomCamera(_float3(12.f, 0.f, 0.f));	// MoriblinCave_1C
+	pCameraDungeon->Add_RoomCamera(_float3(0.f, 0.f, -5.f));	// MoriblinCave_2A
+	pCameraDungeon->Setup_DungeonCamera();
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }

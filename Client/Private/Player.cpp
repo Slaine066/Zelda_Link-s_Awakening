@@ -22,13 +22,13 @@ HRESULT CPlayer::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_fRadius = 0.15f;
+	m_fRadius = 0.2f;
 
 	m_tStats.m_fMaxHp = 4;
 	m_tStats.m_fCurrentHp = m_tStats.m_fMaxHp;
 	m_tStats.m_fAttackPower = 1;
 	m_tStats.m_fWalkSpeed = .7f;
-	m_tStats.m_fRunSpeed = 14.4f;
+	m_tStats.m_fRunSpeed = 1.4f;
 
 	return S_OK;
 }
