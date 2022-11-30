@@ -130,6 +130,9 @@
     <Filter Include="02.GameObjects\01.Camera\01.DungeonCamera">
       <UniqueIdentifier>{fd532923-ec4e-4a43-adef-c6da7d183122}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\00.Treasure">
+      <UniqueIdentifier>{8e1b759d-dd3c-4e48-bb49-a73457336fc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -321,6 +324,9 @@
     <ClInclude Include="..\Public\Camera_Player.h">
       <Filter>02.GameObjects\01.Camera\00.PlayerCamera</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Treasure.h">
+      <Filter>02.GameObjects\00.Actor\02.InteractableObject\00.Treasure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -484,6 +490,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Player.cpp">
       <Filter>02.GameObjects\01.Camera\00.PlayerCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Treasure.cpp">
+      <Filter>02.GameObjects\00.Actor\02.InteractableObject\00.Treasure</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

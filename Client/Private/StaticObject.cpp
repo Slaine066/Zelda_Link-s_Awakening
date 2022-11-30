@@ -28,11 +28,17 @@ HRESULT CStaticObject::Initialize(void * pArg)
 
 _uint CStaticObject::Tick(_float fTimeDelta)
 {
+	if (FAILED(__super::Tick(fTimeDelta)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 _uint CStaticObject::Late_Tick(_float fTimeDelta)
 {
+	if (FAILED(__super::Late_Tick(fTimeDelta)))
+		return E_FAIL;
+
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
@@ -41,10 +47,7 @@ _uint CStaticObject::Late_Tick(_float fTimeDelta)
 
 HRESULT CStaticObject::Render()
 {
-	if (m_pShaderCom == nullptr || m_pModelCom == nullptr)
-		return E_FAIL;
-
-	if (FAILED(SetUp_ShaderResources()))
+	if (FAILED(__super::Render()))
 		return E_FAIL;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshContainers();

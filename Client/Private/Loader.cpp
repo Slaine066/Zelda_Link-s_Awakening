@@ -7,6 +7,7 @@
 #include "Camera_Dungeon.h"
 #include "TriggerBox_Dynamic.h"
 #include "StaticObject.h"
+#include "Treasure.h"
 #include "Player.h"
 #include "MoriblinSword.h"
 #include "MoriblinSpear.h"
@@ -123,7 +124,7 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_BossblinSpear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_BossblinSpear/BossblinSpear.fbx"))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_Treasure*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Treasure"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Object_Treasure/Treasure.fbx", PivotMatrix))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Treasure"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Object_Treasure/Treasure.fbx"))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Field_** */
@@ -539,6 +540,9 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_StaticObject */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_InteractableObject */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Treasure"), CTreasure::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_Player */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
