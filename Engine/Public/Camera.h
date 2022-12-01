@@ -4,7 +4,6 @@
 #include "Transform.h"
 
 BEGIN(Engine)
-
 class ENGINE_DLL CCamera abstract : public CGameObject
 {
 public:

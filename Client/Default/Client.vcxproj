@@ -178,12 +178,14 @@
     <ClInclude Include="..\public\BossblinDownState.h" />
     <ClInclude Include="..\public\BossblinGuardState.h" />
     <ClInclude Include="..\public\BossblinHitState.h" />
+    <ClInclude Include="..\Public\BossblinIdleState.h" />
     <ClInclude Include="..\public\BossblinMoveState.h" />
     <ClInclude Include="..\public\BossblinState.h" />
     <ClInclude Include="..\public\BossblinTackleState.h" />
     <ClInclude Include="..\public\CameraManager.h" />
     <ClInclude Include="..\public\Camera_Dungeon.h" />
     <ClInclude Include="..\public\Character.h" />
+    <ClInclude Include="..\public\HpBar.h" />
     <ClInclude Include="..\public\InteractableObject.h" />
     <ClInclude Include="..\public\Level_BottleGrotto.h" />
     <ClInclude Include="..\public\Level_MoriblinCave.h" />
@@ -224,10 +226,11 @@
     <ClInclude Include="..\public\Projectile.h" />
     <ClInclude Include="..\public\Treasure.h" />
     <ClInclude Include="..\public\TriggerBox_Dynamic.h" />
+    <ClInclude Include="..\public\UI.h" />
+    <ClInclude Include="..\public\UI_Heart.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\StaticObject.h" />
     <ClInclude Include="..\Public\Terrain.h" />
-    <ClInclude Include="BossblinIdleState.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -242,11 +245,13 @@
     <ClCompile Include="..\private\BossblinDownState.cpp" />
     <ClCompile Include="..\private\BossblinGuardState.cpp" />
     <ClCompile Include="..\private\BossblinHitState.cpp" />
+    <ClCompile Include="..\Private\BossblinIdleState.cpp" />
     <ClCompile Include="..\private\BossblinMoveState.cpp" />
     <ClCompile Include="..\private\BossblinTackleState.cpp" />
     <ClCompile Include="..\private\CameraManager.cpp" />
     <ClCompile Include="..\private\Camera_Dungeon.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
+    <ClCompile Include="..\private\HpBar.cpp" />
     <ClCompile Include="..\private\InteractableObject.cpp" />
     <ClCompile Include="..\private\Level_BottleGrotto.cpp" />
     <ClCompile Include="..\private\Level_MoriblinCave.cpp" />
@@ -283,10 +288,11 @@
     <ClCompile Include="..\private\Projectile.cpp" />
     <ClCompile Include="..\private\Treasure.cpp" />
     <ClCompile Include="..\private\TriggerBox_Dynamic.cpp" />
+    <ClCompile Include="..\private\UI.cpp" />
+    <ClCompile Include="..\private\UI_Heart.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
-    <ClCompile Include="BossblinIdleState.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -5,6 +5,7 @@
 #include "CameraManager.h"
 #include "Camera_Player.h"
 #include "TriggerBox_Dynamic.h"
+#include "UI.h"
 
 CLevel_Field::CLevel_Field(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -28,15 +29,15 @@ HRESULT CLevel_Field::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	/* For.Com_Navigation */
-	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_FIELD, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationMesh)))
+	if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 		return E_FAIL;
 
-	/*if (FAILED(Ready_Layer_UI()))
-		return E_FAIL;*/
+	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
+		return E_FAIL;
 
-	/*if (FAILED(Ready_Layer_Effect()))
-		return E_FAIL;*/
+		/* For.Com_Navigation */
+	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_FIELD, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationMesh)))
+		return E_FAIL;
 
 	CCameraManager::Get_Instance()->Ready_Camera(LEVEL::LEVEL_FIELD, CCameraManager::CAM_STATE::CAM_PLAYER);
 
@@ -138,12 +139,12 @@ HRESULT CLevel_Field::Load_Triggers_FromFile()
 
 HRESULT CLevel_Field::Ready_Layer_UI(const _tchar * pLayerTag)
 {
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	Safe_AddRef(pGameInstance);
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	// ..
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("UI_HpBar"), TEXT("Prototype_GameObject_UI_HpBar"), LEVEL_FIELD, pLayerTag)))
+		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }

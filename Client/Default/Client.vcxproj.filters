@@ -133,6 +133,15 @@
     <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\00.Treasure">
       <UniqueIdentifier>{8e1b759d-dd3c-4e48-bb49-a73457336fc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\04.UI">
+      <UniqueIdentifier>{76db635f-835c-42fe-a8ef-35f87d99cf8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04.UI\00.HpBar">
+      <UniqueIdentifier>{ec2362da-a963-4d82-9d69-d7538a9746e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04.UI\00.HpBar\UI_Heart">
+      <UniqueIdentifier>{34a0da84-caf2-43fb-85cc-235b152cd743}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -258,9 +267,6 @@
     <ClInclude Include="..\public\BossblinState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState</Filter>
     </ClInclude>
-    <ClInclude Include="BossblinIdleState.h">
-      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\BossblinMoveState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
     </ClInclude>
@@ -326,6 +332,18 @@
     </ClInclude>
     <ClInclude Include="..\public\Treasure.h">
       <Filter>02.GameObjects\00.Actor\02.InteractableObject\00.Treasure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HpBar.h">
+      <Filter>02.GameObjects\04.UI\00.HpBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI.h">
+      <Filter>02.GameObjects\04.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossblinIdleState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Heart.h">
+      <Filter>02.GameObjects\04.UI\00.HpBar\UI_Heart</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -425,9 +443,6 @@
     <ClCompile Include="..\private\Bossblin.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin</Filter>
     </ClCompile>
-    <ClCompile Include="BossblinIdleState.cpp">
-      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\BossblinMoveState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
     </ClCompile>
@@ -493,6 +508,18 @@
     </ClCompile>
     <ClCompile Include="..\private\Treasure.cpp">
       <Filter>02.GameObjects\00.Actor\02.InteractableObject\00.Treasure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HpBar.cpp">
+      <Filter>02.GameObjects\04.UI\00.HpBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI.cpp">
+      <Filter>02.GameObjects\04.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossblinIdleState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Heart.cpp">
+      <Filter>02.GameObjects\04.UI\00.HpBar\UI_Heart</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,8 @@
 #include "Bossblin.h"
 #include "Weapon.h"
 #include "Projectile.h"
+#include "UI_Heart.h"
+#include "HpBar.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -76,6 +78,10 @@ HRESULT CLoader::Loading_ForStaticLevel()
 #pragma region Loading_Textures
 	lstrcpy(m_szLoadingText, TEXT("Loading Textures.."));
 	
+	/*For.Prototype_Component_Texture_Heart */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Heart"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Heart_%d.png"), 3))))
+		return E_FAIL;
+
 	// >
 	// .. Add Above ..
 #pragma endregion Loading_Textures
@@ -553,7 +559,7 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 	/* For.Prototype_GameObject_MoriblinSpear */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSpear"), CMoriblinSpear::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	/*For.Prototype_GameObject_Bossblin */
+	/* For.Prototype_GameObject_Bossblin */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Bossblin"), CBossblin::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_Weapon */
@@ -562,7 +568,13 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 	/* For.Prototype_GameObject_Projectile */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Projectile"), CProjectile::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	
+	/* For.Prototype_GameObject_UI */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Heart"), CUI_Heart::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_HpBar */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_HpBar"), CHpBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	// >
 	// .. Add Above ..
 #pragma endregion Loading_Objects
