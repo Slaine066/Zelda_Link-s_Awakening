@@ -7,6 +7,7 @@
 #include "Camera_Dungeon.h"
 #include "TriggerBox_Dynamic.h"
 #include "StaticObject.h"
+#include "FallingTile.h"
 #include "Treasure.h"
 #include "Player.h"
 #include "MoriblinSword.h"
@@ -547,7 +548,10 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 	/* For.Prototype_GameObject_StaticObject */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	/* For.Prototype_GameObject_InteractableObject */
+	/* For.Prototype_GameObject_FallingTile */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FallingTile"), CFallingTile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Treasure */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Treasure"), CTreasure::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_Player */

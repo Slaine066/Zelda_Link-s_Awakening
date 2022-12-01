@@ -100,7 +100,7 @@ HRESULT CPlayer::Render()
 _float CPlayer::Take_Damage(float fDamage, void * DamageType, CGameObject * DamageCauser)
 {
 	if (fDamage > 0.f && !m_bIsInvincible)
-	{
+	{ 
 		if (m_tStats.m_fCurrentHp - fDamage <= 0.f)
 		{
 			m_tStats.m_fCurrentHp = 0.f;

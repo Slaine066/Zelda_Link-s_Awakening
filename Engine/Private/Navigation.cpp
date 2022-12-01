@@ -29,12 +29,12 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar * pNavigationData)
 	if (!hFile)
 		return E_FAIL;
 
-	_float3	vPoints[3];
+	pair<CCell::CELL_TYPE, _float3x3> vPoints;
 	_ulong dwByte = 0;
 
 	while (true)
 	{
-		ReadFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+		ReadFile(hFile, &vPoints, sizeof(pair<CCell::CELL_TYPE, _float3x3>), &dwByte, nullptr);
 		if (!dwByte)
 			break;
 
@@ -168,15 +168,30 @@ HRESULT CNavigation::Render_Navigation()
 	m_pShader->Set_RawValue("g_ProjMatrix", &pPipeLine->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4));
 	RELEASE_INSTANCE(CPipeLine);
 
+	_float4 vGreen = _float4(.31f, .78f, .47f, 1.f);	/* Block Cell. */
+	_float4 vOrange = _float4(1.f, .5f, .31f, 1.f);		/* No Block Cell. */
+	_float4 vRed = _float4(.88f, .19f, .38f, 1.f);		/* Current Cell. */
+	
+
 	if (m_NavDesc.iCurrentCellIndex  == -1)
 	{
+		WorldMatrix._24 = .02f;
 		m_pShader->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
-		m_pShader->Set_RawValue("g_vColor", &_float4(.31f, .78f, .47f, 1.f), sizeof(_float4));
+		m_pShader->Set_RawValue("g_vColor", &vGreen, sizeof(_float4));
 		m_pShader->Begin(0);
 
 		for (auto& pCell : m_Cells)
 		{
-			if (pCell)
+			if (pCell && pCell->Get_CellType() == CCell::CELL_TYPE::CELL_BLOCK)
+				pCell->Render();
+		}
+
+		m_pShader->Set_RawValue("g_vColor", &vOrange, sizeof(_float4));
+		m_pShader->Begin(0);
+
+		for (auto& pCell : m_Cells)
+		{
+			if (pCell && pCell->Get_CellType() == CCell::CELL_TYPE::CELL_NOBLOCK)
 				pCell->Render();
 		}
 	}
@@ -184,7 +199,7 @@ HRESULT CNavigation::Render_Navigation()
 	{
 		WorldMatrix._24 = .03f; // Set Y Translation.
 		m_pShader->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
-		m_pShader->Set_RawValue("g_vColor", &_float4(.88f, .19f, .38f, 1.f), sizeof(_float4));
+		m_pShader->Set_RawValue("g_vColor", &vRed, sizeof(_float4));
 
 		m_pShader->Begin(0);
 		m_Cells[m_NavDesc.iCurrentCellIndex]->Render();

@@ -9,11 +9,14 @@ CCell::CCell(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	Safe_AddRef(m_pContext);
 }
 
-HRESULT CCell::Initialize(const _float3 * pPoints, _int iIndex)
+HRESULT CCell::Initialize(pair<CELL_TYPE, _float3x3> pPoints, _int iIndex)
 {
 	m_iIndex = iIndex;
 
-	memcpy(m_vPoints, pPoints, sizeof(_float3) * POINT_END);
+	m_eCellType = pPoints.first;
+	m_vPoints[POINT_A] = (_float3)pPoints.second.m[0];
+	m_vPoints[POINT_B] = (_float3)pPoints.second.m[1];
+	m_vPoints[POINT_C] = (_float3)pPoints.second.m[2];
 
 	_float3	vLines[LINE_END];
 
@@ -91,7 +94,7 @@ HRESULT CCell::Render()
 }
 #endif // _DEBUG
 
-CCell * CCell::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _float3 * pPoints, _int  iIndex)
+CCell * CCell::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, pair<CELL_TYPE, _float3x3> pPoints, _int  iIndex)
 {
 	CCell*	pInstance = new CCell(pDevice, pContext);
 

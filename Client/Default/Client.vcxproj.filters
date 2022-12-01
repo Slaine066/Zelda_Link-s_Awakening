@@ -142,6 +142,9 @@
     <Filter Include="02.GameObjects\04.UI\00.HpBar\UI_Heart">
       <UniqueIdentifier>{34a0da84-caf2-43fb-85cc-235b152cd743}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\01.FallingTiles">
+      <UniqueIdentifier>{6ff03038-f54b-4f10-85e1-d33df513eaaf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -345,6 +348,12 @@
     <ClInclude Include="..\public\UI_Heart.h">
       <Filter>02.GameObjects\04.UI\00.HpBar\UI_Heart</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FallingTile.h">
+      <Filter>02.GameObjects\00.Actor\02.InteractableObject\01.FallingTiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerFallState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -520,6 +529,12 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Heart.cpp">
       <Filter>02.GameObjects\04.UI\00.HpBar\UI_Heart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FallingTile.cpp">
+      <Filter>02.GameObjects\00.Actor\02.InteractableObject\01.FallingTiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerFallState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

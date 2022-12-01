@@ -224,29 +224,54 @@ void CImGuiManager::DrawNavigationMesh()
 	m_pEffect->Apply(m_pContext);
 
 	// Render Green Triangles
-	_vector	vColor = XMVectorSet(.31f, .78f, .47f, 1.f);
+	_vector	vGreen = XMVectorSet(.31f, .78f, .47f, 1.f);
+	_vector	vOrange = XMVectorSet(1.f, .5f, .31f, 1.f);
 
 	for (auto& vPoint : m_vCurrentCell)
 	{
 		_float3 vCellPoint = vPoint;
 		vCellPoint.y += .02f;
-		DX::DrawRing(m_pBatch, XMLoadFloat3(&vCellPoint), XMVectorSet(.05f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 0.f, .05f, 0.f), vColor);
+		DX::DrawRing(m_pBatch, XMLoadFloat3(&vCellPoint), XMVectorSet(.05f, 0.f, 0.f, 0.f), XMVectorSet(0.f, 0.f, .05f, 0.f), vGreen);
 	}
 
+	/* Firstly, Draw Default Cells. */
 	for (auto& vCell : m_vNavigationCells)
 	{
-		_float3 vCellPointA = (_float3)vCell.m[0];
-		vCellPointA.y += .02f;
-		_float3 vCellPointB = (_float3)vCell.m[1];
-		vCellPointB.y += .02f;
-		_float3 vCellPointC = (_float3)vCell.m[2];
-		vCellPointC.y += .02f;
+		if (vCell.first == CELL_TYPE::CELL_DEFAULT)
+		{
+			_float3 vCellPointA = (_float3)vCell.second.m[0];
+			vCellPointA.y += .02f;
+			_float3 vCellPointB = (_float3)vCell.second.m[1];
+			vCellPointB.y += .02f;
+			_float3 vCellPointC = (_float3)vCell.second.m[2];
+			vCellPointC.y += .02f;
 
-		_vector vPointA = XMLoadFloat3(&vCellPointA);;
-		_vector vPointB = XMLoadFloat3(&vCellPointB);;
-		_vector vPointC = XMLoadFloat3(&vCellPointC);;
+			_vector vPointA = XMLoadFloat3(&vCellPointA);;
+			_vector vPointB = XMLoadFloat3(&vCellPointB);;
+			_vector vPointC = XMLoadFloat3(&vCellPointC);;
 
-		DX::DrawTriangle(m_pBatch, vPointA, vPointB, vPointC, vColor);
+			DX::DrawTriangle(m_pBatch, vPointA, vPointB, vPointC, vGreen);
+		}
+	}
+
+	/* Then, Draw Fall Cells. */
+	for (auto& vCell : m_vNavigationCells)
+	{
+		if (vCell.first == CELL_TYPE::CELL_FALL)
+		{
+			_float3 vCellPointA = (_float3)vCell.second.m[0];
+			vCellPointA.y += .02f;
+			_float3 vCellPointB = (_float3)vCell.second.m[1];
+			vCellPointB.y += .02f;
+			_float3 vCellPointC = (_float3)vCell.second.m[2];
+			vCellPointC.y += .02f;
+
+			_vector vPointA = XMLoadFloat3(&vCellPointA);;
+			_vector vPointB = XMLoadFloat3(&vCellPointB);;
+			_vector vPointC = XMLoadFloat3(&vCellPointC);;
+
+			DX::DrawTriangle(m_pBatch, vPointA, vPointB, vPointC, vOrange);
+		}
 	}
 
 	m_pBatch->End();
@@ -729,6 +754,10 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 		if (ImGui::Button(m_bIsNavigationActive ? "End Navigation" : "Start Navigation", ImVec2(0, 24)))
 			m_bIsNavigationActive = !m_bIsNavigationActive;			
 
+		if (ImGui::Checkbox("Vertex Snapping", &m_bVertexSnapping))
+			m_bVertexSnapping != m_bVertexSnapping;
+		ImGui::NewLine();
+
 		if (ImGui::Button("Undo", ImVec2(0, 24)))
 		{
 			if (!m_vCurrentCell.empty())
@@ -736,6 +765,22 @@ void CImGuiManager::DrawMapTool(_float fTimeDelta)
 			else if (!m_vNavigationCells.empty())
 				m_vNavigationCells.pop_back();
 		}
+		ImGui::NewLine();
+		ImGui::Separator();
+		ImGui::Text("Cell Settings");
+		ImGui::NewLine();
+
+		if (ImGui::RadioButton("Default", m_eCellType == CELL_DEFAULT))
+			m_eCellType = CELL_DEFAULT;
+
+		ImGui::SameLine();
+
+		if (ImGui::RadioButton("Fall", m_eCellType == CELL_FALL))
+			m_eCellType = CELL_FALL;
+
+		ImGui::SameLine();
+		if (ImGui::Button("Set"))
+			Set_CellType(m_iSelectedCellIndex);
 		ImGui::NewLine();
 	}
 	
@@ -1314,16 +1359,17 @@ _bool CImGuiManager::SaveData()
 			return false;
 
 		dwByte = 0;
-		_float3	vPoints[3];
+		pair<CELL_TYPE, _float3x3> vPoints;
 
-		for (_float3x3 pCell : m_vNavigationCells)
+		for (auto& pCell : m_vNavigationCells)
 		{
-			ZeroMemory(&vPoints, sizeof(_float3) * 3);
-			memcpy(&vPoints[0], &pCell.m[0], sizeof(_float3));
-			memcpy(&vPoints[1], &pCell.m[1], sizeof(_float3));
-			memcpy(&vPoints[2], &pCell.m[2], sizeof(_float3));
+			ZeroMemory(&vPoints, sizeof(pair<CELL_TYPE, _float3x3>));
+			vPoints.first = pCell.first;
+			memcpy(&vPoints.second.m[0], &pCell.second.m[0], sizeof(_float3));
+			memcpy(&vPoints.second.m[1], &pCell.second.m[1], sizeof(_float3));
+			memcpy(&vPoints.second.m[2], &pCell.second.m[2], sizeof(_float3));
 
-			WriteFile(hFileNavigation, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+			WriteFile(hFileNavigation, &vPoints, sizeof(pair<CELL_TYPE, _float3x3>), &dwByte, nullptr);
 		}
 
 		CloseHandle(hFileNavigation);
@@ -1470,20 +1516,21 @@ _bool CImGuiManager::LoadData()
 
 	dwByte = 0;
 
-	_float3	vPoints[3];
+	pair<CELL_TYPE, _float3x3> vPoints;
 
 	while (true)
 	{
-		ReadFile(hFileNavigation, &vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+		ReadFile(hFileNavigation, &vPoints, sizeof(pair<CELL_TYPE, _float3x3>), &dwByte, nullptr);
 
 		if (!dwByte)
 			break;
 
-		_float3x3 vCell;
-		ZeroMemory(&vCell, sizeof(_float3x3));
-		memcpy(&vCell.m[0], &vPoints[0], sizeof(_float3));
-		memcpy(&vCell.m[1], &vPoints[1], sizeof(_float3));
-		memcpy(&vCell.m[2], &vPoints[2], sizeof(_float3));
+		pair<CELL_TYPE, _float3x3> vCell;
+		ZeroMemory(&vCell, sizeof(pair<CELL_TYPE, _float3x3>));
+		vCell.first = vPoints.first;
+		memcpy(&vCell.second.m[0], &vPoints.second.m[0], sizeof(_float3));
+		memcpy(&vCell.second.m[1], &vPoints.second.m[1], sizeof(_float3));
+		memcpy(&vCell.second.m[2], &vPoints.second.m[2], sizeof(_float3));
 
 		m_vNavigationCells.push_back(vCell);
 	}
@@ -1530,11 +1577,12 @@ void CImGuiManager::Add_NavigationPoint(_float3 vPoint)
 		/* If, after adding the Point there are 3 Points in "m_vCurrentCell": Add a Cell to "m_vNavigationCells" and empty "m_vCurrentCell". */
 		if (m_vCurrentCell.size() == 3)
 		{
-			_float3x3 vCell;
-			ZeroMemory(&vCell, sizeof(_float3x3));
-			memcpy(vCell.m[0], &m_vCurrentCell[0], sizeof(_float3));
-			memcpy(vCell.m[1], &m_vCurrentCell[1], sizeof(_float3));
-			memcpy(vCell.m[2], &m_vCurrentCell[2], sizeof(_float3));
+			pair<CELL_TYPE, _float3x3> vCell;
+			ZeroMemory(&vCell, sizeof(pair<CELL_TYPE, _float3x3>));
+			vCell.first = CELL_TYPE::CELL_DEFAULT; /* Set Default Cell by Default (KEKW) */
+			memcpy(vCell.second.m[0], &m_vCurrentCell[0], sizeof(_float3));
+			memcpy(vCell.second.m[1], &m_vCurrentCell[1], sizeof(_float3));
+			memcpy(vCell.second.m[2], &m_vCurrentCell[2], sizeof(_float3));
 
 			m_vNavigationCells.push_back(vCell);
 			m_vCurrentCell.clear();
@@ -1543,29 +1591,73 @@ void CImGuiManager::Add_NavigationPoint(_float3 vPoint)
 	/* If the Cell that is getting drawn is NOT the first Cell. */
 	else
 	{
-		/* Check if the new Point is supposed to refer to an already existing Point or is a new one. */
-		_float3 vExistingPoint;
+		if (m_bVertexSnapping)
+		{
+			/* Check if the new Point is supposed to refer to an already existing Point or is a new one. */
+			_float3 vExistingPoint;
 
-		/* If the new Point refers to an already existing Point, add the already existing point to "m_vCurrentCell". */
-		if (Check_ExistingPoints(vPoint, vExistingPoint))
-			m_vCurrentCell.push_back(vExistingPoint);
-		/* If not, add the new Point to "m_vCurrentCell". */
+			/* If the new Point refers to an already existing Point, add the already existing point to "m_vCurrentCell". */
+			if (Check_ExistingPoints(vPoint, vExistingPoint))
+				m_vCurrentCell.push_back(vExistingPoint);
+			/* If not, add the new Point to "m_vCurrentCell". */
+			else
+				m_vCurrentCell.push_back(vPoint);
+		}
 		else
 			m_vCurrentCell.push_back(vPoint);
 
-		/* If, after adding the Point there are 3 Points in "m_vCurrentCell": Add a Cell to "m_vNavigationCells" and empty "m_vCurrentCell". */
-		if (m_vCurrentCell.size() == 3)
+		/* If, it's the first Point being added, try to compute the Cell Type. */
+		if (m_vCurrentCell.size() == 1)
+			Compute_CellType();
+		else if (m_vCurrentCell.size() == 3) /* If, after adding the Point there are 3 Points in "m_vCurrentCell": Add a Cell to "m_vNavigationCells" and empty "m_vCurrentCell". */
 		{
-			_float3x3 vCell;
-			ZeroMemory(&vCell, sizeof(_float3x3));
-			memcpy(vCell.m[0], &m_vCurrentCell[0], sizeof(_float3));
-			memcpy(vCell.m[1], &m_vCurrentCell[1], sizeof(_float3));
-			memcpy(vCell.m[2], &m_vCurrentCell[2], sizeof(_float3));
+			pair<CELL_TYPE, _float3x3> vCell;
+			ZeroMemory(&vCell, sizeof(pair<CELL_TYPE, _float3x3>));
+			vCell.first = CELL_TYPE::CELL_DEFAULT; /* Set Default Cell by Default (KEKW) */
+			memcpy(vCell.second.m[0], &m_vCurrentCell[0], sizeof(_float3));
+			memcpy(vCell.second.m[1], &m_vCurrentCell[1], sizeof(_float3));
+			memcpy(vCell.second.m[2], &m_vCurrentCell[2], sizeof(_float3));
 
 			m_vNavigationCells.push_back(vCell);
 			m_vCurrentCell.clear();
 		}
 	}
+}
+
+void CImGuiManager::Compute_CellType()
+{
+	_float fDistance = 0.f;
+
+	_vector vRayPos = XMLoadFloat3(&m_vCurrentCell.front());
+	vRayPos += XMVectorSet(0.f, 10.f, 0.f, 1.f);
+	vRayPos = XMVectorSetW(vRayPos, 1.f);
+
+	_vector vRayDir = XMVectorSet(0.f, -1.f, 0.f, 0.f);
+
+	for (_uint i = 0; i < m_vNavigationCells.size(); i++)
+	{
+		_vector vPointA = XMLoadFloat3(&(_float3)m_vNavigationCells[i].second.m[0]);
+		vPointA = XMVectorSetW(vPointA, 1.f);
+		_vector vPointB = XMLoadFloat3(&(_float3)m_vNavigationCells[i].second.m[1]);
+		vPointB = XMVectorSetW(vPointB, 1.f);
+		_vector vPointC = XMLoadFloat3(&(_float3)m_vNavigationCells[i].second.m[2]);
+		vPointC = XMVectorSetW(vPointC, 1.f);
+
+		if (TriangleTests::Intersects(vRayPos, vRayDir, vPointA, vPointB, vPointC, fDistance))
+		{
+			m_eCellType = m_vNavigationCells[i].first;
+			m_iSelectedCellIndex = i;
+		}
+	}
+}
+
+void CImGuiManager::Set_CellType(_uint iCellIndex)
+{
+	if (m_vCurrentCell.empty())
+		return; 
+
+	m_vNavigationCells[iCellIndex].first = m_eCellType;
+	m_vCurrentCell.pop_back();
 }
 
 _bool CImGuiManager::Check_ExistingPoints(_float3 vNewPoint, OUT _float3& vExistingPoint, _float fDistance)
@@ -1576,9 +1668,9 @@ _bool CImGuiManager::Check_ExistingPoints(_float3 vNewPoint, OUT _float3& vExist
 		ZeroMemory(&vPointA, sizeof(_float3));
 		ZeroMemory(&vPointB, sizeof(_float3));
 		ZeroMemory(&vPointC, sizeof(_float3));
-		memcpy(&vPointA, &vCell._11, sizeof(_float3));
-		memcpy(&vPointB, &vCell._21, sizeof(_float3));
-		memcpy(&vPointC, &vCell._31, sizeof(_float3));
+		memcpy(&vPointA, &vCell.second._11, sizeof(_float3));
+		memcpy(&vPointB, &vCell.second._21, sizeof(_float3));
+		memcpy(&vPointC, &vCell.second._31, sizeof(_float3));
 
 		_float fDistanceFromA = XMVectorGetX(XMVector3Length(XMLoadFloat3(&vPointA) - XMLoadFloat3(&vNewPoint)));
 		_float fDistanceFromB = XMVectorGetX(XMVector3Length(XMLoadFloat3(&vPointB) - XMLoadFloat3(&vNewPoint)));

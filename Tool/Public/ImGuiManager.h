@@ -14,6 +14,7 @@ class CImGuiManager final : public CBase
 
 public:
 	enum TRANSFORM_TYPE { TRANS_TRANSLATION, TRANS_ROTATION, TRANS_SCALE };
+	enum CELL_TYPE { CELL_DEFAULT, CELL_FALL, CELL_END };
 
 private:
 	CImGuiManager();
@@ -62,6 +63,8 @@ public:
 	// Navigation
 	_bool Get_IsNavigationActive() { return m_bIsNavigationActive; }
 	void Add_NavigationPoint(_float3 vPoint);
+	void Compute_CellType();
+	void Set_CellType(_uint iCellIndex);
 	_bool Check_ExistingPoints(_float3 vNewPoint, OUT _float3& vExistingPoint, _float fDistance = .3f);
 
 	// Trigger
@@ -107,9 +110,12 @@ private:
 	// Navigation Mesh
 	_bool m_bShowNavigationMesh = false;
 	_bool m_bIsNavigationActive = false;
+	_bool m_bVertexSnapping = true;
 	_uint m_iCellIndex = 0;
-	vector<_float3x3> m_vNavigationCells;
+	vector<pair<CELL_TYPE, _float3x3>> m_vNavigationCells;
 	vector<_float3> m_vCurrentCell;
+	CELL_TYPE m_eCellType = CELL_DEFAULT;
+	_uint m_iSelectedCellIndex = -1;
 
 	// Trigger Box
 	_bool m_vShowTriggerBox = false;
