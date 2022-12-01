@@ -101,11 +101,27 @@ _float CPlayer::Take_Damage(float fDamage, void * DamageType, CGameObject * Dama
 {
 	if (fDamage > 0.f && !m_bIsInvincible)
 	{
-		m_pModelCom->Reset_CurrentAnimation();
-		CPlayerState* pState = new CHitState(DamageCauser->Get_Position());
-		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
+		if (m_tStats.m_fCurrentHp - fDamage <= 0.f)
+		{
+			m_tStats.m_fCurrentHp = 0.f;
 
-		m_bIsInvincible = true;
+			/* TODO: Implement Death. */
+			m_pModelCom->Reset_CurrentAnimation();
+			CPlayerState* pState = new CHitState(DamageCauser->Get_Position());
+			m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
+
+			m_bIsInvincible = true;
+		}
+		else
+		{
+			m_tStats.m_fCurrentHp -= fDamage;
+
+			m_pModelCom->Reset_CurrentAnimation();
+			CPlayerState* pState = new CHitState(DamageCauser->Get_Position());
+			m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
+
+			m_bIsInvincible = true;
+		}
 	}
 
 	return 0.f;
