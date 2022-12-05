@@ -68,6 +68,7 @@ private:
 	virtual void AI_Behavior() override;
 	virtual void TickState(_float fTimeDelta) override;
 	virtual void LateTickState(_float fTimeDelta) override;
+	virtual void HandleFall(_float fTimeDelta) override;
 
 private:
 	class CMoriblinSwordState* m_pMoriblinSwordState = nullptr;

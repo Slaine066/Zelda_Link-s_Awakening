@@ -37,7 +37,7 @@ protected:
 	virtual HRESULT Render() override;
 
 protected:
-	virtual void HandleFall() {};
+	virtual void HandleFall(_float fTimeDelta) {};
 
 protected:
 	STATS m_tStats;

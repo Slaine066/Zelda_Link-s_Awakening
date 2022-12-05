@@ -16,6 +16,7 @@ public:
 		STATE_AGGRO,
 		STATE_ATTACK,
 		STATE_HIT,
+		STATE_FALL,
 		STATE_DIE,
 		STATE_END,
 	};

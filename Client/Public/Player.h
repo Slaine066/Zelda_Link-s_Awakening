@@ -134,7 +134,7 @@ private:
 	void TickState(_float fTimeDelta);
 	void LateTickState(_float fTimeDelta);
 	void HandleInvincibility(_float fTimeDelta);
-	void HandleFall(_float fTimeDelta);
+	virtual void HandleFall(_float fTimeDelta) override;
 
 private:
 	DIRID m_eDirection = DIRID::DIR_END;

@@ -18,6 +18,7 @@ public:
 		STATE_HIT,
 		STATE_GUARD,
 		STATE_STAGGER,
+		STATE_FALL,
 		STATE_DIE,
 		STATE_END,
 	};

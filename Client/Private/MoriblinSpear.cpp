@@ -7,6 +7,7 @@
 #include "MoriblinSpearHitState.h"
 #include "MoriblinSpearDieState.h"
 #include "Weapon.h"
+#include "MoriblinSpearFallState.h"
 
 using namespace MoriblinSpear;
 
@@ -85,6 +86,8 @@ _uint CMoriblinSpear::Late_Tick(_float fTimeDelta)
 		pParts->Late_Tick(fTimeDelta);
 
 	LateTickState(fTimeDelta);
+
+	HandleFall(fTimeDelta);
 
 	return OBJ_NOEVENT;
 }
@@ -257,6 +260,17 @@ void CMoriblinSpear::LateTickState(_float fTimeDelta)
 	CMoriblinSpearState* pNewState = m_pMoriblinSpearState->LateTick(this, fTimeDelta);
 	if (pNewState)
 		m_pMoriblinSpearState = m_pMoriblinSpearState->ChangeState(this, m_pMoriblinSpearState, pNewState);
+}
+
+void CMoriblinSpear::HandleFall(_float fTimeDelta)
+{
+	/* Check if MoriblinSpear is currently on a NOBLOCK Cell. */
+	if (m_pNavigationCom->Get_CellType() == CCell::CELL_TYPE::CELL_NOBLOCK && m_pMoriblinSpearState->Get_StateId() != CMoriblinSpearState::STATE_ID::STATE_FALL)
+	{
+		m_pModelCom->Reset_CurrentAnimation();
+		CMoriblinSpearState* pState = new CFallState();
+		m_pMoriblinSpearState = m_pMoriblinSpearState->ChangeState(this, m_pMoriblinSpearState, pState);
+	}
 }
 
 _bool CMoriblinSpear::Is_AnimationLoop(_uint eAnimId)

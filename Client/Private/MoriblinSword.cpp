@@ -8,6 +8,7 @@
 #include "MoriblinSwordDieState.h"
 #include "MoriblinSwordGuardState.h"
 #include "MoriblinSwordAttackState.h"
+#include "MoriblinSwordFallState.h"
 
 using namespace MoriblinSword;
 
@@ -72,6 +73,8 @@ _uint CMoriblinSword::Late_Tick(_float fTimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 	LateTickState(fTimeDelta);
+
+	HandleFall(fTimeDelta);
 
 	return OBJ_NOEVENT;
 }
@@ -234,6 +237,17 @@ void CMoriblinSword::LateTickState(_float fTimeDelta)
 	CMoriblinSwordState* pNewState = m_pMoriblinSwordState->LateTick(this, fTimeDelta);
 	if (pNewState)
 		m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pNewState);
+}
+
+void CMoriblinSword::HandleFall(_float fTimeDelta)
+{
+	/* Check if MoriblinSword is currently on a NOBLOCK Cell. */
+	if (m_pNavigationCom->Get_CellType() == CCell::CELL_TYPE::CELL_NOBLOCK && m_pMoriblinSwordState->Get_StateId() != CMoriblinSwordState::STATE_ID::STATE_FALL)
+	{
+		m_pModelCom->Reset_CurrentAnimation();
+		CMoriblinSwordState* pState = new CFallState();
+		m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
+	}
 }
 
 _bool CMoriblinSword::Is_AnimationLoop(_uint eAnimId)

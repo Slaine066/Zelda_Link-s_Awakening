@@ -97,6 +97,9 @@ _float CNavigation::Get_NavigationHeight(_float3 vPosition)
 
 _bool CNavigation::Get_PointOnNavigation(OUT _float3 vPosition)
 {
+	if (m_Cells[m_NavDesc.iCurrentCellIndex]->Get_CellType() == CCell::CELL_TYPE::CELL_NOBLOCK)
+		return false;
+
 	_float fDistance = 0.f;
 
 	_vector vRayPos = XMLoadFloat3(&vPosition);

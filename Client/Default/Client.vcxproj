@@ -190,6 +190,8 @@
     <ClInclude Include="..\public\InteractableObject.h" />
     <ClInclude Include="..\public\Level_BottleGrotto.h" />
     <ClInclude Include="..\public\Level_MoriblinCave.h" />
+    <ClInclude Include="..\public\MoriblinSpearFallState.h" />
+    <ClInclude Include="..\public\MoriblinSwordFallState.h" />
     <ClInclude Include="..\public\MoriblinSwordGuardState.h" />
     <ClInclude Include="..\public\MoriblinSpear.h" />
     <ClInclude Include="..\public\MoriblinSpearAggroState.h" />
@@ -258,6 +260,8 @@
     <ClCompile Include="..\private\InteractableObject.cpp" />
     <ClCompile Include="..\private\Level_BottleGrotto.cpp" />
     <ClCompile Include="..\private\Level_MoriblinCave.cpp" />
+    <ClCompile Include="..\private\MoriblinSpearFallState.cpp" />
+    <ClCompile Include="..\private\MoriblinSwordFallState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordGuardState.cpp" />
     <ClCompile Include="..\private\MoriblinSpear.cpp" />
     <ClCompile Include="..\private\MoriblinSpearAggroState.cpp" />
