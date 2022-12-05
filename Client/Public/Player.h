@@ -110,6 +110,7 @@ public:
 	class CPlayerState* Get_State();
 	void Set_State(class CPlayerState* pPlayerState) { m_pPlayerState = pPlayerState; }
 	_bool Is_AnimationLoop(_uint eAnimId);
+	void Set_IsInvincible(_bool bIsInvincible) { m_bIsInvincible = bIsInvincible; }
 
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -133,6 +134,7 @@ private:
 	void TickState(_float fTimeDelta);
 	void LateTickState(_float fTimeDelta);
 	void HandleInvincibility(_float fTimeDelta);
+	void HandleFall(_float fTimeDelta);
 
 private:
 	DIRID m_eDirection = DIRID::DIR_END;

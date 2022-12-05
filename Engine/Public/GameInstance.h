@@ -65,6 +65,7 @@ public: /* For.Object_Manager */
 	class CGameObject* Find_Object(_uint iLevelIndex, const _tchar * pLayerTag, _uint iIndex = 0);
 	class CComponent* Get_Component(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iIndex = 0);
 	CObject_Manager::LAYERS Get_Layers(_uint iLevelIndex);
+	class CLayer* Get_Layer(_uint iLevelIndex, const _tchar* pLayerTag);
 	void Delete_GameObject(CGameObject* pGameObj, _uint iLevelIndex, const _tchar* pLayerTag);
 
 public: /* For.Component_Manager */

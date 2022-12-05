@@ -1,5 +1,4 @@
 #include "Navigation.h"
-#include "Cell.h"
 #include "Shader.h"
 #include "PipeLine.h"
 
@@ -122,6 +121,11 @@ _bool CNavigation::Get_PointOnNavigation(OUT _float3 vPosition)
 	return false;
 }
 
+CCell::CELL_TYPE CNavigation::Get_CellType()
+{
+	return m_Cells[m_NavDesc.iCurrentCellIndex]->Get_CellType();
+}
+
 _bool CNavigation::CanMove(_fvector vPosition)
 {
 	_int iNeighborIndex = -1;
@@ -197,7 +201,7 @@ HRESULT CNavigation::Render_Navigation()
 	}
 	else
 	{
-		WorldMatrix._24 = .03f; // Set Y Translation.
+		WorldMatrix._24 = .04f; // Set Y Translation.
 		m_pShader->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
 		m_pShader->Set_RawValue("g_vColor", &vRed, sizeof(_float4));
 

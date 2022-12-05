@@ -6,6 +6,11 @@
 #include "PlayerState.h"
 #include "PlayerIdleState.h"
 #include "PlayerHitState.h"
+#include "PlayerFallState.h"
+#include "Layer.h"
+#include "FallingTile.h"
+
+using namespace Player;
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
@@ -67,6 +72,8 @@ _uint CPlayer::Late_Tick(_float fTimeDelta)
 
 	LateTickState(fTimeDelta);
 
+	HandleFall(fTimeDelta);
+
 	return OBJ_NOEVENT;
 }
 
@@ -99,7 +106,9 @@ HRESULT CPlayer::Render()
 
 _float CPlayer::Take_Damage(float fDamage, void * DamageType, CGameObject * DamageCauser)
 {
-	if (fDamage > 0.f && !m_bIsInvincible)
+	if (fDamage > 0.f && !m_bIsInvincible && 
+		m_pPlayerState->Get_StateId() != CPlayerState::STATE_ID::STATE_FALL && 
+		m_pPlayerState->Get_StateId() != CPlayerState::STATE_ID::STATE_DIE)
 	{ 
 		if (m_tStats.m_fCurrentHp - fDamage <= 0.f)
 		{
@@ -307,6 +316,17 @@ void CPlayer::HandleInvincibility(_float fTimeDelta)
 			m_bIsInvincible = false;
 			m_fInvincibleTimer = 0.f;
 		}
+	}
+}
+
+void CPlayer::HandleFall(_float fTimeDelta)
+{
+	/* Check if Player is currently on a NOBLOCK Cell. */
+	if (m_pNavigationCom->Get_CellType() == CCell::CELL_TYPE::CELL_NOBLOCK && m_pPlayerState->Get_StateId() != CPlayerState::STATE_ID::STATE_FALL)
+	{
+		m_pModelCom->Reset_CurrentAnimation();
+		CPlayerState* pState = new CFallState();
+		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
 	}
 }
 

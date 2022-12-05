@@ -34,10 +34,11 @@ _uint CFallingTile::Tick(_float fTimeDelta)
 	if (FAILED(__super::Tick(fTimeDelta)))
 		return E_FAIL;
 
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_OBJECT, this);
+
 	if (m_bShouldDestroy)
 		return OBJ_DESTROY;
-
-	CGameInstance::Get_Instance()->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_OBJECT, this);
 
 	return OBJ_NOEVENT;
 }
@@ -71,9 +72,49 @@ HRESULT CFallingTile::Render()
 	return S_OK;
 }
 
+_bool CFallingTile::CheckCollision(CCollision_Manager::COLLISION_GROUP eCollisionGroup, _float fTimeDelta)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pCollided = nullptr;
+	_bool bIsCollided = pGameInstance->Collision_with_Group(eCollisionGroup, Get_Collider(CCollider::AIM::AIM_OBJECT), CCollider::AIM::AIM_DAMAGE_INPUT, pCollided);
+	RELEASE_INSTANCE(CGameInstance);
+
+	if (bIsCollided)
+		m_fDestroyTimer += fTimeDelta;
+	else
+		m_fDestroyTimer = 0.f;
+
+	return bIsCollided;
+}
+
+_bool CFallingTile::ShouldDestroy()
+{
+	if (m_fDestroyTimer > 1.f)
+	{
+		m_bShouldDestroy = true;
+		m_fDestroyTimer = 0.f;
+
+		return true;
+	}
+
+	return false;
+}
+
 HRESULT CFallingTile::Ready_Components(void* pArg)
 {
 	if (FAILED(__super::Ready_Components(pArg)))
+		return E_FAIL;
+
+	CCollider::COLLIDERDESC	ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.eAim = CCollider::AIM::AIM_OBJECT;
+	ColliderDesc.vScale = _float3(1.5f, .2f, 1.5f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+
+	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object
+
+	/* For.Com_Collider*/
+	if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_AABB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -3,6 +3,7 @@
 #include "PlayerState.h"
 
 BEGIN(Client)
+BEGIN(Player)
 class CGuardMoveState : public CPlayerState
 {
 public:
@@ -21,4 +22,5 @@ private:
 private:
 	DIRID m_eDirection = DIRID::DIR_END;
 };
+END
 END

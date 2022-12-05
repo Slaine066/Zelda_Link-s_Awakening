@@ -4,6 +4,8 @@
 #include "GameInstance.h"
 #include "PlayerIdleState.h"
 
+using namespace Player;
+
 CAttackState::CAttackState()
 {
 }

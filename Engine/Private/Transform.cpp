@@ -144,7 +144,6 @@ _bool CTransform::Move_Direction(_vector vDirection, _float fTimeDelta, CNavigat
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);	
 	vPosition += XMVector3Normalize(vDirection) * m_TransformDesc.fSpeedPerSec * fTimeDelta;	/* Calculate Position towards Direction. */
 
-
 	if (!pNavigation)
 	{
 		Set_State(CTransform::STATE_TRANSLATION, vPosition);

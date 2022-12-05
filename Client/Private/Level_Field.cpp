@@ -35,11 +35,9 @@ HRESULT CLevel_Field::Initialize()
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
-		/* For.Com_Navigation */
+	/* For.Com_Navigation */
 	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_FIELD, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationMesh)))
 		return E_FAIL;
-
-	CCameraManager::Get_Instance()->Ready_Camera(LEVEL::LEVEL_FIELD, CCameraManager::CAM_STATE::CAM_PLAYER);
 
 	return S_OK;
 }
@@ -207,6 +205,8 @@ HRESULT CLevel_Field::Ready_Layer_Camera(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	CCameraManager::Get_Instance()->Ready_Camera(LEVEL::LEVEL_FIELD, CCameraManager::CAM_STATE::CAM_PLAYER);
 
 	return S_OK;
 }

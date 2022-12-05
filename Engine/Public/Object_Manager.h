@@ -21,6 +21,7 @@ public:
 	class CComponent* Get_Component(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iIndex = 0);
 	class CGameObject* Get_Object(_uint iLevelIndex, const _tchar* pLayerTag, _uint iIndex = 0);
 	LAYERS Get_Layers(_uint iLevelIndex);
+	class CLayer* Get_Layer(_uint iLevelIndex, const _tchar* pLayerTag);
 
 public:
 	HRESULT Reserve_Container(_uint iNumLevels);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Cell.h"
 
 BEGIN(Engine)
 class ENGINE_DLL CNavigation final : public CComponent
@@ -20,12 +21,13 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype(const _tchar* pNavigationData);
 	virtual HRESULT Initialize(void* pArg);
-
+	 
 public:
 	void Compute_CurrentCell();
 	void Set_InitialPosition(_float3 vPosition) { m_NavDesc.vInitialPosition = vPosition; }
 	_float Get_NavigationHeight(_float3 vPosition);
 	_bool Get_PointOnNavigation(OUT _float3 vPosition);
+	CCell::CELL_TYPE Get_CellType();
 	_bool CanMove(_fvector vPosition);
 
 #ifdef _DEBUG
@@ -34,7 +36,7 @@ public:
 
 private:
 	NAVDESC m_NavDesc;
-	vector<class CCell*> m_Cells;
+	vector<CCell*> m_Cells;
 
 #ifdef _DEBUG
 	class CShader* m_pShader = nullptr;

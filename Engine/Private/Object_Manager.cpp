@@ -30,6 +30,15 @@ CObject_Manager::LAYERS CObject_Manager::Get_Layers(_uint iLevelIndex)
 	return m_pLayers[iLevelIndex];
 }
 
+CLayer * CObject_Manager::Get_Layer(_uint iLevelIndex, const _tchar * pLayerTag)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
+	if (pLayer == nullptr)
+		return nullptr;
+
+	return pLayer;
+}
+
 HRESULT CObject_Manager::Reserve_Container(_uint iNumLevels)
 {
 	if (nullptr != m_pLayers)

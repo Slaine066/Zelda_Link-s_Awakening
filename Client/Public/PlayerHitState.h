@@ -3,6 +3,7 @@
 #include "PlayerState.h"
 
 BEGIN(Client)
+BEGIN(Player)
 class CHitState : public CPlayerState
 {
 public:
@@ -21,4 +22,5 @@ private:
 private:
 	_float3 m_vDamageCauserPosition;
 };
+END
 END

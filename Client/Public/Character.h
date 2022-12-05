@@ -23,12 +23,21 @@ protected:
 public:
 	STATS Get_Stats() { return m_tStats; }
 
+	void DecrementHp(_float fHp) 
+	{ 
+		if (m_tStats.m_fCurrentHp - fHp >= 0.f) 
+			m_tStats.m_fCurrentHp -= fHp;
+	}
+
 protected:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _uint Tick(_float fTimeDelta) override;
 	virtual _uint Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+protected:
+	virtual void HandleFall() {};
 
 protected:
 	STATS m_tStats;

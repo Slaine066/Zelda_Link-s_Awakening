@@ -3,6 +3,7 @@
 #include "PlayerState.h"
 
 BEGIN(Client)
+BEGIN(Player)
 class CAttackState : public CPlayerState
 {
 public:
@@ -18,4 +19,5 @@ public:
 private:
 	_bool m_bDidDamage = false;
 };
+END
 END

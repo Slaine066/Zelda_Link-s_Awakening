@@ -22,6 +22,8 @@ private:
 public:
 	void Add_RoomCamera(_float3 vPosition) { m_CameraPositions.push_back(vPosition); }
 
+	_float3 Get_CurrentCameraPosition() { m_vCurrentCameraPosition; }
+
 	void Set_ModeZoom(_bool bZoom) { bZoom ? m_eCamMode = MODE_ZOOMIN : m_eCamMode = MODE_ZOOMOUT; }
 	void Set_ZoomPosition(_float3 vZoomPosition) { m_vZoomPosition = vZoomPosition; }
 	void Set_ModeShake(_float fPower, _float fVelocity, _float fVelocityDecrement)

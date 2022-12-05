@@ -6,6 +6,8 @@
 #include "PlayerMoveState.h"
 #include "PlayerIdleState.h"
 
+using namespace Player;
+
 CHitState::CHitState(_float3 vDamageCauserPosition) : m_vDamageCauserPosition(vDamageCauserPosition)
 {
 }

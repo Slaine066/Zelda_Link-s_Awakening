@@ -309,6 +309,14 @@ CObject_Manager::LAYERS CGameInstance::Get_Layers(_uint iLevelIndex)
 	return m_pObject_Manager->Get_Layers(iLevelIndex);
 }
 
+CLayer* CGameInstance::Get_Layer(_uint iLevelIndex, const _tchar * pLayerTag)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->Get_Layer(iLevelIndex, pLayerTag);
+}
+
 void CGameInstance::Delete_GameObject(CGameObject* pGameObj, _uint iLevelIndex, const _tchar * pLayerTag)
 {
 	if (nullptr == m_pObject_Manager)

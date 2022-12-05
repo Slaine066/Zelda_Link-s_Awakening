@@ -29,15 +29,15 @@ HRESULT CLevel_MoriblinCave::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
+	return E_FAIL;
+
+	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
+	return E_FAIL;
+
 	/* For.Com_Navigation */
 	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationMesh)))
 		return E_FAIL;
-
-	/*if (FAILED(Ready_Layer_UI()))
-	return E_FAIL;*/
-
-	/*if (FAILED(Ready_Layer_Effect()))
-	return E_FAIL;*/
 
 	return S_OK;
 }
@@ -121,8 +121,8 @@ HRESULT CLevel_MoriblinCave::Load_Objects_FromFile()
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSpear"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Bossblin")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Bossblin"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
-		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("CaveTile")))
-			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_FallingTile"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+		/*else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("CaveTile")))
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_FallingTile"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);*/
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("CaveRock")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Treasure")))
@@ -166,12 +166,12 @@ HRESULT CLevel_MoriblinCave::Load_Triggers_FromFile()
 
 HRESULT CLevel_MoriblinCave::Ready_Layer_UI(const _tchar * pLayerTag)
 {
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-	Safe_AddRef(pGameInstance);
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	// ..
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("UI_HpBar"), TEXT("Prototype_GameObject_UI_HpBar"), LEVEL_MORIBLINCAVE, pLayerTag)))
+		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
