@@ -72,23 +72,18 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.32f, 0.4f, 0.47f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
+#ifdef _DEBUG
+	m_pRenderer->Add_Debug(m_pGameInstance->Get_NavigationMesh());
+
+	list<CTriggerBox*> TriggerBoxes = m_pGameInstance->Get_TriggerBoxes();
+	for (auto& pTriggerBox : TriggerBoxes)
+		m_pRenderer->Add_Debug((CGameObject*)pTriggerBox);
+#endif // _DEBUG
+
 	m_pRenderer->Render_GameObjects();
 
 #ifdef _DEBUG
-	m_pGameInstance->Render_NavigationMesh();
-	m_pGameInstance->Render_TriggerBox();
-
-	++m_iNumRender;
-
-	if (m_fTimeAcc > 1.0f)
-	{
-		wsprintf(m_szFPS, TEXT("FPS: %d"), m_iNumRender);
-
-		m_fTimeAcc = 0.f;
-		m_iNumRender = 0;
-	}
-
-	m_pGameInstance->Render_Font(TEXT("Quicksand-24"), m_szFPS, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+	Show_FPS();
 #endif // _DEBUG
 
 	m_pGameInstance->Present();
@@ -121,6 +116,21 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	Safe_AddRef(m_pRenderer);
 
 	return S_OK;
+}
+
+void CMainApp::Show_FPS()
+{
+	++m_iNumRender;
+
+	if (m_fTimeAcc > 1.0f)
+	{
+		wsprintf(m_szFPS, TEXT("FPS: %d"), m_iNumRender);
+
+		m_fTimeAcc = 0.f;
+		m_iNumRender = 0;
+	}
+
+	m_pGameInstance->Render_Font(TEXT("Quicksand-24"), m_szFPS, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
 }
 
 CMainApp * CMainApp::Create()

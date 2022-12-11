@@ -13,6 +13,7 @@
 #include "CollisionManager.h"
 #include "KeysManager.h"
 #include "FrustumCulling.h"
+#include "TargetManager.h"
 
 BEGIN(Engine)
 class ENGINE_DLL CGameInstance final : public CBase
@@ -50,13 +51,13 @@ public: /* For.Level_Manager */
 	_uint Get_CurrentLevelIndex();
 	_uint Get_NextLevelIndex();
 	_bool Get_IsJustSpawned();
+	class CComponent* Get_NavigationMesh();
+	list<class CTriggerBox*> Get_TriggerBoxes();
 	class CTriggerBox* Get_TriggerBox(char* pTriggerBoxName);
 	char* Get_SpawnTriggerBoxName();
 	void Set_NextLevel(_uint iNextLevelIndex);
 	void Set_IsJustSpawned(_bool bIsJustSpawned);
 	void Set_SpawnTriggerBox(char* pTriggerBoxName);
-	HRESULT Render_NavigationMesh();
-	HRESULT Render_TriggerBox();
 
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
@@ -93,6 +94,7 @@ public: /* For.PipeLine */
 public: /* For.Light_Manager */
 	const LIGHTDESC* Get_LightDesc(_uint iIndex);
 	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc);
+	void ClearLights();
 
 public: /* For.Font_Manager */
 	HRESULT Add_Fonts(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag, const _tchar* pFontFilePath);
@@ -106,6 +108,9 @@ public: /* For.KeysManager */
 public: /* For.FrustumCulling */
 	_bool IsIn_Frustum(_fvector vPosition, _float fRange = 0.f);
 	
+public: /* For.Target_Manager */
+	HRESULT Bind_RenderTarget_SRV(const _tchar* pTargetTag, class CShader* pShader, const char* pConstantName);
+
 public:
 	static void Release_Engine();
 
@@ -123,6 +128,7 @@ private:
 	CCollision_Manager*	m_pCollision_Manager = nullptr;
 	CKeysManager*		m_pKeys_Manager = nullptr;
 	CFrustumCulling*	m_pFrustumCulling = nullptr;
+	CTargetManager*		m_pTargetManager = nullptr;
 
 public:
 	virtual void Free() override;

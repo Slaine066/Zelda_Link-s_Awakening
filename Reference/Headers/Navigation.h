@@ -31,7 +31,7 @@ public:
 	_bool CanMove(_fvector vPosition);
 
 #ifdef _DEBUG
-	HRESULT Render_Navigation();
+	virtual HRESULT Render() override;
 #endif // _DEBUG
 
 private:

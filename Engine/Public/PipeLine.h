@@ -29,6 +29,12 @@ public:
 	_float4x4 Get_TransformFloat4x4_TP(TRANSFORMSTATE eState) {
 		return m_PipeLineMatrix_TP[eState];
 	}
+	_float4x4 Get_TransformFloat4x4_Inverse(TRANSFORMSTATE eState) {
+		return m_PipeLineMatrix_Inverse[eState];
+	}
+	_float4x4 Get_TransformFloat4x4_Inverse_TP(TRANSFORMSTATE eState) {
+		return m_PipeLineMatrix_Inverse_TP[eState];
+	}
 
 	_float4 Get_CamPosition() {
 		return m_vCamPosition;
@@ -42,6 +48,8 @@ public:
 private:
 	_float4x4			m_PipeLineMatrix[D3DTS_END];
 	_float4x4			m_PipeLineMatrix_TP[D3DTS_END];
+	_float4x4			m_PipeLineMatrix_Inverse[D3DTS_END];
+	_float4x4			m_PipeLineMatrix_Inverse_TP[D3DTS_END];
 	_float4				m_vCamPosition;
 
 public:

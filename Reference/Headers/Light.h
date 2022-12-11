@@ -18,6 +18,11 @@ public:
 public:
 	HRESULT Initialize(const LIGHTDESC& LightDesc);
 
+#ifdef _DEBUG
+public:
+	HRESULT Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+#endif // _DEBUG
+
 private:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pContext = nullptr;

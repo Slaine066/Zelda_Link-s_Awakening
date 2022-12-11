@@ -162,6 +162,12 @@
       <AdditionalDependencies>d3d11.lib;dxguid.lib;dinput8.lib;Effects11.lib;DirectXTK.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdpartyLib/</AdditionalLibraryDirectories>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Animation.cpp" />
@@ -195,7 +201,9 @@
     <ClCompile Include="..\private\Picking.cpp" />
     <ClCompile Include="..\private\PipeLine.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
+    <ClCompile Include="..\private\RenderTarget.cpp" />
     <ClCompile Include="..\private\Shader.cpp" />
+    <ClCompile Include="..\private\TargetManager.cpp" />
     <ClCompile Include="..\private\Texture.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
@@ -208,6 +216,7 @@
     <ClCompile Include="..\Public\Engine_Struct.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\ShaderFiles\Engine_Shader_Defines.hpp" />
     <ClInclude Include="..\Public\Animation.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\Camera.h" />
@@ -244,7 +253,9 @@
     <ClInclude Include="..\public\Picking.h" />
     <ClInclude Include="..\public\PipeLine.h" />
     <ClInclude Include="..\Public\Renderer.h" />
+    <ClInclude Include="..\public\RenderTarget.h" />
     <ClInclude Include="..\Public\Shader.h" />
+    <ClInclude Include="..\public\TargetManager.h" />
     <ClInclude Include="..\public\Texture.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
@@ -256,6 +267,7 @@
     <ClInclude Include="..\Public\VIBuffer_Terrain.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\ShaderFiles\Shader_Deferred.hlsl" />
     <FxCompile Include="..\..\ShaderFiles\Shader_Navigation.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

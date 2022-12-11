@@ -15,15 +15,13 @@ protected:
 
 public:
 	CComponent* Get_NavigationMesh() { return m_pNavigationMesh; }
+	list<CTriggerBox*> Get_TriggerBoxes() { return m_TriggerBoxes; }
 	CTriggerBox* Get_TriggerBox(char* pTriggerBoxName);
 
 public:
 	virtual HRESULT Initialize();
 	virtual void Tick(_float fTimeDelta);
 	virtual void Late_Tick(_float fTimeDelta);
-
-	void Render_NavigationMesh();
-	void Render_TriggerBox();
 
 protected:
 	ID3D11Device* m_pDevice = nullptr; 

@@ -15,6 +15,12 @@ void CPipeLine::Update()
 	{
 		XMStoreFloat4x4(&m_PipeLineMatrix_TP[i], 
 			XMMatrixTranspose(XMLoadFloat4x4(&m_PipeLineMatrix[i])));
+
+		XMStoreFloat4x4(&m_PipeLineMatrix_Inverse[i],
+			XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_PipeLineMatrix[i])));
+
+		XMStoreFloat4x4(&m_PipeLineMatrix_Inverse_TP[i],
+			XMMatrixTranspose(XMLoadFloat4x4(&m_PipeLineMatrix_Inverse[i])));
 	}
 }
 

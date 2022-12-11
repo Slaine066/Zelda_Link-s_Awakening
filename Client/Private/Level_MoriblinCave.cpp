@@ -184,28 +184,18 @@ HRESULT CLevel_MoriblinCave::Ready_Lights()
 
 	/* For.Directional*/
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-
 	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vAmbient = _float4(.6f, .6f, .6f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
-	///* For.Point */
-	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-
-	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	//LightDesc.vPosition = _float4(10.f, 3.f, 10.f, 1.f);
-	//LightDesc.fRange = 7.f;	
-	//LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
-	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	//if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
-	//	return E_FAIL;
+	/* Add More Lights Here .. 
+	>> 
+	*/
 
 	RELEASE_INSTANCE(CGameInstance);
 

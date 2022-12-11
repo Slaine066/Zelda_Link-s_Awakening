@@ -8,12 +8,28 @@ CLevel_Manager::CLevel_Manager()
 {
 }
 
+list<CTriggerBox*> CLevel_Manager::Get_TriggerBoxes()
+{
+	if (m_pCurrentLevel == nullptr)
+		return list<CTriggerBox*>();
+
+	return m_pCurrentLevel->Get_TriggerBoxes();
+}
+
 CTriggerBox * CLevel_Manager::Get_TriggerBox(char * pTriggerBoxName)
 {
 	if (m_pCurrentLevel == nullptr)
 		return nullptr;
 
 	return m_pCurrentLevel->Get_TriggerBox(pTriggerBoxName);
+}
+
+CComponent * CLevel_Manager::Get_CurrentNavigationMesh()
+{
+	if (m_pCurrentLevel == nullptr)
+		return nullptr;
+
+	return m_pCurrentLevel->Get_NavigationMesh();
 }
 
 void CLevel_Manager::Set_SpawnTriggerBox(char * pSpawnTriggerBox)
@@ -62,22 +78,6 @@ void CLevel_Manager::Late_Tick(_float fTimeDelta)
 		return;
 
 	m_pCurrentLevel->Late_Tick(fTimeDelta);
-}
-
-void CLevel_Manager::Render_NavigationMesh()
-{
-	if (!m_pCurrentLevel)
-		return;
-
-	m_pCurrentLevel->Render_NavigationMesh();
-}
-
-void CLevel_Manager::Render_TriggerBox()
-{
-	if (!m_pCurrentLevel)
-		return;
-
-	m_pCurrentLevel->Render_TriggerBox();
 }
 
 void CLevel_Manager::Free()

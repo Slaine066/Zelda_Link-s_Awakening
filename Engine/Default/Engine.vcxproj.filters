@@ -127,6 +127,12 @@
     <ClCompile Include="..\private\TriggerBox.cpp">
       <Filter>01.Utility\02.GameObjects\02.TriggerBox</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\RenderTarget.cpp">
+      <Filter>01.Utility\11.RenderTargets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TargetManager.cpp">
+      <Filter>01.Utility\11.RenderTargets\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -267,6 +273,15 @@
     <ClInclude Include="..\public\TriggerBox.h">
       <Filter>01.Utility\02.GameObjects\02.TriggerBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\RenderTarget.h">
+      <Filter>01.Utility\11.RenderTargets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TargetManager.h">
+      <Filter>01.Utility\11.RenderTargets\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ShaderFiles\Engine_Shader_Defines.hpp">
+      <Filter>01.Utility\03.Components\03.Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -401,10 +416,19 @@
     <Filter Include="01.Utility\02.GameObjects\02.TriggerBox">
       <UniqueIdentifier>{b316164b-48cc-4ffb-88ac-2c0e9631d54d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\11.RenderTargets">
+      <UniqueIdentifier>{4c319c28-30d1-4b89-922c-2274ca724dd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\11.RenderTargets\Manager">
+      <UniqueIdentifier>{957d9c9a-c87c-4f2d-b375-278ec8e0f949}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\ShaderFiles\Shader_Navigation.hlsl">
       <Filter>01.Utility\03.Components\02.VIBuffer\03.Navigation\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\ShaderFiles\Shader_Deferred.hlsl">
+      <Filter>01.Utility\03.Components\03.Shader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

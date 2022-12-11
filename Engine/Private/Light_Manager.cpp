@@ -31,6 +31,25 @@ HRESULT CLight_Manager::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * 
 	return S_OK;
 }
 
+HRESULT CLight_Manager::Render_Lights(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
+{
+	for (auto& pLight : m_Lights)
+	{
+		if (nullptr != pLight)
+			pLight->Render(pShader, pVIBuffer);
+	}
+
+	return S_OK;
+}
+
+void CLight_Manager::Clear()
+{
+	for (auto& pLight : m_Lights)
+		Safe_Release(pLight);
+
+	m_Lights.clear();
+}
+
 void CLight_Manager::Free()
 {
 	for (auto& pLight : m_Lights)

@@ -38,7 +38,11 @@ private:
 
 private:
 	HRESULT Open_Level(LEVEL eLevel);
-	HRESULT Ready_Prototype_Component();	
+	HRESULT Ready_Prototype_Component();
+
+#ifdef _DEBUG
+	void Show_FPS();
+#endif // _DEBUG
 
 public:
 	static CMainApp* Create();

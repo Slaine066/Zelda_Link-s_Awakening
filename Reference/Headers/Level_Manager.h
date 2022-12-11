@@ -19,8 +19,10 @@ public:
 	_uint Get_CurrentLevelIndex() { return m_iLevelIndex; }
 	_uint Get_NextLevelIndex() { return m_iNextLevelIndex; }
 	_bool Get_IsJustSpawned() { return m_bIsJustSpawned; }
+	list<class CTriggerBox*> Get_TriggerBoxes();
 	class CTriggerBox* Get_TriggerBox(char* pTriggerBoxName);
 	char* Get_SpawnTriggerBoxName() { return m_pSpawnTriggerBoxName; }
+	class CComponent* Get_CurrentNavigationMesh();
 
 	void Set_NextLevelIndex(_uint iNextLevelIndex) { m_iNextLevelIndex = iNextLevelIndex; }
 	void Set_IsJustSpawned(_bool bIsJustSpawned) { m_bIsJustSpawned = bIsJustSpawned; }

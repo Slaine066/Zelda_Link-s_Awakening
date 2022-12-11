@@ -38,23 +38,6 @@ void CLevel::Late_Tick(_float fTimeDelta)
 			break;
 }
 
-void CLevel::Render_NavigationMesh()
-{
-	if (!m_pNavigationMesh)
-		return;
-
-	((CNavigation*)m_pNavigationMesh)->Render_Navigation();
-}
-
-void CLevel::Render_TriggerBox()
-{
-	if (m_TriggerBoxes.empty())
-		return;
-
-	for (auto& pTriggerBox : m_TriggerBoxes)
-		pTriggerBox->Render();
-}
-
 HRESULT CLevel::Add_NavigationMesh(const _tchar* pNavigationMeshTag, _uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent** ppOut, void* pArg)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);

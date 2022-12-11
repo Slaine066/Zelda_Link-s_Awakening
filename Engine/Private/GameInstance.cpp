@@ -16,7 +16,9 @@ CGameInstance::CGameInstance()
 	, m_pCollision_Manager(CCollision_Manager::Get_Instance())
 	, m_pKeys_Manager(CKeysManager::Get_Instance())
 	, m_pFrustumCulling(CFrustumCulling::Get_Instance())
+	, m_pTargetManager(CTargetManager::Get_Instance())
 {	
+	Safe_AddRef(m_pTargetManager);
 	Safe_AddRef(m_pFrustumCulling);
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pLight_Manager);
@@ -212,6 +214,22 @@ _bool CGameInstance::Get_IsJustSpawned()
 	return m_pLevel_Manager->Get_IsJustSpawned();
 }
 
+CComponent * CGameInstance::Get_NavigationMesh()
+{
+	if (nullptr == m_pLevel_Manager)
+		return nullptr;
+
+	return m_pLevel_Manager->Get_CurrentNavigationMesh();
+}
+
+list<CTriggerBox*> CGameInstance::Get_TriggerBoxes()
+{
+	if (nullptr == m_pLevel_Manager)
+		return list<CTriggerBox*>();
+
+	return m_pLevel_Manager->Get_TriggerBoxes();
+}
+
 CTriggerBox * CGameInstance::Get_TriggerBox(char * pTriggerBoxName)
 {
 	if (nullptr == m_pLevel_Manager)
@@ -250,26 +268,6 @@ void CGameInstance::Set_SpawnTriggerBox(char * pTriggerBoxName)
 		return;
 
 	return m_pLevel_Manager->Set_SpawnTriggerBox(pTriggerBoxName);
-}
-
-HRESULT CGameInstance::Render_NavigationMesh()
-{
-	if (!m_pLevel_Manager)
-		return E_FAIL;
-
-	m_pLevel_Manager->Render_NavigationMesh();
-
-	return S_OK;
-}
-
-HRESULT CGameInstance::Render_TriggerBox()
-{
-	if (!m_pLevel_Manager)
-		return E_FAIL;
-
-	m_pLevel_Manager->Render_TriggerBox();
-
-	return S_OK;
 }
 
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)
@@ -459,6 +457,14 @@ HRESULT CGameInstance::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * p
 	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);	
 }
 
+void CGameInstance::ClearLights()
+{
+	if (nullptr == m_pLight_Manager)
+		return;
+
+	m_pLight_Manager->Clear();
+}
+
 HRESULT CGameInstance::Add_Fonts(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pFontTag, const _tchar * pFontFilePath)
 {
 	if (nullptr == m_pFont_Manager)
@@ -499,6 +505,14 @@ _bool CGameInstance::IsIn_Frustum(_fvector vPosition, _float fRange)
 	return m_pFrustumCulling->IsIn_Frustum(vPosition, fRange);
 }
 
+HRESULT CGameInstance::Bind_RenderTarget_SRV(const _tchar * pTargetTag, CShader * pShader, const char * pConstantName)
+{
+	if (nullptr == m_pTargetManager)
+		return E_FAIL;
+
+	return m_pTargetManager->Bind_ShaderResource(pTargetTag, pShader, pConstantName);
+}
+
 _bool CGameInstance::Key_Down(int _Key)
 {
 	if (nullptr == m_pKeys_Manager)
@@ -523,10 +537,12 @@ void CGameInstance::Release_Engine()
 	CCollision_Manager::Get_Instance()->Destroy_Instance();
 	CFrustumCulling::Get_Instance()->Destroy_Instance();
 	CKeysManager::Get_Instance()->Destroy_Instance();
+	CTargetManager::Get_Instance()->Destroy_Instance();
 }
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pTargetManager);
 	Safe_Release(m_pFrustumCulling);
 	Safe_Release(m_pKeys_Manager);
 	Safe_Release(m_pCollision_Manager);

@@ -87,7 +87,7 @@ void CActor::Render_Colliders()
 #ifdef _DEBUG
 	for (auto& pCollider : m_vCollidersCom)
 		if (pCollider)
-			pCollider->Render();
+			m_pRendererCom->Add_Debug(pCollider);
 #endif
 }
 
@@ -95,8 +95,9 @@ void CActor::Render_NavigationMesh()
 {
 	// Render NavigationMesh only in Debug
 #ifdef _DEBUG
-		if (m_pNavigationCom)
-			m_pNavigationCom->Render_Navigation();
+	if (m_pNavigationCom)
+		m_pRendererCom->Add_Debug(m_pNavigationCom);
+			//m_pNavigationCom->Render_Navigation();
 #endif
 }
 

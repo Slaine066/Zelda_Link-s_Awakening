@@ -155,28 +155,37 @@ HRESULT CLevel_Field::Ready_Lights()
 
 	/* For.Directional*/
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-
 	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);	
+	LightDesc.vAmbient = _float4(.6f, .6f, .6f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
-	///* For.Point */
-	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	/* For.Point */
+	/*ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	LightDesc.eType = LIGHTDESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(10.f, 3.f, 10.f, 1.f);
+	LightDesc.fRange = 7.f;
+	LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.0f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+	LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	//LightDesc.vPosition = _float4(10.f, 3.f, 10.f, 1.f);
-	//LightDesc.fRange = 7.f;	
-	//LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
-	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
-	//	return E_FAIL;
+	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	LightDesc.eType = LIGHTDESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(15.f, 3.f, 10.f, 1.f);
+	LightDesc.fRange = 7.f;
+	LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.0f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+	LightDesc.vSpecular = LightDesc.vDiffuse;
+
+	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+		return E_FAIL;*/
 
 	RELEASE_INSTANCE(CGameInstance);
 

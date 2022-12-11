@@ -52,7 +52,9 @@ public:
 
 public:
 	void Update(_fmatrix WorldMatrix);
+#ifdef _DEBUG
 	HRESULT Render();
+#endif // _DEBUG
 
 public:
 	_bool Collision(class CCollider* pTargetCollider);
@@ -85,6 +87,7 @@ private:
 	ID3D11InputLayout* m_pInputLayout = nullptr;
 	PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;
 	BasicEffect* m_pEffect = nullptr;
+	ID3D11DepthStencilState* m_pDepthStencilState = nullptr;
 #endif // _DEBUG
 
 public:
