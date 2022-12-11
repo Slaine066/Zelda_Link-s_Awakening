@@ -226,6 +226,8 @@
     <ClInclude Include="..\Public\MoriblinSwordState.h" />
     <ClInclude Include="..\Public\PlayerMoveState.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\public\PlayerPushMoveState.h" />
+    <ClInclude Include="..\public\PlayerPushState.h" />
     <ClInclude Include="..\public\PlayerState.h" />
     <ClInclude Include="..\public\Projectile.h" />
     <ClInclude Include="..\public\Treasure.h" />
@@ -293,6 +295,8 @@
     <ClCompile Include="..\private\MoriblinSword.cpp" />
     <ClCompile Include="..\Private\PlayerMoveState.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\private\PlayerPushMoveState.cpp" />
+    <ClCompile Include="..\private\PlayerPushState.cpp" />
     <ClCompile Include="..\private\Projectile.cpp" />
     <ClCompile Include="..\private\Treasure.cpp" />
     <ClCompile Include="..\private\TriggerBox_Dynamic.cpp" />

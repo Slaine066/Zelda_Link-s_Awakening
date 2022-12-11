@@ -18,9 +18,11 @@ public:
 
 private:
 	void Move(CPlayer * pPlayer, _float fTimeDelta);
-
+	_bool Check_CollisionBlock(CPlayer* pPlayer, _float fTimeDelta);
+	
 private:
 	DIRID m_eDirection = DIRID::DIR_END;
+	CActor* m_pBlockingObject = nullptr;
 };
 END
 END

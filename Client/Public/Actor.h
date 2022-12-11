@@ -54,6 +54,7 @@ public:
 	CNavigation* Get_Navigation() { return m_pNavigationCom; }
 	CCollider* Get_Collider(CCollider::AIM eAim);
 	virtual void Update_Colliders();
+	_bool Get_IsPushable() { return m_bIsPushable; }
 
 	void Sync_WithNavigationHeight();
 
@@ -80,6 +81,7 @@ protected:
 
 protected:
 	MODELDESC m_tModelDesc;
+	_bool m_bIsPushable = false;
 
 public:
 	virtual void Free() override;

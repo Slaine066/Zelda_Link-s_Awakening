@@ -85,10 +85,20 @@ HRESULT CTreasure::Ready_Components(void* pArg)
 	ColliderDesc.vPosition = _float3(0.f, .5f, 0.f);
 	ColliderDesc.m_bIsAttachedToBone = false;
 
-	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object
+	m_vCollidersCom.resize(2); // Numbers of Colliders needed for this Object
 
 	/* For.Com_Collider*/
 	if (FAILED(__super::Add_Components(TEXT("Com_ColliderTreasure"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_Sphere"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.eAim = CCollider::AIM::AIM_BLOCK;
+	ColliderDesc.vScale = _float3(1.2f, 1.f, 1.3f);
+	ColliderDesc.vPosition = _float3(0.f, 0.5f, 0.f);
+	ColliderDesc.m_bIsAttachedToBone = false;
+
+	/* For.Com_Collider*/
+	if (FAILED(__super::Add_Components(TEXT("Com_ColliderTreasureBlock"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_AABB"), (CComponent**)&m_vCollidersCom[1], &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;

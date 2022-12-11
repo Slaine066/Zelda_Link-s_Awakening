@@ -233,6 +233,10 @@ _bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 	case ANIM_LADDER_DOWN:
 	case ANIM_LADDER_UP:
 	case ANIM_LADDER_WAIT:
+	case ANIM_PULL:
+	case ANIM_PULL_IDLE:
+	case ANIM_PUSH:
+	case ANIM_PUSH_IDLE:
 	case ANIM_RUN:
 	case ANIM_RUN_BARE:
 	case ANIM_SHIELD_HOLD_BACK:
@@ -269,6 +273,8 @@ _bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 	case ANIM_LADDER_UP_END:
 	case ANIM_LADDER_UP_START:
 	case ANIM_LAND:
+	case ANIM_PULL_START:
+	case ANIM_PUSH_START:
 	case ANIM_REVODOOR_IN:
 	case ANIM_ROD_END:
 	case ANIM_ROD_START:

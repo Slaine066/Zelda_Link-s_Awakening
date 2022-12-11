@@ -33,7 +33,7 @@ void CCollision_Manager::Remove_CollisionGroup(COLLISION_GROUP eCollisionGroup, 
 	}
 }
 
-_bool CCollision_Manager::Collision_with_Group(COLLISION_GROUP eGroup, CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT CGameObject* pDamagedObject)
+_bool CCollision_Manager::Collision_with_Group(COLLISION_GROUP eGroup, CCollider* pDamageCauser, CCollider::AIM eCollisionAim, OUT CGameObject*& pDamagedObject)
 {
 	if (!pDamageCauser)
 		return false;

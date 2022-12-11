@@ -360,6 +360,12 @@
     <ClInclude Include="..\public\MoriblinSwordFallState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerPushState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerPushMoveState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -547,6 +553,12 @@
     </ClCompile>
     <ClCompile Include="..\private\MoriblinSwordFallState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerPushState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerPushMoveState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

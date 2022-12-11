@@ -5,6 +5,7 @@
 #include "PlayerIdleState.h"
 #include "PlayerAttackState.h"
 #include "PlayerGuardState.h"
+#include "PlayerPushState.h"
 
 using namespace Player;
 
@@ -54,6 +55,13 @@ CPlayerState * CMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 
 CPlayerState * CMoveState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 {
+	/* Check if Colliding with COLLISION_BLOCK. */
+	if (Check_CollisionBlock(pPlayer, fTimeDelta) == true)
+	{
+		pPlayer->Get_Model()->Reset_CurrentAnimation();
+		return new CPushState(STATETYPE::STATETYPE_START, m_eDirection, m_pBlockingObject);
+	}
+
 	return nullptr;
 }
 
@@ -100,4 +108,23 @@ void CMoveState::Move(CPlayer * pPlayer, _float fTimeDelta)
 	}
 
 	pPlayer->Get_Transform()->Move_Straight(fTimeDelta, pPlayer->Get_Navigation(), pPlayer->Get_Radius());
+}
+
+_bool CMoveState::Check_CollisionBlock(CPlayer * pPlayer, _float fTimeDelta)
+{
+	/* Check if colliding with a COLLISION_BLOCK. */
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	_bool bCollided = pGameInstance->Collision_with_Group(CCollision_Manager::COLLISION_OBJECT, pPlayer->Get_Collider(CCollider::AIM_DAMAGE_INPUT), CCollider::AIM_BLOCK, (CGameObject*&)m_pBlockingObject);
+
+	if (bCollided)
+	{
+		/* Revert Move */
+		pPlayer->Get_Transform()->Move_Backward(fTimeDelta, pPlayer->Get_Navigation(), pPlayer->Get_Radius());
+
+		RELEASE_INSTANCE(CGameInstance);
+		return true;
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+	return false;
 }
