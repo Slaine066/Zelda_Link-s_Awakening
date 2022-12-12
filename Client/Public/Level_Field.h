@@ -22,7 +22,7 @@ public:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Effect(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_UI(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_UI();
 
 	vector<CActor::MODELDESC> m_vInstancedObjects;
 	

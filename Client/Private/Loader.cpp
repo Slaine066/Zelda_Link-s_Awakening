@@ -15,6 +15,7 @@
 #include "Bossblin.h"
 #include "Weapon.h"
 #include "Projectile.h"
+#include "UI.h"
 #include "UI_Heart.h"
 #include "HpBar.h"
 
@@ -81,6 +82,24 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	
 	/*For.Prototype_Component_Texture_Heart */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Heart"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Heart_%d.png"), 3))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Item_ButtonX */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_ButtonX"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Item_BtnX.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Item_ButtonY */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_ButtonY"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Item_BtnY.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Item_Background */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemBG.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Item_Number_Background */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Number_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemNumBG.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Item_Bomb */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Bomb"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemBomb.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Item_RocsFeather */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_RocsFeather"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemRocsFeather.png"), 1))))
 		return E_FAIL;
 
 	// >
@@ -573,6 +592,9 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Projectile"), CProjectile::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"), CUI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_Heart */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Heart"), CUI_Heart::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_HpBar */

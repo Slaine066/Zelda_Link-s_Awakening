@@ -21,8 +21,8 @@ public:
 	virtual _uint Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	virtual HRESULT Ready_Components(void* pArg);
-	virtual HRESULT SetUp_ShaderResources();
+	virtual HRESULT Ready_Components(void* pArg) override;
+	virtual HRESULT SetUp_ShaderResources() override;
 
 public:
 	HEART_TYPE Get_HeartType() { return m_eType; }

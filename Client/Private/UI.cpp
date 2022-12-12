@@ -56,7 +56,79 @@ HRESULT CUI::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
+	/* 
+	1st Pass is for UI
+	2nd Pass is for UI_BLEND 
+	*/
+	m_pShaderCom->Begin(m_tUIDesc.m_ePass); 
+	m_pVIBufferCom->Render();
+
 	return S_OK;
+}
+
+HRESULT CUI::Ready_Components(void * pArg)
+{
+	ZeroMemory(&m_tUIDesc, sizeof(UIDESC));
+	memcpy(&m_tUIDesc, (UIDESC*)pArg, sizeof(UIDESC));
+
+	/* For.Com_Renderer */
+	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
+		return E_FAIL;
+	/* For.Com_Transform */
+	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_STATIC, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom)))
+		return E_FAIL;
+	/* For.Com_Shader */
+	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"), (CComponent**)&m_pShaderCom)))
+		return E_FAIL;
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_STATIC, m_tUIDesc.m_pTextureName, (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
+	/* For.Com_VIBuffer */
+	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), (CComponent**)&m_pVIBufferCom)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI::SetUp_ShaderResources()
+{
+	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &m_ViewMatrix, sizeof(_float4x4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &m_ProjMatrix, sizeof(_float4x4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(0))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+CUI * CUI::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+{
+	CUI* pInstance = new CUI(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		ERR_MSG(TEXT("Failed to Create: CUI"));
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject * CUI::Clone(void * pArg)
+{
+	CUI* pInstance = new CUI(*this);
+
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		ERR_MSG(TEXT("Failed to Clone: CUI"));
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
 }
 
 void CUI::Free()

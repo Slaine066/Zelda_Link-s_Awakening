@@ -46,7 +46,10 @@ _uint CUI_Heart::Late_Tick(_float fTimeDelta)
 
 HRESULT CUI_Heart::Render()
 {
-	if (FAILED(__super::Render()))
+	if (!m_pShaderCom || !m_pVIBufferCom)
+		return E_FAIL;
+
+	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
 	m_pShaderCom->Begin(2); /* 2nd Pass: AlphaBlend */

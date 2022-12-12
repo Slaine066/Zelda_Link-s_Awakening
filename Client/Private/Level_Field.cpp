@@ -5,7 +5,7 @@
 #include "CameraManager.h"
 #include "Camera_Player.h"
 #include "TriggerBox_Dynamic.h"
-#include "UI.h"
+#include "UIManager.h"
 
 CLevel_Field::CLevel_Field(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -32,7 +32,7 @@ HRESULT CLevel_Field::Initialize()
 	if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
+	if (FAILED(Ready_Layer_UI()))
 		return E_FAIL;
 
 	/* For.Com_Navigation */
@@ -135,14 +135,9 @@ HRESULT CLevel_Field::Load_Triggers_FromFile()
 	return S_OK;
 }
 
-HRESULT CLevel_Field::Ready_Layer_UI(const _tchar * pLayerTag)
+HRESULT CLevel_Field::Ready_Layer_UI()
 {
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("UI_HpBar"), TEXT("Prototype_GameObject_UI_HpBar"), LEVEL_FIELD, pLayerTag)))
-		return E_FAIL;
-
-	RELEASE_INSTANCE(CGameInstance);
+	CUIManager::Get_Instance()->Initialize_UI();
 
 	return S_OK;
 }

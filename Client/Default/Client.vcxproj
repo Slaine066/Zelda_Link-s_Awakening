@@ -233,6 +233,7 @@
     <ClInclude Include="..\public\Treasure.h" />
     <ClInclude Include="..\public\TriggerBox_Dynamic.h" />
     <ClInclude Include="..\public\UI.h" />
+    <ClInclude Include="..\public\UIManager.h" />
     <ClInclude Include="..\public\UI_Heart.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\StaticObject.h" />
@@ -301,6 +302,7 @@
     <ClCompile Include="..\private\Treasure.cpp" />
     <ClCompile Include="..\private\TriggerBox_Dynamic.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
+    <ClCompile Include="..\private\UIManager.cpp" />
     <ClCompile Include="..\private\UI_Heart.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />

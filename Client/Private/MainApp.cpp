@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 #include "Collider.h"
 #include "CameraManager.h"
+#include "UIManager.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::Get_Instance())
@@ -158,4 +159,5 @@ void CMainApp::Free()
 	CGameInstance::Release_Engine();
 
 	CCameraManager::Get_Instance()->Destroy_Instance();
+	CUIManager::Get_Instance()->Destroy_Instance();
 }

@@ -145,6 +145,9 @@
     <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\01.FallingTiles">
       <UniqueIdentifier>{6ff03038-f54b-4f10-85e1-d33df513eaaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\04.UI\UIManager">
+      <UniqueIdentifier>{c8fd2f58-d3ad-4827-9f3d-84b4a522a15b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -366,6 +369,9 @@
     <ClInclude Include="..\public\PlayerPushMoveState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UIManager.h">
+      <Filter>02.GameObjects\04.UI\UIManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -559,6 +565,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PlayerPushMoveState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIManager.cpp">
+      <Filter>02.GameObjects\04.UI\UIManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
