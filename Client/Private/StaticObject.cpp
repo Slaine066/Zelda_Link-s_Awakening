@@ -31,6 +31,9 @@ _uint CStaticObject::Tick(_float fTimeDelta)
 	if (FAILED(__super::Tick(fTimeDelta)))
 		return E_FAIL;
 
+	if (!wcscmp(m_tModelDesc.wcObjName, TEXT("CaveRock")))
+		CGameInstance::Get_Instance()->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_OBJECT, this);
+
 	return S_OK;
 }
 
@@ -60,6 +63,8 @@ HRESULT CStaticObject::Render()
 		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0)))
 			return E_FAIL;
 	}
+
+	Render_Colliders();
 
 	return S_OK;
 }
@@ -92,6 +97,22 @@ HRESULT CStaticObject::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_Model"), iLevelIndex, m_tModelDesc.wcModelPrototypeId, (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
+	if (!wcscmp(m_tModelDesc.wcObjName, TEXT("CaveRock")))
+	{
+		CCollider::COLLIDERDESC	ColliderDesc;
+		ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+		ColliderDesc.eAim = CCollider::AIM::AIM_BLOCK;
+		ColliderDesc.vScale = _float3(1.3f, 1.2f, 1.3f);
+		ColliderDesc.vPosition = _float3(0.f, 0.65f, 0.f);
+		ColliderDesc.m_bIsAttachedToBone = false;
+
+		m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object
+
+		/* For.Com_Collider*/
+		if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_AABB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+			return E_FAIL;
+	}
+	
 	return S_OK;
 }
 

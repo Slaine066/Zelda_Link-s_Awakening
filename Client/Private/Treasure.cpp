@@ -93,7 +93,7 @@ HRESULT CTreasure::Ready_Components(void* pArg)
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.eAim = CCollider::AIM::AIM_BLOCK;
-	ColliderDesc.vScale = _float3(1.2f, 1.f, 1.3f);
+	ColliderDesc.vScale = _float3(1.4f, 1.f, 1.5f);
 	ColliderDesc.vPosition = _float3(0.f, 0.5f, 0.f);
 	ColliderDesc.m_bIsAttachedToBone = false;
 
