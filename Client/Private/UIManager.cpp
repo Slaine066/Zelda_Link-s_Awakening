@@ -35,9 +35,6 @@ _uint CUIManager::Late_Tick(_float fTimeDelta)
 
 void CUIManager::Clear()
 {
-	for (auto& pHeart : m_Hearts)
-		Safe_Release(pHeart);
-
 	m_Hearts.clear();
 }
 

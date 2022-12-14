@@ -8,7 +8,7 @@
 #include "PlayerHitState.h"
 #include "PlayerFallState.h"
 #include "Layer.h"
-#include "FallingTile.h"
+#include "UIManager.h"
 
 using namespace Player;
 
@@ -42,6 +42,12 @@ HRESULT CPlayer::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	m_tStats.m_fMaxHp = CUIManager::Get_Instance()->Get_MaxHp() == 0 ? 4 : CUIManager::Get_Instance()->Get_MaxHp();
+	m_tStats.m_fCurrentHp = CUIManager::Get_Instance()->Get_CurrentHp() == 0 ? m_tStats.m_fMaxHp : CUIManager::Get_Instance()->Get_CurrentHp();
+	/*m_tStats.m_fAttackPower = 1;
+	m_tStats.m_fWalkSpeed = .7f;
+	m_tStats.m_fRunSpeed = 1.4f;*/
 
 	CPlayerState* pState = new CIdleState();
 	m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
