@@ -33,10 +33,10 @@ HRESULT CLevel_MoriblinCave::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
-	return E_FAIL;
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_UI()))
-	return E_FAIL;
+		return E_FAIL;
 
 	/* For.Com_Navigation */
 	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationMesh)))
@@ -56,9 +56,9 @@ void CLevel_MoriblinCave::Late_Tick(_float fTimeDelta)
 
 	SetWindowText(g_hWnd, TEXT("MoriblinCave Level."));
 
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	/*CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	/*if (pGameInstance->Key_Down('C'))
+	if (pGameInstance->Key_Down('C'))
 	{
 		CCamera_Player* pCamera = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
 		pCamera->Set_ModeZoom(true);
@@ -73,9 +73,9 @@ void CLevel_MoriblinCave::Late_Tick(_float fTimeDelta)
 	{
 		CCamera_Player* pCamera = (CCamera_Player*)(CCameraManager::Get_Instance()->Get_CurrentCamera());
 		pCamera->Set_ModeShake(0.5f, 0.1f, 0.01f);
-	}*/
+	}
 
-	RELEASE_INSTANCE(CGameInstance);
+	RELEASE_INSTANCE(CGameInstance);*/
 }
 
 HRESULT CLevel_MoriblinCave::Load_Objects_FromFile()
@@ -118,12 +118,12 @@ HRESULT CLevel_MoriblinCave::Load_Objects_FromFile()
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Link")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Player"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
-		/*else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSword")))
+		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSword")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSword"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSpear")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSpear"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Bossblin")))
-			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Bossblin"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);*/
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Bossblin"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		/*else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("CaveTile")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_FallingTile"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);*/
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("CaveRock")))

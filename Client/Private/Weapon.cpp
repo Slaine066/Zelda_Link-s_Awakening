@@ -39,7 +39,10 @@ HRESULT CWeapon::Initialize(void * pArg)
 
 _uint CWeapon::Tick(_float fTimeDelta)
 {
-	__super::Tick(fTimeDelta);
+	_uint iEvent = __super::Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	// Collision Handling
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
@@ -58,7 +61,10 @@ _uint CWeapon::Tick(_float fTimeDelta)
 
 _uint CWeapon::Late_Tick(_float fTimeDelta)
 {
-	__super::Late_Tick(fTimeDelta);
+	_uint iEvent = __super::Late_Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	return OBJ_NOEVENT;
 }

@@ -65,6 +65,8 @@ using namespace std;
 
 using namespace Engine;
 
-#define OBJ_DESTROY	1
 #define OBJ_NOEVENT 0
+#define OBJ_DESTROY	1
+#define OBJ_STOP	2
+
 #define	VK_MAX		0xff

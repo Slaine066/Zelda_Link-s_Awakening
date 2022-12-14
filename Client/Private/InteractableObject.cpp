@@ -28,16 +28,20 @@ HRESULT CInteractableObject::Initialize(void * pArg)
 
 _uint CInteractableObject::Tick(_float fTimeDelta)
 {
-	if (FAILED(__super::Tick(fTimeDelta)))
-		return E_FAIL;
+	_uint iEvent = __super::Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	return S_OK;
 }
 
 _uint CInteractableObject::Late_Tick(_float fTimeDelta)
 {
-	if (FAILED(__super::Late_Tick(fTimeDelta)))
-		return E_FAIL;
+	_uint iEvent = __super::Late_Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);

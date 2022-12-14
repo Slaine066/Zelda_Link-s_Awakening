@@ -57,7 +57,10 @@ HRESULT CPlayer::Initialize(void * pArg)
 
 _uint CPlayer::Tick(_float fTimeDelta)
 {
-	__super::Tick(fTimeDelta);
+	_uint iEvent = __super::Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	CGameInstance::Get_Instance()->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, this);
 
@@ -71,7 +74,10 @@ _uint CPlayer::Tick(_float fTimeDelta)
 
 _uint CPlayer::Late_Tick(_float fTimeDelta)
 {
-	__super::Late_Tick(fTimeDelta);
+	_uint iEvent = __super::Late_Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);

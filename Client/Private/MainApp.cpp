@@ -7,12 +7,14 @@
 #include "CameraManager.h"
 #include "UIManager.h"
 
-CMainApp::CMainApp()
-	: m_pGameInstance(CGameInstance::Get_Instance())
+CMainApp::CMainApp() : 
+	m_pGameInstance(CGameInstance::Get_Instance()),
+	m_pUIManager(CUIManager::Get_Instance())
 {
 	/*D3D11_SAMPLER_DESC*/
 	
 	Safe_AddRef(m_pGameInstance);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CMainApp::Initialize()
@@ -60,7 +62,7 @@ void CMainApp::Tick(_float fTimeDelta)
 	if (!m_pGameInstance)
 		return;
 
-	CUIManager::Get_Instance()->Tick(fTimeDelta);
+	m_pUIManager->Tick(fTimeDelta);
 	m_pGameInstance->Tick_Engine(fTimeDelta);
 
 #ifdef _DEBUG
@@ -155,6 +157,7 @@ void CMainApp::Free()
 	Safe_Release(m_pContext);
 
 	Safe_Release(m_pGameInstance);
+	Safe_Release(m_pUIManager);
 	
 	CGameInstance::Release_Engine();
 

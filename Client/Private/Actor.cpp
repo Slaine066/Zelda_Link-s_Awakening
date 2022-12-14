@@ -2,6 +2,7 @@
 
 #include "Actor.h"
 #include "GameInstance.h"
+#include "UIManager.h"
 
 CActor::CActor(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -32,6 +33,9 @@ HRESULT CActor::Initialize(void * pArg)
 
 _uint CActor::Tick(_float fTimeDelta)
 {
+	if (CUIManager::Get_Instance()->Get_Mode() != CUIManager::MODE::MODE_GAME)
+		return OBJ_STOP;
+
 	// Update Position Variable in SuperClass
 	_float4 vObjPosition;
 	XMStoreFloat4(&vObjPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));

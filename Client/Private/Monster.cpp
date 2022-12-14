@@ -31,19 +31,25 @@ HRESULT CMonster::Initialize(void * pArg)
 
 _uint CMonster::Tick(_float fTimeDelta)
 {
-	__super::Tick(fTimeDelta);
+	_uint iEvent = __super::Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_MONSTER, this);		
 
-	return OBJ_NOEVENT;
+	return iEvent;
 }
 
 _uint CMonster::Late_Tick(_float fTimeDelta)
 {
-	__super::Late_Tick(fTimeDelta);
+	_uint iEvent = __super::Late_Tick(fTimeDelta);
 
-	return OBJ_NOEVENT;
+	if (iEvent == OBJ_STOP)
+		return iEvent;
+
+	return iEvent;
 }
 
 HRESULT CMonster::Render()

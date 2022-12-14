@@ -50,7 +50,10 @@ HRESULT CProjectile::Initialize(void * pArg)
 
 _uint CProjectile::Tick(_float fTimeDelta)
 {
-	__super::Tick(fTimeDelta);
+	_uint iEvent = __super::Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	if (m_bShouldDestroy)
 		return OBJ_DESTROY;
@@ -72,7 +75,10 @@ _uint CProjectile::Tick(_float fTimeDelta)
 
 _uint CProjectile::Late_Tick(_float fTimeDelta)
 {
-	__super::Late_Tick(fTimeDelta);
+	_uint iEvent = __super::Late_Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);

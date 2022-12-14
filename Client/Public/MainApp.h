@@ -9,7 +9,6 @@ class CGameInstance;
 END
 
 BEGIN(Client)
-
 class CMainApp final : public CBase
 {
 private:
@@ -22,18 +21,19 @@ public:
 	HRESULT Render();
 
 private:
-	CGameInstance*			m_pGameInstance = nullptr;
+	CGameInstance* m_pGameInstance = nullptr;
+	class CUIManager* m_pUIManager = nullptr;
 
 private:
-	ID3D11Device*			m_pDevice = nullptr;
-	ID3D11DeviceContext*	m_pContext = nullptr;
-	CRenderer*				m_pRenderer = nullptr;
+	ID3D11Device* m_pDevice = nullptr;
+	ID3D11DeviceContext* m_pContext = nullptr;
+	CRenderer* m_pRenderer = nullptr;
 
 #ifdef _DEBUG
 private:
-	_uint					m_iNumRender = 0;
-	_tchar					m_szFPS[MAX_PATH] = TEXT("");
-	_float					m_fTimeAcc = 0.f;
+	_uint m_iNumRender = 0;
+	_tchar m_szFPS[MAX_PATH] = TEXT("");
+	_float m_fTimeAcc = 0.f;
 #endif // _DEBUG
 
 private:
@@ -48,6 +48,4 @@ public:
 	static CMainApp* Create();
 	virtual void Free();
 };
-
 END
-

@@ -142,9 +142,6 @@
     <Filter Include="02.GameObjects\00.Actor\05.Effect">
       <UniqueIdentifier>{8bbe6452-63a3-4eee-a2e1-aca84de347e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\00.Treasure\NewFilter1">
-      <UniqueIdentifier>{322abbb1-5707-4b48-a80f-548e5a371d61}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\04.UI\UI_Heart">
       <UniqueIdentifier>{34a0da84-caf2-43fb-85cc-235b152cd743}</UniqueIdentifier>
     </Filter>

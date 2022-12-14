@@ -33,16 +33,19 @@ HRESULT CCharacter::Initialize(void * pArg)
 
 _uint CCharacter::Tick(_float fTimeDelta)
 {
-	__super::Tick(fTimeDelta);
-	
-	return OBJ_NOEVENT;
+	_uint iEvent = __super::Tick(fTimeDelta);
+
+	return iEvent;
 }
 
 _uint CCharacter::Late_Tick(_float fTimeDelta)
 {
-	__super::Late_Tick(fTimeDelta);
+	_uint iEvent = __super::Late_Tick(fTimeDelta);
 
-	return OBJ_NOEVENT;
+	if (iEvent == OBJ_STOP)
+		return iEvent;
+
+	return iEvent;
 }
 
 HRESULT CCharacter::Render()

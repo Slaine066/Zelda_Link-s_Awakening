@@ -58,7 +58,10 @@ HRESULT CBossblin::Initialize(void * pArg)
 
 _uint CBossblin::Tick(_float fTimeDelta)
 {
-	__super::Tick(fTimeDelta);
+	_uint iEvent = __super::Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	if (m_bShouldDestroy)
 		return OBJ_DESTROY;
@@ -74,7 +77,10 @@ _uint CBossblin::Tick(_float fTimeDelta)
 
 _uint CBossblin::Late_Tick(_float fTimeDelta)
 {
-	__super::Late_Tick(fTimeDelta);
+	_uint iEvent = __super::Late_Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	if (m_pRendererCom && m_bIsInFrustum)
 	{

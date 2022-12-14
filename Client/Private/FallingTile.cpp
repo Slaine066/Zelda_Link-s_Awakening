@@ -31,8 +31,10 @@
 //
 //_uint CFallingTile::Tick(_float fTimeDelta)
 //{
-//	if (FAILED(__super::Tick(fTimeDelta)))
-//		return E_FAIL;
+//	_uint iEvent = __super::Tick(fTimeDelta);
+//	
+//  if (iEvent == OBJ_STOP)
+//		return iEvent;
 //
 //	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 //	pGameInstance->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_OBJECT, this);
@@ -45,8 +47,11 @@
 //
 //_uint CFallingTile::Late_Tick(_float fTimeDelta)
 //{
-//	if (FAILED(__super::Late_Tick(fTimeDelta)))
+//	_uint iEvent = __super::Late_Tick(fTimeDelta);
 //		return E_FAIL;
+//
+//  if (iEvent == OBJ_STOP)
+//		return iEvent;
 //
 //	return OBJ_NOEVENT;
 //}

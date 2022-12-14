@@ -28,8 +28,10 @@ HRESULT CStaticObject::Initialize(void * pArg)
 
 _uint CStaticObject::Tick(_float fTimeDelta)
 {
-	if (FAILED(__super::Tick(fTimeDelta)))
-		return E_FAIL;
+	_uint iEvent = __super::Tick(fTimeDelta);
+		
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	if (!wcscmp(m_tModelDesc.wcObjName, TEXT("CaveRock")))
 		CGameInstance::Get_Instance()->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_OBJECT, this);
@@ -39,8 +41,10 @@ _uint CStaticObject::Tick(_float fTimeDelta)
 
 _uint CStaticObject::Late_Tick(_float fTimeDelta)
 {
-	if (FAILED(__super::Late_Tick(fTimeDelta)))
-		return E_FAIL;
+	_uint iEvent = __super::Late_Tick(fTimeDelta);
+
+	if (iEvent == OBJ_STOP)
+		return iEvent;
 
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);

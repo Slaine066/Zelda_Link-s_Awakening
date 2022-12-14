@@ -38,10 +38,7 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 	{
 		CLevel* pNewLevel = nullptr;
 
-		CUIManager::Get_Instance()->Clear();
-
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-		pGameInstance->ClearLights();
 		
 		switch (m_eNextLevel)
 		{

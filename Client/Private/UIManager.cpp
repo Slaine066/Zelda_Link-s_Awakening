@@ -2,7 +2,6 @@
 
 #include "UIManager.h"
 #include "GameInstance.h"
-#include "UI.h"
 #include "Player.h"
 #include "UI_Heart.h"
 
@@ -14,6 +13,8 @@ CUIManager::CUIManager()
 
 HRESULT CUIManager::Initialize()
 {
+	m_eMode = MODE::MODE_GAME;
+
 	Build_Hearts(); 
 	Build_ItemButtonX(); 
 	Build_ItemButtonY(); 
@@ -21,21 +22,84 @@ HRESULT CUIManager::Initialize()
 	return S_OK;
 }
 
-_uint CUIManager::Tick(_float fTimeDelta)
+void CUIManager::Handle_Input()
 {
-	Compute_Hearts();
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	return OBJ_NOEVENT;
+	switch (m_eMode)
+	{
+		case MODE::MODE_GAME:
+		{
+			if (pGameInstance->Key_Down('M'))
+			{
+				/* Open Map */
+				m_eMode = MODE::MODE_MAP;
+			}
+			else if (pGameInstance->Key_Down('N'))
+			{
+				/* Open Inventory */
+				m_eMode = MODE::MODE_INVENTORY;
+			}
+		}
+		break;
+		case MODE::MODE_MAP:
+		{
+			if (pGameInstance->Key_Down('M'))
+			{
+				/* Nothing happens. Already in Map Mode. */
+			}
+			else if (pGameInstance->Key_Down('N'))
+			{
+				/* Switch to Inventory Mode. */
+				m_eMode = MODE::MODE_INVENTORY;
+			}
+			else if (pGameInstance->Key_Down('S'))
+			{
+				/* Close Map. */
+				m_eMode = MODE::MODE_GAME;
+			}
+		}
+		break;
+		case MODE::MODE_INVENTORY:
+		{
+			if (pGameInstance->Key_Down('M'))
+			{
+				/* Switch to Map Mode. */
+				m_eMode = MODE::MODE_MAP;
+			}
+			else if (pGameInstance->Key_Down('N'))
+			{
+				/* Nothing happens. Already in Inventory Mode. */
+			}
+			else if (pGameInstance->Key_Down('S'))
+			{
+				/* Close Inventory. */
+				m_eMode = MODE::MODE_INVENTORY;
+			}
+		}
+		break;
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
-_uint CUIManager::Late_Tick(_float fTimeDelta)
+_uint CUIManager::Tick(_float fTimeDelta)
 {
+	if (m_eMode == MODE::MODE_END)
+		return OBJ_NOEVENT;
+
+	Handle_Input();
+	Compute_Hearts();
+
 	return OBJ_NOEVENT;
 }
 
 void CUIManager::Clear()
 {
 	m_Hearts.clear();
+	m_fMaxHp = 0.f;
+	m_fCurrentHp = 0.f;
+	m_eMode = MODE::MODE_END;
 }
 
 HRESULT CUIManager::Build_Hearts()
@@ -56,11 +120,11 @@ HRESULT CUIManager::Build_Hearts()
 		tUIDesc.m_fY = tUIDesc.m_fSizeY;
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Heart"));
 
-		CUI* pHeart = nullptr;
+		CUI_Heart* pHeart = nullptr;
 		pGameInstance->Add_GameObject_Out(TEXT("UI_Heart"), TEXT("Prototype_GameObject_UI_Heart"), pGameInstance->Get_NextLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)pHeart, &tUIDesc);
 
 		m_Hearts.push_back(pHeart);
-		((CUI_Heart*)pHeart)->Set_HeartType(CUI_Heart::HEART_TYPE::HEART_FULL);
+		pHeart->Set_HeartType(CUI_Heart::HEART_TYPE::HEART_FULL);
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -164,14 +228,14 @@ void CUIManager::Compute_Hearts()
 {
 	Get_PlayerHp();
 
-	for (_float i = 0; i < m_fMaxHp; i += 1)
+ 	for (_float i = 0; i < m_fMaxHp; i += 1)
 	{
-		if (m_fCurrentHp >(i + .5f))
-			((CUI_Heart*)m_Hearts[i])->Set_HeartType(CUI_Heart::HEART_TYPE::HEART_FULL);
+		if (m_fCurrentHp > (i + .5f))
+			m_Hearts[i]->Set_HeartType(CUI_Heart::HEART_TYPE::HEART_FULL);
 		else if (m_fCurrentHp == (i + .5f))
-			((CUI_Heart*)m_Hearts[i])->Set_HeartType(CUI_Heart::HEART_TYPE::HEART_HALF);
+			m_Hearts[i]->Set_HeartType(CUI_Heart::HEART_TYPE::HEART_HALF);
 		else
-			((CUI_Heart*)m_Hearts[i])->Set_HeartType(CUI_Heart::HEART_TYPE::HEART_EMPTY);
+			m_Hearts[i]->Set_HeartType(CUI_Heart::HEART_TYPE::HEART_EMPTY);
 	}
 }
 

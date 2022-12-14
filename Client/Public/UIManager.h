@@ -16,7 +16,7 @@ class CUIManager final : public CBase
 	DECLARE_SINGLETON(CUIManager)
 
 public:
-	enum MODE { MODE_GAME, MODE_MENU, MODE_END };
+	enum MODE { MODE_GAME, MODE_MAP, MODE_INVENTORY, MODE_END };
 
 private:
 	CUIManager();
@@ -25,7 +25,7 @@ private:
 public:
 	HRESULT Initialize();
 	_uint Tick(_float fTimeDelta);
-	_uint Late_Tick(_float fTimeDelta);
+	void Handle_Input();
 	void Clear();
 
 private:
@@ -35,6 +35,8 @@ private:
 	HRESULT Build_ItemButtonY();
 
 public:
+	MODE Get_Mode() { return m_eMode; }
+	void Set_Mode(MODE eMode) { m_eMode = eMode; }
 	_float Get_MaxHp() { return m_fMaxHp; }
 	_float Get_CurrentHp() { return m_fCurrentHp; }
 
@@ -46,7 +48,7 @@ private:
 	MODE m_eMode = MODE_END;
 
 	/* Hearts Variables */
-	vector<class CUI*> m_Hearts;
+	vector<class CUI_Heart*> m_Hearts;
 	_float m_fMaxHp = 0.f;
 	_float m_fCurrentHp = 0.f;
 

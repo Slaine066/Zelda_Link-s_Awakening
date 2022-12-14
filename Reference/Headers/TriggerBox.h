@@ -34,7 +34,7 @@ public:
 protected:
 	TRIGGERBOXDESC m_tTriggerBoxDesc;
 	CCollider* m_pCollider = nullptr;
-	_bool m_bIsFirstFrame = false;
+	_bool m_bIsFirstFrame = true;
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;
