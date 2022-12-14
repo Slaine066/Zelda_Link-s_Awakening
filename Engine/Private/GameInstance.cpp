@@ -286,6 +286,14 @@ HRESULT CGameInstance::Add_GameObject(const _tchar* pObjName, const _tchar * pPr
 	return m_pObject_Manager->Add_GameObject(pObjName, pPrototypeTag, iLevelIndex, pLayerTag, pArg);
 }
 
+HRESULT CGameInstance::Add_GameObject_Out(const _tchar * pObjName, const _tchar * pPrototypeTag, _uint iLevelIndex, const _tchar * pLayerTag, OUT CGameObject *& pGameObjectOut, void * pArg)
+{
+	if (nullptr == m_pObject_Manager)
+		return E_FAIL;
+
+	return m_pObject_Manager->Add_GameObject_Out(pObjName, pPrototypeTag, iLevelIndex, pLayerTag, pGameObjectOut, pArg);
+}
+
 CGameObject * CGameInstance::Clone_GameObject(const _tchar * pPrototypeTag, void * pArg)
 {
 	if (nullptr == m_pObject_Manager)

@@ -8,8 +8,10 @@
 #include "UIManager.h"
 
 CLevel_Field::CLevel_Field(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CLevel(pDevice, pContext)
+	: CLevel(pDevice, pContext),
+	m_pUIManager(CUIManager::Get_Instance())
 {
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_Field::Initialize()
@@ -137,7 +139,7 @@ HRESULT CLevel_Field::Load_Triggers_FromFile()
 
 HRESULT CLevel_Field::Ready_Layer_UI()
 {
-	CUIManager::Get_Instance()->Initialize_UI();
+	m_pUIManager->Initialize();
 
 	return S_OK;
 }
@@ -243,4 +245,6 @@ CLevel_Field* CLevel_Field::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 void CLevel_Field::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pUIManager);
 }

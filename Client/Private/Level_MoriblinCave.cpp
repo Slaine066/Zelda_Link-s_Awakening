@@ -9,8 +9,10 @@
 #include "UIManager.h"
 
 CLevel_MoriblinCave::CLevel_MoriblinCave(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CLevel(pDevice, pContext)
+	: CLevel(pDevice, pContext),
+	m_pUIManager(CUIManager::Get_Instance())
 {
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_MoriblinCave::Initialize()
@@ -56,7 +58,7 @@ void CLevel_MoriblinCave::Late_Tick(_float fTimeDelta)
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (pGameInstance->Key_Down('C'))
+	/*if (pGameInstance->Key_Down('C'))
 	{
 		CCamera_Player* pCamera = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
 		pCamera->Set_ModeZoom(true);
@@ -71,7 +73,7 @@ void CLevel_MoriblinCave::Late_Tick(_float fTimeDelta)
 	{
 		CCamera_Player* pCamera = (CCamera_Player*)(CCameraManager::Get_Instance()->Get_CurrentCamera());
 		pCamera->Set_ModeShake(0.5f, 0.1f, 0.01f);
-	}
+	}*/
 
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -167,7 +169,7 @@ HRESULT CLevel_MoriblinCave::Load_Triggers_FromFile()
 
 HRESULT CLevel_MoriblinCave::Ready_Layer_UI()
 {
-	CUIManager::Get_Instance()->Initialize_UI();
+	m_pUIManager->Initialize();
 
 	return S_OK;
 }
@@ -284,4 +286,6 @@ CLevel_MoriblinCave* CLevel_MoriblinCave::Create(ID3D11Device* pDevice, ID3D11De
 void CLevel_MoriblinCave::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pUIManager);
 }

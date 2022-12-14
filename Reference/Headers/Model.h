@@ -35,7 +35,9 @@ public:
 	_uint Get_CurrentAnimIndex() { return m_iCurrentAnimIndex; }
 	void Set_CurrentAnimIndex(_uint iAnimIndex) { m_iCurrentAnimIndex = iAnimIndex; }
 	_bool Is_Keyframe(char* pChannelName, _uint iKeyframe);
+	_bool Under_Keyframe(char* pChannelName, _uint iKeyframe);
 	_bool Over_Keyframe(char* pChannelName, _uint iKeyframe);
+	_bool Between_Keyframe(char * pChannelName, _uint iKeyframeLower, _uint iKeyframeUpper);
 	void Reset_CurrentAnimation();
 
 public:

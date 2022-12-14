@@ -5,6 +5,9 @@
 #include "PlayerAttackState.h"
 #include "PlayerMoveState.h"
 #include "PlayerGuardState.h"
+#include "PlayerJumpState.h"
+#include "PlayerAchieveState.h"
+#include "InteractableObject.h"
 
 using namespace Player;
 
@@ -16,10 +19,14 @@ CPlayerState * CIdleState::HandleInput(CPlayer * pPlayer)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
-	if (pGameInstance->Key_Down('S'))
+	if (pGameInstance->Key_Down('A'))
+		m_pInteractableObject = pPlayer->Get_InteractableObject();
+	else if (pGameInstance->Key_Down('S'))
 		return new CAttackState();
 	else if (pGameInstance->Key_Down('W'))
 		return new CGuardState(STATETYPE_START);
+	else if (pGameInstance->Key_Down('Z'))
+		return new CJumpState(STATETYPE_MAIN);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))
@@ -50,6 +57,18 @@ CPlayerState * CIdleState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 
 CPlayerState * CIdleState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 {
+	if (!m_pInteractableObject)
+		return nullptr;
+
+	m_pInteractableObject->Interact();
+
+	switch (m_pInteractableObject->Get_InteractableType())
+	{
+	case INTERACTABLE_TREASURE:
+		return new CAchieveState(STATETYPE_START);
+		break;
+	}
+
 	return nullptr;
 }
 

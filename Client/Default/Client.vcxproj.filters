@@ -136,17 +136,23 @@
     <Filter Include="02.GameObjects\04.UI">
       <UniqueIdentifier>{76db635f-835c-42fe-a8ef-35f87d99cf8e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\04.UI\00.HpBar">
-      <UniqueIdentifier>{ec2362da-a963-4d82-9d69-d7538a9746e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\04.UI\00.HpBar\UI_Heart">
-      <UniqueIdentifier>{34a0da84-caf2-43fb-85cc-235b152cd743}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\01.FallingTiles">
       <UniqueIdentifier>{6ff03038-f54b-4f10-85e1-d33df513eaaf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\04.UI\UIManager">
+    <Filter Include="02.GameObjects\00.Actor\05.Effect">
+      <UniqueIdentifier>{8bbe6452-63a3-4eee-a2e1-aca84de347e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\00.Treasure\NewFilter1">
+      <UniqueIdentifier>{322abbb1-5707-4b48-a80f-548e5a371d61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04.UI\UI_Heart">
+      <UniqueIdentifier>{34a0da84-caf2-43fb-85cc-235b152cd743}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04.UI\Manager">
       <UniqueIdentifier>{c8fd2f58-d3ad-4827-9f3d-84b4a522a15b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04.UI\UI_ItemSlot">
+      <UniqueIdentifier>{6accfd7e-9c2a-4752-808c-6bdc436178b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -339,9 +345,6 @@
     <ClInclude Include="..\public\Treasure.h">
       <Filter>02.GameObjects\00.Actor\02.InteractableObject\00.Treasure</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\HpBar.h">
-      <Filter>02.GameObjects\04.UI\00.HpBar</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\UI.h">
       <Filter>02.GameObjects\04.UI</Filter>
     </ClInclude>
@@ -349,7 +352,7 @@
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI_Heart.h">
-      <Filter>02.GameObjects\04.UI\00.HpBar\UI_Heart</Filter>
+      <Filter>02.GameObjects\04.UI\UI_Heart</Filter>
     </ClInclude>
     <ClInclude Include="..\public\FallingTile.h">
       <Filter>02.GameObjects\00.Actor\02.InteractableObject\01.FallingTiles</Filter>
@@ -370,7 +373,16 @@
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UIManager.h">
-      <Filter>02.GameObjects\04.UI\UIManager</Filter>
+      <Filter>02.GameObjects\04.UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerAchieveState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerJumpState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_ItemSlot.h">
+      <Filter>02.GameObjects\04.UI\UI_ItemSlot</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -536,9 +548,6 @@
     <ClCompile Include="..\private\Treasure.cpp">
       <Filter>02.GameObjects\00.Actor\02.InteractableObject\00.Treasure</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\HpBar.cpp">
-      <Filter>02.GameObjects\04.UI\00.HpBar</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\UI.cpp">
       <Filter>02.GameObjects\04.UI</Filter>
     </ClCompile>
@@ -546,7 +555,7 @@
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Heart.cpp">
-      <Filter>02.GameObjects\04.UI\00.HpBar\UI_Heart</Filter>
+      <Filter>02.GameObjects\04.UI\UI_Heart</Filter>
     </ClCompile>
     <ClCompile Include="..\private\FallingTile.cpp">
       <Filter>02.GameObjects\00.Actor\02.InteractableObject\01.FallingTiles</Filter>
@@ -567,7 +576,16 @@
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UIManager.cpp">
-      <Filter>02.GameObjects\04.UI\UIManager</Filter>
+      <Filter>02.GameObjects\04.UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerAchieveState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerJumpState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_ItemSlot.cpp">
+      <Filter>02.GameObjects\04.UI\UI_ItemSlot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

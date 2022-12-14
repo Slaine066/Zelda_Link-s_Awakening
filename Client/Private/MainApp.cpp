@@ -19,7 +19,7 @@ HRESULT CMainApp::Initialize()
 {
 	srand(unsigned int(time(NULL)));
 
-	GRAPHIC_DESC		Graphic_Desc;
+	GRAPHIC_DESC Graphic_Desc;
 	ZeroMemory(&Graphic_Desc, sizeof(GRAPHIC_DESC));
 
 	Graphic_Desc.hWnd = g_hWnd;
@@ -57,15 +57,15 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Tick(_float fTimeDelta)
 {
-	if (nullptr == m_pGameInstance)
+	if (!m_pGameInstance)
 		return;
 
+	CUIManager::Get_Instance()->Tick(fTimeDelta);
 	m_pGameInstance->Tick_Engine(fTimeDelta);
 
 #ifdef _DEBUG
 	m_fTimeAcc += fTimeDelta;
 #endif // _DEBUG
-
 }
 
 HRESULT CMainApp::Render()
@@ -97,7 +97,7 @@ HRESULT CMainApp::Open_Level(LEVEL eLevel)
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	CLevel_Loading*			pLevel_Loading = CLevel_Loading::Create(m_pDevice, m_pContext, eLevel);
+	CLevel_Loading* pLevel_Loading = CLevel_Loading::Create(m_pDevice, m_pContext, eLevel);
 	if (nullptr == pLevel_Loading)
 		return E_FAIL;
 
@@ -108,7 +108,7 @@ HRESULT CMainApp::Open_Level(LEVEL eLevel)
 
 HRESULT CMainApp::Ready_Prototype_Component()
 {
-	if (nullptr == m_pGameInstance)
+	if (!m_pGameInstance)
 		return E_FAIL;
 
 	/* For.Prototype_Component_Renderer */
@@ -136,7 +136,7 @@ void CMainApp::Show_FPS()
 
 CMainApp * CMainApp::Create()
 {
-	CMainApp*	pInstance = new CMainApp();
+	CMainApp* pInstance = new CMainApp();
 
 	if (FAILED(pInstance->Initialize()))
 	{

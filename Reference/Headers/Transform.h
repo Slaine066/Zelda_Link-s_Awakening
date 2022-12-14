@@ -63,6 +63,8 @@ public:
 	void Move_Backward(_float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);													/* Look - */
 	void Move_Left(_float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);														/* Right + */
 	void Move_Right(_float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);														/* Right - */
+	void Move_Up(_float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);														/* Up + */
+	void Move_Down(_float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);														/* Up - */
 	_bool Move_Direction(_vector vDirection, _float fTimeDelta, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);							/* Specific Direction + */
 	_bool Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, _float fDistance, class CNavigation* pNavigation = nullptr, _float fRadius = 0.f);	/* Go to Specific Position. */
 	void Attach_ToTarget(_fvector fTargetPosition, _fvector fDistance);																						/* Immediately attach to Specific Position. */

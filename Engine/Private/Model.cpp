@@ -58,9 +58,19 @@ _bool CModel::Is_Keyframe(char* pChannelName, _uint iKeyframe)
 	return m_Animations[m_iCurrentAnimIndex]->Is_Keyframe(pChannelName, iKeyframe);
 }
 
+_bool CModel::Under_Keyframe(char * pChannelName, _uint iKeyframe)
+{
+	return m_Animations[m_iCurrentAnimIndex]->Under_Keyframe(pChannelName, iKeyframe);
+}
+
 _bool CModel::Over_Keyframe(char * pChannelName, _uint iKeyframe)
 {
 	return m_Animations[m_iCurrentAnimIndex]->Over_Keyframe(pChannelName, iKeyframe);
+}
+
+_bool CModel::Between_Keyframe(char * pChannelName, _uint iKeyframeLower, _uint iKeyframeUpper)
+{
+	return m_Animations[m_iCurrentAnimIndex]->Between_Keyframe(pChannelName, iKeyframeLower, iKeyframeUpper);
 }
 
 void CModel::Reset_CurrentAnimation()

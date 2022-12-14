@@ -20,6 +20,15 @@ protected:
 	CInteractableObject(const CInteractableObject& rhs);
 	virtual ~CInteractableObject() = default;
 
+public:
+	INTERACTABLEID Get_InteractableType() { return m_eInteractableType; }
+	_bool Get_DidInteract() { return m_bDidInteract; }
+	void Set_DidInteract(_bool bdidInteract) { m_bDidInteract = bdidInteract; }
+
+public:
+	virtual _bool CanInteract() PURE;
+	virtual void Interact() PURE;
+
 protected:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -32,6 +41,10 @@ protected:
 
 protected:
 	_uint Compute_LevelIndex(_tchar* pObjName);
+
+protected:
+	INTERACTABLEID m_eInteractableType = INTERACTABLE_END;
+	_bool m_bDidInteract = false;
 
 public:
 	virtual void Free() override;

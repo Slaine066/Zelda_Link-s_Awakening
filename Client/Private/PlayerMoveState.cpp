@@ -6,6 +6,7 @@
 #include "PlayerAttackState.h"
 #include "PlayerGuardState.h"
 #include "PlayerPushState.h"
+#include "PlayerJumpState.h"
 
 using namespace Player;
 
@@ -21,6 +22,8 @@ CPlayerState * CMoveState::HandleInput(CPlayer * pPlayer)
 		return new CAttackState();
 	else if (pGameInstance->Key_Down('W'))
 		return new CGuardState(STATETYPE_START);
+	else if (pGameInstance->Key_Down('Z'))
+		return new CJumpState(STATETYPE_MAIN, true);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))

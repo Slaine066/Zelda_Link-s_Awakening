@@ -9,6 +9,7 @@
 #include "Level_BottleGrotto.h"
 #include "TriggerBox.h"
 #include "Player.h"
+#include "UIManager.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -36,6 +37,8 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 	if (m_pLoader->Get_Finished())
 	{
 		CLevel* pNewLevel = nullptr;
+
+		CUIManager::Get_Instance()->Clear();
 
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 		pGameInstance->ClearLights();

@@ -139,6 +139,32 @@ void CTransform::Move_Right(_float fTimeDelta, CNavigation* pNavigation, _float 
 		Set_State(CTransform::STATE_TRANSLATION, vPosition);
 }
 
+void CTransform::Move_Up(_float fTimeDelta, CNavigation * pNavigation, _float fRadius)
+{
+	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
+	_vector	vUp = Get_State(CTransform::STATE_UP);
+
+	vPosition += XMVector3Normalize(vUp) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
+
+	if (!pNavigation)
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+	else if (pNavigation->CanMove(vPosition))
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+}
+
+void CTransform::Move_Down(_float fTimeDelta, CNavigation * pNavigation, _float fRadius)
+{
+	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
+	_vector	vUp = Get_State(CTransform::STATE_UP);
+
+	vPosition -= XMVector3Normalize(vUp) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
+
+	if (!pNavigation)
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+	else if (pNavigation->CanMove(vPosition))
+		Set_State(CTransform::STATE_TRANSLATION, vPosition);
+}
+
 _bool CTransform::Move_Direction(_vector vDirection, _float fTimeDelta, CNavigation* pNavigation, _float fRadius)
 {
 	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);	

@@ -7,7 +7,7 @@
 #include "Camera_Dungeon.h"
 #include "TriggerBox_Dynamic.h"
 #include "StaticObject.h"
-#include "FallingTile.h"
+//#include "FallingTile.h"
 #include "Treasure.h"
 #include "Player.h"
 #include "MoriblinSword.h"
@@ -17,7 +17,6 @@
 #include "Projectile.h"
 #include "UI.h"
 #include "UI_Heart.h"
-#include "HpBar.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -90,16 +89,53 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_ButtonY"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Item_BtnY.png"), 1))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Item_Background */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemBG.png"), 1))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/BGItem.png"), 1))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Item_Number_Background */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Number_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemNumBG.png"), 1))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Number_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/BGItemNum.png"), 1))))
 		return E_FAIL;
+
+	/* TODO: Refactor like below. */
+	/* Game */
+	/*For.Prototype_Component_Texture_Heart */
+	/*For.Prototype_Component_Texture_Item_Background_X */
+	/*For.Prototype_Component_Texture_Item_Background_Y */
+
+	/* Inventory*/
+	/*For.Prototype_Component_Texture_Inventory */
+	/*For.Prototype_Component_Texture_Inventory_Item_Background */
+	/*For.Prototype_Component_Texture_Inventory_Item_Background_X */
+	/*For.Prototype_Component_Texture_Inventory_Item_Background_Y */
+
+	/* Item Icons */
 	/*For.Prototype_Component_Texture_Item_Bomb */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Bomb"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemBomb.png"), 1))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Item_RocsFeather */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_RocsFeather"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemRocsFeather.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Item_Bow */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Bow"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemBow.png"), 1))))
+		return E_FAIL;
+
+	/* Equipment Icons */
+	/*For.Prototype_Component_Texture_Equipment_Cloth */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Equipment_Cloth"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/EqCloth_%02d.png"), 3))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Equipment_Flippers */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Equipment_Flippers"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/EqFlippers_%02d.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Equipment_PegasusBoots */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Equipment_PegasusBoots"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/EqPegasusBoots_%02d.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Equipment_PowerBracelet */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Equipment_PowerBracelet"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/EqPowerBracelet_%02d.png"), 2))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Equipment_Shield */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Equipment_Shield"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/EqShield_%02d.png"), 2))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Equipment_Sword */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Equipment_Sword"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/EqSword_%02d.png"), 2))))
 		return E_FAIL;
 
 	// >
@@ -568,8 +604,8 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_FallingTile */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FallingTile"), CFallingTile::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	/*if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FallingTile"), CFallingTile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;*/
 	/* For.Prototype_GameObject_Treasure */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Treasure"), CTreasure::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -596,9 +632,6 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_Heart */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Heart"), CUI_Heart::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_UI_HpBar */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_HpBar"), CHpBar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// >

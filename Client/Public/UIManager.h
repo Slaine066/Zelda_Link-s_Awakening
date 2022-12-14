@@ -4,11 +4,10 @@
 #include "Base.h"
 
 /*
-Note that this Class does NOT contain UI Objects.
-(UI Objects are been stored in the ObjectManager, exactly like all the other Game Objects).
-
-"Then why do we even need a UI Manager?"
+Note that this Class contains a pointer of the same Object stored in the Object Manager.
+"Then why do you need to store them twice?"
 This class just encloses a bunch of utility functions which allows us to work with UI Objects more comfortably.
+(By doing so, we don't need to serach in the Object Manager every time).
 */
 
 BEGIN(Client)
@@ -21,7 +20,27 @@ private:
 	virtual ~CUIManager() = default;
 
 public:
-	HRESULT Initialize_UI();
+	HRESULT Initialize();
+	_uint Tick(_float fTimeDelta);
+	_uint Late_Tick(_float fTimeDelta);
+	void Clear();
+
+public:
+	/* Initialize Functions */
+	HRESULT Build_Hearts();
+	HRESULT Build_ItemButtonX();
+	HRESULT Build_ItemButtonY();
+
+public:
+	/* Manage Functions */
+	void Get_PlayerHp();
+	void Compute_Hearts();
+
+private:
+	/* Hearts Variables */
+	vector<class CUI*> m_Hearts;
+	_float m_fMaxHp = 0.f;
+	_float m_fCurrentHp = 0.f;
 
 public:
 	virtual void Free() override;

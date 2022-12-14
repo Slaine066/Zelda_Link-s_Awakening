@@ -2,6 +2,7 @@
 
 #include "Treasure.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CTreasure::CTreasure(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CInteractableObject(pDevice, pContext)
@@ -26,6 +27,7 @@ HRESULT CTreasure::Initialize(void * pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
+	m_eInteractableType = INTERACTABLE_TREASURE;
 	m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_CLOSE_IDLE);
 
 	return S_OK;
@@ -47,6 +49,13 @@ _uint CTreasure::Late_Tick(_float fTimeDelta)
 {
 	if (FAILED(__super::Late_Tick(fTimeDelta)))
 		return E_FAIL;
+
+	if (CanInteract())
+	{
+		/* TODO: Show Open Button */
+	}
+
+	Reset_Animation();
 
 	return S_OK;
 }
@@ -112,18 +121,83 @@ HRESULT CTreasure::SetUp_ShaderResources()
 	return S_OK;
 }
 
+_bool CTreasure::CanInteract()
+{
+	if (!m_bDidInteract && m_pModelCom->Get_CurrentAnimIndex() == ANIM_CLOSE_IDLE && Is_PlayerInRadius() == true)
+			return true;
+}
+
+void CTreasure::Interact()
+{
+	/* Open Treasure */
+	if (CanInteract())
+	{
+		/* If Player has Key */
+		if (true /* TODO: Check if Player has Key */)
+		{
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_OPEN);
+			m_bDidInteract = true;
+		}
+		else
+		{
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_OPEN_FAIL);
+			m_bDidInteract = true;
+		}
+	}
+}
+
 _bool CTreasure::Is_AnimationLoop(_uint eAnimId)
 {
 	switch ((ANIMID)eAnimId)
 	{
+	case ANIM_APPEAR:
 	case ANIM_CLOSE:
 	case ANIM_OPEN_FAIL:
 	case ANIM_OPEN:
 		return false;
 		break;
 	case ANIM_CLOSE_IDLE:
+	case ANIM_OPEN_IDLE:
 		return true;
 		break;
+	}
+}
+
+_bool CTreasure::Is_PlayerInRadius()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CGameObject* pCollided = nullptr;
+	_bool bIsInRadius = pGameInstance->Collision_with_Group(CCollision_Manager::COLLISION_PLAYER, Get_Collider(CCollider::AIM_OBJECT), CCollider::AIM_DAMAGE_INPUT, pCollided);
+	
+	CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
+	if (bIsInRadius && pPlayer)
+		pPlayer->Set_InteractableObject(this);
+	else
+		pPlayer->Set_InteractableObject(nullptr);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return bIsInRadius;
+}
+
+void CTreasure::Reset_Animation()
+{
+	if (m_bIsAnimationFinished)
+	{
+		switch (m_pModelCom->Get_CurrentAnimIndex())
+		{
+		case ANIM_OPEN:
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_OPEN_IDLE);
+			break;
+		case ANIM_OPEN_FAIL:
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_CLOSE_IDLE);
+			m_bDidInteract = false;
+			break;
+		case ANIM_CLOSE:
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_CLOSE_IDLE);
+			break;
+		}
 	}
 }
 

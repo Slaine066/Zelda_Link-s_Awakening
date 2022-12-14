@@ -19,12 +19,14 @@ public:
 	{
 		STATE_IDLE,
 		STATE_MOVE,
+		STATE_JUMP,
 		STATE_ATTACK,
 		STATE_HIT,
 		STATE_GUARD,
 		STATE_GUARD_MOVE,
 		STATE_PUSH,
 		STATE_PULL,
+		STATE_ACHIEVE,
 		STATE_FALL,
 		STATE_DIE,
 		STATE_END
@@ -60,5 +62,6 @@ protected:
 	STATETYPE m_eStateType = STATETYPE_DEFAULT;
 	STATE_ID m_eStateId = STATE_END;
 	_bool m_bIsAnimationFinished = false;
+	class CInteractableObject* m_pInteractableObject = nullptr;
 };
 END

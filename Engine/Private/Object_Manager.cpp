@@ -87,6 +87,34 @@ HRESULT CObject_Manager::Add_GameObject(const _tchar* pObjName, const _tchar * p
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Add_GameObject_Out(const _tchar * pObjName, const _tchar * pPrototypeTag, _uint iLevelIndex, const _tchar * pLayerTag, OUT CGameObject *& pGameObjectOut, void * pArg)
+{
+	CGameObject* pPrototype = Find_Prototype(pPrototypeTag);
+	if (nullptr == pPrototype)
+		return E_FAIL;
+
+	CGameObject* pGameObject = pPrototype->Clone(pArg);
+
+	if (nullptr == pGameObject)
+		return E_FAIL;
+
+	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
+
+	if (nullptr == pLayer)
+	{
+		pLayer = CLayer::Create();
+		pLayer->Add_GameObject(pObjName, pGameObject, pLayerTag);
+
+		m_pLayers[iLevelIndex].emplace(pLayerTag, pLayer);
+	}
+	else
+		pLayer->Add_GameObject(pObjName, pGameObject, pLayerTag);
+
+	pGameObjectOut = pGameObject;
+
+	return S_OK;
+}
+
 CGameObject * CObject_Manager::Clone_GameObject(const _tchar * pPrototypeTag, void * pArg)
 {
 	CGameObject* pPrototype = Find_Prototype(pPrototypeTag);
@@ -139,7 +167,6 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 		Safe_Release(Pair.second);
 
 	m_pLayers[iLevelIndex].clear();
-	
 }
 
 CGameObject * CObject_Manager::Find_Prototype(const _tchar * pPrototypeTag)

@@ -14,8 +14,8 @@ Player Inputs
 	X:	Use Item 2		(Y on Switch)
 	Q:	?				(L on Switch)
 	W:	Guard			(R on Switch)
-	M:	Open Inventory	(- on Switch) 
-	N:	Open Map		(+ on Switch)
+	M:	Open Map		(- on Switch) 
+	N:	Open Inventory	(+ on Switch)
 */
 
 BEGIN(Client)
@@ -117,6 +117,8 @@ public:
 	void Set_State(class CPlayerState* pPlayerState) { m_pPlayerState = pPlayerState; }
 	_bool Is_AnimationLoop(_uint eAnimId);
 	void Set_IsInvincible(_bool bIsInvincible) { m_bIsInvincible = bIsInvincible; }
+	class CInteractableObject* Get_InteractableObject() { return m_pCurrentInteractableObject; }
+	void Set_InteractableObject(class CInteractableObject* pInteractableObj) { m_pCurrentInteractableObject = pInteractableObj; }
 
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -144,10 +146,14 @@ private:
 
 private:
 	DIRID m_eDirection = DIRID::DIR_END;
+
 	class CPlayerState* m_pPlayerState = nullptr;
 
+	/* Invincibility Variables */
 	_float m_fInvincibleTimer = 0.f;
 	_bool m_bIsInvincible = false;
+
+	class CInteractableObject* m_pCurrentInteractableObject = nullptr;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

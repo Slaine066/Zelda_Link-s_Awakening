@@ -19,7 +19,9 @@ public:
 	// "Invalidate_TransformationMatrix" this function transforms the Channels (Bones of the Animations) based on Time and KeyFrames.
 	_bool Animate(_float fTimeDelta, _bool bIsLoop = true); 
 	_bool Is_Keyframe(char* pChannelName, _uint iKeyframe);
+	_bool Under_Keyframe(char* pChannelName, _uint iKeyframe);
 	_bool Over_Keyframe(char* pChannelName, _uint iKeyframe);
+	_bool Between_Keyframe(char * pChannelName, _uint iKeyframeLower, _uint iKeyframeUpper);
 	void Reset_Animation();
 
 private:

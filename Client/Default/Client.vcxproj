@@ -186,7 +186,6 @@
     <ClInclude Include="..\public\Camera_Dungeon.h" />
     <ClInclude Include="..\public\Character.h" />
     <ClInclude Include="..\public\FallingTile.h" />
-    <ClInclude Include="..\public\HpBar.h" />
     <ClInclude Include="..\public\InteractableObject.h" />
     <ClInclude Include="..\public\Level_BottleGrotto.h" />
     <ClInclude Include="..\public\Level_MoriblinCave.h" />
@@ -208,6 +207,7 @@
     <ClInclude Include="..\public\MoriblinSwordIdleState.h" />
     <ClInclude Include="..\public\MoriblinSwordMoveState.h" />
     <ClInclude Include="..\public\MoriblinSwordStaggerState.h" />
+    <ClInclude Include="..\public\PlayerAchieveState.h" />
     <ClInclude Include="..\Public\PlayerAttackState.h" />
     <ClInclude Include="..\Public\Camera_Player.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -224,6 +224,7 @@
     <ClInclude Include="..\public\Monster.h" />
     <ClInclude Include="..\public\MoriblinSword.h" />
     <ClInclude Include="..\Public\MoriblinSwordState.h" />
+    <ClInclude Include="..\public\PlayerJumpState.h" />
     <ClInclude Include="..\Public\PlayerMoveState.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\PlayerPushMoveState.h" />
@@ -235,6 +236,7 @@
     <ClInclude Include="..\public\UI.h" />
     <ClInclude Include="..\public\UIManager.h" />
     <ClInclude Include="..\public\UI_Heart.h" />
+    <ClInclude Include="..\public\UI_ItemSlot.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\StaticObject.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -259,7 +261,6 @@
     <ClCompile Include="..\private\Camera_Dungeon.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\FallingTile.cpp" />
-    <ClCompile Include="..\private\HpBar.cpp" />
     <ClCompile Include="..\private\InteractableObject.cpp" />
     <ClCompile Include="..\private\Level_BottleGrotto.cpp" />
     <ClCompile Include="..\private\Level_MoriblinCave.cpp" />
@@ -280,6 +281,7 @@
     <ClCompile Include="..\private\MoriblinSwordIdleState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordMoveState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordStaggerState.cpp" />
+    <ClCompile Include="..\private\PlayerAchieveState.cpp" />
     <ClCompile Include="..\Private\PlayerAttackState.cpp" />
     <ClCompile Include="..\Private\Camera_Player.cpp" />
     <ClCompile Include="..\private\PlayerFallState.cpp" />
@@ -294,6 +296,7 @@
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
     <ClCompile Include="..\private\MoriblinSword.cpp" />
+    <ClCompile Include="..\private\PlayerJumpState.cpp" />
     <ClCompile Include="..\Private\PlayerMoveState.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\PlayerPushMoveState.cpp" />
@@ -304,6 +307,7 @@
     <ClCompile Include="..\private\UI.cpp" />
     <ClCompile Include="..\private\UIManager.cpp" />
     <ClCompile Include="..\private\UI_Heart.cpp" />
+    <ClCompile Include="..\private\UI_ItemSlot.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
