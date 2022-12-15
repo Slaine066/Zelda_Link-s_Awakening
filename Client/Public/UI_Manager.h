@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Base.h"
+#include "Inventory.h"
 
 /*
 Note that this Class contains a pointer of the same Object stored in the Object Manager.
@@ -30,11 +31,11 @@ public:
 
 private:
 	/* Initialize Functions */
-	HRESULT Build_Hearts();
-	HRESULT Build_Rupees();
-	HRESULT Build_GameItemSlots();
 	HRESULT Build_Inventory();
 	HRESULT Build_InventoryItemSlots();
+	HRESULT Build_GameItemSlots();
+	HRESULT Build_Hearts();
+	HRESULT Build_Rupees();
 
 public:
 	MODE Get_Mode() { return m_eMode; }
@@ -49,9 +50,10 @@ public:
 	void Render_Rupees();
 
 	_tchar* Get_ItemTextureName(ITEMID eItemId);
-	void Add_ItemToInventory(ITEMID eItemId, _uint iIndex);
+	void Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex);
 
 private:
+	_bool m_bIsLoaded = false;
 	MODE m_eMode = MODE_END;
 
 	class CInventory* m_pInventory = nullptr;

@@ -92,7 +92,7 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemSlot"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemSlot_%02d.png"), 7))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_ItemSlot_Number */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Number_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemSlot_Number.png"), 1))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemSlot_Number"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemSlot_Number.png"), 1))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Inventory */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Inventory"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Inventory.png"), 1))))

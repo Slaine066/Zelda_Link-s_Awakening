@@ -47,7 +47,8 @@ _uint CUI_InventoryItem::Late_Tick(_float fTimeDelta)
 
 HRESULT CUI_InventoryItem::Render()
 {
-	if (m_eType == INVENTORYITEM_TYPE::TYPE_INVENTORY && CUI_Manager::Get_Instance()->Get_Mode() != CUI_Manager::MODE::MODE_INVENTORY)
+	if (CUI_Manager::Get_Instance()->Get_Mode() == CUI_Manager::MODE::MODE_END ||
+		m_eType == INVENTORYITEM_TYPE::TYPE_INVENTORY && CUI_Manager::Get_Instance()->Get_Mode() != CUI_Manager::MODE::MODE_INVENTORY)
 		return S_OK;
 
 	if (!m_pShaderCom || !m_pVIBufferCom)

@@ -2,6 +2,7 @@
 
 #include "UI_Heart.h"
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 CUI_Heart::CUI_Heart(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI(pDevice, pContext)
@@ -46,6 +47,9 @@ _uint CUI_Heart::Late_Tick(_float fTimeDelta)
 
 HRESULT CUI_Heart::Render()
 {
+	if (CUI_Manager::Get_Instance()->Get_Mode() == CUI_Manager::MODE::MODE_END)
+		return S_OK;
+
 	if (!m_pShaderCom || !m_pVIBufferCom)
 		return E_FAIL;
 

@@ -3,7 +3,8 @@
 #include "Client_Defines.h"
 #include "Base.h"
 
-BEGIN(Client) 
+BEGIN(Client)
+
 typedef struct tagInventoryObjectDesc
 {
 	ITEMID m_eItemId = ITEMID::ITEM_END;
@@ -34,6 +35,8 @@ public:
 	void Set_Vest(INVENTORYOBJDESC* pVest) { m_pVest = pVest; }
 	void Set_Belt(INVENTORYOBJDESC* pBelt) { m_pBelt = pBelt; }
 	void Set_Boots(INVENTORYOBJDESC* pBoots) { m_pBoots = pBoots; }
+
+	vector<INVENTORYOBJDESC> Get_Items() { return m_Items; }
 
 	_uint Get_IndexItemX() { return m_iIndexItemX; }
 	_uint Get_IndexItemY() { return m_iIndexItemY; }

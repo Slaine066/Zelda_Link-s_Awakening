@@ -70,7 +70,7 @@ void CInventory::Add_ToInventory(ITEMID eItemId)
 			
 			m_Items[i] = tInventoryObjectDesc;
 
-			CUI_Manager::Get_Instance()->Add_ItemToInventory(eItemId, i); /* Add the Item to UI. */
+			CUI_Manager::Get_Instance()->Add_ItemToInventory(m_Items[i], i); /* Add the Item to UI. */
 
 			return;
 		}

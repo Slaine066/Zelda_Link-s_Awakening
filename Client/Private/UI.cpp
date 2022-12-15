@@ -2,6 +2,7 @@
 
 #include "UI.h"
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 CUI::CUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -50,6 +51,9 @@ _uint CUI::Late_Tick(_float fTimeDelta)
 
 HRESULT CUI::Render()
 {
+	if (CUI_Manager::Get_Instance()->Get_Mode() == CUI_Manager::MODE::MODE_END)
+		return S_OK;
+
 	if (!m_pShaderCom || !m_pVIBufferCom)
 		return E_FAIL;
 

@@ -5,7 +5,6 @@
 #include "Player.h"
 #include "UI_Heart.h"
 #include "UI_ItemSlot.h"
-#include "Inventory.h"
 #include "UI_InventoryItem.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
@@ -19,10 +18,15 @@ HRESULT CUI_Manager::Initialize()
 {
 	m_eMode = MODE::MODE_GAME;
 
-	Build_Inventory(); /* Need to be first executed so other UI component will be visible on top of the Inventory UI. */
-	Build_Hearts();
+	if (m_bIsLoaded)
+		return S_OK;
+
+	Build_Inventory(); /* Need to be executed first, so other UI component will be visible on top of the Inventory UI. */
 	Build_GameItemSlots();
+	Build_Hearts();
 	Build_Rupees();
+
+	m_bIsLoaded = true;
 
 	return S_OK;
 }
@@ -99,7 +103,6 @@ _uint CUI_Manager::Tick(_float fTimeDelta)
 
 void CUI_Manager::Clear()
 {
-	m_Hearts.clear();
 	m_eMode = MODE::MODE_END;
 }
 
@@ -122,7 +125,7 @@ HRESULT CUI_Manager::Build_Hearts()
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Heart"));
 
 		CUI_Heart* pHeart = nullptr;
-		pGameInstance->Add_GameObject_Out(TEXT("UI_Heart"), TEXT("Prototype_GameObject_UI_Heart"), pGameInstance->Get_NextLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)pHeart, &tUIDesc);
+		pGameInstance->Add_GameObject_Out(TEXT("UI_Heart"), TEXT("Prototype_GameObject_UI_Heart"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pHeart, &tUIDesc);
 
 		m_Hearts.push_back(pHeart);
 		pHeart->Set_HeartType(CUI_Heart::HEART_TYPE::HEART_FULL);
@@ -147,7 +150,7 @@ HRESULT CUI_Manager::Build_Rupees()
 	tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Item_Rupee"));
 
-	pGameInstance->Add_GameObject(TEXT("UI_Rupees"), TEXT("Prototype_GameObject_UI"), pGameInstance->Get_NextLevelIndex(), TEXT("Layer_UI"), &tUIDesc);
+	pGameInstance->Add_GameObject(TEXT("UI_Rupees"), TEXT("Prototype_GameObject_UI"), LEVEL_STATIC, TEXT("Layer_UI"), &tUIDesc);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -170,7 +173,7 @@ HRESULT CUI_Manager::Build_GameItemSlots()
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_ItemSlot"));
 
 	CUI_ItemSlot* pItemSlot = nullptr;
-	if (FAILED(pGameInstance->Add_GameObject_Out(TEXT("ItemSlot_X_Game"), TEXT("Prototype_GameObject_UI_ItemSlot"), pGameInstance->Get_NextLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)pItemSlot, &tUIDesc)))
+	if (FAILED(pGameInstance->Add_GameObject_Out(TEXT("ItemSlot_X_Game"), TEXT("Prototype_GameObject_UI_ItemSlot"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pItemSlot, &tUIDesc)))
 		return E_FAIL;
 
 	m_pItemSlotX = pItemSlot;
@@ -186,7 +189,7 @@ HRESULT CUI_Manager::Build_GameItemSlots()
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_ItemSlot"));
 
 	pItemSlot = nullptr;
-	if (FAILED(pGameInstance->Add_GameObject_Out(TEXT("ItemSlot_Y_Game"), TEXT("Prototype_GameObject_UI_ItemSlot"), pGameInstance->Get_NextLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)pItemSlot, &tUIDesc)))
+	if (FAILED(pGameInstance->Add_GameObject_Out(TEXT("ItemSlot_Y_Game"), TEXT("Prototype_GameObject_UI_ItemSlot"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pItemSlot, &tUIDesc)))
 		return E_FAIL;
 
 	m_pItemSlotY = pItemSlot;
@@ -212,7 +215,7 @@ HRESULT CUI_Manager::Build_Inventory()
 	tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Inventory"));
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("UI_Test"), TEXT("Prototype_GameObject_UI_Inventory"), pGameInstance->Get_NextLevelIndex(), TEXT("Layer_UI"), &tUIDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("UI_Test"), TEXT("Prototype_GameObject_UI_Inventory"), LEVEL_STATIC, TEXT("Layer_UI"), &tUIDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -241,7 +244,7 @@ HRESULT CUI_Manager::Build_InventoryItemSlots()
 			wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_SlotItem"));
 			
 			CUI_ItemSlot* pItemSlot = nullptr;
-			pGameInstance->Add_GameObject_Out(TEXT("UI_ItemSlot"), TEXT("Prototype_GameObject_UI_ItemSlot"), pGameInstance->Get_NextLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)pItemSlot, &tUIDesc);
+			pGameInstance->Add_GameObject_Out(TEXT("UI_ItemSlot"), TEXT("Prototype_GameObject_UI_ItemSlot"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pItemSlot, &tUIDesc);
 
 			pItemSlot->Set_ScreenX(tUIDesc.m_fX);
 			pItemSlot->Set_ScreenY(tUIDesc.m_fY);
@@ -330,7 +333,7 @@ _tchar * CUI_Manager::Get_ItemTextureName(ITEMID eItemId)
 	}
 }
 
-void CUI_Manager::Add_ItemToInventory(ITEMID eItemId, _uint iIndex)
+void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -343,12 +346,28 @@ void CUI_Manager::Add_ItemToInventory(ITEMID eItemId, _uint iIndex)
 	tUIDesc.m_fX = vPosition.x;
 	tUIDesc.m_fY = vPosition.y;
 	tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
-	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(eItemId));
+	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem.m_eItemId));
 	
-	CUI_InventoryItem* pInventoryItem = nullptr;
-	pGameInstance->Add_GameObject_Out(TEXT("Item_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)pInventoryItem, &tUIDesc);
+	CUI_InventoryItem* pInventoryIcon = nullptr;
+	pGameInstance->Add_GameObject_Out(TEXT("Item_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pInventoryIcon, &tUIDesc);
 
-	pInventoryItem->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INVENTORY);
+	pInventoryIcon->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INVENTORY);
+
+	if (tItem.m_bIsCountable)
+	{
+		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
+		tUIDesc.m_fSizeX = 55;
+		tUIDesc.m_fSizeY = 50;
+		tUIDesc.m_fX = vPosition.x + 40;
+		tUIDesc.m_fY = vPosition.y + 40;
+		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_ItemSlot_Number"));
+
+		CUI_ItemSlot* pItemSlot = nullptr;
+		pGameInstance->Add_GameObject_Out(TEXT("Item_Chip"), TEXT("Prototype_GameObject_UI_ItemSlot"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pItemSlot, &tUIDesc);
+
+		pItemSlot->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_CHIP);	
+	}
 
 	RELEASE_INSTANCE(CGameInstance);
 }
