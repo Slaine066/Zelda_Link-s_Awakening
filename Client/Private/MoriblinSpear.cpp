@@ -62,7 +62,10 @@ _uint CMoriblinSpear::Tick(_float fTimeDelta)
 		return iEvent;
 
 	if (m_bShouldDestroy)
+	{
+		DropItems();
 		return OBJ_DESTROY;
+	}
 
 	for (auto& pParts : m_vParts)
 		pParts->Tick(fTimeDelta);

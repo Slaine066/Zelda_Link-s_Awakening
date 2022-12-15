@@ -60,7 +60,10 @@ _uint CMoriblinSword::Tick(_float fTimeDelta)
 		return iEvent;
 
 	if (m_bShouldDestroy)
+	{
+		DropItems();
 		return OBJ_DESTROY;
+	}
 
 	AI_Behavior();
 	TickState(fTimeDelta);

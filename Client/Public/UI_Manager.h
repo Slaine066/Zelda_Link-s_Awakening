@@ -31,8 +31,10 @@ public:
 private:
 	/* Initialize Functions */
 	HRESULT Build_Hearts();
-	HRESULT Build_ItemButtonX();
-	HRESULT Build_ItemButtonY();
+	HRESULT Build_Rupees();
+	HRESULT Build_GameItemSlots();
+	HRESULT Build_Inventory();
+	HRESULT Build_InventoryItemSlots();
 
 public:
 	MODE Get_Mode() { return m_eMode; }
@@ -43,14 +45,28 @@ public:
 	/* Manage Functions */
 	void Get_PlayerHp();
 	void Compute_Hearts();
+	void Compute_Rupees();
+	void Render_Rupees();
+
+	_tchar* Get_ItemTextureName(ITEMID eItemId);
+	void Add_ItemToInventory(ITEMID eItemId, _uint iIndex);
 
 private:
 	MODE m_eMode = MODE_END;
+
+	class CInventory* m_pInventory = nullptr;
 
 	/* Hearts Variables */
 	vector<class CUI_Heart*> m_Hearts;
 	_float m_fMaxHp = 0.f;
 	_float m_fCurrentHp = 0.f;
+
+	/* Item Slots Variables */
+	class CUI_ItemSlot* m_pItemSlotX = nullptr;
+	class CUI_ItemSlot* m_pItemSlotY = nullptr;
+	vector<class CUI_ItemSlot*> m_ItemSlots;
+
+	_tchar m_szRupees[MAX_PATH] = TEXT("");
 
 public:
 	virtual void Free() override;

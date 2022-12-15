@@ -154,6 +154,15 @@
     <Filter Include="02.GameObjects\04.UI\UI_Inventory">
       <UniqueIdentifier>{4fd83366-22ac-49b3-89a2-bf43eefe8aab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Inventory">
+      <UniqueIdentifier>{09aca34b-af27-476c-8a46-8c8bfae3540a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\06.Item">
+      <UniqueIdentifier>{98bb6d59-7701-417e-adfc-6501dec06654}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04.UI\UI_Inventory\UI_InventoryItem">
+      <UniqueIdentifier>{3b7dba77-298a-45ce-ad9e-8116ec13adaa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -387,6 +396,15 @@
     <ClInclude Include="..\public\UI_Manager.h">
       <Filter>02.GameObjects\04.UI\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Inventory.h">
+      <Filter>03.Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Item.h">
+      <Filter>02.GameObjects\00.Actor\06.Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_InventoryItem.h">
+      <Filter>02.GameObjects\04.UI\UI_Inventory\UI_InventoryItem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -592,6 +610,15 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Manager.cpp">
       <Filter>02.GameObjects\04.UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Inventory.cpp">
+      <Filter>03.Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Item.cpp">
+      <Filter>02.GameObjects\00.Actor\06.Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_InventoryItem.cpp">
+      <Filter>02.GameObjects\04.UI\UI_Inventory\UI_InventoryItem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

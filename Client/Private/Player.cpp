@@ -31,7 +31,7 @@ HRESULT CPlayer::Initialize_Prototype()
 
 	m_tStats.m_fMaxHp = 4;
 	m_tStats.m_fCurrentHp = m_tStats.m_fMaxHp;
-	m_tStats.m_fAttackPower = 1;
+	m_tStats.m_fAttackPower = 1; /* Set to 0 once Equipment gets implemented. Increase based on the Equipped Weapon. */
 	m_tStats.m_fWalkSpeed = .7f;
 	m_tStats.m_fRunSpeed = 1.4f;
 

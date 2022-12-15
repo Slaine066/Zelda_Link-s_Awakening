@@ -2,6 +2,7 @@
 
 #include "Monster.h"
 #include "GameInstance.h"
+#include "Item.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCharacter(pDevice, pContext)
@@ -58,6 +59,31 @@ HRESULT CMonster::Render()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CMonster::DropItems()
+{
+	CItem::ITEMDESC tItemDesc;
+	ZeroMemory(&tItemDesc, sizeof(CItem::ITEMDESC));
+	tItemDesc.mWorldMatrix = m_pTransformCom->Get_World4x4();
+	
+	_uint iRand = ITEMID::ITEM_BOMB; //rand() % (ITEMID::ITEM_END /** 3*/); /* Multiply by 5 so that the droprate is 20%. */
+	switch ((ITEMID)iRand)
+	{
+		case ITEMID::ITEM_RUPEE_GREEN:
+		case ITEMID::ITEM_BOMB:
+			tItemDesc.m_eItemId = (ITEMID)iRand;
+			break;
+		default:
+			return; /* Just return if out of Item Drop range. */
+	}
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Item"), TEXT("Prototype_GameObject_Item"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Item"), &tItemDesc)))
+		return;
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CMonster::Free()

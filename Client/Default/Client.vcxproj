@@ -185,8 +185,10 @@
     <ClInclude Include="..\public\CameraManager.h" />
     <ClInclude Include="..\public\Camera_Dungeon.h" />
     <ClInclude Include="..\public\Character.h" />
+    <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\FallingTile.h" />
     <ClInclude Include="..\public\InteractableObject.h" />
+    <ClInclude Include="..\public\Inventory.h" />
     <ClInclude Include="..\public\Level_BottleGrotto.h" />
     <ClInclude Include="..\public\Level_MoriblinCave.h" />
     <ClInclude Include="..\public\MoriblinSpearFallState.h" />
@@ -234,6 +236,7 @@
     <ClInclude Include="..\public\Treasure.h" />
     <ClInclude Include="..\public\TriggerBox_Dynamic.h" />
     <ClInclude Include="..\public\UI.h" />
+    <ClInclude Include="..\public\UI_InventoryItem.h" />
     <ClInclude Include="..\public\UI_Manager.h" />
     <ClInclude Include="..\public\UI_Heart.h" />
     <ClInclude Include="..\public\UI_Inventory.h" />
@@ -261,8 +264,10 @@
     <ClCompile Include="..\private\CameraManager.cpp" />
     <ClCompile Include="..\private\Camera_Dungeon.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
+    <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\private\FallingTile.cpp" />
     <ClCompile Include="..\private\InteractableObject.cpp" />
+    <ClCompile Include="..\private\Inventory.cpp" />
     <ClCompile Include="..\private\Level_BottleGrotto.cpp" />
     <ClCompile Include="..\private\Level_MoriblinCave.cpp" />
     <ClCompile Include="..\private\MoriblinSpearFallState.cpp" />
@@ -306,6 +311,7 @@
     <ClCompile Include="..\private\Treasure.cpp" />
     <ClCompile Include="..\private\TriggerBox_Dynamic.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
+    <ClCompile Include="..\private\UI_InventoryItem.cpp" />
     <ClCompile Include="..\private\UI_Manager.cpp" />
     <ClCompile Include="..\private\UI_Heart.cpp" />
     <ClCompile Include="..\private\UI_Inventory.cpp" />

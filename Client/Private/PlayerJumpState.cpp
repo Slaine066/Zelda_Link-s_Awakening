@@ -31,7 +31,8 @@ CPlayerState * CJumpState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 			else if (pPlayer->Get_Model()->Between_Keyframe("waist", 22, 37))
 				pPlayer->Get_Transform()->Move_Down(fTimeDelta * 2, pPlayer->Get_Navigation(), pPlayer->Get_Radius());
 
-			pPlayer->Get_Transform()->Move_Straight(fTimeDelta, pPlayer->Get_Navigation(), pPlayer->Get_Radius());
+			if (m_bMove)
+				pPlayer->Get_Transform()->Move_Straight(fTimeDelta * 2, pPlayer->Get_Navigation(), pPlayer->Get_Radius());
 		}
 		break;
 		case STATETYPE_END:

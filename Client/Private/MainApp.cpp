@@ -6,6 +6,7 @@
 #include "Collider.h"
 #include "CameraManager.h"
 #include "UI_Manager.h"
+#include "Inventory.h"
 
 CMainApp::CMainApp() : 
 	m_pGameInstance(CGameInstance::Get_Instance()),
@@ -84,6 +85,7 @@ HRESULT CMainApp::Render()
 #endif // _DEBUG
 
 	m_pRenderer->Render_GameObjects();
+	m_pUIManager->Render_Rupees();
 
 #ifdef _DEBUG
 	Show_FPS();

@@ -28,6 +28,7 @@ protected:
 	virtual void AI_Behavior() PURE;
 	virtual void TickState(_float fTimeDelta) PURE;
 	virtual void LateTickState(_float fTimeDelta) PURE;
+	virtual void DropItems();
 
 protected:
 	_float m_fAggroRadius = 0.f;

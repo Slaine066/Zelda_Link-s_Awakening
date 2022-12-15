@@ -15,8 +15,12 @@
 #include "Bossblin.h"
 #include "Weapon.h"
 #include "Projectile.h"
+#include "Item.h"
 #include "UI.h"
 #include "UI_Heart.h"
+#include "UI_Inventory.h"
+#include "UI_ItemSlot.h"
+#include "UI_InventoryItem.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -85,22 +89,19 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Heart"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Heart_%d.png"), 3))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_ItemSlot */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_ButtonX"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Item_BtnX.png"), 1))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemSlot"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemSlot_%02d.png"), 7))))
 		return E_FAIL;
-	/*For.Prototype_Component_Texture_ItemSlot */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_ButtonY"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Item_BtnY.png"), 1))))
-		return E_FAIL;
-	/*For.Prototype_Component_Texture_Item_Background */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/BGItem.png"), 1))))
-		return E_FAIL;
-	/*For.Prototype_Component_Texture_Item_Number_Background */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Number_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/BGItemNum.png"), 1))))
+	/*For.Prototype_Component_Texture_ItemSlot_Number */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Number_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemSlot_Number.png"), 1))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Inventory */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Inventory"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Inventory.png"), 1))))
 		return E_FAIL;
-
+	
 	/* Item Icons */
+	/*For.Prototype_Component_Texture_Rupee */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Rupee"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Rupee.png"), 1))))
+		return E_FAIL;
 	/*For.Prototype_Component_Texture_Item_Bomb */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Bomb"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemBomb.png"), 1))))
 		return E_FAIL;
@@ -181,6 +182,13 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Model_Treasure*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Treasure"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Object_Treasure/Treasure.fbx"))))
 		return E_FAIL;
+	/*For.Prototype_Component_Model_RupeeGreen*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RupeeGreen"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Item_RupeeGreen/RupeeGreen.fbx"))))
+		return E_FAIL;
+	/*For.Prototype_Component_Model_Bomb*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Bomb"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Item_Bomb/Bomb.fbx"))))
+		return E_FAIL;
+
 
 	/* For.Prototype_Component_Model_Field_** */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Field_2A"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_2A.fbx"))))
@@ -620,11 +628,23 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 	/* For.Prototype_GameObject_Projectile */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Projectile"), CProjectile::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	/* For.Prototype_GameObject_Item */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Item"), CItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	/* For.Prototype_GameObject_UI */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"), CUI::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_Heart */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Heart"), CUI_Heart::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_Inventory */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Inventory"), CUI_Inventory::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_ItemSlot */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ItemSlot"), CUI_ItemSlot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_InventoryItem */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_InventoryItem"), CUI_InventoryItem::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// >

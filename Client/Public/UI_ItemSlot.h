@@ -7,7 +7,17 @@ BEGIN(Client)
 class CUI_ItemSlot final : public CUI
 {
 public:
-	enum SLOT_TYPE { SLOT_GAME_X, SLOT_GAME_Y, SLOT_INVENTORY, SLOT_INVENTORY_X, SLOT_INVENTORY_Y, SLOT_END };
+	enum SLOT_TYPE 
+	{ 
+		SLOT_GAME_X,			/* In Game Slot X */
+		SLOT_GAME_Y,			/* In Game Slot Y */
+		SLOT_GAME_X_INVENTORY,	/* In Game Slot X when Inventory is open. */
+		SLOT_GAME_Y_INVENTORY,	/* In Game Slot Y when Inventory is open. */
+		SLOT_INVENTORY,			/* Inventory Slot Unselected */
+		SLOT_INVENTORY_X,		/* Inventory Slot Set on X */
+		SLOT_INVENTORY_Y,		/* Inventory Slot Set on Y */
+		SLOT_END 
+	};
 
 private:
 	CUI_ItemSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -25,11 +35,17 @@ public:
 	virtual HRESULT SetUp_ShaderResources() override;
 
 public:
-	SLOT_TYPE Get_HeartType() { return m_eType; }
-	void Set_HeartType(SLOT_TYPE eType) { m_eType = eType; }
+	SLOT_TYPE Get_SlotType() { return m_eType; }
+	void Set_SlotType(SLOT_TYPE eType) { m_eType = eType; }
+	void Set_ScreenX(_float fScreenX) { m_fScreenX = fScreenX; }
+	void Set_ScreenY(_float fScreenY) { m_fScreenY = fScreenY; }
+	_float2 Get_SlotPosition();
 
 private:
 	SLOT_TYPE m_eType = SLOT_END;
+
+	_float m_fScreenX = 0.f;
+	_float m_fScreenY = 0.f;
 
 public:
 	static CUI_ItemSlot* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
