@@ -5,11 +5,11 @@
 #include "CameraManager.h"
 #include "Camera_Player.h"
 #include "TriggerBox_Dynamic.h"
-#include "UIManager.h"
+#include "UI_Manager.h"
 
 CLevel_Field::CLevel_Field(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext),
-	m_pUIManager(CUIManager::Get_Instance())
+	m_pUIManager(CUI_Manager::Get_Instance())
 {
 	Safe_AddRef(m_pUIManager);
 }

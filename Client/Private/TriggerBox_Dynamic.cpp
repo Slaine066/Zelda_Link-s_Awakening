@@ -4,7 +4,7 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "Player.h"
-#include "UIManager.h"
+#include "UI_Manager.h"
 
 CTriggerBox_Dynamic::CTriggerBox_Dynamic(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox(pDevice, pContext)
@@ -120,7 +120,7 @@ void CTriggerBox_Dynamic::Field_Triggers()
 		pGameInstance->Set_IsJustSpawned(true);
 		pGameInstance->ClearLights();
 
-		CUIManager::Get_Instance()->Clear();
+		CUI_Manager::Get_Instance()->Clear();
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -139,7 +139,7 @@ void CTriggerBox_Dynamic::MoriblinCave_Triggers()
 		pGameInstance->Set_IsJustSpawned(true);
 		pGameInstance->ClearLights();
 
-		CUIManager::Get_Instance()->Clear();
+		CUI_Manager::Get_Instance()->Clear();
 	}
 
 	RELEASE_INSTANCE(CGameInstance);

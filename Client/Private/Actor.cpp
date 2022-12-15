@@ -2,7 +2,7 @@
 
 #include "Actor.h"
 #include "GameInstance.h"
-#include "UIManager.h"
+#include "UI_Manager.h"
 
 CActor::CActor(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -33,7 +33,7 @@ HRESULT CActor::Initialize(void * pArg)
 
 _uint CActor::Tick(_float fTimeDelta)
 {
-	if (CUIManager::Get_Instance()->Get_Mode() != CUIManager::MODE::MODE_GAME)
+	if (CUI_Manager::Get_Instance()->Get_Mode() != CUI_Manager::MODE::MODE_GAME)
 		return OBJ_STOP;
 
 	// Update Position Variable in SuperClass

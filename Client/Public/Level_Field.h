@@ -27,7 +27,7 @@ public:
 private:
 	vector<CActor::MODELDESC> m_vInstancedObjects;
 
-	class CUIManager* m_pUIManager = nullptr;
+	class CUI_Manager* m_pUIManager = nullptr;
 	
 public:
 	static CLevel_Field* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

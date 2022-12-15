@@ -1,26 +1,27 @@
 #include "stdafx.h"
 
-#include "UI_ItemSlot.h"
+#include "UI_Inventory.h"
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
-CUI_ItemSlot::CUI_ItemSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_Inventory::CUI_Inventory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI(pDevice, pContext)
 {
 
 }
 
-CUI_ItemSlot::CUI_ItemSlot(const CUI_ItemSlot & rhs)
+CUI_Inventory::CUI_Inventory(const CUI_Inventory & rhs)
 	: CUI(rhs)
 {
 
 }
 
-HRESULT CUI_ItemSlot::Initialize_Prototype()
+HRESULT CUI_Inventory::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUI_ItemSlot::Initialize(void * pArg)
+HRESULT CUI_Inventory::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -28,7 +29,7 @@ HRESULT CUI_ItemSlot::Initialize(void * pArg)
 	return S_OK;
 }
 
-_uint CUI_ItemSlot::Tick(_float fTimeDelta)
+_uint CUI_Inventory::Tick(_float fTimeDelta)
 {
 	if (FAILED(__super::Tick(fTimeDelta)))
 		return E_FAIL;
@@ -36,7 +37,7 @@ _uint CUI_ItemSlot::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-_uint CUI_ItemSlot::Late_Tick(_float fTimeDelta)
+_uint CUI_Inventory::Late_Tick(_float fTimeDelta)
 {
 	if (FAILED(__super::Late_Tick(fTimeDelta)))
 		return E_FAIL;
@@ -44,8 +45,12 @@ _uint CUI_ItemSlot::Late_Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-HRESULT CUI_ItemSlot::Render()
+HRESULT CUI_Inventory::Render()
 {
+	/* Render only in MODE_INVENTORY. */
+	if (CUI_Manager::Get_Instance()->Get_Mode() != CUI_Manager::MODE::MODE_INVENTORY)
+		return S_OK;
+
 	if (!m_pShaderCom || !m_pVIBufferCom)
 		return E_FAIL;
 
@@ -58,7 +63,7 @@ HRESULT CUI_ItemSlot::Render()
 	return S_OK;
 }
 
-HRESULT CUI_ItemSlot::Ready_Components(void * pArg)
+HRESULT CUI_Inventory::Ready_Components(void * pArg)
 {
 	ZeroMemory(&m_tUIDesc, sizeof(UIDESC));
 	memcpy(&m_tUIDesc, (UIDESC*)pArg, sizeof(UIDESC));
@@ -73,7 +78,7 @@ HRESULT CUI_ItemSlot::Ready_Components(void * pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemSlot"), (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_STATIC, TEXT("Prototype_Component_Texture_Inventory"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), (CComponent**)&m_pVIBufferCom)))
@@ -82,7 +87,7 @@ HRESULT CUI_ItemSlot::Ready_Components(void * pArg)
 	return S_OK;
 }
 
-HRESULT CUI_ItemSlot::SetUp_ShaderResources()
+HRESULT CUI_Inventory::SetUp_ShaderResources()
 {
 	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
@@ -91,39 +96,39 @@ HRESULT CUI_ItemSlot::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &m_ProjMatrix, sizeof(_float4x4))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(m_eType))))
+	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(0))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-CUI_ItemSlot * CUI_ItemSlot::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CUI_Inventory * CUI_Inventory::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CUI_ItemSlot* pInstance = new CUI_ItemSlot(pDevice, pContext);
+	CUI_Inventory* pInstance = new CUI_Inventory(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		ERR_MSG(TEXT("Failed to Create: CUI_ItemSlot"));
+		ERR_MSG(TEXT("Failed to Create: CUI_Inventory"));
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CUI_ItemSlot::Clone(void * pArg)
+CGameObject * CUI_Inventory::Clone(void * pArg)
 {
-	CUI_ItemSlot* pInstance = new CUI_ItemSlot(*this);
+	CUI_Inventory* pInstance = new CUI_Inventory(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		ERR_MSG(TEXT("Failed to Clone: CUI_ItemSlot"));
+		ERR_MSG(TEXT("Failed to Clone: CUI_Inventory"));
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_ItemSlot::Free()
+void CUI_Inventory::Free()
 {
 	__super::Free();
 }

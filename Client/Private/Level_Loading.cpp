@@ -9,7 +9,6 @@
 #include "Level_BottleGrotto.h"
 #include "TriggerBox.h"
 #include "Player.h"
-#include "UIManager.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)

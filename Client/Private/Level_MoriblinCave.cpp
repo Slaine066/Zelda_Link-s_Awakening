@@ -6,11 +6,11 @@
 #include "Camera_Player.h"
 #include "Camera_Dungeon.h"
 #include "TriggerBox_Dynamic.h"
-#include "UIManager.h"
+#include "UI_Manager.h"
 
 CLevel_MoriblinCave::CLevel_MoriblinCave(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext),
-	m_pUIManager(CUIManager::Get_Instance())
+	m_pUIManager(CUI_Manager::Get_Instance())
 {
 	Safe_AddRef(m_pUIManager);
 }

@@ -11,16 +11,16 @@ This class just encloses a bunch of utility functions which allows us to work wi
 */
 
 BEGIN(Client)
-class CUIManager final : public CBase
+class CUI_Manager final : public CBase
 {
-	DECLARE_SINGLETON(CUIManager)
+	DECLARE_SINGLETON(CUI_Manager)
 
 public:
 	enum MODE { MODE_GAME, MODE_MAP, MODE_INVENTORY, MODE_END };
 
 private:
-	CUIManager();
-	virtual ~CUIManager() = default;
+	CUI_Manager();
+	virtual ~CUI_Manager() = default;
 
 public:
 	HRESULT Initialize();

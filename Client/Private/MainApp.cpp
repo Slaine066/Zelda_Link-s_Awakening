@@ -5,11 +5,11 @@
 #include "Level_Loading.h"
 #include "Collider.h"
 #include "CameraManager.h"
-#include "UIManager.h"
+#include "UI_Manager.h"
 
 CMainApp::CMainApp() : 
 	m_pGameInstance(CGameInstance::Get_Instance()),
-	m_pUIManager(CUIManager::Get_Instance())
+	m_pUIManager(CUI_Manager::Get_Instance())
 {
 	/*D3D11_SAMPLER_DESC*/
 	
@@ -162,5 +162,5 @@ void CMainApp::Free()
 	CGameInstance::Release_Engine();
 
 	CCameraManager::Get_Instance()->Destroy_Instance();
-	CUIManager::Get_Instance()->Destroy_Instance();
+	CUI_Manager::Get_Instance()->Destroy_Instance();
 }

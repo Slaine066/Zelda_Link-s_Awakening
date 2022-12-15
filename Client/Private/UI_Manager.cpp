@@ -1,17 +1,17 @@
 #include "stdafx.h"
 
-#include "UIManager.h"
+#include "UI_Manager.h"
 #include "GameInstance.h"
 #include "Player.h"
 #include "UI_Heart.h"
 
-IMPLEMENT_SINGLETON(CUIManager)
+IMPLEMENT_SINGLETON(CUI_Manager)
 
-CUIManager::CUIManager()
+CUI_Manager::CUI_Manager()
 {
 }
 
-HRESULT CUIManager::Initialize()
+HRESULT CUI_Manager::Initialize()
 {
 	m_eMode = MODE::MODE_GAME;
 
@@ -22,7 +22,7 @@ HRESULT CUIManager::Initialize()
 	return S_OK;
 }
 
-void CUIManager::Handle_Input()
+void CUI_Manager::Handle_Input()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -83,7 +83,7 @@ void CUIManager::Handle_Input()
 	RELEASE_INSTANCE(CGameInstance);
 }
 
-_uint CUIManager::Tick(_float fTimeDelta)
+_uint CUI_Manager::Tick(_float fTimeDelta)
 {
 	if (m_eMode == MODE::MODE_END)
 		return OBJ_NOEVENT;
@@ -94,15 +94,13 @@ _uint CUIManager::Tick(_float fTimeDelta)
 	return OBJ_NOEVENT;
 }
 
-void CUIManager::Clear()
+void CUI_Manager::Clear()
 {
 	m_Hearts.clear();
-	m_fMaxHp = 0.f;
-	m_fCurrentHp = 0.f;
 	m_eMode = MODE::MODE_END;
 }
 
-HRESULT CUIManager::Build_Hearts()
+HRESULT CUI_Manager::Build_Hearts()
 {
 	Get_PlayerHp();
 
@@ -132,7 +130,7 @@ HRESULT CUIManager::Build_Hearts()
 	return S_OK;
 }
 
-HRESULT CUIManager::Build_ItemButtonX()
+HRESULT CUI_Manager::Build_ItemButtonX()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -171,7 +169,7 @@ HRESULT CUIManager::Build_ItemButtonX()
 	return S_OK;
 }
 
-HRESULT CUIManager::Build_ItemButtonY()
+HRESULT CUI_Manager::Build_ItemButtonY()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -210,7 +208,7 @@ HRESULT CUIManager::Build_ItemButtonY()
 	return S_OK;
 }
 
-void CUIManager::Get_PlayerHp()
+void CUI_Manager::Get_PlayerHp()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -224,7 +222,7 @@ void CUIManager::Get_PlayerHp()
 	RELEASE_INSTANCE(CGameInstance);
 }
 
-void CUIManager::Compute_Hearts()
+void CUI_Manager::Compute_Hearts()
 {
 	Get_PlayerHp();
 
@@ -239,6 +237,6 @@ void CUIManager::Compute_Hearts()
 	}
 }
 
-void CUIManager::Free()
+void CUI_Manager::Free()
 {
 }

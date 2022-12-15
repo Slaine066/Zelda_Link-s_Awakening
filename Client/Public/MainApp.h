@@ -22,7 +22,7 @@ public:
 
 private:
 	CGameInstance* m_pGameInstance = nullptr;
-	class CUIManager* m_pUIManager = nullptr;
+	class CUI_Manager* m_pUIManager = nullptr;
 
 private:
 	ID3D11Device* m_pDevice = nullptr;

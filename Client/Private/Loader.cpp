@@ -78,14 +78,16 @@ HRESULT CLoader::Loading_ForStaticLevel()
 
 #pragma region Loading_Textures
 	lstrcpy(m_szLoadingText, TEXT("Loading Textures.."));
-	
+
+	/* TODO: Refactor like below. */
+	/* Game */
 	/*For.Prototype_Component_Texture_Heart */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Heart"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Heart_%d.png"), 3))))
 		return E_FAIL;
-	/*For.Prototype_Component_Texture_Item_ButtonX */
+	/*For.Prototype_Component_Texture_ItemSlot */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_ButtonX"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Item_BtnX.png"), 1))))
 		return E_FAIL;
-	/*For.Prototype_Component_Texture_Item_ButtonY */
+	/*For.Prototype_Component_Texture_ItemSlot */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_ButtonY"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Item_BtnY.png"), 1))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Item_Background */
@@ -94,18 +96,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Texture_Item_Number_Background */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Number_Background"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/BGItemNum.png"), 1))))
 		return E_FAIL;
-
-	/* TODO: Refactor like below. */
-	/* Game */
-	/*For.Prototype_Component_Texture_Heart */
-	/*For.Prototype_Component_Texture_Item_Background_X */
-	/*For.Prototype_Component_Texture_Item_Background_Y */
-
-	/* Inventory*/
 	/*For.Prototype_Component_Texture_Inventory */
-	/*For.Prototype_Component_Texture_Inventory_Item_Background */
-	/*For.Prototype_Component_Texture_Inventory_Item_Background_X */
-	/*For.Prototype_Component_Texture_Inventory_Item_Background_Y */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Inventory"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Inventory.png"), 1))))
+		return E_FAIL;
 
 	/* Item Icons */
 	/*For.Prototype_Component_Texture_Item_Bomb */
