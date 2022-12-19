@@ -40,7 +40,13 @@ public:
 
 	_uint Get_IndexItemX() { return m_iIndexItemX; }
 	_uint Get_IndexItemY() { return m_iIndexItemY; }
+	_uint Get_ItemCounter(_uint iIndex) { return m_Items[iIndex].m_iCounter; }
 
+	void Set_IndexItemX(_uint iIndexItemX) { m_iIndexItemX = iIndexItemX; }
+	void Set_IndexItemY(_uint iIndexItemY) { m_iIndexItemY = iIndexItemY; }
+	INVENTORYOBJDESC* Get_ItemX() { return m_Items[m_iIndexItemX].m_eItemId == ITEM_END ? nullptr : &m_Items[m_iIndexItemX]; }
+	INVENTORYOBJDESC* Get_ItemY() { return m_Items[m_iIndexItemY].m_eItemId == ITEM_END ? nullptr : &m_Items[m_iIndexItemY]; }
+	
 	/* Inventory Functions */
 	void Add_Item(ITEMID eItemId);
 	void Remove_Item(ITEMID eItemId, _uint iCount = 1);

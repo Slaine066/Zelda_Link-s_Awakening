@@ -67,7 +67,7 @@ void CMonster::DropItems()
 	ZeroMemory(&tItemDesc, sizeof(CItem::ITEMDESC));
 	tItemDesc.mWorldMatrix = m_pTransformCom->Get_World4x4();
 	
-	_uint iRand = ITEMID::ITEM_BOMB; //rand() % (ITEMID::ITEM_END /** 3*/); /* Multiply by 5 so that the droprate is 20%. */
+	_uint iRand = rand() % (ITEMID::ITEM_END /** 3*/); /* Multiply by 5 so that the droprate is 20%. */
 	switch ((ITEMID)iRand)
 	{
 		case ITEMID::ITEM_RUPEE_GREEN:

@@ -163,6 +163,9 @@
     <Filter Include="02.GameObjects\04.UI\UI_Inventory\UI_InventoryItem">
       <UniqueIdentifier>{3b7dba77-298a-45ce-ad9e-8116ec13adaa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\04.UI\UI_ItemChip">
+      <UniqueIdentifier>{a0b8aa0c-90f2-4633-97bc-6c624b9e87c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -405,6 +408,9 @@
     <ClInclude Include="..\public\UI_InventoryItem.h">
       <Filter>02.GameObjects\04.UI\UI_Inventory\UI_InventoryItem</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_ItemChip.h">
+      <Filter>02.GameObjects\04.UI\UI_ItemChip</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -619,6 +625,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_InventoryItem.cpp">
       <Filter>02.GameObjects\04.UI\UI_Inventory\UI_InventoryItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_ItemChip.cpp">
+      <Filter>02.GameObjects\04.UI\UI_ItemChip</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

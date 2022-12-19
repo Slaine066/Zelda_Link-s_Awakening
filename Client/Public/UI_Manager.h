@@ -17,7 +17,7 @@ class CUI_Manager final : public CBase
 	DECLARE_SINGLETON(CUI_Manager)
 
 public:
-	enum MODE { MODE_GAME, MODE_MAP, MODE_INVENTORY, MODE_END };
+	enum MODE { MODE_GAME, MODE_INVENTORY, MODE_END };
 
 private:
 	CUI_Manager();
@@ -42,33 +42,42 @@ public:
 	void Set_Mode(MODE eMode) { m_eMode = eMode; }
 	_float Get_MaxHp() { return m_fMaxHp; }
 	_float Get_CurrentHp() { return m_fCurrentHp; }
+	_tchar* Get_ItemTextureName(ITEMID eItemId);
 
-	/* Manage Functions */
+	void Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex);
+	void Add_ItemX();
+	void Add_ItemY();
+
+	void Render_Rupees();
+
+	/* Functions which get executed every Tick() and update the UI. */
 	void Get_PlayerHp();
 	void Compute_Hearts();
 	void Compute_Rupees();
-	void Render_Rupees();
-
-	_tchar* Get_ItemTextureName(ITEMID eItemId);
-	void Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex);
+	void Compute_Inventory();
 
 private:
-	_bool m_bIsLoaded = false;
-	MODE m_eMode = MODE_END;
+	_bool m_bIsLoaded = false; /* Switch to TRUE once UI gets loaded the first time. */
 
-	class CInventory* m_pInventory = nullptr;
+	MODE m_eMode = MODE_END;
 
 	/* Hearts Variables */
 	vector<class CUI_Heart*> m_Hearts;
 	_float m_fMaxHp = 0.f;
 	_float m_fCurrentHp = 0.f;
 
-	/* Item Slots Variables */
-	class CUI_ItemSlot* m_pItemSlotX = nullptr;
-	class CUI_ItemSlot* m_pItemSlotY = nullptr;
-	vector<class CUI_ItemSlot*> m_ItemSlots;
+	class CInventory* m_pInventory = nullptr;
 
+	/* Rupees Variables */
 	_tchar m_szRupees[MAX_PATH] = TEXT("");
+
+	/* Item Slots Variables */
+	class CUI_ItemSlot* m_pGameSlotX = nullptr;
+	class CUI_ItemSlot* m_pGameSlotY = nullptr;
+	class CUI_InventoryItem* m_pItemIconX = nullptr;
+	class CUI_InventoryItem* m_pItemIconY = nullptr;
+	vector<class CUI_ItemSlot*> m_ItemSlots;
+	_int m_iCurrentSlotIndex = 0;
 
 public:
 	virtual void Free() override;

@@ -58,7 +58,6 @@ HRESULT CUI_ItemSlot::Render()
 			if (m_eType == SLOT_TYPE::SLOT_GAME_X || m_eType == SLOT_TYPE::SLOT_GAME_Y)
 				return S_OK;
 			break;
-		case CUI_Manager::MODE::MODE_MAP:
 		default:
 			return S_OK;
 	}
@@ -109,6 +108,9 @@ HRESULT CUI_ItemSlot::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(m_eType))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_Hovered", &m_bIsHovered, sizeof(_bool))))
 		return E_FAIL;
 
 	return S_OK;

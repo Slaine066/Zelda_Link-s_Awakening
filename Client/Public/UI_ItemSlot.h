@@ -39,6 +39,7 @@ public:
 	void Set_SlotType(SLOT_TYPE eType) { m_eType = eType; }
 	void Set_ScreenX(_float fScreenX) { m_fScreenX = fScreenX; }
 	void Set_ScreenY(_float fScreenY) { m_fScreenY = fScreenY; }
+	void Set_IsHovered(_bool bIsHovered) { m_bIsHovered = bIsHovered; }
 	_float2 Get_SlotPosition();
 
 private:
@@ -46,6 +47,8 @@ private:
 
 	_float m_fScreenX = 0.f;
 	_float m_fScreenY = 0.f;
+
+	_bool m_bIsHovered = false;
 
 public:
 	static CUI_ItemSlot* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

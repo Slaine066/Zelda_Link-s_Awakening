@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "UI_Heart.h"
 #include "UI_ItemSlot.h"
+#include "UI_ItemChip.h"
 #include "UI_InventoryItem.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
@@ -39,48 +40,80 @@ void CUI_Manager::Handle_Input()
 	{
 		case MODE::MODE_GAME:
 		{
-			if (pGameInstance->Key_Down('M'))
-			{
-				/* Open Map */
-				m_eMode = MODE::MODE_MAP;
-			}
-			else if (pGameInstance->Key_Down('N'))
+			if (pGameInstance->Key_Down('N'))
 			{
 				/* Open Inventory */
 				m_eMode = MODE::MODE_INVENTORY;
 
-				m_pItemSlotX->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_X_INVENTORY);
-				m_pItemSlotY->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_Y_INVENTORY);
-			}
-		}
-		break;
-		case MODE::MODE_MAP:
-		{
-			if (pGameInstance->Key_Down('N'))
-			{
-				/* Switch to Inventory Mode. */
-				m_eMode = MODE::MODE_INVENTORY;
-			}
-			else if (pGameInstance->Key_Down('S'))
-			{
-				/* Close Map. */
-				m_eMode = MODE::MODE_GAME;
+				m_pGameSlotX->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_X_INVENTORY);
+				m_pGameSlotY->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_Y_INVENTORY);
 			}
 		}
 		break;
 		case MODE::MODE_INVENTORY:
 		{
-			if (pGameInstance->Key_Down('M'))
-			{
-				/* Switch to Map Mode. */
-				m_eMode = MODE::MODE_MAP;
-			}
-			else if (pGameInstance->Key_Down('S'))
+			if (pGameInstance->Key_Down('S'))
 			{
 				/* Close Inventory. */
 				m_eMode = MODE::MODE_GAME;
-				m_pItemSlotX->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_X);
-				m_pItemSlotY->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_Y);
+				m_pGameSlotX->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_X);
+				m_pGameSlotY->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_Y);
+
+				m_iCurrentSlotIndex = 0;
+			}
+			else if (pGameInstance->Key_Down(VK_RIGHT))
+			{
+				if (m_iCurrentSlotIndex < m_ItemSlots.size() - 1)
+					m_iCurrentSlotIndex += 1;
+			}
+			else if (pGameInstance->Key_Down(VK_LEFT))
+			{
+				if (m_iCurrentSlotIndex > 0)
+					m_iCurrentSlotIndex -= 1;
+			}
+			else if (pGameInstance->Key_Down(VK_UP))
+			{
+				if (m_iCurrentSlotIndex - 4 < 0)
+					m_iCurrentSlotIndex = 0;
+				else
+					m_iCurrentSlotIndex -= 4;
+			}
+			else if (pGameInstance->Key_Down(VK_DOWN))
+			{
+				if (m_iCurrentSlotIndex + 4 > m_ItemSlots.size() - 1)
+					m_iCurrentSlotIndex = m_ItemSlots.size() - 1;
+				else
+					m_iCurrentSlotIndex += 4;
+			}
+			else if (pGameInstance->Key_Down('Z'))
+			{
+				m_ItemSlots[m_pInventory->Get_IndexItemX()]->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY);
+				m_ItemSlots[m_iCurrentSlotIndex]->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY_X);
+
+				if (m_pInventory->Get_IndexItemY() == m_iCurrentSlotIndex)
+				{
+					m_ItemSlots[m_pInventory->Get_IndexItemX()]->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY_Y);
+					m_pInventory->Set_IndexItemY(m_pInventory->Get_IndexItemX());
+				}
+				m_pInventory->Set_IndexItemX(m_iCurrentSlotIndex);
+
+				Add_ItemX();
+				Add_ItemY();
+			}
+			else if (pGameInstance->Key_Down('X'))
+			{
+				m_ItemSlots[m_pInventory->Get_IndexItemY()]->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY);
+				m_ItemSlots[m_iCurrentSlotIndex]->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY_Y);
+
+				if (m_pInventory->Get_IndexItemX() == m_iCurrentSlotIndex)
+				{
+					m_ItemSlots[m_pInventory->Get_IndexItemY()]->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY_X);
+					m_pInventory->Set_IndexItemX(m_pInventory->Get_IndexItemY());
+				}
+				m_pInventory->Set_IndexItemY(m_iCurrentSlotIndex);
+
+				Add_ItemX();
+				Add_ItemY();
 			}
 		}
 		break;
@@ -97,6 +130,7 @@ _uint CUI_Manager::Tick(_float fTimeDelta)
 	Handle_Input();
 	Compute_Hearts();
 	Compute_Rupees();
+	Compute_Inventory();
 
 	return OBJ_NOEVENT;
 }
@@ -176,8 +210,10 @@ HRESULT CUI_Manager::Build_GameItemSlots()
 	if (FAILED(pGameInstance->Add_GameObject_Out(TEXT("ItemSlot_X_Game"), TEXT("Prototype_GameObject_UI_ItemSlot"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pItemSlot, &tUIDesc)))
 		return E_FAIL;
 
-	m_pItemSlotX = pItemSlot;
-	m_pItemSlotX->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_X);
+	m_pGameSlotX = pItemSlot;
+	m_pGameSlotX->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_X);
+	m_pGameSlotX->Set_ScreenX(tUIDesc.m_fX);
+	m_pGameSlotX->Set_ScreenY(tUIDesc.m_fY);
 
 	/* Game Item Slot Y */
 	ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
@@ -192,8 +228,10 @@ HRESULT CUI_Manager::Build_GameItemSlots()
 	if (FAILED(pGameInstance->Add_GameObject_Out(TEXT("ItemSlot_Y_Game"), TEXT("Prototype_GameObject_UI_ItemSlot"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pItemSlot, &tUIDesc)))
 		return E_FAIL;
 
-	m_pItemSlotY = pItemSlot;
-	m_pItemSlotY->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_Y);
+	m_pGameSlotY = pItemSlot;
+	m_pGameSlotY->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_Y);
+	m_pGameSlotY->Set_ScreenX(tUIDesc.m_fX);
+	m_pGameSlotY->Set_ScreenY(tUIDesc.m_fY);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -310,6 +348,14 @@ void CUI_Manager::Compute_Rupees()
 	wsprintf(m_szRupees, TEXT("%d"), iRupees);
 }
 
+void CUI_Manager::Compute_Inventory()
+{
+	for (auto& pItemSlot : m_ItemSlots)
+		pItemSlot->Set_IsHovered(false);
+
+	m_ItemSlots[m_iCurrentSlotIndex]->Set_IsHovered(true);
+}
+
 void CUI_Manager::Render_Rupees()
 {
 	if (m_eMode != MODE::MODE_GAME && m_eMode != MODE::MODE_INVENTORY)
@@ -339,6 +385,7 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 
 	_float2 vPosition = m_ItemSlots[iIndex]->Get_SlotPosition();
 
+	/* Add UI_InventoryItem to Inventory. */
 	CUI::UIDESC tUIDesc;
 	ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
 	tUIDesc.m_fSizeX = 120;
@@ -353,23 +400,118 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 
 	pInventoryIcon->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INVENTORY);
 
+	/* Add UI_ItemChip to Inventory. */
 	if (tItem.m_bIsCountable)
 	{
 		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
 		tUIDesc.m_fSizeX = 55;
 		tUIDesc.m_fSizeY = 50;
 		tUIDesc.m_fX = vPosition.x + 40;
-		tUIDesc.m_fY = vPosition.y + 40;
+		tUIDesc.m_fY = vPosition.y + 42;
 		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
-		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_ItemSlot_Number"));
 
-		CUI_ItemSlot* pItemSlot = nullptr;
-		pGameInstance->Add_GameObject_Out(TEXT("Item_Chip"), TEXT("Prototype_GameObject_UI_ItemSlot"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pItemSlot, &tUIDesc);
+		CUI_ItemChip* pItemChip = nullptr;
+		pGameInstance->Add_GameObject_Out(TEXT("Item_Chip"), TEXT("Prototype_GameObject_UI_ItemChip"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pItemChip, &tUIDesc);
 
-		pItemSlot->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_CHIP);	
+		pItemChip->Set_ScreenX(tUIDesc.m_fX - 13);
+		pItemChip->Set_ScreenY(tUIDesc.m_fY - 20);
+		pItemChip->Set_SlotIndex(iIndex);
+
+		pItemChip->Set_ChipType(CUI_ItemChip::CHIP_TYPE::CHIP_INVENTORY);
+	}
+
+	/* Check whether the added Item is set on the X Key. */
+	if (iIndex == m_pInventory->Get_IndexItemX())
+	{
+		_float2 vPositionX = m_pGameSlotX->Get_SlotPosition();
+
+		/* Add UI_InventoryItem to Game Slot. */
+		CUI::UIDESC tUIDesc;
+		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
+		tUIDesc.m_fSizeX = 100;
+		tUIDesc.m_fSizeY = 100;
+		tUIDesc.m_fX = vPositionX.x + 8;
+		tUIDesc.m_fY = vPositionX.y - 8;
+		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem.m_eItemId));
+
+		pGameInstance->Add_GameObject_Out(TEXT("Item_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pItemIconX, &tUIDesc);
+		m_pItemIconX->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INGAME);
+	}
+	/* Check whether the added Item is set on the Y Key. */
+	else if (iIndex == m_pInventory->Get_IndexItemY())
+	{
+		_float2 vPositionY = m_pGameSlotY->Get_SlotPosition();
+
+		/* Add UI_InventoryItem to Game Slot. */
+		CUI::UIDESC tUIDesc;
+		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
+		tUIDesc.m_fSizeX = 100;
+		tUIDesc.m_fSizeY = 100;
+		tUIDesc.m_fX = vPositionY.x + 8;
+		tUIDesc.m_fY = vPositionY.y - 8;
+		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem.m_eItemId));
+
+		pGameInstance->Add_GameObject_Out(TEXT("Item_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pItemIconY, &tUIDesc);
+		m_pItemIconX->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INGAME);
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CUI_Manager::Add_ItemX()
+{
+	if (m_pItemIconX)
+		m_pItemIconX->Set_ShouldDestroy(true);
+
+	if (m_pInventory->Get_ItemX())
+	{
+		INVENTORYOBJDESC* tItem = m_pInventory->Get_ItemX();
+		_float2 vPositionX = m_pGameSlotX->Get_SlotPosition();
+
+		/* Add UI_InventoryItem to Game Slot. */
+		CUI::UIDESC tUIDesc;
+		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
+		tUIDesc.m_fSizeX = 100;
+		tUIDesc.m_fSizeY = 100;
+		tUIDesc.m_fX = vPositionX.x + 8;
+		tUIDesc.m_fY = vPositionX.y - 8;
+		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem->m_eItemId));
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		pGameInstance->Add_GameObject_Out(TEXT("Item_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pItemIconX, &tUIDesc);
+		m_pItemIconX->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INGAME);
+		RELEASE_INSTANCE(CGameInstance);
+	}
+}
+
+void CUI_Manager::Add_ItemY()
+{
+	if (m_pItemIconY)
+		m_pItemIconY->Set_ShouldDestroy(true);
+
+	if (m_pInventory->Get_ItemY())
+	{
+		INVENTORYOBJDESC* tItem = m_pInventory->Get_ItemY();
+		_float2 vPositionY = m_pGameSlotY->Get_SlotPosition();
+
+		/* Add UI_InventoryItem to Game Slot. */
+		CUI::UIDESC tUIDesc;
+		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
+		tUIDesc.m_fSizeX = 100;
+		tUIDesc.m_fSizeY = 100;
+		tUIDesc.m_fX = vPositionY.x + 8;
+		tUIDesc.m_fY = vPositionY.y - 8;
+		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem->m_eItemId));
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		pGameInstance->Add_GameObject_Out(TEXT("Item_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pItemIconY, &tUIDesc);
+		m_pItemIconY->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INGAME);
+		RELEASE_INSTANCE(CGameInstance);
+	}
 }
 
 void CUI_Manager::Free()

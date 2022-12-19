@@ -4,6 +4,8 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_DiffuseTexture;
 
+bool g_Hovered; /* Used by "UI_ItemSlot" class. */
+
 struct VS_IN
 {
 	float3 vPosition : POSITION;
@@ -60,6 +62,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	
 	if (Out.vColor.a <= 0.1f)
 		discard;
+
+	if (g_Hovered)
+		Out.vColor += .2;
 
 	return Out;
 }

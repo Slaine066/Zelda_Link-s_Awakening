@@ -237,6 +237,7 @@
     <ClInclude Include="..\public\TriggerBox_Dynamic.h" />
     <ClInclude Include="..\public\UI.h" />
     <ClInclude Include="..\public\UI_InventoryItem.h" />
+    <ClInclude Include="..\public\UI_ItemChip.h" />
     <ClInclude Include="..\public\UI_Manager.h" />
     <ClInclude Include="..\public\UI_Heart.h" />
     <ClInclude Include="..\public\UI_Inventory.h" />
@@ -312,6 +313,7 @@
     <ClCompile Include="..\private\TriggerBox_Dynamic.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
     <ClCompile Include="..\private\UI_InventoryItem.cpp" />
+    <ClCompile Include="..\private\UI_ItemChip.cpp" />
     <ClCompile Include="..\private\UI_Manager.cpp" />
     <ClCompile Include="..\private\UI_Heart.cpp" />
     <ClCompile Include="..\private\UI_Inventory.cpp" />
