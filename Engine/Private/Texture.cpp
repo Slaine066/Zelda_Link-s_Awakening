@@ -49,7 +49,7 @@ HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNu
 			hr = DirectX::CreateWICTextureFromFile(m_pDevice, szFullPath, nullptr, &pSRV);
 
 		if (FAILED(hr))
-			return E_FAIL;
+			return S_OK;
 
 		m_SRVs.push_back(pSRV);
 	}

@@ -213,9 +213,8 @@ HRESULT CModel::Create_MeshContainer()
 HRESULT CModel::Create_Materials(const char* pModelFilePath)
 {
 	// Material Creation
-	/*
-	Read the texture material information to be mapped to each mesh constituting this model.
-	*/
+
+	/* Read the texture material information to be mapped to each mesh constituting this model. */
 	if (m_pAIScene == nullptr)
 		return E_FAIL;
 
@@ -228,40 +227,65 @@ HRESULT CModel::Create_Materials(const char* pModelFilePath)
 		MODELMATERIAL ModelMaterial;
 		ZeroMemory(&ModelMaterial, sizeof(MODELMATERIAL));
 
-		/*
-		In a Material there can be up to 18 (AI_TEXTURE_TYPE_MAX) Texture Maps describing that Material.
-		(Diffuse Map, Normal Map, Specular Map, Occlusion Map, ..)
-		*/
+		/* In a Material there can be up to 18 (AI_TEXTURE_TYPE_MAX) Texture Maps describing that Material.
+		(Diffuse Map, Normal Map, Specular Map, Occlusion Map, ..) */
+		_tchar DiffusePath[MAX_PATH] = TEXT(""); // "MI_FieldFlower1_01_alb"
+
 		for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; ++j)
 		{
-			// The Diffuse Map is the second Texture(j = 1)
+			// Diffuse Map	(j = 1)
+			// Specular Map	(j = 2)
+			// Normal Map	(j = 6)
 
-			aiString strPath;
-			if (FAILED(pAIMaterial->GetTexture(aiTextureType(j), 0, &strPath)))
-				continue;
+			/* Normal Maps are handled a bit differently (..really bad, but there is no other option). */
+			/* Apparently after exporting the Model, the Normal Maps are not attached to the Meshes, so we need to force them. */
+			if (j == 6)
+			{
+				/* "MI_FieldFlower1_01_alb" > "MI_FieldFlower1_01_nml.dds" */
+				wstring wsNormalTexture = wstring(DiffusePath);
+				wstring toReplace = TEXT("alb");
+				size_t pos = wsNormalTexture.find(toReplace);
 
-			char szName[MAX_PATH] = "";
-			char szExt[MAX_PATH] = ".dds";	// Forced *.dds Extension (..really bad, but there is no other option).
-											// (Map 3ds Max Project is already made with Models exported with *.png Textures, changing all the Textures to *.dds for every Mesh would take forever).
-			char szTextureFileName[MAX_PATH] = "";
-			_splitpath_s(strPath.data, nullptr, 0, nullptr, 0, szName, MAX_PATH, nullptr, 0);
+				if (pos != std::string::npos) 
+					wsNormalTexture.replace(pos, toReplace.length(), TEXT("nml"));
 
-			strcpy_s(szTextureFileName, szName);
-			strcat_s(szTextureFileName, szExt);
+				ModelMaterial.pMatTextures[6] = CTexture::Create(m_pDevice, m_pContext, wsNormalTexture.c_str());
+			}
+			else
+			{
+				aiString strPath;
+				if (FAILED(pAIMaterial->GetTexture(aiTextureType(j), 0, &strPath)))
+					continue;
 
-			char szDirectory[MAX_PATH] = "";
-			char szFullPath[MAX_PATH] = "";
-			_splitpath_s(pModelFilePath, nullptr, 0, szDirectory, MAX_PATH, nullptr, 0, nullptr, 0);
+				char szName[MAX_PATH] = "";
+				char szExt[MAX_PATH] = ".dds";	// Forced *.dds Extension (..really bad, but there is no other option).
+												// (Map 3ds Max Project is already made with Models exported with *.png Textures, changing all the Textures to *.dds for every Mesh would take forever).
+				char szTextureFileName[MAX_PATH] = "";
+				_splitpath_s(strPath.data, nullptr, 0, nullptr, 0, szName, MAX_PATH, nullptr, 0);
 
-			strcpy_s(szFullPath, szDirectory);
-			strcat_s(szFullPath, szTextureFileName);
+				strcpy_s(szTextureFileName, szName);
+				strcat_s(szTextureFileName, szExt);
 
-			_tchar szRealPath[MAX_PATH] = TEXT("");
-			MultiByteToWideChar(CP_ACP, 0, szFullPath, strlen(szFullPath), szRealPath, MAX_PATH);
+				char szDirectory[MAX_PATH] = "";
+				char szFullPath[MAX_PATH] = "";
+				_splitpath_s(pModelFilePath, nullptr, 0, szDirectory, MAX_PATH, nullptr, 0, nullptr, 0);
 
-			ModelMaterial.pMatTextures[j] = CTexture::Create(m_pDevice, m_pContext, szRealPath);
-			if (nullptr == ModelMaterial.pMatTextures[j])
-				return E_FAIL;
+				strcpy_s(szFullPath, szDirectory);
+				strcat_s(szFullPath, szTextureFileName);
+
+				_tchar szRealPath[MAX_PATH] = TEXT("");
+				MultiByteToWideChar(CP_ACP, 0, szFullPath, strlen(szFullPath), szRealPath, MAX_PATH);
+
+				/* Copy Diffuse Texture Path (needed for loading Normal Texture) */
+				wstring wsName = wstring(szRealPath);
+				size_t pos = wsName.find(TEXT("alb"));
+				if (pos != std::string::npos)
+					wcscpy_s(DiffusePath, MAX_PATH, wsName.c_str());
+
+				ModelMaterial.pMatTextures[j] = CTexture::Create(m_pDevice, m_pContext, szRealPath);
+				if (nullptr == ModelMaterial.pMatTextures[j])
+					return E_FAIL;
+			}
 		}
 
 		m_Materials.push_back(ModelMaterial);

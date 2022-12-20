@@ -13,7 +13,7 @@ vector g_vLightAmbient;
 vector g_vLightSpecular;
 
 vector g_vMtrlAmbient = vector(1.f, 1.f, 1.f, 1.f);
-vector g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
+vector g_vMtrlSpecular = vector(.4f, .4f, .4f, 1.f);  
 
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
