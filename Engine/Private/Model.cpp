@@ -78,7 +78,7 @@ void CModel::Reset_CurrentAnimation()
 	m_Animations[m_iCurrentAnimIndex]->Reset_Animation();
 }
 
-HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix)
+HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix, _bool bForceNormals)
 {
 	m_eModelType = eModelType;
 	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
@@ -98,7 +98,7 @@ HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath
 	if (FAILED(Create_MeshContainer()))
 		return E_FAIL;
 
-	if (FAILED(Create_Materials(pModelFilePath)))
+	if (FAILED(Create_Materials(pModelFilePath, bForceNormals)))
 		return E_FAIL;
 
 	// Bones are not created when the Model Prototype is created, but instead when is cloned.
@@ -208,7 +208,7 @@ HRESULT CModel::Create_MeshContainer()
 	return S_OK;
 }
 
-HRESULT CModel::Create_Materials(const char* pModelFilePath)
+HRESULT CModel::Create_Materials(const char* pModelFilePath, _bool bForceNormals)
 {
 	// Material Creation
 
@@ -237,7 +237,7 @@ HRESULT CModel::Create_Materials(const char* pModelFilePath)
 
 			/* Normal Maps are handled a bit differently (..really bad, but there is no other option). */
 			/* Apparently after exporting the Model, the Normal Maps are not attached to the Meshes, so we need to force them. */
-			if (j == 6)
+			if (j == 6 && bForceNormals)
 			{
 				/* "MI_FieldFlower1_01_alb" > "MI_FieldFlower1_01_nml.dds" */
 				wstring wsNormalTexture = wstring(DiffusePath);
@@ -327,11 +327,11 @@ HRESULT CModel::Create_Animations()
 	return S_OK;
 }
 
-CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix)
+CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eModelType, const char* pModelFilePath, _bool bForceNormals, _fmatrix PivotMatrix)
 {
 	CModel*	pInstance = new CModel(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eModelType, pModelFilePath, PivotMatrix)))
+	if (FAILED(pInstance->Initialize_Prototype(eModelType, pModelFilePath, PivotMatrix, bForceNormals)))
 	{
 		ERR_MSG(TEXT("Failed to Created : CModel"));
 		Safe_Release(pInstance);

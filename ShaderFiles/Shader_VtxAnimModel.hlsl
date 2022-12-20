@@ -1,32 +1,34 @@
 
 #include "Client_Shader_Defines.hpp"
 
-matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D		g_DiffuseTexture;
-texture2D		g_NormalTexture;
-texture2D		g_SpecularTexture;
+matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+texture2D	g_DiffuseTexture;
+texture2D	g_NormalTexture;
+texture2D	g_SpecularTexture;
 
 /* 정점들에게 곱해져야할 행렬. */
 /* 정점들은 메시에게 소속. 이때 곱해져야하는 뼈의 행렬 == 이 메시에 영향을 주는 뼈다. */
 /* 모델 전체에 정의된 뼈다(xxxxx) */
-matrix			g_BoneMatrices[256];
+matrix g_BoneMatrices[256];
 
 struct VS_IN
 {
-	float3		vPosition : POSITION;
-	float3		vNormal : NORMAL;
-	float2		vTexUV : TEXCOORD0;
-	float3		vTangent : TANGENT;
-	uint4		vBlendIndex : BLENDINDEX;
-	float4		vBlendWeight : BLENDWEIGHT;
+	float3 vPosition : POSITION;
+	float3 vNormal : NORMAL;
+	float2 vTexUV : TEXCOORD0;
+	float3 vTangent : TANGENT;
+	uint4 vBlendIndex : BLENDINDEX;
+	float4 vBlendWeight : BLENDWEIGHT;
 };
 
 struct VS_OUT
 {
-	float4		vPosition : SV_POSITION;
-	float4		vNormal : NORMAL;
-	float2		vTexUV : TEXCOORD0;
-	float4		vProjPos : TEXCOORD1;
+	float4 vPosition : SV_POSITION;
+	float3 vNormal : NORMAL;
+	float2 vTexUV : TEXCOORD0;
+	float4 vProjPos : TEXCOORD1;
+	float3 vTangent : TANGENT;
+	float3 vBinormal : BINORMAL;
 };
 
 /* DrawIndexed함수를 호출하면. */
@@ -54,9 +56,11 @@ VS_OUT VS_MAIN(VS_IN In)
 	/* 정점의 위치에 월드 뷰 투영행렬을 곱한다. 현재 정점은 ViewSpace에 존재하낟. */
 	/* 투영행렬까지 곱하면 정점위치의 w에 뷰스페이스 상의 z를 보관한다. == Out.vPosition이 반드시 float4이어야하는 이유. */
 	Out.vPosition = mul(vPosition, matWVP);
-	Out.vNormal = vNormal;
+	Out.vNormal = vNormal.xyz;
 	Out.vTexUV = In.vTexUV;
 	Out.vProjPos = Out.vPosition;
+	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix)).xyz;
+	Out.vBinormal = cross(Out.vNormal, Out.vTangent);
 
 	return Out;
 }
@@ -64,18 +68,20 @@ VS_OUT VS_MAIN(VS_IN In)
 
 struct PS_IN
 {
-	float4		vPosition : SV_POSITION;
-	float4		vNormal : NORMAL;
-	float2		vTexUV : TEXCOORD0;
-	float4		vProjPos : TEXCOORD1;
+	float4 vPosition : SV_POSITION;
+	float3 vNormal : NORMAL;
+	float2 vTexUV : TEXCOORD0;
+	float4 vProjPos : TEXCOORD1;
+	float3 vTangent : TANGENT;
+	float3 vBinormal : BINORMAL;
 };
 
 struct PS_OUT
 {
-	float4		vDiffuse : SV_TARGET0;
-	float4		vNormal : SV_TARGET1;
-	float4		vDepth : SV_TARGET2;
-	float4		vSpecular : SV_TARGET3;
+	float4 vDiffuse : SV_TARGET0;
+	float4 vNormal : SV_TARGET1;
+	float4 vDepth : SV_TARGET2;
+	float4 vSpecular : SV_TARGET3;
 };
 
 /* 이렇게 만들어진 픽셀을 PS_MAIN함수의 인자로 던진다. */
@@ -85,8 +91,16 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
+	float4 vTextureNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3 vNormal;
+
+	vNormal = float3(vTextureNormal.x, vTextureNormal.y, sqrt(1 - vTextureNormal.x * vTextureNormal.x - vTextureNormal.y * vTextureNormal.y));
+
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBinormal, In.vNormal);
+	vNormal = mul(vNormal, WorldMatrix);
+
 	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.f, 0.f, 0.f);
 	Out.vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 

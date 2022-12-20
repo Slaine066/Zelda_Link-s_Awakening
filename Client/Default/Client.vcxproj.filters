@@ -136,9 +136,6 @@
     <Filter Include="02.GameObjects\04.UI">
       <UniqueIdentifier>{76db635f-835c-42fe-a8ef-35f87d99cf8e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\01.FallingTiles">
-      <UniqueIdentifier>{6ff03038-f54b-4f10-85e1-d33df513eaaf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\00.Actor\05.Effect">
       <UniqueIdentifier>{8bbe6452-63a3-4eee-a2e1-aca84de347e0}</UniqueIdentifier>
     </Filter>
@@ -366,9 +363,6 @@
     <ClInclude Include="..\public\UI_Heart.h">
       <Filter>02.GameObjects\04.UI\UI_Heart</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\FallingTile.h">
-      <Filter>02.GameObjects\00.Actor\02.InteractableObject\01.FallingTiles</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\PlayerFallState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClInclude>
@@ -583,9 +577,6 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Heart.cpp">
       <Filter>02.GameObjects\04.UI\UI_Heart</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\FallingTile.cpp">
-      <Filter>02.GameObjects\00.Actor\02.InteractableObject\01.FallingTiles</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PlayerFallState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>

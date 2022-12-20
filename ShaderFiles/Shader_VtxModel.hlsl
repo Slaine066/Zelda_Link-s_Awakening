@@ -72,7 +72,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	float4 vTextureNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	float3 vNormal;
 
-	vNormal = float3((vTextureNormal.x), vTextureNormal.y, sqrt(1 - vTextureNormal.x * vTextureNormal.x - vTextureNormal.y * vTextureNormal.y));
+	vNormal = float3(vTextureNormal.x, vTextureNormal.y, sqrt(1 - vTextureNormal.x * vTextureNormal.x - vTextureNormal.y * vTextureNormal.y));
 
 	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBinormal, In.vNormal);
 	vNormal = mul(vNormal, WorldMatrix);

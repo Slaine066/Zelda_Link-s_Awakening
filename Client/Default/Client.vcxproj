@@ -186,7 +186,6 @@
     <ClInclude Include="..\public\Camera_Dungeon.h" />
     <ClInclude Include="..\public\Character.h" />
     <ClInclude Include="..\public\Item.h" />
-    <ClInclude Include="..\public\FallingTile.h" />
     <ClInclude Include="..\public\InteractableObject.h" />
     <ClInclude Include="..\public\Inventory.h" />
     <ClInclude Include="..\public\Level_BottleGrotto.h" />
@@ -266,7 +265,6 @@
     <ClCompile Include="..\private\Camera_Dungeon.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\Item.cpp" />
-    <ClCompile Include="..\private\FallingTile.cpp" />
     <ClCompile Include="..\private\InteractableObject.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
     <ClCompile Include="..\private\Level_BottleGrotto.cpp" />

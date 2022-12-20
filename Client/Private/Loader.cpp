@@ -7,7 +7,6 @@
 #include "Camera_Dungeon.h"
 #include "TriggerBox_Dynamic.h"
 #include "StaticObject.h"
-//#include "FallingTile.h"
 #include "Treasure.h"
 #include "Player.h"
 #include "MoriblinSword.h"
@@ -166,31 +165,31 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 
 	/*For.Prototype_Component_Model_Link*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Link"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Player_Link/Link.fbx", PivotMatrix))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Link"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Player_Link/Link.fbx", false, PivotMatrix))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_MoriblinSword*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_MoriblinSword"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_MoriblinSword/MoriblinSword.fbx", PivotMatrix))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_MoriblinSword"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_MoriblinSword/MoriblinSword.fbx", false, PivotMatrix))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_MoriblinSpear*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_MoriblinSpear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_MoriblinSpear/MoriblinSpear.fbx", PivotMatrix))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_MoriblinSpear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_MoriblinSpear/MoriblinSpear.fbx", false, PivotMatrix))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_Spear*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Spear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinSpear/Spear.fbx", PivotMatrix))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Spear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinSpear/Spear.fbx", false, PivotMatrix))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_BossblinSpear*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_BossblinSpear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_BossblinSpear/BossblinSpear.fbx"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_BossblinSpear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_BossblinSpear/BossblinSpear.fbx", false))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_Treasure*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Treasure"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Object_Treasure/Treasure.fbx"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Treasure"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Object_Treasure/Treasure.fbx", false))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_RupeeGreen*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RupeeGreen"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Item_RupeeGreen/RupeeGreen.fbx"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RupeeGreen"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Item_RupeeGreen/RupeeGreen.fbx", false))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_Bomb*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Bomb"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Item_Bomb/Bomb.fbx"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Bomb"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Item_Bomb/Bomb.fbx", false))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_RocsFeather*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RocsFeather"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_RocsFeather/RocsFeather.fbx"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RocsFeather"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_RocsFeather/RocsFeather.fbx", false))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Field_** */
@@ -501,7 +500,7 @@ HRESULT CLoader::Loading_ForMoriblinCave()
 	_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 
 	/*For.Prototype_Component_Model_Bossblin*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Model_Bossblin"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_Bossblin/Bossblin.fbx", PivotMatrix))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Model_Bossblin"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Enemy_Bossblin/Bossblin.fbx", false, PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_MoriblinCave_** */
@@ -515,10 +514,7 @@ HRESULT CLoader::Loading_ForMoriblinCave()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_MoriblinCaveRock */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Model_CaveTile"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinCaveTile/CaveTile.fbx"))))
-		return E_FAIL;
-	/* For.Prototype_Component_Model_MoriblinCaveRock */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Model_CaveRock"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinCaveRock/CaveRock.fbx"))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Model_CaveRock"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinCaveRock/CaveRock.fbx", false))))
 		return E_FAIL;
 
 	// >
@@ -607,9 +603,6 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 	/* For.Prototype_GameObject_StaticObject */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	/* For.Prototype_GameObject_FallingTile */
-	/*if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FallingTile"), CFallingTile::Create(m_pDevice, m_pContext))))
-		return E_FAIL;*/
 	/* For.Prototype_GameObject_Treasure */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Treasure"), CTreasure::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
