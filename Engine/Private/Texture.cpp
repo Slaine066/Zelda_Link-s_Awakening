@@ -49,7 +49,9 @@ HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNu
 			hr = DirectX::CreateWICTextureFromFile(m_pDevice, szFullPath, nullptr, &pSRV);
 
 		if (FAILED(hr))
-			return S_OK;
+			return S_OK; /* Should return E_FAIL, but the Create_Material() function forces loading certain Textures, which can also be missing.
+						 Since we don't want Textures error popping up everytime a Texture is missing we just return S_OK. 
+						 (The best scenario would be not forcing the loading of specific Texture inside the Create_Material() function. */
 
 		m_SRVs.push_back(pSRV);
 	}
@@ -69,7 +71,7 @@ CTexture * CTexture::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pConte
 
 	if (FAILED(pInstance->Initialize_Prototype(pTextureFilePath, iNumTextures)))
 	{
-		ERR_MSG(TEXT("Failed to Created : CTexture"));
+		ERR_MSG(TEXT("Failed to Create: CTexture"));
 		Safe_Release(pInstance);
 	}
 
@@ -83,7 +85,7 @@ CComponent * CTexture::Clone(void * pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		ERR_MSG(TEXT("Failed to Cloned : CTexture"));
+		ERR_MSG(TEXT("Failed to Clone: CTexture"));
 		Safe_Release(pInstance);
 	}
 

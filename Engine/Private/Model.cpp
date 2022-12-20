@@ -139,9 +139,7 @@ HRESULT CModel::SetUp_Material(CShader * pShader, const char * pConstantName, _u
 	if (!pMaterialTexture)
 		return E_FAIL;
 
-	ID3D11ShaderResourceView* pSRV = pMaterialTexture->Get_SRV();
-
-	return pShader->Set_ShaderResourceView(pConstantName, pSRV);
+	return pShader->Set_ShaderResourceView(pConstantName, pMaterialTexture->Get_SRV());
 }
 
 HRESULT CModel::Play_Animation(_float fTimeDelta, OUT _bool& bIsFinished, _bool bIsLoop)

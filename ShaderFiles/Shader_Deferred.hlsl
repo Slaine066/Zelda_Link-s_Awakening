@@ -12,14 +12,15 @@ vector g_vLightDiffuse;
 vector g_vLightAmbient;
 vector g_vLightSpecular;
 
-vector g_vMtrlAmbient = vector(1.f, 1.f, 1.f, 1.f);
-vector g_vMtrlSpecular = vector(.4f, .4f, .4f, 1.f);  
+vector g_vMtrlAmbient = vector(1.f, 1.f, 1.f, 1.f);  
 
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_DepthTexture;
-texture2D g_ShadeTexture;
 texture2D g_SpecularTexture;
+
+texture2D g_ShadeTexture;
+texture2D g_ReflectionTexture;
 
 struct VS_IN
 {
@@ -74,7 +75,7 @@ PS_OUT PS_MAIN(PS_IN In)
 struct PS_OUT_LIGHT
 {
 	float4 vShade : SV_TARGET0;
-	float4 vSpecular : SV_TARGET1;
+	float4 vReflection : SV_TARGET1;
 };
 
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
@@ -84,6 +85,8 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 	/* 0 ~ 1 => -1 ~ 1*/
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
+	vector vSpecularDesc = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+	vSpecularDesc.yz = vSpecularDesc.x;
 
 	float fViewZ = vDepthDesc.y * 500.f;
 
@@ -114,8 +117,8 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 	vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
 	vector vLook = vWorldPos - g_vCamPosition;
 
-	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
-	Out.vSpecular.a = 0.f;
+	Out.vReflection = (g_vLightSpecular * vSpecularDesc) * pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
+	Out.vReflection.a = 0.f;
 	return Out;
 }
 
@@ -126,6 +129,8 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
 	/* 0 ~ 1 => -1 ~ 1*/
 	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
 	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
+	vector vSpecularDesc = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+	vSpecularDesc.yz = vSpecularDesc.x;
 
 	float fViewZ = vDepthDesc.y * 500.f;
 
@@ -161,9 +166,9 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
 	vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
 	vector vLook = vWorldPos - g_vCamPosition;
 
-	Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
-	Out.vSpecular *= fAtt;
-	Out.vSpecular.a = 0.f;
+	Out.vReflection = (g_vLightSpecular * vSpecularDesc) * pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
+	Out.vReflection *= fAtt;
+	Out.vReflection.a = 0.f;
 
 	return Out;
 }
@@ -174,9 +179,9 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
-	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+	vector vReflection = g_ReflectionTexture.Sample(LinearSampler, In.vTexUV);
 	
-	Out.vColor = vDiffuse * vShade + vSpecular;
+	Out.vColor = vDiffuse * vShade + vReflection;
 
 	if (Out.vColor.a == 0.f)
 		discard;

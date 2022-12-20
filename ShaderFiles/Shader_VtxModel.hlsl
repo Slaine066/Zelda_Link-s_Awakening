@@ -4,6 +4,7 @@
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
+texture2D	g_SpecularTexture;
 
 /* Used in Tool. */
 bool		g_IsSelected; 
@@ -61,6 +62,7 @@ struct PS_OUT
 	float4		vDiffuse : SV_TARGET0;
 	float4		vNormal : SV_TARGET1;
 	float4		vDepth : SV_TARGET2;
+	float4		vSpecular : SV_TARGET3;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -78,6 +80,8 @@ PS_OUT PS_MAIN(PS_IN In)
 	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.f, 0.f, 0.f);
+	Out.vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+	/*Out.vSpecular.yz = Out.vSpecular.x;*/
 
 	if (Out.vDiffuse.a <= 0.3f)
 		discard;
