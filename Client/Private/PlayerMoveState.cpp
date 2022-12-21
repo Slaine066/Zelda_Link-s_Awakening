@@ -7,10 +7,14 @@
 #include "PlayerGuardState.h"
 #include "PlayerPushState.h"
 #include "PlayerJumpState.h"
+#include "Effect.h"
 
 using namespace Player;
 
-CMoveState::CMoveState(DIRID eDir) : m_eDirection(eDir) 
+CMoveState::CMoveState(DIRID eDir, _bool bFirstSmokeSpawned, _bool bSecondSmokeSpawned) 
+	: m_eDirection(eDir),
+	m_bFirstSmokeSpawned(bFirstSmokeSpawned),
+	m_bSecondSmokeSpawned(bSecondSmokeSpawned)
 {
 }
 
@@ -25,21 +29,21 @@ CPlayerState * CMoveState::HandleInput(CPlayer * pPlayer)
 	else if (pGameInstance->Key_Down('Z'))
 		return new CJumpState(STATETYPE_MAIN, true);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
-		return new CMoveState(DIR_STRAIGHT_LEFT);
+		return new CMoveState(DIR_STRAIGHT_LEFT, m_bFirstSmokeSpawned, m_bSecondSmokeSpawned);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))
-		return new CMoveState(DIR_STRAIGHT_RIGHT);
+		return new CMoveState(DIR_STRAIGHT_RIGHT, m_bFirstSmokeSpawned, m_bSecondSmokeSpawned);
 	else if (pGameInstance->Key_Pressing(VK_DOWN) && pGameInstance->Key_Pressing(VK_LEFT))
-		return new CMoveState(DIR_BACKWARD_LEFT);
+		return new CMoveState(DIR_BACKWARD_LEFT, m_bFirstSmokeSpawned, m_bSecondSmokeSpawned);
 	else if (pGameInstance->Key_Pressing(VK_DOWN) && pGameInstance->Key_Pressing(VK_RIGHT))
-		return new CMoveState(DIR_BACKWARD_RIGHT);
+		return new CMoveState(DIR_BACKWARD_RIGHT, m_bFirstSmokeSpawned, m_bSecondSmokeSpawned);
 	else if (pGameInstance->Key_Pressing(VK_LEFT))
-		return new CMoveState(DIR_LEFT);
+		return new CMoveState(DIR_LEFT, m_bFirstSmokeSpawned, m_bSecondSmokeSpawned);
 	else if (pGameInstance->Key_Pressing(VK_RIGHT))
-		return new CMoveState(DIR_RIGHT);
+		return new CMoveState(DIR_RIGHT, m_bFirstSmokeSpawned, m_bSecondSmokeSpawned);
 	else if (pGameInstance->Key_Pressing(VK_DOWN))
-		return new CMoveState(DIR_BACKWARD);
+		return new CMoveState(DIR_BACKWARD, m_bFirstSmokeSpawned, m_bSecondSmokeSpawned);
 	else if (pGameInstance->Key_Pressing(VK_UP))
-		return new CMoveState(DIR_STRAIGHT);
+		return new CMoveState(DIR_STRAIGHT, m_bFirstSmokeSpawned, m_bSecondSmokeSpawned);
 	else 
 		return new CIdleState();
 
@@ -52,6 +56,45 @@ CPlayerState * CMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 
 	pPlayer->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pPlayer->Is_AnimationLoop(pPlayer->Get_Model()->Get_CurrentAnimIndex()));
 	pPlayer->Sync_WithNavigationHeight();
+
+	if (pPlayer->Get_Model()->Is_Keyframe("spine_c", 10) && !m_bFirstSmokeSpawned)
+	{
+		m_bSecondSmokeSpawned = false;
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+		CEffect::EFFECTDESC tEffectDesc;
+		ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+		tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SMOKE;
+		tEffectDesc.m_WorldMatrix = pPlayer->Get_Transform()->Get_World4x4();
+		wcscpy_s(tEffectDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Smoke"));
+
+		if (FAILED(pGameInstance->Add_GameObject(TEXT("Smoke_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+			return nullptr;
+		
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_bFirstSmokeSpawned = true;
+	}
+	else if (pPlayer->Get_Model()->Is_Keyframe("spine_c", 22) && !m_bSecondSmokeSpawned)
+	{
+		m_bFirstSmokeSpawned = false;
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+		CEffect::EFFECTDESC tEffectDesc;
+		ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+		tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SMOKE;
+		tEffectDesc.m_WorldMatrix = pPlayer->Get_Transform()->Get_World4x4();
+		wcscpy_s(tEffectDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Smoke"));
+
+		if (FAILED(pGameInstance->Add_GameObject(TEXT("Smoke_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+			return nullptr;
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_bSecondSmokeSpawned = true;
+	}
 
 	return nullptr;
 }

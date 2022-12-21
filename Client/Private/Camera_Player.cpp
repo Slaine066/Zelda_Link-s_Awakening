@@ -84,7 +84,7 @@ void CCamera_Player::Player_Camera(_float fTimeDelta)
 		vPosition = XMVectorSetW(vPosition, 1.0f);
 
 		m_pTransform->LookAt(vPosition);
-		m_pTransform->Attach_ToTarget(vPosition, XMVectorSet(0.f, 3.5f, -2.5, 1.f)); /* Distance from Camera to Player */
+		m_pTransform->Attach_ToTarget(vPosition, XMVectorSet(0.f, 3.f, -2.5, 1.f)); /* Distance from Camera to Player */
 	}
 	else /* Debug Camera*/
 	{

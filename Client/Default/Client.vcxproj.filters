@@ -136,9 +136,6 @@
     <Filter Include="02.GameObjects\04.UI">
       <UniqueIdentifier>{76db635f-835c-42fe-a8ef-35f87d99cf8e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.Actor\05.Effect">
-      <UniqueIdentifier>{8bbe6452-63a3-4eee-a2e1-aca84de347e0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\04.UI\UI_Heart">
       <UniqueIdentifier>{34a0da84-caf2-43fb-85cc-235b152cd743}</UniqueIdentifier>
     </Filter>
@@ -162,6 +159,9 @@
     </Filter>
     <Filter Include="02.GameObjects\04.UI\UI_ItemChip">
       <UniqueIdentifier>{a0b8aa0c-90f2-4633-97bc-6c624b9e87c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05.Effect">
+      <UniqueIdentifier>{8bbe6452-63a3-4eee-a2e1-aca84de347e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -405,6 +405,9 @@
     <ClInclude Include="..\public\UI_ItemChip.h">
       <Filter>02.GameObjects\04.UI\UI_ItemChip</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect.h">
+      <Filter>02.GameObjects\05.Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -619,6 +622,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_ItemChip.cpp">
       <Filter>02.GameObjects\04.UI\UI_ItemChip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect.cpp">
+      <Filter>02.GameObjects\05.Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

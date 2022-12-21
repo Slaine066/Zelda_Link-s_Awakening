@@ -7,6 +7,7 @@
 #include "Camera_Dungeon.h"
 #include "TriggerBox_Dynamic.h"
 #include "StaticObject.h"
+#include "Effect.h"
 #include "Treasure.h"
 #include "Player.h"
 #include "MoriblinSword.h"
@@ -83,8 +84,6 @@ HRESULT CLoader::Loading_ForStaticLevel()
 #pragma region Loading_Textures
 	lstrcpy(m_szLoadingText, TEXT("Loading Textures.."));
 
-	/* TODO: Refactor like below. */
-	/* Game */
 	/*For.Prototype_Component_Texture_Heart */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Heart"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Heart_%d.png"), 3))))
 		return E_FAIL;
@@ -130,6 +129,10 @@ HRESULT CLoader::Loading_ForStaticLevel()
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Equipment_Sword */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Equipment_Sword"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/EqSword_%02d.png"), 2))))
+		return E_FAIL;
+
+	/*For.Prototype_Component_Texture_Smoke */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Smoke"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Effects/Smoke.dds"), 1))))
 		return E_FAIL;
 
 	// >
@@ -599,6 +602,9 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_TriggerBox_Dynamic */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TriggerBox_Dynamic"), CTriggerBox_Dynamic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Effect */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect"), CEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_StaticObject */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))

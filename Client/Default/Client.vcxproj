@@ -185,6 +185,7 @@
     <ClInclude Include="..\public\CameraManager.h" />
     <ClInclude Include="..\public\Camera_Dungeon.h" />
     <ClInclude Include="..\public\Character.h" />
+    <ClInclude Include="..\public\Effect.h" />
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\InteractableObject.h" />
     <ClInclude Include="..\public\Inventory.h" />
@@ -264,6 +265,7 @@
     <ClCompile Include="..\private\CameraManager.cpp" />
     <ClCompile Include="..\private\Camera_Dungeon.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
+    <ClCompile Include="..\private\Effect.cpp" />
     <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\private\InteractableObject.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />

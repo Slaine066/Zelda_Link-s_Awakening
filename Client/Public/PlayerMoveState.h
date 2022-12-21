@@ -7,7 +7,7 @@ BEGIN(Player)
 class CMoveState : public CPlayerState
 {
 public:
-	CMoveState(DIRID eDir);
+	CMoveState(DIRID eDir, _bool bFirstSmokeSpawned = false, _bool bSecondSmokeSpawned = false);
 
 	virtual CPlayerState* HandleInput(CPlayer* pPlayer) override;
 	virtual CPlayerState* Tick(CPlayer* pPlayer, _float fTimeDelta) override;
@@ -23,6 +23,10 @@ private:
 private:
 	DIRID m_eDirection = DIRID::DIR_END;
 	CActor* m_pBlockingObject = nullptr;
+
+	/* Smoke Effect Variables */
+	_bool m_bFirstSmokeSpawned;
+	_bool m_bSecondSmokeSpawned;
 };
 END
 END

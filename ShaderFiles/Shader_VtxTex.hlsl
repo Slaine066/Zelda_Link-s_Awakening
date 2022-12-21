@@ -4,7 +4,12 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_DiffuseTexture;
 
-bool g_Hovered; /* Used by "UI_ItemSlot" class. */
+/* Used by "UI_ItemSlot" class. */
+bool g_Hovered; 
+
+/* Used by "Effect" class. */
+float g_EffectTimer;
+float g_EffectLife;
 
 struct VS_IN
 {
@@ -69,6 +74,24 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_EFFECT(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor.a = Out.vColor.y;
+	Out.vColor.yz = Out.vColor.x;
+
+	float fStart = g_EffectLife - g_EffectLife;		
+	float fEnd = g_EffectLife;
+	float fAbsoluteTime = abs(g_EffectLife - g_EffectTimer);	
+
+	if (Out.vColor.a > .2f)
+		Out.vColor.a = lerp(fStart, fEnd, fAbsoluteTime);
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Default
@@ -102,5 +125,27 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass Effect
+	{
+		SetRasterizerState(RS_Default_NoCull);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Priority, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_EFFECT();
+	}
+
+	pass Effect_Blend
+	{
+		SetRasterizerState(RS_Default_NoCull);
+		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_EFFECT();
 	}
 }
