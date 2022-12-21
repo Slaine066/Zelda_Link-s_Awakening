@@ -65,7 +65,7 @@ protected:
 protected:
 	EFFECTDESC m_tEffectDesc;
 	_float m_fEffectTimer = 0.f;
-	_float m_fEffectLife = 1.f;
+	_float m_fEffectLife = 1.2f;
 
 public:
 	static CEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

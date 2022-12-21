@@ -89,6 +89,8 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 	if (Out.vColor.a > .2f)
 		Out.vColor.a = lerp(fStart, fEnd, fAbsoluteTime);
 
+	Out.vColor.a -= .5f;
+
 	return Out;
 }
 

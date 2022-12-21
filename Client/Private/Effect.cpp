@@ -29,9 +29,9 @@ HRESULT CEffect::Initialize(void * pArg)
 	{
 		case EFFECT_TYPE::EFFECT_SMOKE:
 		{
-			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, .2f);
-			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, .2f);
-			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, .2f);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, .3f);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, .3f);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, .3f);
 
 			_float4 vPosition; 
 			XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
@@ -59,14 +59,25 @@ _uint CEffect::Tick(_float fTimeDelta)
 	{
 		case EFFECT_TYPE::EFFECT_SMOKE:
 		{
-			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-			m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
-			RELEASE_INSTANCE(CGameInstance);
-
+			
 			if (m_fEffectTimer > m_fEffectLife)
 				return OBJ_DESTROY;
 			else
+			{
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+				m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+				
+				_float fScale = .3f + (0.f - .3f) * m_fEffectTimer;
+
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+
+				RELEASE_INSTANCE(CGameInstance);
+
 				m_fEffectTimer += fTimeDelta;
+			}
 		}
 		break;
 		case EFFECT_TYPE::EFFECT_HIT:
