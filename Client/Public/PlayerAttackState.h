@@ -17,6 +17,9 @@ public:
 	virtual void Exit(CPlayer* pPlayer) override;
 
 private:
+	void Spawn_HitEffect(CPlayer* pPlayer, CGameObject*& pDamaged);
+
+private:
 	_bool m_bDidDamage = false;
 };
 END

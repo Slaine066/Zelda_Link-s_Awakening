@@ -134,6 +134,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Texture_Smoke */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Smoke"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Effects/Smoke.dds"), 1))))
 		return E_FAIL;
+	/*For.Prototype_Component_Texture_Hit_Flash */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Hit_Flash"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Effects/Hit_Flash_%02d.dds"), 6))))
+		return E_FAIL;
 
 	// >
 	// .. Add Above ..

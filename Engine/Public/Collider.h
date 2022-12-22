@@ -45,6 +45,7 @@ public:
 	BoundingBox* Get_AABB() { return m_pAABB[BOUNDING_WORLD]; }
 	BoundingOrientedBox* Get_OBB() { return m_pOBB[BOUNDING_WORLD]; }
 	BoundingSphere* Get_Sphere() { return m_pSphere[BOUNDING_WORLD]; }
+	_float3 Get_Center();
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType);

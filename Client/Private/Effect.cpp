@@ -41,7 +41,12 @@ HRESULT CEffect::Initialize(void * pArg)
 		}	
 		break;
 		case EFFECT_TYPE::EFFECT_HIT:
-			break;
+		{
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, 2.f);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, 2.f);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, 2.f);
+		}
+		break;
 		case EFFECT_TYPE::EFFECT_DEATH:
 			break;
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
@@ -60,7 +65,7 @@ _uint CEffect::Tick(_float fTimeDelta)
 		case EFFECT_TYPE::EFFECT_SMOKE:
 		{
 			
-			if (m_fEffectTimer > m_fEffectLife)
+			if (m_fEffectTimer > m_tEffectDesc.m_fEffectTTL)
 				return OBJ_DESTROY;
 			else
 			{
@@ -81,7 +86,21 @@ _uint CEffect::Tick(_float fTimeDelta)
 		}
 		break;
 		case EFFECT_TYPE::EFFECT_HIT:
-			break;
+		{
+			if (m_fEffectTimer > m_tEffectDesc.m_fEffectTTL)
+				return OBJ_DESTROY;
+			else
+			{
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+				m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+
+				RELEASE_INSTANCE(CGameInstance);
+
+				m_fEffectTimer += fTimeDelta;
+			}
+		}
+		break;
 		case EFFECT_TYPE::EFFECT_DEATH:
 			break;
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
@@ -109,7 +128,22 @@ HRESULT CEffect::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(4);
+	switch (m_tEffectDesc.m_eEffectType)
+	{
+	case EFFECT_TYPE::EFFECT_SMOKE:
+		m_pShaderCom->Begin(PASS_EFFECT_SMOKE);
+		break;
+	case EFFECT_TYPE::EFFECT_HIT:
+		m_pShaderCom->Begin(PASS_EFFECT_HIT);
+		break;
+	case EFFECT_TYPE::EFFECT_DEATH:
+		break;
+	case EFFECT_TYPE::EFFECT_GET_ITEM:
+		break;
+	case EFFECT_TYPE::EFFECT_BOMB_EXPLOSION:
+		break;
+	}
+	
 	m_pVIBufferCom->Render();
 
 	return S_OK;
@@ -162,7 +196,7 @@ HRESULT CEffect::SetUp_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_EffectTimer", &m_fEffectTimer, sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_RawValue("g_EffectLife", &m_fEffectLife, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Set_RawValue("g_EffectLife", &m_tEffectDesc.m_fEffectTTL, sizeof(_float))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

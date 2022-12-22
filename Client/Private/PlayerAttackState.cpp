@@ -3,6 +3,7 @@
 #include "PlayerAttackState.h"
 #include "GameInstance.h"
 #include "PlayerIdleState.h"
+#include "Effect.h"
 
 using namespace Player;
 
@@ -45,7 +46,14 @@ CPlayerState * CAttackState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 		if (!pDamagedObjects.empty())
 		{
 			for (auto& pDamaged : pDamagedObjects)
-				pDamaged->Take_Damage(pPlayer->Get_Stats().m_fAttackPower, nullptr, pPlayer);
+			{
+				/* Apply Damage */
+				_float fDamage = pDamaged->Take_Damage(pPlayer->Get_Stats().m_fAttackPower, nullptr, pPlayer);
+
+				/* Spawn Hit Effect */
+				if (fDamage > 0.f)
+					Spawn_HitEffect(pPlayer, pDamaged);
+			}
 
 			m_bDidDamage = true;
 		}
@@ -67,4 +75,33 @@ void CAttackState::Enter(CPlayer * pPlayer)
 void CAttackState::Exit(CPlayer * pPlayer)
 {
 	m_bDidDamage = false;
+}
+
+void CAttackState::Spawn_HitEffect(CPlayer* pPlayer, CGameObject*& pDamaged)
+{
+
+	CEffect::EFFECTDESC tEffectDesc;
+	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_HIT;
+	tEffectDesc.m_fEffectTTL = .4f;
+
+	_vector vCenter = XMVectorSetW(XMLoadFloat3(&pPlayer->Get_Collider(CCollider::AIM::AIM_DAMAGE_OUTPUT)->Get_Center()), 1.f);
+	_vector vDamagedCenter = XMVectorSetW(XMLoadFloat3(&pDamaged->Get_Collider(CCollider::AIM::AIM_DAMAGE_INPUT)->Get_Center()), 1.f);
+
+	_vector vHitDirection = vDamagedCenter - vCenter;
+	vHitDirection = XMVectorSetW(vHitDirection, 0.f);
+	vHitDirection = XMVector4Normalize(vHitDirection);
+	vHitDirection *= pPlayer->Get_Collider(CCollider::AIM::AIM_DAMAGE_OUTPUT)->Get_ColliderDesc().vScale.z / 3;
+
+	_vector vHitPosition = vCenter + vHitDirection;
+	
+	_matrix mWorldMatrix = XMMatrixIdentity();
+	memcpy(&mWorldMatrix.r[3], &vHitPosition, sizeof(_vector));
+	XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, mWorldMatrix);
+
+	wcscpy_s(tEffectDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Hit_Flash"));
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->Add_GameObject(TEXT("Hit_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc);
+	RELEASE_INSTANCE(CGameInstance);
 }

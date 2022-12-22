@@ -36,7 +36,8 @@ public:
 	{
 		EFFECT_TYPE m_eEffectType = EFFECT_END;
 		_float4x4 m_WorldMatrix;
-		_tchar m_pTextureName[MAX_PATH];	
+		_tchar m_pTextureName[MAX_PATH];
+		_float m_fEffectTTL = 0.f;
 	} EFFECTDESC;
 
 protected:
@@ -65,7 +66,6 @@ protected:
 protected:
 	EFFECTDESC m_tEffectDesc;
 	_float m_fEffectTimer = 0.f;
-	_float m_fEffectLife = 1.2f;
 
 public:
 	static CEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

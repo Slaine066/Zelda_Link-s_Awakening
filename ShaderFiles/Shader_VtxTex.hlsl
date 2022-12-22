@@ -74,7 +74,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_MAIN_EFFECT(PS_IN In)
+PS_OUT PS_MAIN_SMOKE_EFFECT(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
@@ -88,6 +88,26 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 
 	if (Out.vColor.a > .2f)
 		Out.vColor.a = lerp(fStart, fEnd, fAbsoluteTime);
+
+	Out.vColor.a -= .5f;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_HIT_EFFECT(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor.a = Out.vColor.y;
+	Out.vColor.yz = Out.vColor.x;
+
+	/*float fStart = g_EffectLife - g_EffectLife;
+	float fEnd = g_EffectLife;
+	float fAbsoluteTime = abs(g_EffectLife - g_EffectTimer);
+
+	if (Out.vColor.a > .2f)
+		Out.vColor.a = lerp(fStart, fEnd, fAbsoluteTime);*/
 
 	Out.vColor.a -= .5f;
 
@@ -129,18 +149,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass Effect
-	{
-		SetRasterizerState(RS_Default_NoCull);
-		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
-		SetDepthStencilState(DSS_Priority, 0);
-
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_EFFECT();
-	}
-
-	pass Effect_Blend
+	pass Effect_Smoke
 	{
 		SetRasterizerState(RS_Default_NoCull);
 		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
@@ -148,6 +157,17 @@ technique11 DefaultTechnique
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_EFFECT();
+		PixelShader = compile ps_5_0 PS_MAIN_SMOKE_EFFECT();
+	}
+
+	pass Effect_Hit
+	{
+		SetRasterizerState(RS_Default_NoCull);
+		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_HIT_EFFECT();
 	}
 }

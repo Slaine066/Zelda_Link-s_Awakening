@@ -147,7 +147,7 @@ _float CMoriblinSpear::Take_Damage(float fDamage, void * DamageType, CGameObject
 		}
 	}
 
-	return 0.f;
+	return fDamage;
 }
 
 HRESULT CMoriblinSpear::Ready_Parts()

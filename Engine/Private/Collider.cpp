@@ -24,6 +24,22 @@ CCollider::CCollider(const CCollider & rhs)
 #endif // _DEBUG
 }
 
+_float3 CCollider::Get_Center()
+{
+	switch (m_eType)
+	{
+	case TYPE::TYPE_AABB:
+		return m_pAABB[BOUNDING_WORLD]->Center;
+		break;
+	case TYPE::TYPE_OBB:
+		return m_pOBB[BOUNDING_WORLD]->Center;
+		break;
+	case TYPE::TYPE_SPHERE:
+		return m_pSphere[BOUNDING_WORLD]->Center;
+		break;
+	}
+}
+
 HRESULT CCollider::Initialize_Prototype(TYPE eType)
 {
 	m_eType = eType;

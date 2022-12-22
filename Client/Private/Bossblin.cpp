@@ -172,7 +172,7 @@ _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * Da
 			}
 		}
 		else if (m_pBossblinState->Get_StateId() == CBossblinState::STATE_ID::STATE_ATTACK_TACKLE)
-			goto Damage;
+			fDamage = 0.f;
 		else 
 		{
 			if (m_pBossblinState->Has_Aggro())
@@ -180,12 +180,14 @@ _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * Da
 				m_pModelCom->Reset_CurrentAnimation();
 				CBossblinState* pState = new Bossblin::CGuardState();
 				m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pState);
+
+				fDamage = 0.f;
 			}
 		}
 	}
 
 Damage:
-	return 0.f;
+	return fDamage;
 }
 
 HRESULT CBossblin::Ready_Parts()
@@ -253,7 +255,7 @@ HRESULT CBossblin::Ready_Components(void * pArg)
 	CCollider::COLLIDERDESC	ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_INPUT;
-	ColliderDesc.vScale = _float3(1.5f, 2.5f, 1.5f);
+	ColliderDesc.vScale = _float3(1.7f, 2.5f, 1.7f);
 	ColliderDesc.vPosition = _float3(0.f, 1.25f, 0.f);
 
 	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object

@@ -126,6 +126,8 @@ _float CMoriblinSword::Take_Damage(float fDamage, void * DamageType, CGameObject
 				CMoriblinSwordState* pState = new CGuardState();
 				m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
 			}
+
+			fDamage = 0.f;
 		}
 		else
 		{
@@ -148,7 +150,7 @@ _float CMoriblinSword::Take_Damage(float fDamage, void * DamageType, CGameObject
 		}
 	}
 
-	return 0.f;
+	return fDamage;
 }
 
 HRESULT CMoriblinSword::Ready_Components(void * pArg)
