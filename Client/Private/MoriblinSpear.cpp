@@ -70,8 +70,16 @@ _uint CMoriblinSpear::Tick(_float fTimeDelta)
 	for (auto& pParts : m_vParts)
 		pParts->Tick(fTimeDelta);
 
-	AI_Behavior();
+	AI_Behavior(); /* Find_Target() */
 	TickState(fTimeDelta);
+
+	/* AI misbehaves when running in Release Mode without the following code.
+	Since I can't catch the Undefined Behavior I'm leaving it.  */
+	if (!m_bTick)
+	{
+		m_bTick = true;
+		m_pMoriblinSpearState->Reset_Target();
+	}
 
 	return OBJ_NOEVENT;
 }
@@ -215,7 +223,7 @@ HRESULT CMoriblinSpear::Ready_Components(void * pArg)
 	CCollider::COLLIDERDESC	ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_INPUT;
-	ColliderDesc.vScale = _float3(1.4f, 1.4f, 1.2f);
+	ColliderDesc.vScale = _float3(1.f, 1.4f, 1.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
 
 	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object

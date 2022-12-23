@@ -17,7 +17,6 @@ HRESULT CLight::Initialize(const LIGHTDESC & LightDesc)
 	return S_OK;
 }
 
-#ifdef _DEBUG
 HRESULT CLight::Render(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
 {
 	_uint iPassIndex = 0;
@@ -52,7 +51,6 @@ HRESULT CLight::Render(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
 
 	return S_OK;
 }
-#endif // _DEBUG
 
 CLight * CLight::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const LIGHTDESC & LightDesc)
 {

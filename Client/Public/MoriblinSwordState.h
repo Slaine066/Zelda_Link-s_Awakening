@@ -49,6 +49,7 @@ public:
 public:
 	STATE_ID Get_StateId() { return m_eStateId; }
 	_bool Has_Aggro() { return m_pTarget; }
+	void Reset_Target() { m_pTarget = nullptr; }
 
 protected:
 	virtual void Find_Target(CMoriblinSword * pMoriblinSword, _bool bHasAggro = false)

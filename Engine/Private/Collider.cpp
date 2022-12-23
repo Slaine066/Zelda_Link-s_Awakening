@@ -134,6 +134,7 @@ void CCollider::Update(_fmatrix WorldMatrix)
 	}
 }
 
+#ifdef _DEBUG
 HRESULT CCollider::Render()
 {
 	m_pContext->OMSetDepthStencilState(m_pDepthStencilState, 0);
@@ -172,6 +173,7 @@ HRESULT CCollider::Render()
 
 	return S_OK;
 }
+#endif // _DEBUG
 
 _bool CCollider::Collision(CCollider * pTargetCollider)
 {

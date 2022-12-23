@@ -119,6 +119,9 @@ public:
 	void Set_IsInvincible(_bool bIsInvincible) { m_bIsInvincible = bIsInvincible; }
 	class CInteractableObject* Get_InteractableObject() { return m_pCurrentInteractableObject; }
 	void Set_InteractableObject(class CInteractableObject* pInteractableObj) { m_pCurrentInteractableObject = pInteractableObj; }
+	void Set_AchieveState();
+	_bool Get_CanPickup() { return m_bCanPickup; }
+	void Set_CanPickup(_bool bCanPickup) { m_bCanPickup = bCanPickup; }
 
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -154,6 +157,7 @@ private:
 	_bool m_bIsInvincible = false;
 
 	class CInteractableObject* m_pCurrentInteractableObject = nullptr;
+	_bool m_bCanPickup = true;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

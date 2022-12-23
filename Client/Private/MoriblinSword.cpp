@@ -67,6 +67,14 @@ _uint CMoriblinSword::Tick(_float fTimeDelta)
 
 	AI_Behavior();
 	TickState(fTimeDelta);
+
+	/* AI misbehaves when running in Release Mode without the following code.
+	Since I can't catch the Undefined Behavior I'm leaving it.  */
+	if (!m_bTick)
+	{
+		m_bTick = true;
+		m_pMoriblinSwordState->Reset_Target();
+	}
 	 
 	return OBJ_NOEVENT;
 }
@@ -182,7 +190,7 @@ HRESULT CMoriblinSword::Ready_Components(void * pArg)
 	CCollider::COLLIDERDESC	ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_INPUT;
-	ColliderDesc.vScale = _float3(1.4f, 1.4f, 1.2f);
+	ColliderDesc.vScale = _float3(1.f, 1.4f, 1.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
 
 	m_vCollidersCom.resize(2); // Numbers of Colliders needed for this Object

@@ -79,29 +79,24 @@ void CAttackState::Exit(CPlayer * pPlayer)
 
 void CAttackState::Spawn_HitEffect(CPlayer* pPlayer, CGameObject*& pDamaged)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	CEffect::EFFECTDESC tEffectDesc;
 	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_HIT_FLASH;
+	tEffectDesc.m_fEffectLifespan = .15f;
+
+	CHierarchyNode* m_pSocket = pPlayer->Get_Model()->Get_BonePtr("itemA_L_top");
+	_matrix SocketMatrix = m_pSocket->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&pPlayer->Get_Model()->Get_PivotFloat4x4()) * XMLoadFloat4x4(&pPlayer->Get_Transform()->Get_World4x4());
+	XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, SocketMatrix);
+
+	/* Spawn Hit Flash Effect (Rect Buffer) */
+	pGameInstance->Add_GameObject(TEXT("Hit_Flash_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc);
+
 	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_HIT;
-	tEffectDesc.m_fEffectTTL = .4f;
-
-	_vector vCenter = XMVectorSetW(XMLoadFloat3(&pPlayer->Get_Collider(CCollider::AIM::AIM_DAMAGE_OUTPUT)->Get_Center()), 1.f);
-	_vector vDamagedCenter = XMVectorSetW(XMLoadFloat3(&pDamaged->Get_Collider(CCollider::AIM::AIM_DAMAGE_INPUT)->Get_Center()), 1.f);
-
-	_vector vHitDirection = vDamagedCenter - vCenter;
-	vHitDirection = XMVectorSetW(vHitDirection, 0.f);
-	vHitDirection = XMVector4Normalize(vHitDirection);
-	vHitDirection *= pPlayer->Get_Collider(CCollider::AIM::AIM_DAMAGE_OUTPUT)->Get_ColliderDesc().vScale.z / 3;
-
-	_vector vHitPosition = vCenter + vHitDirection;
 	
-	_matrix mWorldMatrix = XMMatrixIdentity();
-	memcpy(&mWorldMatrix.r[3], &vHitPosition, sizeof(_vector));
-	XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, mWorldMatrix);
-
-	wcscpy_s(tEffectDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Hit_Flash"));
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	/* Spawn Hit Effect (Model) on Sword Bone. */
 	pGameInstance->Add_GameObject(TEXT("Hit_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc);
+
 	RELEASE_INSTANCE(CGameInstance);
 }

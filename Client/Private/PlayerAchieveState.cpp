@@ -21,6 +21,14 @@ CPlayerState * CAchieveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 	pPlayer->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pPlayer->Is_AnimationLoop(pPlayer->Get_Model()->Get_CurrentAnimIndex()));
 	pPlayer->Sync_WithNavigationHeight();
 
+	if (m_eStateType == STATETYPE::STATETYPE_MAIN)
+	{
+		if (m_fTimer > .5f)
+			m_bIsAnimationFinished = true;
+		else
+			m_fTimer += fTimeDelta;
+	}
+
 	return nullptr;
 }
 
@@ -52,6 +60,7 @@ void CAchieveState::Enter(CPlayer * pPlayer)
 	switch (m_eStateType)
 	{
 	case STATETYPE_START:
+		pPlayer->Set_CanPickup(false);
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_ITEM_GET_START);
 		break;
 	case STATETYPE_MAIN:
@@ -61,9 +70,14 @@ void CAchieveState::Enter(CPlayer * pPlayer)
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_ITEM_GET_END);
 		break;
 	}
+
+	pPlayer->Get_Transform()->Set_RotationY(180.f);
 }
 
 void CAchieveState::Exit(CPlayer * pPlayer)
 {
+	pPlayer->Get_Transform()->Set_RotationY(0.f);
 
+	if (m_eStateType == STATETYPE_MAIN)
+		pPlayer->Set_CanPickup(true);
 }

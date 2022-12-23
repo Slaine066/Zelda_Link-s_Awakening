@@ -7,6 +7,13 @@ BEGIN(Client)
 class CItem : public CActor
 {
 public:
+	enum ITEMTYPE
+	{
+		TYPE_DROP,
+		TYPE_TREASURE,
+		TYPE_END
+	};
+
 	enum ANIMID
 	{
 		ANIM_FLOAT,
@@ -15,6 +22,7 @@ public:
 
 	typedef struct tagEquipmentDescription
 	{
+		ITEMTYPE m_eItemType = TYPE_END;
 		ITEMID m_eItemId = ITEM_END;
 		CModel::TYPE m_eModelType;
 		_float4x4 mWorldMatrix;

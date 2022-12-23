@@ -40,12 +40,11 @@ private:
 
 private:
 	_bool Is_AnimationLoop(_uint eAnimId);
-	_bool Is_PlayerInRadius();
 	void Reset_Animation();
 
 private:
 	_bool m_bIsAnimationFinished = false;
-	_float m_fOpenTimer = 0.f; /* Max 3 seconds. */
+	_bool m_bItemDropped = false;
 
 public:
 	static CTreasure* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -19,8 +19,8 @@ void CInventory::Add_Item(ITEMID eItemId)
 		case ITEMID::ITEM_RUPEE_GREEN:
 			m_iRupees++;
 			break;
-		/*case ITEMID::ITEM_ROCFEATHER:
-		case ITEMID::ITEM_BOW:*/
+		case ITEMID::ITEM_ROCFEATHER:
+		case ITEMID::ITEM_BOW:
 		case ITEMID::ITEM_BOMB:
 			Add_ToInventory(eItemId);
 			break;

@@ -15,6 +15,9 @@ public:
 
 	virtual void Enter(CPlayer* pPlayer) override;
 	virtual void Exit(CPlayer* pPlayer) override;
+
+private:
+	_float m_fTimer = 0.f;
 };
 END
 END

@@ -7,6 +7,7 @@
 #include "PlayerIdleState.h"
 #include "PlayerHitState.h"
 #include "PlayerFallState.h"
+#include "PlayerAchieveState.h"
 #include "Layer.h"
 #include "UI_Manager.h"
 
@@ -83,7 +84,6 @@ _uint CPlayer::Late_Tick(_float fTimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 	LateTickState(fTimeDelta);
-
 	HandleFall(fTimeDelta);
 
 	return OBJ_NOEVENT;
@@ -234,6 +234,13 @@ HRESULT CPlayer::SetUp_ShaderResources()
 CPlayerState * CPlayer::Get_State()
 {
 	return m_pPlayerState;
+}
+
+void CPlayer::Set_AchieveState()
+{
+	m_pModelCom->Reset_CurrentAnimation();
+	CPlayerState* pState = new CAchieveState(CPlayerState::STATETYPE::STATETYPE_START);
+	m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
 }
 
 _bool CPlayer::Is_AnimationLoop(_uint eAnimId)

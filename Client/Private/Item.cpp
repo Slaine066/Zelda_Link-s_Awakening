@@ -3,6 +3,7 @@
 #include "Item.h"
 #include "GameInstance.h"
 #include "Inventory.h"
+#include "Player.h"
 
 CItem::CItem(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CActor(pDevice, pContext)
@@ -26,13 +27,36 @@ HRESULT CItem::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_FLOAT);
+	if (m_tItemDesc.m_eModelType == CModel::TYPE::TYPE_ANIM)
+		m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_FLOAT);
 	
-	_float4 vPosition; 
-	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+	switch (m_tItemDesc.m_eItemType)
+	{
+		case ITEMTYPE::TYPE_DROP:
+		{
+			_float4 vPosition;
+			XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
 
-	vPosition.y += .5f;
-	m_pTransformCom->Set_State(CTransform::STATE::STATE_TRANSLATION, XMLoadFloat4(&vPosition));
+			vPosition.y += .5f;
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_TRANSLATION, XMLoadFloat4(&vPosition));
+		}
+		break;
+		case ITEMTYPE::TYPE_TREASURE:
+		{
+			_float4 vPosition;
+			XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+
+			vPosition.y += .75f;
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_TRANSLATION, XMLoadFloat4(&vPosition));
+			
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			_float4 vCamPosition = pGameInstance->Get_CamPosition();
+			RELEASE_INSTANCE(CGameInstance);
+
+			m_pTransformCom->LookAt(XMLoadFloat4(&vCamPosition));
+		}
+		break;
+	}
 
 	return S_OK;
 }
@@ -49,7 +73,8 @@ _uint CItem::Tick(_float fTimeDelta)
 
 	CGameInstance::Get_Instance()->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_OBJECT, this);
 
-	m_pModelCom->Play_Animation(fTimeDelta * 2, m_bIsAnimationFinished, Is_AnimationLoop(m_pModelCom->Get_CurrentAnimIndex()));
+	if (m_tItemDesc.m_eModelType == CModel::TYPE::TYPE_ANIM)
+		m_pModelCom->Play_Animation(fTimeDelta * 2, m_bIsAnimationFinished, Is_AnimationLoop(m_pModelCom->Get_CurrentAnimIndex()));
 
 	return S_OK;
 }
@@ -64,7 +89,14 @@ _uint CItem::Late_Tick(_float fTimeDelta)
 	if (m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
-	if (Check_Collision() == true)
+	_bool bCanPickup = true;
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
+	bCanPickup = pPlayer->Get_CanPickup();
+	RELEASE_INSTANCE(CGameInstance);
+	
+	if (Check_Collision() && bCanPickup)
 	{
 		CInventory::Get_Instance()->Add_Item(m_tItemDesc.m_eItemId);
 		m_bShouldDestroy = true;
@@ -107,6 +139,10 @@ void CItem::Setup_Item(void * pArg)
 	case ITEMID::ITEM_RUPEE_GREEN:
 	case ITEMID::ITEM_BOMB:
 		m_tItemDesc.m_eModelType = CModel::TYPE::TYPE_ANIM;
+		m_tItemDesc.m_bAnimOnPickup = false;
+		break;
+	case ITEMID::ITEM_ROCFEATHER:
+		m_tItemDesc.m_eModelType = CModel::TYPE::TYPE_NONANIM;
 		m_tItemDesc.m_bAnimOnPickup = false;
 		break;
 	}
@@ -193,6 +229,9 @@ _tchar * CItem::Get_ModelPrototypeId(ITEMID eItemId)
 		break;
 	case ITEMID::ITEM_BOMB:
 		return TEXT("Prototype_Component_Model_Bomb");
+		break;
+	case ITEMID::ITEM_ROCFEATHER:
+		return TEXT("Prototype_Component_Model_RocsFeather");
 		break;
 	}
 }

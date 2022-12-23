@@ -4,12 +4,11 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_DiffuseTexture;
 
-/* Used by "UI_ItemSlot" class. */
-bool g_Hovered; 
-
-/* Used by "Effect" class. */
 float g_EffectTimer;
-float g_EffectLife;
+float g_EffectLifespan;
+
+/* Used by "UI_ItemSlot" class. */
+bool g_Hovered;
 
 struct VS_IN
 {
@@ -82,19 +81,16 @@ PS_OUT PS_MAIN_SMOKE_EFFECT(PS_IN In)
 	Out.vColor.a = Out.vColor.y;
 	Out.vColor.yz = Out.vColor.x;
 
-	float fStart = g_EffectLife - g_EffectLife;		
-	float fEnd = g_EffectLife;
-	float fAbsoluteTime = abs(g_EffectLife - g_EffectTimer);	
-
-	if (Out.vColor.a > .2f)
-		Out.vColor.a = lerp(fStart, fEnd, fAbsoluteTime);
-
-	Out.vColor.a -= .5f;
+	if (Out.vColor.a != 0)
+	{
+		float fLerpAlpha = lerp(Out.vColor.a, 0, g_EffectTimer / g_EffectLifespan);
+		Out.vColor.a = fLerpAlpha;
+	}
 
 	return Out;
 }
 
-PS_OUT PS_MAIN_HIT_EFFECT(PS_IN In)
+PS_OUT PS_MAIN_HIT_FLASH_EFFECT(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
@@ -102,14 +98,15 @@ PS_OUT PS_MAIN_HIT_EFFECT(PS_IN In)
 	Out.vColor.a = Out.vColor.y;
 	Out.vColor.yz = Out.vColor.x;
 
-	/*float fStart = g_EffectLife - g_EffectLife;
-	float fEnd = g_EffectLife;
-	float fAbsoluteTime = abs(g_EffectLife - g_EffectTimer);
+	if (Out.vColor.a != 0)
+	{
+		float3 vFirstColor = float3(1.f, .4f, .2f);		/* Orange (when Alpha is 0) */
+		float3 vSecondColor = float3(1.f, 1.f, .8f);	/* Yellow (when Alpha is 1) */
 
-	if (Out.vColor.a > .2f)
-		Out.vColor.a = lerp(fStart, fEnd, fAbsoluteTime);*/
+		float3 vLerpColor = lerp(vFirstColor, vSecondColor, Out.vColor.a);
 
-	Out.vColor.a -= .5f;
+		Out.vColor.xyz = vLerpColor;
+	}
 
 	return Out;
 }
@@ -168,6 +165,6 @@ technique11 DefaultTechnique
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_HIT_EFFECT();
+		PixelShader = compile ps_5_0 PS_MAIN_HIT_FLASH_EFFECT();
 	}
 }

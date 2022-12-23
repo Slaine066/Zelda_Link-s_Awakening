@@ -61,13 +61,7 @@ CPlayerState * CIdleState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 		return nullptr;
 
 	m_pInteractableObject->Interact();
-
-	switch (m_pInteractableObject->Get_InteractableType())
-	{
-	case INTERACTABLE_TREASURE:
-		return new CAchieveState(STATETYPE_START);
-		break;
-	}
+	m_pInteractableObject = nullptr;
 
 	return nullptr;
 }

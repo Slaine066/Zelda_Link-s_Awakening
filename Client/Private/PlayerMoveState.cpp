@@ -67,8 +67,7 @@ CPlayerState * CMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 		ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
 		tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SMOKE;
 		tEffectDesc.m_WorldMatrix = pPlayer->Get_Transform()->Get_World4x4();
-		tEffectDesc.m_fEffectTTL = 1.2f;
-		wcscpy_s(tEffectDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Smoke"));
+		tEffectDesc.m_fEffectLifespan = 1.f;
 
 		if (FAILED(pGameInstance->Add_GameObject(TEXT("Smoke_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
 			return nullptr;
@@ -87,8 +86,7 @@ CPlayerState * CMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 		ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
 		tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SMOKE;
 		tEffectDesc.m_WorldMatrix = pPlayer->Get_Transform()->Get_World4x4();
-		tEffectDesc.m_fEffectTTL = 1.2f;
-		wcscpy_s(tEffectDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Smoke"));
+		tEffectDesc.m_fEffectLifespan = 1.f;
 
 		if (FAILED(pGameInstance->Add_GameObject(TEXT("Smoke_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
 			return nullptr;

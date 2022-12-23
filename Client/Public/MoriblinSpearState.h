@@ -46,6 +46,7 @@ public:
 
 public:
 	STATE_ID Get_StateId() { return m_eStateId; }
+	void Reset_Target() { m_pTarget = nullptr; }
 
 protected:
 	virtual void Find_Target(CMoriblinSpear * pMoriblinSpear, _bool bHasAggro = false)
@@ -85,7 +86,7 @@ protected:
 protected:
 	STATE_ID m_eStateId = STATE_END;
 	_bool m_bIsAnimationFinished = false;
-	class CPlayer* m_pTarget = nullptr;		/* If TRUE, has Aggro. */
+	CPlayer* m_pTarget = nullptr;		/* If TRUE, has Aggro. */
 	_bool m_bHasSpottedTarget = false;
 	_float m_fIdleAttackTimer = 1.5f;
 };

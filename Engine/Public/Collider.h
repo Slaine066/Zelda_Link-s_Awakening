@@ -53,6 +53,7 @@ public:
 
 public:
 	void Update(_fmatrix WorldMatrix);
+
 #ifdef _DEBUG
 	HRESULT Render();
 #endif // _DEBUG

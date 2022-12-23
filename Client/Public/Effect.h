@@ -25,7 +25,10 @@ public:
 	enum EFFECT_TYPE
 	{
 		EFFECT_SMOKE,
-		EFFECT_HIT,
+		EFFECT_SWISH,
+		EFFECT_SWORD_SLASH,
+		EFFECT_HIT,				/* Model Effect */
+		EFFECT_HIT_FLASH,		/* Rect Buffer Effect */
 		EFFECT_DEATH,
 		EFFECT_GET_ITEM,
 		EFFECT_BOMB_EXPLOSION,
@@ -37,7 +40,7 @@ public:
 		EFFECT_TYPE m_eEffectType = EFFECT_END;
 		_float4x4 m_WorldMatrix;
 		_tchar m_pTextureName[MAX_PATH];
-		_float m_fEffectTTL = 0.f;
+		_float m_fEffectLifespan = 0.f;
 	} EFFECTDESC;
 
 protected:
@@ -55,6 +58,11 @@ public:
 	virtual HRESULT Ready_Components(void* pArg);
 	virtual HRESULT SetUp_ShaderResources();
 
+private:
+	_bool Is_ModelEffect();
+	_tchar* Get_TextureName();
+	_tchar* Get_ModelPrototypeId();
+
 protected:
 	CShader* m_pShaderCom = nullptr;
 	CTexture* m_pTextureCom = nullptr;
@@ -65,6 +73,7 @@ protected:
 
 protected:
 	EFFECTDESC m_tEffectDesc;
+	_float m_fEffectScale = 1.f;
 	_float m_fEffectTimer = 0.f;
 
 public:
