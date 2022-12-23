@@ -55,7 +55,7 @@ void CDieState::Enter(CBossblin * pBossblin)
 	{
 	case STATETYPE_START:
 		pBossblin->Set_Dead(true);
-
+		pBossblin->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_HIT);
 		pBossblin->Get_Model()->Set_CurrentAnimIndex(CBossblin::ANIMID::ANIM_DEAD_START);
 		break;
 	case STATETYPE_MAIN:

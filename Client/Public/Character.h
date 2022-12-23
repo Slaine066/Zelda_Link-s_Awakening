@@ -22,6 +22,7 @@ protected:
 
 public:
 	STATS Get_Stats() { return m_tStats; }
+	void Set_ShaderPass(VTXANIMMODELPASS ePass) { m_eShaderPass = ePass; }
 
 	void DecrementHp(_float fHp) 
 	{ 
@@ -41,5 +42,11 @@ protected:
 
 protected:
 	STATS m_tStats;
+
+	VTXANIMMODELPASS m_eShaderPass = VTXANIMMODELPASS::VTXANIMMODEL_DEFAULT;
+
+	/* Hit Variables */
+	_float m_fHitTimer = 0.f;
+	_float m_fHitLifespan = 1.f;
 };
 END

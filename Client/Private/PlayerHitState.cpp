@@ -37,13 +37,14 @@ void CHitState::Enter(CPlayer * pPlayer)
 {
 	m_eStateId = STATE_ID::STATE_HIT;
 
+	pPlayer->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_HIT);
+
 	_bool bIsFront = Compute_HitPosition(pPlayer);
 	pPlayer->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CPlayer::ANIMID::ANIM_DAMAGE_FRONT : CPlayer::ANIMID::ANIM_DAMAGE_BACK);
 }
 
 void CHitState::Exit(CPlayer * pPlayer)
 {
-
 }
 
 _bool CHitState::Compute_HitPosition(CPlayer * pPlayer)

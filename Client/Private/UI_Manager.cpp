@@ -181,7 +181,7 @@ HRESULT CUI_Manager::Build_Rupees()
 	tUIDesc.m_fSizeY = 70;
 	tUIDesc.m_fX = g_iWinSizeX - 225;
 	tUIDesc.m_fY = 220;
-	tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Item_Rupee"));
 
 	pGameInstance->Add_GameObject(TEXT("UI_Rupees"), TEXT("Prototype_GameObject_UI"), LEVEL_STATIC, TEXT("Layer_UI"), &tUIDesc);
@@ -203,7 +203,7 @@ HRESULT CUI_Manager::Build_GameItemSlots()
 	tUIDesc.m_fSizeY = 115;
 	tUIDesc.m_fX = g_iWinSizeX - 115;
 	tUIDesc.m_fY = 65;
-	tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_ItemSlot"));
 
 	CUI_ItemSlot* pItemSlot = nullptr;
@@ -221,7 +221,7 @@ HRESULT CUI_Manager::Build_GameItemSlots()
 	tUIDesc.m_fSizeY = 115;
 	tUIDesc.m_fX = g_iWinSizeX - 250;
 	tUIDesc.m_fY = 80;
-	tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_ItemSlot"));
 
 	pItemSlot = nullptr;
@@ -250,7 +250,7 @@ HRESULT CUI_Manager::Build_Inventory()
 	tUIDesc.m_fSizeY = g_iWinSizeY;
 	tUIDesc.m_fX = g_iWinSizeX / 2;
 	tUIDesc.m_fY = g_iWinSizeY / 2;
-	tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Inventory"));
 
 	if (FAILED(pGameInstance->Add_GameObject(TEXT("UI_Test"), TEXT("Prototype_GameObject_UI_Inventory"), LEVEL_STATIC, TEXT("Layer_UI"), &tUIDesc)))
@@ -392,7 +392,7 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 	tUIDesc.m_fSizeY = 120;
 	tUIDesc.m_fX = vPosition.x;
 	tUIDesc.m_fY = vPosition.y;
-	tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem.m_eItemId));
 	
 	CUI_InventoryItem* pInventoryIcon = nullptr;
@@ -408,7 +408,7 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 		tUIDesc.m_fSizeY = 50;
 		tUIDesc.m_fX = vPosition.x + 40;
 		tUIDesc.m_fY = vPosition.y + 42;
-		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 
 		CUI_ItemChip* pItemChip = nullptr;
 		pGameInstance->Add_GameObject_Out(TEXT("Item_Chip"), TEXT("Prototype_GameObject_UI_ItemChip"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pItemChip, &tUIDesc);
@@ -432,7 +432,7 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 		tUIDesc.m_fSizeY = 100;
 		tUIDesc.m_fX = vPositionX.x + 8;
 		tUIDesc.m_fY = vPositionX.y - 8;
-		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem.m_eItemId));
 
 		pGameInstance->Add_GameObject_Out(TEXT("Item_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pItemIconX, &tUIDesc);
@@ -450,7 +450,7 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 		tUIDesc.m_fSizeY = 100;
 		tUIDesc.m_fX = vPositionY.x + 8;
 		tUIDesc.m_fY = vPositionY.y - 8;
-		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem.m_eItemId));
 
 		pGameInstance->Add_GameObject_Out(TEXT("Item_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pItemIconY, &tUIDesc);
@@ -477,7 +477,7 @@ void CUI_Manager::Add_ItemX()
 		tUIDesc.m_fSizeY = 100;
 		tUIDesc.m_fX = vPositionX.x + 8;
 		tUIDesc.m_fY = vPositionX.y - 8;
-		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem->m_eItemId));
 
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -504,7 +504,7 @@ void CUI_Manager::Add_ItemY()
 		tUIDesc.m_fSizeY = 100;
 		tUIDesc.m_fX = vPositionY.x + 8;
 		tUIDesc.m_fY = vPositionY.y - 8;
-		tUIDesc.m_ePass = VTXTEXPASS::PASS_UI_BLEND;
+		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem->m_eItemId));
 
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);

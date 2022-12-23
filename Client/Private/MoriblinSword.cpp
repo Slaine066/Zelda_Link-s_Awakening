@@ -93,6 +93,18 @@ _uint CMoriblinSword::Late_Tick(_float fTimeDelta)
 
 	HandleFall(fTimeDelta);
 
+	/* Reset HIT Shader Pass. */
+	if (m_eShaderPass == VTXANIMMODELPASS::VTXANIMMODEL_HIT)
+	{
+		if (m_fHitTimer > m_fHitLifespan)
+		{
+			m_eShaderPass = VTXANIMMODELPASS::VTXANIMMODEL_DEFAULT;
+			m_fHitTimer = 0.f;
+		}
+		else
+			m_fHitTimer += fTimeDelta;
+	}
+
 	return OBJ_NOEVENT;
 }
 
@@ -111,7 +123,7 @@ HRESULT CMoriblinSword::Render()
 		m_pModelCom->SetUp_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 		m_pModelCom->SetUp_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR);
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, m_eShaderPass)))
 			return E_FAIL;
 	}
 
@@ -233,6 +245,11 @@ HRESULT CMoriblinSword::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_HitTimer", &m_fHitTimer, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_HitLifespan", &m_fHitLifespan, sizeof(_float))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

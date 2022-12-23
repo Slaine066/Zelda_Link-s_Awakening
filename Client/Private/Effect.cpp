@@ -144,10 +144,10 @@ HRESULT CEffect::Render()
 	switch (m_tEffectDesc.m_eEffectType)
 	{
 	case EFFECT_TYPE::EFFECT_SMOKE:
-		m_pShaderCom->Begin(PASS_EFFECT_SMOKE);
+		m_pShaderCom->Begin(VTXTEX_EFFECT_SMOKE);
 		break;
 	case EFFECT_TYPE::EFFECT_HIT_FLASH:
-		m_pShaderCom->Begin(PASS_EFFECT_HIT_FLASH);
+		m_pShaderCom->Begin(VTXTEX_EFFECT_HIT_FLASH);
 		break;
 	case EFFECT_TYPE::EFFECT_HIT:
 		m_pShaderCom->Begin(0);

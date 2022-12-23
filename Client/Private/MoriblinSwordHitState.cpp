@@ -39,13 +39,14 @@ void CHitState::Enter(CMoriblinSword * pMoriblinSword)
 {
 	m_eStateId = STATE_ID::STATE_HIT;
 
+	pMoriblinSword->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_HIT);
+
 	_bool bIsFront = Compute_HitPosition(pMoriblinSword);
 	pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CMoriblinSword::ANIMID::ANIM_DAMAGE_FRONT : CMoriblinSword::ANIMID::ANIM_DAMAGE_BACK);
 }
 
 void CHitState::Exit(CMoriblinSword * pMoriblinSword)
 {
-	
 }
 
 _bool CHitState::Compute_HitPosition(CMoriblinSword * pMoriblinSword)

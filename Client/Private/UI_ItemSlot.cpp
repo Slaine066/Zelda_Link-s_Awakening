@@ -68,7 +68,7 @@ HRESULT CUI_ItemSlot::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(PASS_UI_BLEND);
+	m_pShaderCom->Begin(VTXTEX_UI_BLEND);
 	m_pVIBufferCom->Render();
 
 	return S_OK;

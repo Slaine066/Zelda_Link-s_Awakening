@@ -25,10 +25,13 @@ CMoriblinSwordState * CDieState::Tick(CMoriblinSword * pMoriblinSword, _float fT
 	}
 	else
 	{
-		if (m_fDeadTimer > 2.f)
+		if (m_fDeadTimer > 1.f)
 			pMoriblinSword->Set_ShouldDestroy(true);
 		else
+		{
 			m_fDeadTimer += fTimeDelta;
+			pMoriblinSword->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_DEFAULT);
+		}
 	}
 
 	pMoriblinSword->Sync_WithNavigationHeight();
@@ -46,14 +49,14 @@ void CDieState::Enter(CMoriblinSword * pMoriblinSword)
 	m_eStateId = STATE_ID::STATE_DIE;
 
 	pMoriblinSword->Set_Dead(true);
+	pMoriblinSword->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_HIT);
 
 	_bool bIsFront = Compute_HitPosition(pMoriblinSword);
 	pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CMoriblinSword::ANIMID::ANIM_DEAD_FRONT : CMoriblinSword::ANIMID::ANIM_DEAD_BACK);
 }
 
-void CDieState::Exit(CMoriblinSword * pMoriblinSpear)
+void CDieState::Exit(CMoriblinSword * pMoriblinSword)
 {
-
 }
 
 _bool CDieState::Compute_HitPosition(CMoriblinSword * pMoriblinSword)
