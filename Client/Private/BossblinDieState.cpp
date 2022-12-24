@@ -19,10 +19,13 @@ CBossblinState * CDieState::Tick(CBossblin * pBossblin, _float fTimeDelta)
 	switch (m_eStateType)
 	{
 		case STATETYPE_MAIN:
-			if (m_fDeadTimer > 3.f)
+			if (m_fDeadTimer > pBossblin->Get_DissolveLifespanTimer())
 				pBossblin->Set_ShouldDestroy(true);
 			else
+			{
 				m_fDeadTimer += fTimeDelta;
+				pBossblin->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_DISSOLVE);
+			}
 			break;
 	}
 

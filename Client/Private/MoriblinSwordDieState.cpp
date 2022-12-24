@@ -25,12 +25,12 @@ CMoriblinSwordState * CDieState::Tick(CMoriblinSword * pMoriblinSword, _float fT
 	}
 	else
 	{
-		if (m_fDeadTimer > 1.f)
+		if (m_fDeadTimer > pMoriblinSword->Get_DissolveLifespanTimer())
 			pMoriblinSword->Set_ShouldDestroy(true);
 		else
 		{
 			m_fDeadTimer += fTimeDelta;
-			pMoriblinSword->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_DEFAULT);
+			pMoriblinSword->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_DISSOLVE);
 		}
 	}
 

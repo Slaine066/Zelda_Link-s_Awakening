@@ -25,12 +25,12 @@ CMoriblinSpearState * CDieState::Tick(CMoriblinSpear * pMoriblinSpear, _float fT
 	}
 	else
 	{
-		if (m_fDeadTimer > 1.f)
+		if (m_fDeadTimer > pMoriblinSpear->Get_DissolveLifespanTimer())
 			pMoriblinSpear->Set_ShouldDestroy(true);
 		else
 		{
 			m_fDeadTimer += fTimeDelta;
-			pMoriblinSpear->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_DEFAULT);
+			pMoriblinSpear->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_DISSOLVE);
 		}
 	}
 
