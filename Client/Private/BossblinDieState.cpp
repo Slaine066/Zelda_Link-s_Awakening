@@ -54,6 +54,9 @@ void CDieState::Enter(CBossblin * pBossblin)
 {
 	m_eStateId = STATE_ID::STATE_DIE;
 
+	pBossblin->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_HIT);
+	pBossblin->Reset_HitTimer();
+
 	switch (m_eStateType)
 	{
 	case STATETYPE_START:

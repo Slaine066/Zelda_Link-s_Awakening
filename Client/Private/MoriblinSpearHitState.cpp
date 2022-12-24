@@ -40,6 +40,7 @@ void CHitState::Enter(CMoriblinSpear * pMoriblinSpear)
 	m_eStateId = STATE_ID::STATE_HIT;
 
 	pMoriblinSpear->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_HIT);
+	pMoriblinSpear->Reset_HitTimer();
 
 	_bool bIsFront = Compute_HitPosition(pMoriblinSpear);
 	pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CMoriblinSpear::ANIMID::ANIM_DAMAGE_FRONT : CMoriblinSpear::ANIMID::ANIM_DAMAGE_BACK);

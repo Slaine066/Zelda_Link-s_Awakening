@@ -44,6 +44,7 @@ void CHitState::Enter(CBossblin* pBossblin)
 	m_eStateId = STATE_ID::STATE_HIT;
 
 	pBossblin->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_HIT);
+	pBossblin->Reset_HitTimer();
 
 	pBossblin->Get_Model()->Set_CurrentAnimIndex(CBossblin::ANIMID::ANIM_DAMAGE);
 }

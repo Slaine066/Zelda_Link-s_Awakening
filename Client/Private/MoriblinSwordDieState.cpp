@@ -50,6 +50,7 @@ void CDieState::Enter(CMoriblinSword * pMoriblinSword)
 
 	pMoriblinSword->Set_Dead(true);
 	pMoriblinSword->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_HIT);
+	pMoriblinSword->Reset_HitTimer();
 
 	_bool bIsFront = Compute_HitPosition(pMoriblinSword);
 	pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CMoriblinSword::ANIMID::ANIM_DEAD_FRONT : CMoriblinSword::ANIMID::ANIM_DEAD_BACK);

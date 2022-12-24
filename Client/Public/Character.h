@@ -23,6 +23,7 @@ protected:
 public:
 	STATS Get_Stats() { return m_tStats; }
 	void Set_ShaderPass(VTXANIMMODELPASS ePass) { m_eShaderPass = ePass; }
+	void Reset_HitTimer() { m_fHitTimer = 0.f; }
 	_float Get_DissolveLifespanTimer() { return m_fDissolveLifespan; }
 
 	void DecrementHp(_float fHp) 
@@ -39,6 +40,7 @@ protected:
 	virtual HRESULT Render() override;
 
 protected:
+	virtual void Compute_ShaderTimers(_float fTimeDelta);
 	virtual void HandleFall(_float fTimeDelta) {};
 
 protected:
@@ -51,7 +53,11 @@ protected:
 	_float m_fHitLifespan = 1.f;
 
 	/* Dissolve Variables */
+	CTexture* m_pDissolveTextureCom = nullptr;
 	_float m_fDissolveTimer = 0.f;
 	_float m_fDissolveLifespan = 1.f;
+
+public:
+	virtual void Free() override;
 };
 END

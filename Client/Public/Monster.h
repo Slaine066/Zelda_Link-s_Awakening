@@ -28,12 +28,9 @@ protected:
 	virtual void AI_Behavior() PURE;
 	virtual void TickState(_float fTimeDelta) PURE;
 	virtual void LateTickState(_float fTimeDelta) PURE;
-	virtual void Compute_ShaderTimers(_float fTimeDelta);
 	virtual void DropItems();
 
 protected:
-	CTexture* m_pDissolveTextureCom = nullptr;
-
 	_float m_fAggroRadius = 0.f;
 	_float m_fPatrolRadius = 0.f;
 	_float m_fAttackRadius = 0.f;

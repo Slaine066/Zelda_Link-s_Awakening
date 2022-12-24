@@ -50,6 +50,7 @@ void CDieState::Enter(CMoriblinSpear * pMoriblinSpear)
 
 	pMoriblinSpear->Set_Dead(true);
 	pMoriblinSpear->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_HIT);
+	pMoriblinSpear->Reset_HitTimer();
 
 	_bool bIsFront = Compute_HitPosition(pMoriblinSpear);
 	pMoriblinSpear->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CMoriblinSpear::ANIMID::ANIM_DEAD_FRONT : CMoriblinSpear::ANIMID::ANIM_DEAD_BACK);

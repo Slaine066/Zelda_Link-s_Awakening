@@ -50,8 +50,6 @@ _uint CMonster::Late_Tick(_float fTimeDelta)
 	if (iEvent == OBJ_STOP)
 		return iEvent;
 
-	Compute_ShaderTimers(fTimeDelta);
-
 	return iEvent;
 }
 
@@ -61,27 +59,6 @@ HRESULT CMonster::Render()
 		return E_FAIL;
 
 	return S_OK;
-}
-
-void CMonster::Compute_ShaderTimers(_float fTimeDelta)
-{
-	switch (m_eShaderPass)
-	{
-		case VTXANIMMODELPASS::VTXANIMMODEL_HIT:
-		{
-			if (m_fHitTimer > m_fHitLifespan)
-			{
-				m_eShaderPass = VTXANIMMODELPASS::VTXANIMMODEL_DEFAULT;
-				m_fHitTimer = 0.f;
-			}
-			else
-				m_fHitTimer += fTimeDelta;
-		}
-		break;
-	case VTXANIMMODELPASS::VTXANIMMODEL_DISSOLVE:
-		m_fDissolveTimer += fTimeDelta;
-		break;
-	}
 }
 
 void CMonster::DropItems()
@@ -113,6 +90,4 @@ void CMonster::DropItems()
 void CMonster::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pDissolveTextureCom);
 }

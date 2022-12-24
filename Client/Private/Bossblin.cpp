@@ -347,7 +347,8 @@ void CBossblin::LateTickState(_float fTimeDelta)
 void CBossblin::Check_Collision()
 {
 	if (m_pBossblinState->Get_StateId() == CBossblinState::STATE_ID::STATE_DOWN ||
-		m_pBossblinState->Get_StateId() == CBossblinState::STATE_ID::STATE_HIT)
+		m_pBossblinState->Get_StateId() == CBossblinState::STATE_ID::STATE_HIT || 
+		m_pBossblinState->Get_StateId() == CBossblinState::STATE_ID::STATE_DIE)
 		return;
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
