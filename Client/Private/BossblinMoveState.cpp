@@ -5,6 +5,8 @@
 #include "BossblinAttackState.h"
 #include "Navigation.h"
 #include "Transform.h"
+#include "CameraManager.h"
+#include "Camera_Dungeon.h"
 
 using namespace Bossblin;
 
@@ -35,6 +37,19 @@ CBossblinState * CMoveState::Tick(CBossblin * pBossblin, _float fTimeDelta)
 		else
 			Follow_Target(pBossblin, fTimeDelta);
 	}
+
+	/* Camera Shake */
+	if (pBossblin->Get_Model()->Is_Keyframe("waist", 14))
+	{
+		if (m_bCanShake)
+		{
+			CCamera_Dungeon* pCameraDungeon = (CCamera_Dungeon*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+			pCameraDungeon->Set_ModeShake(0.1f, 0.1f, 0.05f);
+			m_bCanShake = false;
+		}
+	}
+	else
+		m_bCanShake = true;
 
 	return nullptr;
 }

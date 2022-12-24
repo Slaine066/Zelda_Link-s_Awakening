@@ -47,8 +47,8 @@ HRESULT CBossblin::Initialize(void * pArg)
 		return E_FAIL;
 
 	m_fRadius = .5f;
-	m_fAggroRadius = 2.f;
-	m_fAttackRadius = 2.f;
+	m_fAggroRadius = 1.5f;
+	m_fAttackRadius = 1.5f;
 
 	m_fDissolveLifespan = 2.f;
 

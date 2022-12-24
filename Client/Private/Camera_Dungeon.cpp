@@ -109,19 +109,59 @@ void CCamera_Dungeon::Dungeon_Camera(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	m_vCurrentCameraPosition = Compute_DungeonCamera();
-
 	/* Dungeon Camera*/
-	if (!pGameInstance->Key_Pressing(VK_SHIFT))
+	if (pGameInstance->Key_Up(VK_SHIFT))
 	{
-		_vector vTargetCameraPosition = XMVectorSetW(XMLoadFloat3(&m_vCurrentCameraPosition), 1.f) + XMVectorSet(0.f, 3.5f, -2.f, 1.f);
-		_float3 vStoredTarget;
-		XMStoreFloat3(&vStoredTarget, vTargetCameraPosition);
-		m_pTransform->Go_TargetPosition(fTimeDelta, vStoredTarget, 0.f); 
+		m_pTransform->LookAt(XMVectorSetW(XMLoadFloat3(&m_vCurrentCameraPosition), 1.f));
+		m_pTransform->Attach_ToTarget(XMVectorSetW(XMLoadFloat3(&m_vCurrentCameraPosition), 1.f), XMVectorSet(0.f, 3.5f, -2., 1.f));
 	}
-	else /* Debug Camera*/
+	else if (!pGameInstance->Key_Pressing(VK_SHIFT))
 	{
-		// Camera Inputs
+		_float3 vNewCameraPosition = Compute_DungeonCamera(); /* Compute the CameraPosition. */
+
+		/* If "vNewCameraPosition" and "m_vCurrentCameraPosition" are not the same, it means that Player changed room.
+		Therefore the Camera should move to the next Room. ("m_bMoving" = TRUE) */
+		_float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_vCurrentCameraPosition) - XMLoadFloat3(&vNewCameraPosition)));
+		if (fDistance > .5f)
+		{
+			m_bMoving = true;
+			m_vCurrentCameraPosition = vNewCameraPosition;
+		}
+		
+		_vector vTargetCameraPosition = XMVectorSetW(XMLoadFloat3(&m_vCurrentCameraPosition), 1.f) + XMVectorSet(0.f, 3.5f, -2.f, 1.f);
+
+		if (m_bMoving)
+		{
+			_float3 vStoredTarget;
+			XMStoreFloat3(&vStoredTarget, vTargetCameraPosition);
+
+			/* Check if the Camera arrived to "vTargetCameraPosition". (If yes, "m_bMoving" = FALSE) */
+			_float4 vCameraPosition = pGameInstance->Get_CamPosition();
+			if (XMVector4Equal(XMLoadFloat4(&vCameraPosition), XMVectorSetW(XMLoadFloat3(&vStoredTarget), 1.f)))
+			{
+				m_bMoving = false;
+				RELEASE_INSTANCE(CGameInstance);
+				return;
+			}
+
+			/* If "m_bMoving", move to "vTargetCameraPosition". */
+			if (m_pTransform->Go_TargetPosition(fTimeDelta, vStoredTarget, 0.f))
+			{
+				vCameraPosition = pGameInstance->Get_CamPosition();
+				m_vCurrentCameraPosition = _float3(vCameraPosition.x, vCameraPosition.y - 3.5, vCameraPosition.z + 2);
+			}
+		}
+		else
+		{
+			/* If not "m_bMoving", just keep same Camera Position and Look. */
+			m_pTransform->LookAt(XMVectorSetW(XMLoadFloat3(&m_vCurrentCameraPosition), 1.f));
+			m_pTransform->Attach_ToTarget(XMVectorSetW(XMLoadFloat3(&m_vCurrentCameraPosition), 1.f), XMVectorSet(0.f, 3.5f, -2., 1.f));
+		}	
+	}
+	/* Debug Camera*/
+	else
+	{
+		/* Camera Inputs */
 		if (pGameInstance->Key_Pressing('W') && pGameInstance->Key_Pressing(VK_SHIFT))
 			m_pTransform->Move_Straight(fTimeDelta);
 		if (pGameInstance->Key_Pressing('S') && pGameInstance->Key_Pressing(VK_SHIFT))
@@ -201,38 +241,34 @@ void CCamera_Dungeon::Shaking_Camera(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
-
-	_float3 vPlayerPosition;
-	XMStoreFloat3(&vPlayerPosition, pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
-
+	_float3 vLookPosition = m_vCurrentCameraPosition;
 	m_iShakeCount++;
 
 	if (m_iShakeCount % 4 == 0)
 	{
-		vPlayerPosition.y += m_fPower * m_fVelocity;
+		vLookPosition.y += m_fPower * m_fVelocity;
 		if (rand() % 2 == 0)
-			vPlayerPosition.z -= m_fPower * m_fVelocity;
+			vLookPosition.z -= m_fPower * m_fVelocity;
 		else
-			vPlayerPosition.z += m_fPower * m_fVelocity;
+			vLookPosition.z += m_fPower * m_fVelocity;
 
 		if (rand() % 2 == 0)
-			vPlayerPosition.x -= m_fPower * m_fVelocity;
+			vLookPosition.x -= m_fPower * m_fVelocity;
 		else
-			vPlayerPosition.x += m_fPower * m_fVelocity;
+			vLookPosition.x += m_fPower * m_fVelocity;
 	}
 	else if (m_iShakeCount % 4 == 1)
 	{
-		vPlayerPosition.y -= m_fPower * m_fVelocity;
+		vLookPosition.y -= m_fPower * m_fVelocity;
 		if (rand() % 2 == 0)
-			vPlayerPosition.z -= m_fPower * m_fVelocity;
+			vLookPosition.z -= m_fPower * m_fVelocity;
 		else
-			vPlayerPosition.z += m_fPower * m_fVelocity;
+			vLookPosition.z += m_fPower * m_fVelocity;
 
 		if (rand() % 2 == 0)
-			vPlayerPosition.x -= m_fPower * m_fVelocity;
+			vLookPosition.x -= m_fPower * m_fVelocity;
 		else
-			vPlayerPosition.x += m_fPower * m_fVelocity;
+			vLookPosition.x += m_fPower * m_fVelocity;
 	}
 
 	m_fVelocity -= m_fVelocityDecrement;
@@ -240,12 +276,15 @@ void CCamera_Dungeon::Shaking_Camera(_float fTimeDelta)
 	{
 		m_eCamMode = MODE_DUNGEON;
 
+		m_pTransform->LookAt(XMVectorSetW(XMLoadFloat3(&m_vCurrentCameraPosition), 1.f));
+		m_pTransform->Attach_ToTarget(XMVectorSetW(XMLoadFloat3(&m_vCurrentCameraPosition), 1.f), XMVectorSet(0.f, 3.5f, -2.5, 1.f)); /* Distance from Camera. */
+
 		RELEASE_INSTANCE(CGameInstance);
 		return;
 	}
 
-	m_pTransform->LookAt(XMVectorSetW(XMLoadFloat3(&vPlayerPosition), 1.f));
-	m_pTransform->Attach_ToTarget(XMVectorSetW(XMLoadFloat3(&vPlayerPosition), 1.f), XMVectorSet(0.f, 3.5f, -2.5, 1.f)); /* Distance from Camera to Player */
+	m_pTransform->LookAt(XMVectorSetW(XMLoadFloat3(&vLookPosition), 1.f));
+	m_pTransform->Attach_ToTarget(XMVectorSetW(XMLoadFloat3(&vLookPosition), 1.f), XMVectorSet(0.f, 3.5f, -2.5, 1.f)); /* Distance from Camera. */
 
 	RELEASE_INSTANCE(CGameInstance);
 }

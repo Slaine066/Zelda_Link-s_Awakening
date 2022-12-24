@@ -195,7 +195,7 @@ _bool CTransform::Go_TargetPosition(_float fTimeDelta, _float3 vTargetPosition, 
 	vPos += vDirection * fTimeDelta * m_TransformDesc.fSpeedPerSec;
 
 	_float fDist = XMVectorGetX(XMVector3Length(vPos - XMLoadFloat3(&vTargetPos)));
-	if (fDist < fDistance + 0.1f) /* Need to add 0.1f in case "fDistance" is 0. */
+	if (fDist <= fDistance + 0.1f) /* Need to add 0.1f in case "fDistance" is 0. */
 		return true;
 
 	if (!pNavigation)

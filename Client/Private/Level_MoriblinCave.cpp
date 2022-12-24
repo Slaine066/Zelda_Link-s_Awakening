@@ -55,27 +55,6 @@ void CLevel_MoriblinCave::Late_Tick(_float fTimeDelta)
 	__super::Late_Tick(fTimeDelta);
 
 	SetWindowText(g_hWnd, TEXT("MoriblinCave Level."));
-
-	/*CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	if (pGameInstance->Key_Down('C'))
-	{
-		CCamera_Player* pCamera = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
-		pCamera->Set_ModeZoom(true);
-		pCamera->Set_ZoomPosition(_float3(0.f, 0.f, -5.f));
-	}
-	if (pGameInstance->Key_Down('V'))
-	{
-		CCamera_Player* pCamera = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
-		pCamera->Set_ModeZoom(false);
-	}
-	if (pGameInstance->Key_Down('B'))
-	{
-		CCamera_Player* pCamera = (CCamera_Player*)(CCameraManager::Get_Instance()->Get_CurrentCamera());
-		pCamera->Set_ModeShake(0.5f, 0.1f, 0.01f);
-	}
-
-	RELEASE_INSTANCE(CGameInstance);*/
 }
 
 HRESULT CLevel_MoriblinCave::Load_Objects_FromFile()
@@ -118,10 +97,10 @@ HRESULT CLevel_MoriblinCave::Load_Objects_FromFile()
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Link")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Player"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
-		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSword")))
+		/*else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSword")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSword"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSpear")))
-			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSpear"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSpear"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);*/
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Bossblin")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Bossblin"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("CaveRock")))
@@ -202,25 +181,6 @@ HRESULT CLevel_MoriblinCave::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-#pragma region Player_Camera
-	CCamera_Player::CAMERADESC_DERIVED PlayerCamera;
-	ZeroMemory(&PlayerCamera, sizeof(CCamera_Player::CAMERADESC_DERIVED));
-
-	PlayerCamera.CameraDesc.vEye = _float4(0.f, 10.0f, -10.f, 1.f);
-	PlayerCamera.CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
-
-	PlayerCamera.CameraDesc.fFovy = XMConvertToRadians(60.0f);
-	PlayerCamera.CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
-	PlayerCamera.CameraDesc.fNear = 0.2f;
-	PlayerCamera.CameraDesc.fFar = 500.f;
-
-	PlayerCamera.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
-	PlayerCamera.CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
-
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Player"), TEXT("Prototype_GameObject_Camera_Player"), LEVEL_MORIBLINCAVE, pLayerTag, &PlayerCamera)))
-		return E_FAIL;
-#pragma endregion Player_Camera
-
 #pragma region Dungeon_Camera
 	CCamera_Dungeon::CAMERADESC_DERIVED DungeonCamera;
 	ZeroMemory(&DungeonCamera, sizeof(CCamera_Dungeon::CAMERADESC_DERIVED));
@@ -241,7 +201,7 @@ HRESULT CLevel_MoriblinCave::Ready_Layer_Camera(const _tchar * pLayerTag)
 #pragma endregion Dungeon_Camera
 
 	CCameraManager::Get_Instance()->Ready_Camera(LEVEL::LEVEL_MORIBLINCAVE, CCameraManager::CAM_STATE::CAM_DUNGEON);
-	CCamera_Dungeon* pCameraDungeon = dynamic_cast<CCamera_Dungeon*>(CGameInstance::Get_Instance()->Find_Object(LEVEL_MORIBLINCAVE, TEXT("Layer_Camera"), CCameraManager::CAM_DUNGEON));
+	CCamera_Dungeon* pCameraDungeon = dynamic_cast<CCamera_Dungeon*>(CGameInstance::Get_Instance()->Find_Object(LEVEL_MORIBLINCAVE, TEXT("Layer_Camera")));
 	if (!pCameraDungeon)
 		return E_FAIL;
 

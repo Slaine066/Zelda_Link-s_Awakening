@@ -96,6 +96,7 @@ protected:
 	STATETYPE m_eStateType = STATETYPE_DEFAULT;
 	STATE_ID m_eStateId = STATE_END;
 	_bool m_bIsAnimationFinished = false;
+	_bool m_bCanShake = true;
 	class CPlayer* m_pTarget = nullptr;		/* If TRUE, has Aggro. */
 };
 END

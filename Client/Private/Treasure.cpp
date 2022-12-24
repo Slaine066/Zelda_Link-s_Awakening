@@ -158,6 +158,8 @@ _bool CTreasure::CanInteract()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
+	if (!pPlayer)
+		return false;
 
 	if (m_bDidInteract)
 	{
