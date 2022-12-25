@@ -42,7 +42,7 @@ public:
 
 protected:
 	HRESULT Add_Components(const _tchar* pComponentTag, _uint iLevelIndex, const _tchar* pPrototypeTag, CComponent** ppOut, void* pArg = nullptr);
-	void Compute_CamDistance(_float3 vWorldPos);
+	void Compute_CamDistance(_fvector vWorldPos);
 
 protected:
 	ID3D11Device* m_pDevice = nullptr; 

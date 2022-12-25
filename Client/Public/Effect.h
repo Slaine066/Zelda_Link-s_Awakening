@@ -24,11 +24,18 @@ class CEffect : public CGameObject
 public:
 	enum EFFECT_TYPE
 	{
+		/* When Walking/Running */
 		EFFECT_SMOKE,
-		EFFECT_SWISH,
+
+		/* When Swinging the Sword */
+		EFFECT_SWISH,			
 		EFFECT_SWORD_SLASH,
+
+		/* When Sword Hits. */
+		EFFECT_RING,			/* Model Effect */
 		EFFECT_HIT,				/* Model Effect */
 		EFFECT_HIT_FLASH,		/* Rect Buffer Effect */
+
 		EFFECT_DEATH,
 		EFFECT_GET_ITEM,
 		EFFECT_BOMB_EXPLOSION,
@@ -73,6 +80,10 @@ protected:
 
 protected:
 	EFFECTDESC m_tEffectDesc;
+
+	VTXTEXPASS m_eShaderPass = VTXTEXPASS::VTXTEX_DEFAULT;
+	VTXMODELPASS m_eShaderModelPass = VTXMODELPASS::VTXMODEL_DEFAULT;
+
 	_float m_fEffectScale = 1.f;
 	_float m_fEffectTimer = 0.f;
 

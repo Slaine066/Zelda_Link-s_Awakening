@@ -106,6 +106,13 @@ PS_OUT PS_MAIN_HIT_FLASH_EFFECT(PS_IN In)
 		float3 vLerpColor = lerp(vFirstColor, vSecondColor, Out.vColor.a);
 
 		Out.vColor.xyz = vLerpColor;
+
+		float startAfter = g_EffectLifespan / 2;
+		if (g_EffectTimer >= startAfter)
+		{
+			float fLerpAlpha = lerp(Out.vColor.a, 0, (g_EffectTimer - startAfter) / (g_EffectLifespan - startAfter));
+			Out.vColor.a = fLerpAlpha;
+		}
 	}
 
 	return Out;

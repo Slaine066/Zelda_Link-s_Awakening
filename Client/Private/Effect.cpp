@@ -29,6 +29,8 @@ HRESULT CEffect::Initialize(void * pArg)
 	{
 		case EFFECT_TYPE::EFFECT_SMOKE:
 		{
+			m_eShaderPass = VTXTEXPASS::VTXTEX_EFFECT_SMOKE;
+
 			m_fEffectScale = .3f;
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
@@ -43,20 +45,54 @@ HRESULT CEffect::Initialize(void * pArg)
 		break;
 		case EFFECT_TYPE::EFFECT_SWISH:
 		{
-
+			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SWISH;
 		}
 		break;
 		case EFFECT_TYPE::EFFECT_SWORD_SLASH:
 		{
+			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SWORDSLASH;
+		}
+		break;
+		case EFFECT_TYPE::EFFECT_RING:
+		{
+			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_HITRING;
 
+			m_fEffectScale = .2f;
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+
+			/* Move it a bit far away to the Camera, cause it has some Z-fighting with VTXTEX_EFFECT_HIT_FLASH. */
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+			m_pTransformCom->Move_Backward(0.01f); 
+			RELEASE_INSTANCE(CGameInstance);
+		}
+		break;
+		case EFFECT_TYPE::EFFECT_HIT:
+		{
+			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_HIT;
+
+			m_fEffectScale = .3f;
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+
+			/* Move it a bit closer to the Camera, cause it has some Z-fighting with VTXMODEL_HIT. */
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+			m_pTransformCom->Move_Straight(0.01f);
+			RELEASE_INSTANCE(CGameInstance);
 		}
 		break;
 		case EFFECT_TYPE::EFFECT_HIT_FLASH:
-		case EFFECT_TYPE::EFFECT_HIT:
 		{
-			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, .4f);
-			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, .4f);
-			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, .4f);
+			m_eShaderPass = VTXTEXPASS::VTXTEX_EFFECT_HIT_FLASH;
+
+			m_fEffectScale = .5f;
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
 		}
 		break;
 		case EFFECT_TYPE::EFFECT_DEATH:
@@ -76,7 +112,6 @@ _uint CEffect::Tick(_float fTimeDelta)
 	{
 		case EFFECT_TYPE::EFFECT_SMOKE:
 		{
-			
 			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
 				return OBJ_DESTROY;
 			else
@@ -85,7 +120,7 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
 				
-				_float fScale = m_fEffectScale + (0.f - m_fEffectScale) * m_fEffectTimer;
+				_float fScale = m_fEffectScale + (0.f - m_fEffectScale) * m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
 
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
@@ -97,7 +132,28 @@ _uint CEffect::Tick(_float fTimeDelta)
 			}
 		}
 		break;
-		case EFFECT_TYPE::EFFECT_HIT_FLASH:
+		case EFFECT_TYPE::EFFECT_RING:
+		{
+			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
+				return OBJ_DESTROY;
+			else
+			{
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+				m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+				
+				/* Increase Scale based on Time. */
+				_float fScale = m_fEffectScale + (m_fEffectScale * 2 - m_fEffectScale) * m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+
+				RELEASE_INSTANCE(CGameInstance);
+
+				m_fEffectTimer += fTimeDelta;
+			}
+		}
+		break;
 		case EFFECT_TYPE::EFFECT_HIT:
 		{
 			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
@@ -107,6 +163,45 @@ _uint CEffect::Tick(_float fTimeDelta)
 				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 				m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+
+				/* Increase Scale based on Time. */
+				if (m_fEffectTimer < m_tEffectDesc.m_fEffectLifespan / 2)
+				{
+					_float fScale = m_fEffectScale + (m_fEffectScale * 2 - m_fEffectScale) * (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / m_tEffectDesc.m_fEffectLifespan;
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+				}
+				/* Decrease Scale based on Time. */
+				else
+				{
+					_float fScale = m_fEffectScale + (m_fEffectScale * .4 - m_fEffectScale) * (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / m_tEffectDesc.m_fEffectLifespan;
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+				}
+				
+				RELEASE_INSTANCE(CGameInstance);
+
+				m_fEffectTimer += fTimeDelta;
+			}
+		}
+		break;
+		case EFFECT_TYPE::EFFECT_HIT_FLASH:
+		{
+			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
+				return OBJ_DESTROY;
+			else
+			{
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+				m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+
+				/* Increase Scale based on Time. */
+				_float fScale = m_fEffectScale + (m_fEffectScale * 2 - m_fEffectScale) * m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
 
 				RELEASE_INSTANCE(CGameInstance);
 
@@ -128,37 +223,32 @@ _uint CEffect::Tick(_float fTimeDelta)
 _uint CEffect::Late_Tick(_float fTimeDelta)
 {
 	if (m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
+		Compute_CamDistance(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
+	}
 
 	return OBJ_NOEVENT;
 }
 
 HRESULT CEffect::Render()
 {
-	if (!m_pShaderCom || !m_pVIBufferCom)
+	if (m_tEffectDesc.m_eEffectType == EFFECT_TYPE::EFFECT_HIT)
+	{
+		if (m_fEffectTimer <= (m_tEffectDesc.m_fEffectLifespan / 100 * 15))
+			return S_OK;
+	}
+
+	if (Is_ModelEffect())
+	{
+		if (!m_pShaderCom || !m_pModelCom)
+			return E_FAIL;
+	}
+	else if(!m_pShaderCom || !m_pVIBufferCom)
 		return E_FAIL;
 
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
-
-	switch (m_tEffectDesc.m_eEffectType)
-	{
-	case EFFECT_TYPE::EFFECT_SMOKE:
-		m_pShaderCom->Begin(VTXTEX_EFFECT_SMOKE);
-		break;
-	case EFFECT_TYPE::EFFECT_HIT_FLASH:
-		m_pShaderCom->Begin(VTXTEX_EFFECT_HIT_FLASH);
-		break;
-	case EFFECT_TYPE::EFFECT_HIT:
-		m_pShaderCom->Begin(0);
-		break;
-	case EFFECT_TYPE::EFFECT_DEATH:
-		break;
-	case EFFECT_TYPE::EFFECT_GET_ITEM:
-		break;
-	case EFFECT_TYPE::EFFECT_BOMB_EXPLOSION:
-		break;
-	}
 	
 	if (Is_ModelEffect())
 	{
@@ -166,18 +256,21 @@ HRESULT CEffect::Render()
 
 		for (_uint i = 0; i < iNumMeshes; ++i)
 		{
-			/*if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
 
 			m_pModelCom->SetUp_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-			m_pModelCom->SetUp_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR);*/
+			m_pModelCom->SetUp_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR);
 
-			if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0)))
+			if (FAILED(m_pModelCom->Render(m_pShaderCom, i, m_eShaderModelPass)))
 				return E_FAIL;
 		}
 	}
 	else
+	{
+		m_pShaderCom->Begin(m_eShaderPass);
 		m_pVIBufferCom->Render();
+	}
 
 	return S_OK;
 }
@@ -194,7 +287,7 @@ HRESULT CEffect::Ready_Components(void * pArg)
 	CTransform::TRANSFORMDESC TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 	TransformDesc.vInitialWorldMatrix = m_tEffectDesc.m_WorldMatrix;
-	TransformDesc.fSpeedPerSec = 0.f;
+	TransformDesc.fSpeedPerSec = 0.1f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
 	/* For.Com_Transform */
@@ -218,8 +311,11 @@ HRESULT CEffect::Ready_Components(void * pArg)
 			return E_FAIL;
 
 		/* For.Com_Texture */
-		if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_STATIC, Get_TextureName(), (CComponent**)&m_pTextureCom)))
-			return E_FAIL;
+		if (!Is_ModelEffect())
+		{			
+			if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_STATIC, Get_TextureName(), (CComponent**)&m_pTextureCom)))
+				return E_FAIL;
+		}
 
 		/* For.Com_Shader */
 		if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"), (CComponent**)&m_pShaderCom)))
@@ -240,8 +336,11 @@ HRESULT CEffect::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(0))))
-		return E_FAIL;
+	if (!Is_ModelEffect())
+	{
+		if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(0))))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_EffectTimer", &m_fEffectTimer, sizeof(_float))))
 		return E_FAIL;
@@ -265,6 +364,7 @@ _bool CEffect::Is_ModelEffect()
 
 	case EFFECT_TYPE::EFFECT_SWISH:
 	case EFFECT_TYPE::EFFECT_SWORD_SLASH:
+	case EFFECT_TYPE::EFFECT_RING:
 	case EFFECT_TYPE::EFFECT_HIT:
 		bIsModel = true;
 		break;
@@ -295,6 +395,9 @@ _tchar * CEffect::Get_ModelPrototypeId()
 		break;
 	case EFFECT_TYPE::EFFECT_SWORD_SLASH:
 		return TEXT("Prototype_Component_Model_SwordSlash");
+		break;
+	case EFFECT_TYPE::EFFECT_RING:
+		return TEXT("Prototype_Component_Model_HitRing");
 		break;
 	case EFFECT_TYPE::EFFECT_HIT:
 		return TEXT("Prototype_Component_Model_HitFlash");

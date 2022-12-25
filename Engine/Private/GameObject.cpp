@@ -65,17 +65,13 @@ HRESULT CGameObject::Add_Components(const _tchar * pComponentTag, _uint iLevelIn
 	return S_OK;
 }
 
-void CGameObject::Compute_CamDistance(_float3 vWorldPos)
+void CGameObject::Compute_CamDistance(_fvector vWorldPos)
 {
-	_float4x4			ViewMatrix;
+	_float4x4 ViewMatrix;
+	CPipeLine* pPipeLine = GET_INSTANCE(CPipeLine);
+	m_fCamDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&pPipeLine->Get_CamPosition()) - vWorldPos));
 
-	//m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
-
-	//D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
-
-	//_float3		vCamPosition = *(_float3*)&ViewMatrix.m[3][0];
-
-	//m_fCamDistance = D3DXVec3Length(&(vCamPosition - vWorldPos));
+	RELEASE_INSTANCE(CPipeLine);
 }
 
 CComponent * CGameObject::Find_Component(const _tchar * pComponentTag)
