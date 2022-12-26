@@ -73,14 +73,6 @@ _uint CMoriblinSpear::Tick(_float fTimeDelta)
 	AI_Behavior(); /* Find_Target() */
 	TickState(fTimeDelta);
 
-	/* AI misbehaves when running in Release Mode without the following code.
-	Since I can't catch the Undefined Behavior I'm leaving it.  */
-	if (!m_bTick)
-	{
-		m_bTick = true;
-		m_pMoriblinSpearState->Reset_Target();
-	}
-
 	return OBJ_NOEVENT;
 }
 

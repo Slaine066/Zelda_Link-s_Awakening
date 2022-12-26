@@ -11,6 +11,7 @@
 #include "Weapon.h"
 #include "PlayerState.h"
 #include "PlayerGuardState.h"
+#include "Effect.h"
 
 using namespace Bossblin;
 
@@ -29,7 +30,7 @@ HRESULT CBossblin::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_tStats.m_fMaxHp = 10;
+	m_tStats.m_fMaxHp = 100;
 	m_tStats.m_fCurrentHp = m_tStats.m_fMaxHp;
 	m_tStats.m_fAttackPower = 1.f;
 	m_tStats.m_fWalkSpeed = .5f;
@@ -143,7 +144,7 @@ _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * Da
 	if (fDamage > 0.f)
 	{
 		/* Take Damage only if Bossblin is in STATE_DOWN */
-		if (m_pBossblinState->Get_StateId() == CBossblinState::STATE_ID::STATE_DOWN && m_pBossblinState->Get_StateType() == CBossblinState::STATETYPE::STATETYPE_MAIN ||
+		if ((m_pBossblinState->Get_StateId() == CBossblinState::STATE_ID::STATE_DOWN && (m_pBossblinState->Get_StateType() == CBossblinState::STATETYPE::STATETYPE_START || m_pBossblinState->Get_StateType() == CBossblinState::STATETYPE::STATETYPE_MAIN)) ||
 			m_pBossblinState->Get_StateId() == CBossblinState::STATE_ID::STATE_HIT)
 		{
 			if (m_tStats.m_fCurrentHp - fDamage <= 0.f)
@@ -194,14 +195,46 @@ _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * Da
 				m_pModelCom->Reset_CurrentAnimation();
 				CBossblinState* pState = new Bossblin::CGuardState();
 				m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pState);
-
-				fDamage = 0.f;
 			}
+
+			fDamage = 0.f;
+			
+			Spawn_GuardEffect(DamageCauser);
 		}
 	}
 
 Damage:
 	return fDamage;
+}
+
+void CBossblin::Spawn_GuardEffect(CGameObject* pDamageCauser)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	
+	CEffect::EFFECTDESC tEffectDesc;
+	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_GUARD_RING;
+	tEffectDesc.m_fEffectLifespan = .3f;
+	tEffectDesc.m_pOwner = this;
+	tEffectDesc.m_bIsPositionDynamic = true;
+
+	CPlayer* pPlayer = (CPlayer*)pDamageCauser;
+	CHierarchyNode* m_pSocket = pPlayer->Get_Model()->Get_BonePtr("itemA_L_top");
+	_matrix SocketMatrix = m_pSocket->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&pPlayer->Get_Model()->Get_PivotFloat4x4()) * XMLoadFloat4x4(&pPlayer->Get_Transform()->Get_World4x4());
+	XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, SocketMatrix);
+
+	/* Spawn Hit Ring Effect (Model) on Shield Bone. */
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Guard_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+		return;
+
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_GUARD;
+	tEffectDesc.m_fEffectLifespan = .15f;
+
+	/* Spawn Guard Flash Effect (Model) on Shield Bone. */
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Guard_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+		return;
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CBossblin::Ready_Parts()

@@ -47,6 +47,7 @@ CPlayerState * CAttackState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 		{
 			for (auto& pDamaged : pDamagedObjects)
 			{
+
 				/* Apply Damage */
 				_float fDamage = pDamaged->Take_Damage(pPlayer->Get_Stats().m_fAttackPower, nullptr, pPlayer);
 

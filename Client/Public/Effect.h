@@ -40,6 +40,9 @@ public:
 		EFFECT_GUARD_RING,		/* Model Effect */
 		EFFECT_GUARD,			/* Model Effect */
 
+		/* When Bossblin starts Tackle. */
+		EFFECT_SHOCKWAVE,
+
 		EFFECT_DEATH,
 		EFFECT_GET_ITEM,
 		EFFECT_BOMB_EXPLOSION,
@@ -53,6 +56,7 @@ public:
 		_tchar m_pTextureName[MAX_PATH];
 		_float m_fEffectLifespan = 0.f;
 		class CActor* m_pOwner = nullptr;
+		_bool m_bIsPositionDynamic = false;
 	} EFFECTDESC;
 
 protected:

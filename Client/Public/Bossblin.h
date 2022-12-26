@@ -73,6 +73,8 @@ public:
 	virtual HRESULT Render() override;
 	virtual _float Take_Damage(float fDamage, void* DamageType, CGameObject* DamageCauser) override;
 
+	void Spawn_GuardEffect(CGameObject* pDamageCauser);
+
 private:
 	HRESULT Ready_Parts();
 	virtual HRESULT Ready_Components(void* pArg) override;

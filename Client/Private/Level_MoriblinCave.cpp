@@ -97,10 +97,10 @@ HRESULT CLevel_MoriblinCave::Load_Objects_FromFile()
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_StaticObject"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Link")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Player"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
-		/*else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSword")))
+		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSword")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSword"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("MoriblinSpear")))
-			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSpear"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);*/
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSpear"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Bossblin")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Bossblin"), LEVEL_MORIBLINCAVE, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("CaveRock")))
@@ -162,7 +162,7 @@ HRESULT CLevel_MoriblinCave::Ready_Lights()
 	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(.4f, .4f, .4f, 1.f);
+	LightDesc.vAmbient = _float4(.35f, .35f, .35f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))

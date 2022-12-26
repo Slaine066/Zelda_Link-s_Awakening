@@ -19,7 +19,7 @@ CMoriblinSpearState * CDieState::Tick(CMoriblinSpear * pMoriblinSpear, _float fT
 {
 	if (!m_bIsAnimationFinished)
 	{
-		pMoriblinSpear->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSpear->Is_AnimationLoop(pMoriblinSpear->Get_Model()->Get_CurrentAnimIndex()));
+		pMoriblinSpear->Get_Model()->Play_Animation(fTimeDelta * 1.25f, m_bIsAnimationFinished, pMoriblinSpear->Is_AnimationLoop(pMoriblinSpear->Get_Model()->Get_CurrentAnimIndex()));
 		
 		BounceBack(pMoriblinSpear, fTimeDelta);
 	}

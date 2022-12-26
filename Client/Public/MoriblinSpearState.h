@@ -60,8 +60,11 @@ protected:
 		if (bHasAggro)
 			m_pTarget = pPlayer;
 		else
-		{
-			_float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&pGameObject->Get_Position()) - XMLoadFloat3(&pMoriblinSpear->Get_Position())));
+		{	
+			_vector vPlayerPosition = pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+			_vector vPosition = pMoriblinSpear->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+
+			_float fDistance = XMVectorGetX(XMVector3Length(vPlayerPosition - vPosition));
 			if (fDistance < pMoriblinSpear->Get_AggroRadius())
 			{
 				m_pTarget = pPlayer;
@@ -76,7 +79,10 @@ protected:
 		if (!m_pTarget)
 			return false;
 
-		_float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_pTarget->Get_Position()) - XMLoadFloat3(&pMoriblinSpear->Get_Position())));
+		_vector vPlayerPosition = m_pTarget->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+		_vector vPosition = pMoriblinSpear->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+
+		_float fDistance = XMVectorGetX(XMVector3Length(vPlayerPosition - vPosition));
 		if (fDistance <= pMoriblinSpear->Get_AttackRadius())
 			return true;
 		else

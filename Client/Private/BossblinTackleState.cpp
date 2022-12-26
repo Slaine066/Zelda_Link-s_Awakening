@@ -23,10 +23,17 @@ CBossblinState * CTackleState::Tick(CBossblin * pBossblin, _float fTimeDelta)
 {
 	switch (m_eStateType)
 	{
+		case STATETYPE::STATETYPE_START:
+		{
+			Spawn_ShockwaveEffect(pBossblin);
+		}
+		break;
 		case STATETYPE::STATETYPE_MAIN:
+		{	
 			if (!Tackle(pBossblin, fTimeDelta)) /* Return FALSE when NavigationMesh::CanMove() function returns FALSE. */
 				return new CDownState(STATETYPE::STATETYPE_START);
-			break;
+		}
+		break;
 	}
 
 	pBossblin->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pBossblin->Is_AnimationLoop(pBossblin->Get_Model()->Get_CurrentAnimIndex()));
@@ -134,4 +141,47 @@ void CTackleState::BounceBack(CBossblin * pBossblin, _float fTimeDelta)
 	BounceDir = XMVector4Normalize(BounceDir);
 
 	pBossblin->Get_Transform()->Move_Direction(BounceDir, fTimeDelta, pBossblin->Get_Navigation(), pBossblin->Get_Radius());
+}
+
+void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
+{
+	if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 20))
+	{
+		if (!m_bIsShockwaveSpawned)
+		{
+
+		}
+	}
+	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 29))
+	{
+		if (!m_bIsShockwaveSpawned)
+		{
+
+		}
+	}
+	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 38))
+	{
+		if (!m_bIsShockwaveSpawned)
+		{
+
+		}
+	}
+	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 47))
+	{
+		if (!m_bIsShockwaveSpawned)
+		{
+
+		}
+	}
+	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 57))
+	{
+		if (!m_bIsShockwaveSpawned)
+		{
+
+		}
+	}
+	else
+	{
+		m_bIsShockwaveSpawned = false;
+	}
 }

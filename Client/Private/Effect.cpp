@@ -100,13 +100,38 @@ HRESULT CEffect::Initialize(void * pArg)
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_GUARDRING;
 
-			/* Set Orientation related to Player and not to Bone. */
-			m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_RIGHT));
-			m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP));
-			m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_LOOK));
+			if (m_tEffectDesc.m_bIsPositionDynamic)
+			{
+				_float4 vPosition;
+				XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+				
+				_float4 vOwnerPosition; 
+				XMStoreFloat4(&vOwnerPosition, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
+				vOwnerPosition.y = vPosition.y;
 
-			/* Move Straight. */
-			m_pTransformCom->Move_Straight(1.f);
+				_vector vLook = XMLoadFloat4(&vPosition) - XMLoadFloat4(&vOwnerPosition);
+				vLook = XMVector4Normalize(vLook);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, vLook);
+
+				_vector vUp = m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP);
+				_vector vRight = XMVector3Cross(vLook, vUp);
+				vRight = XMVector4Normalize(vRight);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, vRight);
+
+				vUp = XMVector3Cross(vLook, vRight);
+				vUp = XMVector4Normalize(vUp);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, vUp);
+			}
+			else
+			{
+				/* Set Orientation related to Player and not to Bone. */
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_RIGHT));
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP));
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_LOOK));
+
+				/* Move Straight. */
+				m_pTransformCom->Move_Straight(1.f);
+			}
 
 			/* Set Scale. */
 			m_fEffectScale = .25f;
@@ -119,27 +144,57 @@ HRESULT CEffect::Initialize(void * pArg)
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_GUARD;
 
-			/* Set Orientation related to Player and not to Bone. */
-			m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_RIGHT));
-			m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP));
-			m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_LOOK));
+			if (m_tEffectDesc.m_bIsPositionDynamic)
+			{
+				_float4 vPosition;
+				XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
 
-			/* Move Straight. */
-			m_pTransformCom->Move_Straight(1.f);
+				_float4 vOwnerPosition;
+				XMStoreFloat4(&vOwnerPosition, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
+				vOwnerPosition.y = vPosition.y;
+
+				_vector vLook = XMLoadFloat4(&vPosition) - XMLoadFloat4(&vOwnerPosition);
+				vLook = XMVector4Normalize(vLook);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, vLook);
+
+				_vector vUp = m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP);
+				_vector vRight = XMVector3Cross(vLook, vUp);
+				vRight = XMVector4Normalize(vRight);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, vRight);
+
+				vUp = XMVector3Cross(vLook, vRight);
+				vUp = XMVector4Normalize(vUp);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, vUp);
+			}
+			else
+			{
+				/* Set Orientation related to Player and not to Bone. */
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_RIGHT));
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP));
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_LOOK));
+
+				/* Move Straight. */
+				m_pTransformCom->Move_Straight(1.f);
+			}
 
 			/* Set Scale. */
-			m_fEffectScale = .2f;
+			m_fEffectScale = .25f;
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
 		}
 		break;
+		case EFFECT_TYPE::EFFECT_SHOCKWAVE:
+		{
+			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SHOCKWAVE;
+		}
+		break;
 		case EFFECT_TYPE::EFFECT_DEATH:
-			break;
+		break;
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
-			break;
+		break;
 		case EFFECT_TYPE::EFFECT_BOMB_EXPLOSION:
-			break;
+		break;
 	}
 
 	return S_OK;
@@ -289,6 +344,13 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_fEffectTimer += fTimeDelta;
 			}
+		}
+		break;
+		case EFFECT_TYPE::EFFECT_SHOCKWAVE:
+		{
+			
+
+
 		}
 			break;
 		case EFFECT_TYPE::EFFECT_DEATH:
@@ -450,6 +512,7 @@ _bool CEffect::Is_ModelEffect()
 	case EFFECT_TYPE::EFFECT_HIT:
 	case EFFECT_TYPE::EFFECT_GUARD_RING:
 	case EFFECT_TYPE::EFFECT_GUARD:
+	case EFFECT_TYPE::EFFECT_SHOCKWAVE:
 		bIsModel = true;
 		break;
 	}
@@ -489,6 +552,9 @@ _tchar * CEffect::Get_ModelPrototypeId()
 		break;
 	case EFFECT_TYPE::EFFECT_GUARD:
 		return TEXT("Prototype_Component_Model_GuardFlash");
+		break;
+	case EFFECT_TYPE::EFFECT_SHOCKWAVE:
+		return TEXT("Prototype_Component_Model_Shockwave");
 		break;
 	}
 }

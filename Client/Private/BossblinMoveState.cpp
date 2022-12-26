@@ -39,7 +39,7 @@ CBossblinState * CMoveState::Tick(CBossblin * pBossblin, _float fTimeDelta)
 	}
 
 	/* Camera Shake */
-	if (pBossblin->Get_Model()->Is_Keyframe("waist", 14))
+	/*if (pBossblin->Get_Model()->Is_Keyframe("waist", 14))
 	{
 		if (m_bCanShake)
 		{
@@ -49,7 +49,7 @@ CBossblinState * CMoveState::Tick(CBossblin * pBossblin, _float fTimeDelta)
 		}
 	}
 	else
-		m_bCanShake = true;
+		m_bCanShake = true;*/
 
 	return nullptr;
 }

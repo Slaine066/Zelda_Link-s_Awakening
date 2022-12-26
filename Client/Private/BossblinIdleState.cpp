@@ -33,8 +33,8 @@ CBossblinState * CIdleState::Tick(CBossblin * pBossblin, _float fTimeDelta)
 		{
 			if (m_fIdleAttackTimer > 1.5f)
 			{
-				_bool bAttackType = rand() % 2;
-				if (bAttackType)
+				_int iAttackType = rand() % 2;
+				if (iAttackType == 0)
 					return new CTackleState(STATETYPE::STATETYPE_START);
 				else
 					return new CAttackState();

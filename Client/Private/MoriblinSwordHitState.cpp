@@ -19,7 +19,7 @@ CMoriblinSwordState * CHitState::AI_Behavior(CMoriblinSword * pMoriblinSword)
 
 CMoriblinSwordState * CHitState::Tick(CMoriblinSword * pMoriblinSword, _float fTimeDelta)
 {
-	pMoriblinSword->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSword->Is_AnimationLoop(pMoriblinSword->Get_Model()->Get_CurrentAnimIndex()));
+	pMoriblinSword->Get_Model()->Play_Animation(fTimeDelta * 1.25f, m_bIsAnimationFinished, pMoriblinSword->Is_AnimationLoop(pMoriblinSword->Get_Model()->Get_CurrentAnimIndex()));
 	pMoriblinSword->Sync_WithNavigationHeight();
 
 	BounceBack(pMoriblinSword, fTimeDelta);

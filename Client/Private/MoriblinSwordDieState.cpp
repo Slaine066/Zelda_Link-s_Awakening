@@ -19,7 +19,7 @@ CMoriblinSwordState * CDieState::Tick(CMoriblinSword * pMoriblinSword, _float fT
 {
 	if (!m_bIsAnimationFinished)
 	{
-		pMoriblinSword->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMoriblinSword->Is_AnimationLoop(pMoriblinSword->Get_Model()->Get_CurrentAnimIndex()));
+		pMoriblinSword->Get_Model()->Play_Animation(fTimeDelta * 1.25f, m_bIsAnimationFinished, pMoriblinSword->Is_AnimationLoop(pMoriblinSword->Get_Model()->Get_CurrentAnimIndex()));
 
 		BounceBack(pMoriblinSword, fTimeDelta);
 	}

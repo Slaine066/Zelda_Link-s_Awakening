@@ -1343,7 +1343,6 @@ _bool CImGuiManager::SaveData()
 		}	
 	}
 
-	Safe_Release(pGameInstance);
 	CloseHandle(hFileMap);
 
 	// Save Navigation Data

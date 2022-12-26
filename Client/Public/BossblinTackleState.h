@@ -21,11 +21,14 @@ private:
 	_bool Tackle(CBossblin* pBossblin, _float fTimeDelta); /* NavigationMesh::CanMove() return value. */
 	_bool Should_Break(CBossblin* pBossblin, _float fTimeDelta);
 	void BounceBack(CBossblin* pBossblin, _float fTimeDelta);
+	void Spawn_ShockwaveEffect(CBossblin* pBossblin);
 
 private:
 	_bool m_bDidDamage = false;
 	_float3 m_vTargetDirection;
 	_float m_fBreakTimer = 0.f;
+
+	_bool m_bIsShockwaveSpawned = false;
 };
 END
 END

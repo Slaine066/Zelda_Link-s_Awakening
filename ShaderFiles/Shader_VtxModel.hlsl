@@ -120,6 +120,7 @@ PS_OUT PS_MAIN_EFFECT_HITRING(PS_IN In)
 
 		Out.vDiffuse.xyz = vLerpColor;
 
+		/* Start disappearing after half duration. */
 		float startAfter = g_EffectLifespan / 2;
 		if (g_EffectTimer >= startAfter)
 		{
@@ -157,6 +158,7 @@ PS_OUT PS_MAIN_EFFECT_HIT(PS_IN In)
 
 	Out.vDiffuse.xyz = vLerpColor;
 
+	/* Start disappearing after half duration. */
 	float startAfter = g_EffectLifespan / 2;
 	if (g_EffectTimer >= startAfter)
 	{
@@ -183,8 +185,6 @@ PS_OUT PS_MAIN_EFFECT_GUARDRING(PS_IN In)
 	Out.vDiffuse.a = Out.vDiffuse.g;
 	Out.vDiffuse.gb = Out.vDiffuse.r;
 
-	/*Out.vDiffuse = float4(.67f, .88f, 1.f, 1.f);*/
-
 	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.f, 0.f, 0.f);
 	Out.vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
@@ -198,6 +198,7 @@ PS_OUT PS_MAIN_EFFECT_GUARDRING(PS_IN In)
 
 		Out.vDiffuse.xyz = vLerpColor;
 
+		/* Start disappearing after half duration. */
 		float startAfter = g_EffectLifespan / 2;
 		if (g_EffectTimer >= startAfter)
 		{
@@ -235,6 +236,41 @@ PS_OUT PS_MAIN_EFFECT_GUARD(PS_IN In)
 
 	Out.vDiffuse.xyz = vLerpColor;
 
+	/* Start disappearing after half duration. */
+	float startAfter = g_EffectLifespan / 2;
+	if (g_EffectTimer >= startAfter)
+	{
+		float fLerpAlpha = lerp(Out.vDiffuse.a, 0, (g_EffectTimer - startAfter) / (g_EffectLifespan - startAfter));
+		Out.vDiffuse.a = fLerpAlpha;
+	}
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_EFFECT_SHOCKWAVE(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	float4 vTextureNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3 vNormal;
+
+	vNormal = float3(vTextureNormal.x, vTextureNormal.y, sqrt(1 - vTextureNormal.x * vTextureNormal.x - vTextureNormal.y * vTextureNormal.y));
+
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBinormal, In.vNormal);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vDiffuse.a = Out.vDiffuse.g;
+	Out.vDiffuse.gb = Out.vDiffuse.r;
+
+	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.f, 0.f, 0.f);
+	Out.vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (Out.vDiffuse.a == 0)
+		discard;
+
+	/* Start disappearing after half duration. */
 	float startAfter = g_EffectLifespan / 2;
 	if (g_EffectTimer >= startAfter)
 	{
@@ -322,5 +358,16 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_EFFECT_GUARD();
+	}
+
+	pass Effect_Shockwave
+	{
+		SetRasterizerState(RS_Default_NoCull);
+		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_EFFECT_SHOCKWAVE();
 	}
 }

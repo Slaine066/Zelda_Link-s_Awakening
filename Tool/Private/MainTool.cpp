@@ -67,6 +67,7 @@ HRESULT CMainTool::Render(_float fTimeDelta)
 
 	m_pRenderer->Render_GameObjects();
 
+#ifdef _DEBUG
 	++m_iNumRender;
 
 	if (m_fTimeAcc > 1.0f)
@@ -76,6 +77,7 @@ HRESULT CMainTool::Render(_float fTimeDelta)
 		m_fTimeAcc = 0.f;
 		m_iNumRender = 0;
 	}
+#endif // _DEBUG
 
 	// ImGui Render
 	CImGuiManager::Get_Instance()->Render(fTimeDelta);
@@ -195,19 +197,6 @@ HRESULT CMainTool::Ready_Lights()
 
 	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
-
-	///* For.Point */
-	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-
-	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	//LightDesc.vPosition = _float4(10.f, 3.f, 10.f, 1.f);
-	//LightDesc.fRange = 7.f;	
-	//LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
-	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	//if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
-	//	return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 

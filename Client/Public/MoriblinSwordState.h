@@ -64,7 +64,10 @@ protected:
 			m_pTarget = pPlayer;
 		else
 		{
-			_float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat3(&pGameObject->Get_Position()) - XMLoadFloat3(&pMoriblinSword->Get_Position())));
+			_vector vPlayerPosition = pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+			_vector vPosition = pMoriblinSword->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+
+			_float fDistance = XMVectorGetX(XMVector3Length(vPlayerPosition - vPosition));
 			if (fDistance < pMoriblinSword->Get_AggroRadius())
 			{
 				m_pTarget = pPlayer;

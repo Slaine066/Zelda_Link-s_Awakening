@@ -68,14 +68,6 @@ _uint CMoriblinSword::Tick(_float fTimeDelta)
 
 	AI_Behavior();
 	TickState(fTimeDelta);
-
-	/* AI misbehaves when running in Release Mode without the following code.
-	Since I can't catch the Undefined Behavior I'm leaving it.  */
-	if (!m_bTick)
-	{
-		m_bTick = true;
-		m_pMoriblinSwordState->Reset_Target();
-	}
 	 
 	return OBJ_NOEVENT;
 }
