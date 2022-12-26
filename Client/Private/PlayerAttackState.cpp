@@ -84,7 +84,8 @@ void CAttackState::Spawn_HitEffect(CPlayer* pPlayer, CGameObject*& pDamaged)
 	CEffect::EFFECTDESC tEffectDesc;
 	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
 	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_HIT_FLASH;
-	tEffectDesc.m_fEffectLifespan = .2f;
+	tEffectDesc.m_fEffectLifespan = .25f;
+	tEffectDesc.m_pOwner = pPlayer;
 
 	CHierarchyNode* m_pSocket = pPlayer->Get_Model()->Get_BonePtr("itemA_L_top");
 	_matrix SocketMatrix = m_pSocket->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&pPlayer->Get_Model()->Get_PivotFloat4x4()) * XMLoadFloat4x4(&pPlayer->Get_Transform()->Get_World4x4());
@@ -94,7 +95,7 @@ void CAttackState::Spawn_HitEffect(CPlayer* pPlayer, CGameObject*& pDamaged)
 	if (FAILED(pGameInstance->Add_GameObject(TEXT("Hit_Flash_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
 		return;
 
-	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_RING;
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_HIT_RING;
 	
 	/* Spawn Hit Ring Effect (Model) on Sword Bone. */
 	if (FAILED(pGameInstance->Add_GameObject(TEXT("Hit_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))

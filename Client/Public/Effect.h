@@ -24,17 +24,21 @@ class CEffect : public CGameObject
 public:
 	enum EFFECT_TYPE
 	{
-		/* When Walking/Running */
-		EFFECT_SMOKE,
+		/* When Walking/Running. */
+		EFFECT_SMOKE,			/* Rect Buffer Effect */	
 
-		/* When Swinging the Sword */
-		EFFECT_SWISH,			
-		EFFECT_SWORD_SLASH,
+		/* When Swinging the Sword. */
+		EFFECT_SWISH,			/* Model Effect */
+		EFFECT_SWORD_SLASH,		/* Model Effect */
 
 		/* When Sword Hits. */
-		EFFECT_RING,			/* Model Effect */
+		EFFECT_HIT_RING,		/* Model Effect */
 		EFFECT_HIT,				/* Model Effect */
 		EFFECT_HIT_FLASH,		/* Rect Buffer Effect */
+
+		/* When Guard Hits. */
+		EFFECT_GUARD_RING,		/* Model Effect */
+		EFFECT_GUARD,			/* Model Effect */
 
 		EFFECT_DEATH,
 		EFFECT_GET_ITEM,
@@ -48,6 +52,7 @@ public:
 		_float4x4 m_WorldMatrix;
 		_tchar m_pTextureName[MAX_PATH];
 		_float m_fEffectLifespan = 0.f;
+		class CActor* m_pOwner = nullptr;
 	} EFFECTDESC;
 
 protected:

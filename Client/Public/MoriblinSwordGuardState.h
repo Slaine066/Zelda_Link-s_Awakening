@@ -15,6 +15,13 @@ public:
 
 	virtual void Enter(CMoriblinSword* pMoriblinSword) override;
 	virtual void Exit(CMoriblinSword* pMoriblinSword) override;
+
+private:
+	void BounceBack(CMoriblinSword * pMoriblinSword, _float fTimeDelta);
+
+private:
+	_bool m_bEffectSpawned = false;
+	_bool m_bSwitch = false;
 };
 END
 END

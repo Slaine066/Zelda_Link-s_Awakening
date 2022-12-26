@@ -372,6 +372,7 @@ void CBossblin::Check_Collision()
 				pPlayer->Get_Model()->Reset_CurrentAnimation();
 				CPlayerState* pGuardState = new Player::CGuardState(CPlayerState::STATETYPE::STATETYPE_START);
 				pPlayer->Set_State(pPlayer->Get_State()->ChangeState(pPlayer, pPlayer->Get_State(), pGuardState));
+				pPlayer->Spawn_GuardEffect();
 			}
 			else
 				pDamaged->Take_Damage(m_tStats.m_fAttackPower, nullptr, this);

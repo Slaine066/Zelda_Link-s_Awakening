@@ -9,6 +9,7 @@
 #include "MoriblinSwordGuardState.h"
 #include "MoriblinSwordAttackState.h"
 #include "MoriblinSwordFallState.h"
+#include "Effect.h"
 
 using namespace MoriblinSword;
 
@@ -44,7 +45,7 @@ HRESULT CMoriblinSword::Initialize(void * pArg)
 	m_fRadius = .25f;
 	m_fAggroRadius = 2.f;
 	m_fPatrolRadius = 2.f;
-	m_fAttackRadius = .5f;
+	m_fAttackRadius = .7f;
 
 	CMoriblinSwordState* pState = new CIdleState();
 	m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
@@ -161,6 +162,34 @@ _float CMoriblinSword::Take_Damage(float fDamage, void * DamageType, CGameObject
 	return fDamage;
 }
 
+void CMoriblinSword::Spawn_GuardEffect()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CEffect::EFFECTDESC tEffectDesc;
+	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_GUARD_RING;
+	tEffectDesc.m_fEffectLifespan = .3f;
+	tEffectDesc.m_pOwner = this;
+
+	CHierarchyNode* m_pSocket = m_pModelCom->Get_BonePtr("attach_R");
+	_matrix SocketMatrix = m_pSocket->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_pModelCom->Get_PivotFloat4x4()) * XMLoadFloat4x4(&m_pTransformCom->Get_World4x4());
+	XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, SocketMatrix);
+
+	/* Spawn Hit Ring Effect (Model) on Shield Bone. */
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Guard_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+		return;
+
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_GUARD;
+	tEffectDesc.m_fEffectLifespan = .15f;
+
+	/* Spawn Guard Flash Effect (Model) on Shield Bone. */
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Guard_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+		return;
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
 HRESULT CMoriblinSword::Ready_Components(void * pArg)
 {
 	memcpy(&m_tModelDesc, pArg, sizeof(MODELDESC));
@@ -190,7 +219,7 @@ HRESULT CMoriblinSword::Ready_Components(void * pArg)
 	CCollider::COLLIDERDESC	ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_INPUT;
-	ColliderDesc.vScale = _float3(1.f, 1.4f, 1.f);
+	ColliderDesc.vScale = _float3(1.f, 1.4f, 1.3f);
 	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
 
 	m_vCollidersCom.resize(2); // Numbers of Colliders needed for this Object

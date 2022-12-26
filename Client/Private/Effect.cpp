@@ -2,6 +2,7 @@
 
 #include "Effect.h"
 #include "GameInstance.h"
+#include "Actor.h"
 
 CEffect::CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -53,7 +54,7 @@ HRESULT CEffect::Initialize(void * pArg)
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SWORDSLASH;
 		}
 		break;
-		case EFFECT_TYPE::EFFECT_RING:
+		case EFFECT_TYPE::EFFECT_HIT_RING:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_HITRING;
 
@@ -73,7 +74,7 @@ HRESULT CEffect::Initialize(void * pArg)
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_HIT;
 
-			m_fEffectScale = .3f;
+			m_fEffectScale = .25f;
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
@@ -90,6 +91,44 @@ HRESULT CEffect::Initialize(void * pArg)
 			m_eShaderPass = VTXTEXPASS::VTXTEX_EFFECT_HIT_FLASH;
 
 			m_fEffectScale = .5f;
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+		}
+		break;
+		case EFFECT_TYPE::EFFECT_GUARD_RING:
+		{
+			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_GUARDRING;
+
+			/* Set Orientation related to Player and not to Bone. */
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_RIGHT));
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP));
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_LOOK));
+
+			/* Move Straight. */
+			m_pTransformCom->Move_Straight(1.f);
+
+			/* Set Scale. */
+			m_fEffectScale = .25f;
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+		}
+		break;
+		case EFFECT_TYPE::EFFECT_GUARD:
+		{
+			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_GUARD;
+
+			/* Set Orientation related to Player and not to Bone. */
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_RIGHT));
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP));
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_LOOK));
+
+			/* Move Straight. */
+			m_pTransformCom->Move_Straight(1.f);
+
+			/* Set Scale. */
+			m_fEffectScale = .2f;
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
@@ -132,7 +171,7 @@ _uint CEffect::Tick(_float fTimeDelta)
 			}
 		}
 		break;
-		case EFFECT_TYPE::EFFECT_RING:
+		case EFFECT_TYPE::EFFECT_HIT_RING:
 		{
 			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
 				return OBJ_DESTROY;
@@ -209,6 +248,49 @@ _uint CEffect::Tick(_float fTimeDelta)
 			}
 		}
 		break;
+		case EFFECT_TYPE::EFFECT_GUARD_RING:
+		{
+			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
+				return OBJ_DESTROY;
+			else
+			{
+				/* Increase Scale based on Time. */
+				_float fScale = m_fEffectScale + (m_fEffectScale * 2 - m_fEffectScale) * m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+
+				m_fEffectTimer += fTimeDelta;
+			}
+		}
+		break;
+		case EFFECT_TYPE::EFFECT_GUARD:
+		{
+			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
+				return OBJ_DESTROY;
+			else
+			{
+				/* Increase Scale based on Time. */
+				if (m_fEffectTimer < m_tEffectDesc.m_fEffectLifespan / 2)
+				{
+					_float fScale = m_fEffectScale + (m_fEffectScale * 2 - m_fEffectScale) * (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / m_tEffectDesc.m_fEffectLifespan;
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+				}
+				/* Decrease Scale based on Time. */
+				else
+				{
+					_float fScale = m_fEffectScale + (m_fEffectScale * .4 - m_fEffectScale) * (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / m_tEffectDesc.m_fEffectLifespan;
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+				}
+
+				m_fEffectTimer += fTimeDelta;
+			}
+		}
+			break;
 		case EFFECT_TYPE::EFFECT_DEATH:
 			break;
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
@@ -364,8 +446,10 @@ _bool CEffect::Is_ModelEffect()
 
 	case EFFECT_TYPE::EFFECT_SWISH:
 	case EFFECT_TYPE::EFFECT_SWORD_SLASH:
-	case EFFECT_TYPE::EFFECT_RING:
+	case EFFECT_TYPE::EFFECT_HIT_RING:
 	case EFFECT_TYPE::EFFECT_HIT:
+	case EFFECT_TYPE::EFFECT_GUARD_RING:
+	case EFFECT_TYPE::EFFECT_GUARD:
 		bIsModel = true;
 		break;
 	}
@@ -396,11 +480,15 @@ _tchar * CEffect::Get_ModelPrototypeId()
 	case EFFECT_TYPE::EFFECT_SWORD_SLASH:
 		return TEXT("Prototype_Component_Model_SwordSlash");
 		break;
-	case EFFECT_TYPE::EFFECT_RING:
+	case EFFECT_TYPE::EFFECT_HIT_RING:
+	case EFFECT_TYPE::EFFECT_GUARD_RING:
 		return TEXT("Prototype_Component_Model_HitRing");
 		break;
 	case EFFECT_TYPE::EFFECT_HIT:
 		return TEXT("Prototype_Component_Model_HitFlash");
+		break;
+	case EFFECT_TYPE::EFFECT_GUARD:
+		return TEXT("Prototype_Component_Model_GuardFlash");
 		break;
 	}
 }

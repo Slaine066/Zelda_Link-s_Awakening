@@ -6,6 +6,7 @@
 #include "PlayerMoveState.h"
 #include "PlayerIdleState.h"
 #include "PlayerGuardMoveState.h"
+#include "Effect.h"
 
 using namespace Player;
 

@@ -235,7 +235,7 @@ HRESULT CMoriblinSpear::Ready_Components(void * pArg)
 	CCollider::COLLIDERDESC	ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_INPUT;
-	ColliderDesc.vScale = _float3(1.f, 1.4f, 1.f);
+	ColliderDesc.vScale = _float3(1.f, 1.4f, 1.3f);
 	ColliderDesc.vPosition = _float3(0.f, 0.7f, 0.f);
 
 	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object
