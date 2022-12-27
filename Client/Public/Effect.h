@@ -41,7 +41,8 @@ public:
 		EFFECT_GUARD,			/* Model Effect */
 
 		/* When Bossblin starts Tackle. */
-		EFFECT_SHOCKWAVE,
+		EFFECT_SHOCKWAVE_RING,	/* Model Effect */
+		EFFECT_SHOCKWAVE,		/* Model Effect */
 
 		EFFECT_DEATH,
 		EFFECT_GET_ITEM,

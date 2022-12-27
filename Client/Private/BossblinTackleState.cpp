@@ -6,6 +6,7 @@
 #include "BossblinDownState.h"
 #include "PlayerState.h"
 #include "PlayerGuardState.h"
+#include "Effect.h"
 
 using namespace Bossblin;
 
@@ -145,43 +146,122 @@ void CTackleState::BounceBack(CBossblin * pBossblin, _float fTimeDelta)
 
 void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CEffect::EFFECTDESC tEffectDesc;
+	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE;
+	tEffectDesc.m_fEffectLifespan = .25f;
+	tEffectDesc.m_pOwner = pBossblin;
+	tEffectDesc.m_bIsPositionDynamic = true;
+
+	CHierarchyNode* m_pSocketL = pBossblin->Get_Model()->Get_BonePtr("attach_L");
+	CHierarchyNode* m_pSocketR = pBossblin->Get_Model()->Get_BonePtr("attach_R");
+	_matrix SocketMatrixL = m_pSocketL->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&pBossblin->Get_Model()->Get_PivotFloat4x4()) * XMLoadFloat4x4(&pBossblin->Get_Transform()->Get_World4x4());
+	_matrix SocketMatrixR = m_pSocketR->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&pBossblin->Get_Model()->Get_PivotFloat4x4()) * XMLoadFloat4x4(&pBossblin->Get_Transform()->Get_World4x4());
+
 	if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 20))
 	{
 		if (!m_bIsShockwaveSpawned)
 		{
+			XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, SocketMatrixL);
 
+			/* Spawn Shockwave Effect (Model) on Bone Position. */
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+				return;
+
+			tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE_RING;
+			tEffectDesc.m_fEffectLifespan = .4f;
+
+			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+				return;
+
+			m_bIsShockwaveSpawned = true;
 		}
 	}
 	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 29))
 	{
 		if (!m_bIsShockwaveSpawned)
 		{
+			XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, SocketMatrixR);
 
+			/* Spawn Shockwave Effect (Model) on Bone Position. */
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+				return;
+
+			tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE_RING;
+			tEffectDesc.m_fEffectLifespan = .4f;
+
+			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+				return;
+
+			m_bIsShockwaveSpawned = true;
 		}
 	}
 	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 38))
 	{
 		if (!m_bIsShockwaveSpawned)
 		{
+			XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, SocketMatrixL);
 
+			/* Spawn Shockwave Effect (Model) on Bone Position. */
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+				return;
+
+			tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE_RING;
+			tEffectDesc.m_fEffectLifespan = .4f;
+
+			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+				return;
+
+			m_bIsShockwaveSpawned = true;
 		}
 	}
 	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 47))
 	{
 		if (!m_bIsShockwaveSpawned)
 		{
+			XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, SocketMatrixR);
 
+			/* Spawn Shockwave Effect (Model) on Bone Position. */
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+				return;
+
+			tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE_RING;
+			tEffectDesc.m_fEffectLifespan = .4f;
+
+			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+				return;
+
+			m_bIsShockwaveSpawned = true;
 		}
 	}
 	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 57))
 	{
 		if (!m_bIsShockwaveSpawned)
 		{
+			XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, SocketMatrixL);
 
+			/* Spawn Shockwave Effect (Model) on Bone Position. */
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+				return;
+
+			tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE_RING;
+			tEffectDesc.m_fEffectLifespan = .4f;
+
+			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+				return;
+
+			m_bIsShockwaveSpawned = true;
 		}
 	}
 	else
-	{
 		m_bIsShockwaveSpawned = false;
-	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }

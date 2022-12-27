@@ -3,6 +3,7 @@
 #include "BossblinMoveState.h"
 #include "BossblinIdleState.h"
 #include "BossblinAttackState.h"
+#include "BossblinTackleState.h"
 #include "Navigation.h"
 #include "Transform.h"
 #include "CameraManager.h"
@@ -30,7 +31,13 @@ CBossblinState * CMoveState::Tick(CBossblin * pBossblin, _float fTimeDelta)
 		if (Is_InAttackRadius(pBossblin))
 		{
 			if (!pBossblin->Get_IsProjectileAlive())
-				return new CAttackState();
+			{
+				_int iAttackType = rand() % 2;
+				if (iAttackType == 0)
+					return new CTackleState(STATETYPE::STATETYPE_START);
+				else
+					return new CAttackState();
+			}
 			else
 				return new CIdleState(m_pTarget);
 		}

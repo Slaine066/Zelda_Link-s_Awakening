@@ -4,6 +4,17 @@
 #include "GameInstance.h"
 #include "Actor.h"
 
+/* 
+Lerp Interpolation in C++
+
+lerp(start, end, t) = start + t * (end - start);
+
+float t = (m_fEffectTimer - 1.0f) / (m_fEffectTimerMax - 1.0f);
+fNewScale = 1.0f + t * (2.0f - 1.0f);
+
+(!~Ask https://chat.openai.com/chat for clarifications.)
+*/
+
 CEffect::CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -184,9 +195,92 @@ HRESULT CEffect::Initialize(void * pArg)
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
 		}
 		break;
+		case EFFECT_TYPE::EFFECT_SHOCKWAVE_RING:
+		{
+			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SHOCKWAVERING;
+
+			if (m_tEffectDesc.m_bIsPositionDynamic)
+			{
+				_float4 vPosition;
+				XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+
+				_float4 vOwnerPosition;
+				XMStoreFloat4(&vOwnerPosition, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
+				vOwnerPosition.y = vPosition.y - .3f;
+
+				_vector vLook = XMLoadFloat4(&vPosition) - XMLoadFloat4(&vOwnerPosition);
+				vLook = XMVector4Normalize(vLook);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, vLook);
+
+				_vector vUp = m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP);
+				_vector vRight = XMVector3Cross(vLook, vUp);
+				vRight = XMVector4Normalize(vRight);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, vRight);
+
+				vUp = XMVector3Cross(vLook, vRight);
+				vUp = XMVector4Normalize(vUp);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, vUp);
+			}
+			else
+			{
+				/* Set Orientation related to Player and not to Bone. */
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_RIGHT));
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP));
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_LOOK));
+			}
+
+			/* Set Scale. */
+			m_fEffectScale = .1f;
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+
+			/* Move Straight.*/
+			m_pTransformCom->Move_Straight(.19f);
+		}
+		break;
 		case EFFECT_TYPE::EFFECT_SHOCKWAVE:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SHOCKWAVE;
+
+			if (m_tEffectDesc.m_bIsPositionDynamic)
+			{
+				_float4 vPosition;
+				XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+
+				_float4 vOwnerPosition;
+				XMStoreFloat4(&vOwnerPosition, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
+				vOwnerPosition.y = vPosition.y - .3f;
+
+				_vector vLook = XMLoadFloat4(&vPosition) - XMLoadFloat4(&vOwnerPosition);
+				vLook = XMVector4Normalize(vLook);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, vLook);
+
+				_vector vUp = m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP);
+				_vector vRight = XMVector3Cross(vLook, vUp);
+				vRight = XMVector4Normalize(vRight);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, vRight);
+
+				vUp = XMVector3Cross(vLook, vRight);
+				vUp = XMVector4Normalize(vUp);
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, vUp);
+			}
+			else
+			{
+				/* Set Orientation related to Player and not to Bone. */
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_RIGHT));
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP));
+				m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_LOOK));
+			}
+
+			/* Set Scale. */
+			m_fEffectScale = .2f;
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+
+			/* Move Straight.*/
+			m_pTransformCom->Move_Straight(.2f);
 		}
 		break;
 		case EFFECT_TYPE::EFFECT_DEATH:
@@ -346,13 +440,54 @@ _uint CEffect::Tick(_float fTimeDelta)
 			}
 		}
 		break;
+		case EFFECT_TYPE::EFFECT_SHOCKWAVE_RING:
+		{
+			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
+				return OBJ_DESTROY;
+			else
+			{
+				_float fInterpFactor = m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+
+				_float fScale = m_fEffectScale + fInterpFactor * (m_fEffectScale * 3 - m_fEffectScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+
+				m_fEffectTimer += fTimeDelta;
+			}
+		}
+		break;
 		case EFFECT_TYPE::EFFECT_SHOCKWAVE:
 		{
-			
+			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
+				return OBJ_DESTROY;
+			else
+			{
+				/* Increase Scale based on Time. */
+				if (m_fEffectTimer < m_tEffectDesc.m_fEffectLifespan / 2)
+				{
+					_float fInterpFactor = m_fEffectTimer / (m_tEffectDesc.m_fEffectLifespan / 2);
 
+					_float fScale = m_fEffectScale + fInterpFactor * (m_fEffectScale * 2 - m_fEffectScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+				}
+				/* Decrease Scale based on Time. */
+				else
+				{
+					_float fInterpFactor = (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / (m_tEffectDesc.m_fEffectLifespan - (m_tEffectDesc.m_fEffectLifespan / 2));
 
+					_float fScale = m_fEffectScale * 2 + fInterpFactor * (m_fEffectScale / 4 - m_fEffectScale * 2);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+				}
+
+				m_fEffectTimer += fTimeDelta;
+			}
 		}
-			break;
+		break;
 		case EFFECT_TYPE::EFFECT_DEATH:
 			break;
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
@@ -512,6 +647,7 @@ _bool CEffect::Is_ModelEffect()
 	case EFFECT_TYPE::EFFECT_HIT:
 	case EFFECT_TYPE::EFFECT_GUARD_RING:
 	case EFFECT_TYPE::EFFECT_GUARD:
+	case EFFECT_TYPE::EFFECT_SHOCKWAVE_RING:
 	case EFFECT_TYPE::EFFECT_SHOCKWAVE:
 		bIsModel = true;
 		break;
@@ -552,6 +688,9 @@ _tchar * CEffect::Get_ModelPrototypeId()
 		break;
 	case EFFECT_TYPE::EFFECT_GUARD:
 		return TEXT("Prototype_Component_Model_GuardFlash");
+		break;
+	case EFFECT_TYPE::EFFECT_SHOCKWAVE_RING:
+		return TEXT("Prototype_Component_Model_ShockwaveRing");
 		break;
 	case EFFECT_TYPE::EFFECT_SHOCKWAVE:
 		return TEXT("Prototype_Component_Model_Shockwave");
