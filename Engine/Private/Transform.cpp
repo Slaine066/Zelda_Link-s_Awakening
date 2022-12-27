@@ -233,18 +233,6 @@ void CTransform::LookAt(_fvector vAt)
 	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * Get_Scale(CTransform::STATE_LOOK));
 }
 
-void CTransform::LookAt_Soft(_fvector vAt, _fvector vUp)
-{
-	_vector	vPosition = Get_State(CTransform::STATE_TRANSLATION);
-
-	_vector	vLook = vAt - vPosition;
-	_vector	vRight = XMVector3Cross(vUp, vLook);
-
-	Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * Get_Scale(CTransform::STATE_RIGHT));
-	Set_State(STATE_UP, XMVector3Normalize(vUp) * Get_Scale(CTransform::STATE_UP));
-	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * Get_Scale(CTransform::STATE_LOOK));
-}
-
 CTransform* CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
 	CTransform*	pInstance = new CTransform(pDevice, pContext);

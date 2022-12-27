@@ -30,7 +30,7 @@ HRESULT CBossblin::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_tStats.m_fMaxHp = 100;
+	m_tStats.m_fMaxHp = 10.f;
 	m_tStats.m_fCurrentHp = m_tStats.m_fMaxHp;
 	m_tStats.m_fAttackPower = 1.f;
 	m_tStats.m_fWalkSpeed = .5f;
@@ -51,7 +51,7 @@ HRESULT CBossblin::Initialize(void * pArg)
 	m_fAggroRadius = 1.5f;
 	m_fAttackRadius = 1.5f;
 
-	m_fDissolveLifespan = 2.f;
+	m_fDissolveLifespan = 3.f;
 
 	CBossblinState* pState = new CIdleState();
 	m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pState);

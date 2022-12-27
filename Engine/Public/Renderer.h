@@ -8,7 +8,7 @@ BEGIN(Engine)
 class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
-	enum RENDERGROUP {RENDER_PRIORITY, RENDER_NONALPHABLEND, RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDER_END };
+	enum RENDERGROUP {RENDER_PRIORITY, RENDER_NONALPHABLEND, RENDER_ALPHALIGHT,  RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDER_END };
 
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);	
@@ -44,6 +44,7 @@ private:
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_NonAlphaBlend();
+	HRESULT Render_AlphaLights();
 	HRESULT Render_Lights();
 	HRESULT Render_Blend();
 	HRESULT Render_NonLight();

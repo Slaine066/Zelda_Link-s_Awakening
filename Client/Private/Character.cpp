@@ -74,6 +74,9 @@ void CCharacter::Compute_ShaderTimers(_float fTimeDelta)
 	case VTXANIMMODELPASS::VTXANIMMODEL_DISSOLVE:
 		m_fDissolveTimer += fTimeDelta;
 		break;
+	case VTXANIMMODELPASS::VTXANIMMODEL_DISSOLVE_BOSS:
+		m_fDissolveTimer += fTimeDelta;
+		break;
 	}
 }
 

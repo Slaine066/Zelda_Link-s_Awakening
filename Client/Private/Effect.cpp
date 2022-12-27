@@ -295,7 +295,7 @@ HRESULT CEffect::Initialize(void * pArg)
 		case EFFECT_TYPE::EFFECT_STAR:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_STAR;
-			
+
 			m_fEffectScale = .05f;
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
@@ -602,13 +602,9 @@ _uint CEffect::Late_Tick(_float fTimeDelta)
 	if (m_pRendererCom)
 	{
 		if (m_tEffectDesc.m_eEffectType == EFFECT_TYPE::EFFECT_STAR)
-		{
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
-		}
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHALIGHT, this);
 		else
-		{
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
-		}
 		
 		Compute_CamDistance(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
 	}
@@ -845,11 +841,9 @@ void CEffect::Rotate_AroundCenter(_float fTimeDelta)
 	_float4 vPosition;
 	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
 
-	//_float fDist = XMVectorGetX(XMVector4Length((XMLoadFloat4(&m_vCenterPosition) - XMLoadFloat4(&vPosition))));
-
 	_float fDistance = .2f;
 
-	m_fAngle += /*1.5f*/.1f;
+	m_fAngle += 1.5f;
 	if (m_fAngle >= 360.f)
 		m_fAngle = 0.f;
 

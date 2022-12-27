@@ -326,7 +326,6 @@ PS_OUT PS_MAIN_EFFECT_STAR(PS_IN In)
 
 	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.f, 0.f, 0.f);
-	Out.vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 
 	if (Out.vDiffuse.a != 0)
 	{
@@ -349,6 +348,8 @@ PS_OUT PS_MAIN_EFFECT_STAR(PS_IN In)
 			Out.vDiffuse.a = fLerpAlpha;
 		}
 	}
+	else
+		discard;
 
 	return Out;
 }
@@ -456,9 +457,9 @@ technique11 DefaultTechnique
 
 	pass Effect_Star
 	{
-		SetRasterizerState(RS_Default);
-		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
-		SetDepthStencilState(DSS_Priority, 0);
+		SetRasterizerState(RS_Default_NoCull);
+		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;

@@ -78,7 +78,7 @@ void CDownState::Spawn_StarEffect(CBossblin* pBossblin)
 	CEffect::EFFECTDESC tEffectDesc;
 	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
 	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_STAR;
-	tEffectDesc.m_fEffectLifespan = /*4.f*/20;
+	tEffectDesc.m_fEffectLifespan = 4.f;
 	tEffectDesc.m_pOwner = pBossblin;
 	tEffectDesc.m_bIsPositionDynamic = true;
 

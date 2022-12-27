@@ -24,7 +24,7 @@ CBossblinState * CDieState::Tick(CBossblin * pBossblin, _float fTimeDelta)
 			else
 			{
 				m_fDeadTimer += fTimeDelta;
-				pBossblin->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_DISSOLVE);
+				pBossblin->Set_ShaderPass(VTXANIMMODELPASS::VTXANIMMODEL_DISSOLVE_BOSS);
 			}
 			break;
 	}
