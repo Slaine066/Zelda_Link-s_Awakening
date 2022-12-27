@@ -25,6 +25,9 @@ HRESULT CLevel_Field::Initialize()
 	if (FAILED(Load_Triggers_FromFile()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Sky()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
@@ -134,6 +137,18 @@ HRESULT CLevel_Field::Load_Triggers_FromFile()
 	CloseHandle(hFile);
 
 	Safe_Release(pGameInstance);
+	return S_OK;
+}
+
+HRESULT CLevel_Field::Ready_Sky()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Sky"), TEXT("Prototype_GameObject_Sky"), LEVEL_FIELD, TEXT("Layer_Sky"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

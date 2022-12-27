@@ -92,6 +92,12 @@ namespace Engine
 		XMFLOAT3		vTexture;
 	}VTXCUBETEX;
 
+	typedef struct ENGINE_DLL tagVertexCubeTexture_Declaration
+	{
+		static const unsigned int iNumElements = 2;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	}VTXCUBETEX_DECLARATION;
+
 	typedef struct tagVertexColor
 	{
 

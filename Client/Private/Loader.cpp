@@ -6,6 +6,7 @@
 #include "Camera_Player.h"
 #include "Camera_Dungeon.h"
 #include "TriggerBox_Dynamic.h"
+#include "Sky.h"
 #include "StaticObject.h"
 #include "Effect.h"
 #include "Treasure.h"
@@ -84,6 +85,10 @@ HRESULT CLoader::Loading_ForStaticLevel()
 #pragma region Loading_Textures
 	lstrcpy(m_szLoadingText, TEXT("Loading Textures.."));
 
+	/*For.Prototype_Component_Texture_Sky */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
+		return E_FAIL;
+
 	/*For.Prototype_Component_Texture_Heart */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Heart"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Heart_%d.png"), 3))))
 		return E_FAIL;
@@ -150,6 +155,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	
 	/* For.Prototype_Component_VIBuffer_Rect */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_Component_VIBuffer_Cube */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Cube"), CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_Component_Transform */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), CTransform::Create(m_pDevice, m_pContext))))
@@ -430,6 +438,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/* For.Prototype_Component_Shader_VtxAnimModel */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxAnimModel"), CShader::Create(m_pDevice, m_pContext, TEXT("../../Shaderfiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxCubeTexture */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxCubeTexture"), CShader::Create(m_pDevice, m_pContext, TEXT("../../Shaderfiles/Shader_VtxCubeTexture.hlsl"), VTXCUBETEX_DECLARATION::Elements, VTXCUBETEX_DECLARATION::iNumElements))))
+		return E_FAIL;
 
 	// >
 	// .. Add Above ..
@@ -632,6 +643,9 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_TriggerBox_Dynamic */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TriggerBox_Dynamic"), CTriggerBox_Dynamic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/*For.Prototype_GameObject_Sky */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sky"), CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_Effect */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect"), CEffect::Create(m_pDevice, m_pContext))))

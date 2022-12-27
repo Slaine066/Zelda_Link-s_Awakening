@@ -163,6 +163,9 @@
     <Filter Include="02.GameObjects\05.Effect">
       <UniqueIdentifier>{8bbe6452-63a3-4eee-a2e1-aca84de347e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Sky">
+      <UniqueIdentifier>{ccb89b73-79ac-4543-a3f3-cc6b2fab5f64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -408,6 +411,9 @@
     <ClInclude Include="..\public\Effect.h">
       <Filter>02.GameObjects\05.Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Sky.h">
+      <Filter>02.GameObjects\06.Sky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -626,6 +632,9 @@
     <ClCompile Include="..\private\Effect.cpp">
       <Filter>02.GameObjects\05.Effect</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Sky.cpp">
+      <Filter>02.GameObjects\06.Sky</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -651,6 +660,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\..\ShaderFiles\Shader_VtxAnimModel.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\ShaderFiles\Shader_VtxCubeTexture.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
