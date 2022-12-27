@@ -214,7 +214,7 @@ void CBossblin::Spawn_GuardEffect(CGameObject* pDamageCauser)
 	CEffect::EFFECTDESC tEffectDesc;
 	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
 	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_GUARD_RING;
-	tEffectDesc.m_fEffectLifespan = .3f;
+	tEffectDesc.m_fEffectLifespan = 30.f;
 	tEffectDesc.m_pOwner = this;
 	tEffectDesc.m_bIsPositionDynamic = true;
 
@@ -228,7 +228,7 @@ void CBossblin::Spawn_GuardEffect(CGameObject* pDamageCauser)
 		return;
 
 	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_GUARD;
-	tEffectDesc.m_fEffectLifespan = .15f;
+	tEffectDesc.m_fEffectLifespan = 15.f;
 
 	/* Spawn Guard Flash Effect (Model) on Shield Bone. */
 	if (FAILED(pGameInstance->Add_GameObject(TEXT("Guard_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))

@@ -53,8 +53,9 @@ HRESULT CEffect::Initialize(void * pArg)
 
 			vPosition.y += m_pTransformCom->Get_Scale(CTransform::STATE::STATE_RIGHT) / 4;
 			m_pTransformCom->Set_State(CTransform::STATE::STATE_TRANSLATION, XMLoadFloat4(&vPosition));
+
+			break;
 		}	
-		break;
 		case EFFECT_TYPE::EFFECT_SWISH:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SWISH;
@@ -63,8 +64,9 @@ HRESULT CEffect::Initialize(void * pArg)
 		case EFFECT_TYPE::EFFECT_SWORD_SLASH:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SWORDSLASH;
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_HIT_RING:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_HITRING;
@@ -79,13 +81,14 @@ HRESULT CEffect::Initialize(void * pArg)
 			m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
 			m_pTransformCom->Move_Backward(0.01f); 
 			RELEASE_INSTANCE(CGameInstance);
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_HIT:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_HIT;
 
-			m_fEffectScale = .25f;
+			m_fEffectScale = .15f;
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
@@ -95,8 +98,9 @@ HRESULT CEffect::Initialize(void * pArg)
 			m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
 			m_pTransformCom->Move_Straight(0.01f);
 			RELEASE_INSTANCE(CGameInstance);
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_HIT_FLASH:
 		{
 			m_eShaderPass = VTXTEXPASS::VTXTEX_EFFECT_HIT_FLASH;
@@ -105,8 +109,9 @@ HRESULT CEffect::Initialize(void * pArg)
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_GUARD_RING:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_GUARDRING;
@@ -149,8 +154,9 @@ HRESULT CEffect::Initialize(void * pArg)
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_GUARD:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_GUARD;
@@ -189,12 +195,13 @@ HRESULT CEffect::Initialize(void * pArg)
 			}
 
 			/* Set Scale. */
-			m_fEffectScale = .25f;
+			m_fEffectScale = .1f;
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_SHOCKWAVE_RING:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SHOCKWAVERING;
@@ -237,8 +244,9 @@ HRESULT CEffect::Initialize(void * pArg)
 
 			/* Move Straight.*/
 			m_pTransformCom->Move_Straight(.19f);
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_SHOCKWAVE:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SHOCKWAVE;
@@ -281,15 +289,16 @@ HRESULT CEffect::Initialize(void * pArg)
 
 			/* Move Straight.*/
 			m_pTransformCom->Move_Straight(.2f);
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_DEATH:
-		break;
+			break;
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
-		break;
+			break;
 		case EFFECT_TYPE::EFFECT_BOMB_EXPLOSION:
-		break;
-	}
+			break;
+	}	
 
 	return S_OK;
 }
@@ -308,8 +317,10 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
 				
-				_float fScale = m_fEffectScale + (0.f - m_fEffectScale) * m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+				/* Decrease Scale based on Time. */
+				_float fInterpFactor = m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
 
+				_float fScale = m_fEffectScale + fInterpFactor * (0.f - m_fEffectScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
@@ -318,8 +329,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_fEffectTimer += fTimeDelta;
 			}
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_HIT_RING:
 		{
 			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
@@ -331,7 +343,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 				m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
 				
 				/* Increase Scale based on Time. */
-				_float fScale = m_fEffectScale + (m_fEffectScale * 2 - m_fEffectScale) * m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+				_float fInterpFactor = m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+
+				_float fScale = m_fEffectScale + fInterpFactor * (m_fEffectScale * 2 - m_fEffectScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
@@ -340,8 +354,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_fEffectTimer += fTimeDelta;
 			}
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_HIT:
 		{
 			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
@@ -355,7 +370,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 				/* Increase Scale based on Time. */
 				if (m_fEffectTimer < m_tEffectDesc.m_fEffectLifespan / 2)
 				{
-					_float fScale = m_fEffectScale + (m_fEffectScale * 2 - m_fEffectScale) * (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / m_tEffectDesc.m_fEffectLifespan;
+					_float fInterpFactor = m_fEffectTimer / (m_tEffectDesc.m_fEffectLifespan / 2);
+
+					_float fScale = m_fEffectScale + fInterpFactor * (m_fEffectScale * 2 - m_fEffectScale);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
@@ -363,7 +380,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 				/* Decrease Scale based on Time. */
 				else
 				{
-					_float fScale = m_fEffectScale + (m_fEffectScale * .4 - m_fEffectScale) * (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / m_tEffectDesc.m_fEffectLifespan;
+					_float fInterpFactor = (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / (m_tEffectDesc.m_fEffectLifespan - (m_tEffectDesc.m_fEffectLifespan / 2));
+
+					_float fScale = m_fEffectScale * 2 + fInterpFactor * (m_fEffectScale / 4 - m_fEffectScale * 2);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
@@ -373,8 +392,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_fEffectTimer += fTimeDelta;
 			}
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_HIT_FLASH:
 		{
 			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
@@ -386,7 +406,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 				m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
 
 				/* Increase Scale based on Time. */
-				_float fScale = m_fEffectScale + (m_fEffectScale * 2 - m_fEffectScale) * m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+				_float fInterpFactor = m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+
+				_float fScale = m_fEffectScale + fInterpFactor * (m_fEffectScale * 2 - m_fEffectScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
@@ -395,8 +417,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_fEffectTimer += fTimeDelta;
 			}
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_GUARD_RING:
 		{
 			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
@@ -404,15 +427,18 @@ _uint CEffect::Tick(_float fTimeDelta)
 			else
 			{
 				/* Increase Scale based on Time. */
-				_float fScale = m_fEffectScale + (m_fEffectScale * 2 - m_fEffectScale) * m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+				_float fInterpFactor = m_fEffectTimer / m_tEffectDesc.m_fEffectLifespan;
+
+				_float fScale = m_fEffectScale + fInterpFactor * (m_fEffectScale * 2 - m_fEffectScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
 				m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
 
 				m_fEffectTimer += fTimeDelta;
 			}
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_GUARD:
 		{
 			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
@@ -422,7 +448,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 				/* Increase Scale based on Time. */
 				if (m_fEffectTimer < m_tEffectDesc.m_fEffectLifespan / 2)
 				{
-					_float fScale = m_fEffectScale + (m_fEffectScale * 2 - m_fEffectScale) * (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / m_tEffectDesc.m_fEffectLifespan;
+					_float fInterpFactor = m_fEffectTimer / (m_tEffectDesc.m_fEffectLifespan / 2);
+
+					_float fScale = m_fEffectScale + fInterpFactor * (m_fEffectScale * 2 - m_fEffectScale);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
@@ -430,7 +458,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 				/* Decrease Scale based on Time. */
 				else
 				{
-					_float fScale = m_fEffectScale + (m_fEffectScale * .4 - m_fEffectScale) * (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / m_tEffectDesc.m_fEffectLifespan;
+					_float fInterpFactor = (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan / 2)) / (m_tEffectDesc.m_fEffectLifespan - (m_tEffectDesc.m_fEffectLifespan / 2));
+
+					_float fScale = m_fEffectScale * 2 + fInterpFactor * (m_fEffectScale / 4 - m_fEffectScale * 2);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
 					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
@@ -438,8 +468,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_fEffectTimer += fTimeDelta;
 			}
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_SHOCKWAVE_RING:
 		{
 			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
@@ -455,8 +486,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_fEffectTimer += fTimeDelta;
 			}
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_SHOCKWAVE:
 		{
 			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
@@ -486,8 +518,9 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_fEffectTimer += fTimeDelta;
 			}
+
+			break;
 		}
-		break;
 		case EFFECT_TYPE::EFFECT_DEATH:
 			break;
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
