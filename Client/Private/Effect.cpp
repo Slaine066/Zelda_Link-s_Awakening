@@ -282,13 +282,30 @@ HRESULT CEffect::Initialize(void * pArg)
 			}
 
 			/* Set Scale. */
-			m_fEffectScale = .2f;
+			m_fEffectScale = .25f;
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
 
 			/* Move Straight.*/
 			m_pTransformCom->Move_Straight(.2f);
+
+			break;
+		}
+		case EFFECT_TYPE::EFFECT_STAR:
+		{
+			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_STAR;
+			
+			m_fEffectScale = .05f;
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+			RELEASE_INSTANCE(CGameInstance);
+
+			Calculate_Angle();
 
 			break;
 		}
@@ -521,6 +538,54 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 			break;
 		}
+		case EFFECT_TYPE::EFFECT_STAR:
+		{
+			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
+				return OBJ_DESTROY;
+			else
+			{
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+				/* Rotate Local. */
+				m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE::STATE_LOOK), fTimeDelta);
+
+				/* Rotate around a Point. */
+				Rotate_AroundCenter(fTimeDelta);
+
+				/* Increase Scale based on Time. */
+				if (m_fEffectTimer < m_tEffectDesc.m_fEffectLifespan / 8)
+				{
+					_float fInterpFactor = m_fEffectTimer / (m_tEffectDesc.m_fEffectLifespan / 8);
+
+					_float fScale = m_fEffectScale + fInterpFactor * (m_fEffectScale * 3 - m_fEffectScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+				}
+				/* Decrease Scale based on Time. */
+				else if (m_fEffectTimer > m_tEffectDesc.m_fEffectLifespan - (m_tEffectDesc.m_fEffectLifespan / 8))
+				{
+					_float fInterpFactor = (m_fEffectTimer - (m_tEffectDesc.m_fEffectLifespan - m_tEffectDesc.m_fEffectLifespan / 8)) / (m_tEffectDesc.m_fEffectLifespan - (m_tEffectDesc.m_fEffectLifespan - m_tEffectDesc.m_fEffectLifespan / 8));
+
+					_float fScale = m_fEffectScale * 3 + fInterpFactor * (0 - m_fEffectScale * 3);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+				}
+				else
+				{
+					
+				}
+
+				m_fEffectTimer += fTimeDelta;
+
+				RELEASE_INSTANCE(CGameInstance);
+			}
+
+			/* TODO: .. */
+
+			break;
+		}
 		case EFFECT_TYPE::EFFECT_DEATH:
 			break;
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
@@ -536,7 +601,15 @@ _uint CEffect::Late_Tick(_float fTimeDelta)
 {
 	if (m_pRendererCom)
 	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
+		if (m_tEffectDesc.m_eEffectType == EFFECT_TYPE::EFFECT_STAR)
+		{
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		}
+		else
+		{
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
+		}
+		
 		Compute_CamDistance(m_pTransformCom->Get_State(CTransform::STATE_TRANSLATION));
 	}
 
@@ -682,6 +755,7 @@ _bool CEffect::Is_ModelEffect()
 	case EFFECT_TYPE::EFFECT_GUARD:
 	case EFFECT_TYPE::EFFECT_SHOCKWAVE_RING:
 	case EFFECT_TYPE::EFFECT_SHOCKWAVE:
+	case EFFECT_TYPE::EFFECT_STAR:
 		bIsModel = true;
 		break;
 	}
@@ -728,7 +802,61 @@ _tchar * CEffect::Get_ModelPrototypeId()
 	case EFFECT_TYPE::EFFECT_SHOCKWAVE:
 		return TEXT("Prototype_Component_Model_Shockwave");
 		break;
+	case EFFECT_TYPE::EFFECT_STAR:
+		return TEXT("Prototype_Component_Model_Star");
+		break;
 	}
+}
+
+void CEffect::Calculate_Angle()
+{
+	_float4 vOrigin; 
+	XMStoreFloat4(&vOrigin, XMVectorSet(1.f, 0.f, 0.f, 0.f));
+
+	CHierarchyNode* m_pSocket = m_tEffectDesc.m_pOwner->Get_Model()->Get_BonePtr("jaw");
+	_matrix SocketMatrix = m_pSocket->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_tEffectDesc.m_pOwner->Get_Model()->Get_PivotFloat4x4()) * XMLoadFloat4x4(&m_tEffectDesc.m_pOwner->Get_Transform()->Get_World4x4());
+	_matrix mOffset = XMMatrixTranslation(0.f, .3f, 0.f);
+	_matrix mWorldMatrix = SocketMatrix * mOffset;
+
+	m_vCenterPosition;
+	XMStoreFloat4(&m_vCenterPosition, mWorldMatrix.r[3]);
+
+	_float4 vPosition;
+	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+
+	_float4 vDirection;
+	XMStoreFloat4(&vDirection, XMLoadFloat4(&vPosition) - XMLoadFloat4(&m_vCenterPosition));
+	XMStoreFloat4(&vDirection, XMVector4Normalize(XMLoadFloat4(&vDirection)));
+
+	_float fDot = XMVectorGetX(XMVector3Dot(XMLoadFloat4(&vDirection), XMLoadFloat4(&vOrigin)));
+	_float fAngle = XMConvertToDegrees(acosf(fDot));
+
+	_float4 vCross; 
+	XMStoreFloat4(&vCross, XMVector3Cross(XMLoadFloat4(&vOrigin), XMLoadFloat4(&vDirection)));
+
+	if (vCross.y > 0)
+		fAngle = 360 - fAngle;
+
+	m_fAngle = fAngle;
+}
+
+void CEffect::Rotate_AroundCenter(_float fTimeDelta)
+{
+	_float4 vPosition;
+	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+
+	//_float fDist = XMVectorGetX(XMVector4Length((XMLoadFloat4(&m_vCenterPosition) - XMLoadFloat4(&vPosition))));
+
+	_float fDistance = .2f;
+
+	m_fAngle += /*1.5f*/.1f;
+	if (m_fAngle >= 360.f)
+		m_fAngle = 0.f;
+
+	vPosition.x = m_vCenterPosition.x + cosf(XMConvertToRadians(m_fAngle)) * fDistance - sin(XMConvertToRadians(m_fAngle)) * fDistance;
+	vPosition.z = m_vCenterPosition.z + sin(XMConvertToRadians(m_fAngle)) * fDistance + cos(XMConvertToRadians(m_fAngle)) * fDistance;
+
+	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMLoadFloat4(&vPosition));
 }
 
 CEffect * CEffect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

@@ -221,6 +221,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Model_Shockwave*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Shockwave"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Effects/Shockwave/Shockwave.fbx", false, XMMatrixMultiply(XMMatrixRotationZ(XMConvertToRadians(-90.0f)), XMMatrixRotationY(XMConvertToRadians(-90.0f)))))))
 		return E_FAIL;
+	/*For.Prototype_Component_Model_Star*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Star"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Effects/Star/Star.fbx", false, PivotMatrix))))
+		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Field_** */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Field_2A"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Field/Field_2A.fbx"))))

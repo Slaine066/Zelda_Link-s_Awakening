@@ -44,6 +44,9 @@ public:
 		EFFECT_SHOCKWAVE_RING,	/* Model Effect */
 		EFFECT_SHOCKWAVE,		/* Model Effect */
 
+		/* When Bossblin is Down. */
+		EFFECT_STAR,
+
 		EFFECT_DEATH,
 		EFFECT_GET_ITEM,
 		EFFECT_BOMB_EXPLOSION,
@@ -80,6 +83,9 @@ private:
 	_tchar* Get_TextureName();
 	_tchar* Get_ModelPrototypeId();
 
+	void Calculate_Angle();
+	void Rotate_AroundCenter(_float fTimeDelta);
+
 protected:
 	CShader* m_pShaderCom = nullptr;
 	CTexture* m_pTextureCom = nullptr;
@@ -96,6 +102,9 @@ protected:
 
 	_float m_fEffectScale = 1.f;
 	_float m_fEffectTimer = 0.f;
+
+	_float m_fAngle = 0.f;
+	_float4 m_vCenterPosition;
 
 public:
 	static CEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

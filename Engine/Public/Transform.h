@@ -70,6 +70,7 @@ public:
 	void Attach_ToTarget(_fvector fTargetPosition, _fvector fDistance);																						/* Immediately attach to Specific Position. */
 	
 	void LookAt(_fvector vAt);
+	void LookAt_Soft(_fvector vAt, _fvector vUp);																											/* Does not force the Up vector. */
 
 private:			
 	TRANSFORMDESC m_TransformDesc;

@@ -133,12 +133,15 @@ HRESULT CRenderer::Render_GameObjects()
 		return E_FAIL;
 	if (FAILED(Render_NonAlphaBlend()))
 		return E_FAIL;
+	/**/
 	if (FAILED(Render_Lights()))
 		return E_FAIL;
 	if (FAILED(Render_Blend()))
 		return E_FAIL;
 	if (FAILED(Render_NonLight()))
 		return E_FAIL;
+
+
 	if (FAILED(Render_AlphaBlend()))
 		return E_FAIL;
 

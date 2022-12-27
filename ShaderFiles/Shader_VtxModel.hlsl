@@ -309,6 +309,50 @@ PS_OUT PS_MAIN_EFFECT_SHOCKWAVE(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_EFFECT_STAR(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	float4 vTextureNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3 vNormal;
+
+	vNormal = float3(vTextureNormal.x, vTextureNormal.y, sqrt(1 - vTextureNormal.x * vTextureNormal.x - vTextureNormal.y * vTextureNormal.y));
+
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBinormal, In.vNormal);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vDiffuse.a = Out.vDiffuse.g;
+
+	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.f, 0.f, 0.f);
+	Out.vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (Out.vDiffuse.a != 0)
+	{
+		float3 vFirstColor = float3(1.f, .5f, .1f);		/* Orange (when Alpha is 0) */
+		float3 vSecondColor = float3(1.f, 1.f, .35f);	/* Yellow (when Alpha is 1) */
+
+		float3 vLerpColor = lerp(vFirstColor, vSecondColor, Out.vDiffuse.r);
+		Out.vDiffuse.xyz = vLerpColor;
+
+		if (g_EffectTimer < g_EffectLifespan / 8)
+		{
+			float fInterpFactor = g_EffectTimer / (g_EffectLifespan / 8);
+			float fLerpAlpha = lerp(0, Out.vDiffuse.a, fInterpFactor);
+			Out.vDiffuse.a = fLerpAlpha;
+		}
+		else if (g_EffectTimer > g_EffectLifespan - g_EffectLifespan / 8)
+		{
+			float fInterpFactor = (g_EffectTimer - (g_EffectLifespan - g_EffectLifespan / 8)) / (g_EffectLifespan - (g_EffectLifespan - g_EffectLifespan / 8));
+			float fLerpAlpha = lerp(Out.vDiffuse.a, 0, fInterpFactor);
+			Out.vDiffuse.a = fLerpAlpha;
+		}
+	}
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Default
@@ -408,5 +452,16 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_EFFECT_SHOCKWAVE();
+	}
+
+	pass Effect_Star
+	{
+		SetRasterizerState(RS_Default);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Priority, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_EFFECT_STAR();
 	}
 }

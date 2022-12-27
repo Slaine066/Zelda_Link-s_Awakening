@@ -64,6 +64,7 @@ public:
 	_bool Get_IsProjectileAlive() { return m_bIsProjectileAlive; }
 	void Set_IsProjectileAlive(_bool bIsAlive) { m_bIsProjectileAlive = bIsAlive; }
 	CGameObject* Get_Part(CBossblin::PARTS ePart) { return m_vParts[ePart]; }
+	void Reset_StarsEffectSpawned() { m_bStarsEffectSpawned = false; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -94,6 +95,7 @@ private:
 private:
 	_bool m_bShouldRenderWeapon = false;
 	_bool m_bIsProjectileAlive = false;
+	_bool m_bStarsEffectSpawned = false;
 
 public:
 	static CBossblin* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

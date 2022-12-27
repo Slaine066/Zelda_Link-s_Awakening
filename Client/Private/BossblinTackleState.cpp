@@ -151,7 +151,7 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 	CEffect::EFFECTDESC tEffectDesc;
 	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
 	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE;
-	tEffectDesc.m_fEffectLifespan = .25f;
+	tEffectDesc.m_fEffectLifespan = .2f;
 	tEffectDesc.m_pOwner = pBossblin;
 	tEffectDesc.m_bIsPositionDynamic = true;
 
@@ -171,7 +171,7 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 				return;
 
 			tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE_RING;
-			tEffectDesc.m_fEffectLifespan = .4f;
+			tEffectDesc.m_fEffectLifespan = .3f;
 
 			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
@@ -191,7 +191,7 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 				return;
 
 			tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE_RING;
-			tEffectDesc.m_fEffectLifespan = .4f;
+			tEffectDesc.m_fEffectLifespan = .3f;
 
 			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
@@ -211,7 +211,7 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 				return;
 
 			tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE_RING;
-			tEffectDesc.m_fEffectLifespan = .4f;
+			tEffectDesc.m_fEffectLifespan = .3f;
 
 			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
@@ -231,7 +231,7 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 				return;
 
 			tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE_RING;
-			tEffectDesc.m_fEffectLifespan = .4f;
+			tEffectDesc.m_fEffectLifespan = .3f;
 
 			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
@@ -251,7 +251,7 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 				return;
 
 			tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SHOCKWAVE_RING;
-			tEffectDesc.m_fEffectLifespan = .4f;
+			tEffectDesc.m_fEffectLifespan = .3f;
 
 			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))

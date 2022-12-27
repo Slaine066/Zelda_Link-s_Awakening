@@ -18,6 +18,7 @@ public:
 
 public:
 	_float Get_DownTimer() { return m_fDownTimer; }
+	void Spawn_StarEffect(CBossblin* pBossblin);
 
 private:
 	_float m_fDownTimer = 0.f;

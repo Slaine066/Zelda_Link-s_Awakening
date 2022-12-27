@@ -20,7 +20,7 @@ CBossblinState * CHitState::AI_Behavior(CBossblin* pBossblin)
 
 CBossblinState * CHitState::Tick(CBossblin* pBossblin, _float fTimeDelta)
 {
-	if (m_fDownTimer > 3.f)
+	if (m_fDownTimer > 4.f)
 		return new CDownState(STATETYPE::STATETYPE_END);
 	else
 		m_fDownTimer += fTimeDelta;
