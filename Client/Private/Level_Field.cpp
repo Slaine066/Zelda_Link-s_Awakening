@@ -6,6 +6,7 @@
 #include "Camera_Player.h"
 #include "TriggerBox_Dynamic.h"
 #include "UI_Manager.h"
+#include "Sky.h"
 
 CLevel_Field::CLevel_Field(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext),
@@ -144,7 +145,10 @@ HRESULT CLevel_Field::Ready_Sky()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Sky"), TEXT("Prototype_GameObject_Sky"), LEVEL_FIELD, TEXT("Layer_Sky"))))
+	CSky::SKYDESC tSkyDesc;
+	tSkyDesc.m_eLevelId = CSky::SKYBOX::SKY_FIELD;
+
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Sky"), TEXT("Prototype_GameObject_Sky"), LEVEL_FIELD, TEXT("Layer_Sky"), &tSkyDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

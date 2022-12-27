@@ -14,11 +14,23 @@ END
 BEGIN(Client)
 class CSky final : public CGameObject
 {
+public:
+	enum SKYBOX
+	{
+		SKY_FIELD,
+		SKY_MORIBLINCAVE,
+		SKY_END
+	};
+
+	typedef struct tagSkyDescription
+	{
+		SKYBOX m_eLevelId;
+	} SKYDESC ;
+
 private:
 	CSky(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CSky(const CSky& rhs);
 	virtual ~CSky() = default;
-
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -35,8 +47,11 @@ private:
 	CVIBuffer_Cube* m_pVIBufferCom = nullptr;
 
 private:
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void* pArg);
 	HRESULT SetUp_ShaderResources();
+
+private:
+	SKYDESC m_tSkyDesc;
 
 public:
 	static CSky* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

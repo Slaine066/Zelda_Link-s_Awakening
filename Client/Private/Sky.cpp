@@ -20,7 +20,7 @@ HRESULT CSky::Initialize_Prototype()
 
 HRESULT CSky::Initialize(void * pArg)
 {
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -61,8 +61,11 @@ HRESULT CSky::Render()
 	return S_OK;
 }
 
-HRESULT CSky::Ready_Components()
+HRESULT CSky::Ready_Components(void* pArg)
 {
+	ZeroMemory(&m_tSkyDesc, sizeof(SKYDESC));
+	memcpy(&m_tSkyDesc, (SKYDESC*)pArg, sizeof(SKYDESC));
+
 	/* For.Com_Renderer */
 	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
@@ -103,7 +106,7 @@ HRESULT CSky::SetUp_ShaderResources()
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(3))))
+	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(m_tSkyDesc.m_eLevelId))))
 		return E_FAIL;
 
 	return S_OK;

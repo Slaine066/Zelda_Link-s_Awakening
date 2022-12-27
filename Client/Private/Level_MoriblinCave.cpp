@@ -7,6 +7,7 @@
 #include "Camera_Dungeon.h"
 #include "TriggerBox_Dynamic.h"
 #include "UI_Manager.h"
+#include "Sky.h"
 
 CLevel_MoriblinCave::CLevel_MoriblinCave(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext),
@@ -24,6 +25,9 @@ HRESULT CLevel_MoriblinCave::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Load_Triggers_FromFile()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Sky()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
@@ -141,6 +145,21 @@ HRESULT CLevel_MoriblinCave::Load_Triggers_FromFile()
 	CloseHandle(hFile);
 
 	Safe_Release(pGameInstance);
+	return S_OK;
+}
+
+HRESULT CLevel_MoriblinCave::Ready_Sky()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CSky::SKYDESC tSkyDesc;
+	tSkyDesc.m_eLevelId = CSky::SKYBOX::SKY_MORIBLINCAVE;
+
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Sky"), TEXT("Prototype_GameObject_Sky"), LEVEL_MORIBLINCAVE, TEXT("Layer_Sky"), &tSkyDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
