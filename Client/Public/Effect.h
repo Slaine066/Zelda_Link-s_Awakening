@@ -28,7 +28,6 @@ public:
 		EFFECT_SMOKE,			/* Rect Buffer Effect */	
 
 		/* When Swinging the Sword. */
-		EFFECT_SWISH,			/* Model Effect */
 		EFFECT_SWORD_SLASH,		/* Model Effect */
 
 		/* When Sword Hits. */
@@ -45,9 +44,9 @@ public:
 		EFFECT_SHOCKWAVE,		/* Model Effect */
 
 		/* When Bossblin is Down. */
-		EFFECT_STAR,
+		EFFECT_STAR,			/* Model Effect */
 
-		EFFECT_DEATH,
+		EFFECT_TREASURE,
 		EFFECT_GET_ITEM,
 		EFFECT_BOMB_EXPLOSION,
 		EFFECT_END

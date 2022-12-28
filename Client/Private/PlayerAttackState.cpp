@@ -71,11 +71,39 @@ void CAttackState::Enter(CPlayer * pPlayer)
 	m_eStateId = STATE_ID::STATE_ATTACK;
 
 	pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SLASH);
+
+	Spawn_SwordSlashEffect(pPlayer);
 }
 
 void CAttackState::Exit(CPlayer * pPlayer)
 {
 	m_bDidDamage = false;
+}
+
+void CAttackState::Spawn_SwordSlashEffect(CPlayer * pPlayer)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CEffect::EFFECTDESC tEffectDesc;
+	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_SWORD_SLASH;
+	tEffectDesc.m_fEffectLifespan = .25f;
+	tEffectDesc.m_pOwner = pPlayer;
+
+	_matrix mWorldMatrix = XMMatrixIdentity();
+	_float4 vPosition;
+	XMStoreFloat4(&vPosition, pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
+	_matrix mTranslationMatrix = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+
+	mWorldMatrix *= mTranslationMatrix;
+
+	XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, mWorldMatrix);
+
+	/* Spawn Hit Flash Effect (Rect Buffer) on Sword Bone. */
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Sword_Slash_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+		return;
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CAttackState::Spawn_HitEffect(CPlayer* pPlayer, CGameObject*& pDamaged)

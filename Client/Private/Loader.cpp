@@ -217,9 +217,6 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Model_GuardFlash*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_GuardFlash"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Effects/GuardFlash/GuardFlash.fbx", false, XMMatrixMultiply(XMMatrixRotationZ(XMConvertToRadians(-90.0f)), XMMatrixRotationY(XMConvertToRadians(-90.0f)))))))
 		return E_FAIL;
-	/*For.Prototype_Component_Model_Swish*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Swish"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Effects/Swish/Swish.fbx", false))))
-		return E_FAIL;
 	/*For.Prototype_Component_Model_SwordSlash*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_SwordSlash"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Effects/SwordSlash/SwordSlash.fbx", false))))
 		return E_FAIL;

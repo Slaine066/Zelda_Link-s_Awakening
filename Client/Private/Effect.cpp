@@ -56,14 +56,25 @@ HRESULT CEffect::Initialize(void * pArg)
 
 			break;
 		}	
-		case EFFECT_TYPE::EFFECT_SWISH:
-		{
-			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SWISH;
-		}
-		break;
 		case EFFECT_TYPE::EFFECT_SWORD_SLASH:
 		{
 			m_eShaderModelPass = VTXMODELPASS::VTXMODEL_SWORDSLASH;
+
+			_vector vRight = m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_RIGHT);
+			_vector vUp = m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_UP);
+			_vector vLook = m_tEffectDesc.m_pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_LOOK);
+
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_RIGHT, vRight);
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_UP, vUp);
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, vLook);
+
+			m_fEffectScale = .3f;
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+
+			m_pTransformCom->Move_Straight(3.f);
+			m_pTransformCom->Move_Up(2.1f);
 
 			break;
 		}
@@ -309,7 +320,7 @@ HRESULT CEffect::Initialize(void * pArg)
 
 			break;
 		}
-		case EFFECT_TYPE::EFFECT_DEATH:
+		case EFFECT_TYPE::EFFECT_TREASURE:
 			break;
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
 			break;
@@ -344,6 +355,17 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				RELEASE_INSTANCE(CGameInstance);
 
+				m_fEffectTimer += fTimeDelta;
+			}
+
+			break;
+		}
+		case EFFECT_TYPE::EFFECT_SWORD_SLASH:
+		{
+			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
+				return OBJ_DESTROY;
+			else
+			{
 				m_fEffectTimer += fTimeDelta;
 			}
 
@@ -586,7 +608,7 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 			break;
 		}
-		case EFFECT_TYPE::EFFECT_DEATH:
+		case EFFECT_TYPE::EFFECT_TREASURE:
 			break;
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
 			break;
@@ -743,7 +765,6 @@ _bool CEffect::Is_ModelEffect()
 		bIsModel = false;
 		break;
 
-	case EFFECT_TYPE::EFFECT_SWISH:
 	case EFFECT_TYPE::EFFECT_SWORD_SLASH:
 	case EFFECT_TYPE::EFFECT_HIT_RING:
 	case EFFECT_TYPE::EFFECT_HIT:
@@ -765,10 +786,8 @@ _tchar * CEffect::Get_TextureName()
 	{
 	case EFFECT_TYPE::EFFECT_SMOKE:
 		return TEXT("Prototype_Component_Texture_Smoke");
-		break;
 	case EFFECT_TYPE::EFFECT_HIT_FLASH:
 		return TEXT("Prototype_Component_Texture_Hit_Flash");
-		break;
 	}
 }
 
@@ -776,31 +795,21 @@ _tchar * CEffect::Get_ModelPrototypeId()
 {
 	switch (m_tEffectDesc.m_eEffectType)
 	{
-	case EFFECT_TYPE::EFFECT_SWISH:
-		return TEXT("Prototype_Component_Model_Swish");
-		break;
 	case EFFECT_TYPE::EFFECT_SWORD_SLASH:
 		return TEXT("Prototype_Component_Model_SwordSlash");
-		break;
 	case EFFECT_TYPE::EFFECT_HIT_RING:
 	case EFFECT_TYPE::EFFECT_GUARD_RING:
 		return TEXT("Prototype_Component_Model_HitRing");
-		break;
 	case EFFECT_TYPE::EFFECT_HIT:
 		return TEXT("Prototype_Component_Model_HitFlash");
-		break;
 	case EFFECT_TYPE::EFFECT_GUARD:
 		return TEXT("Prototype_Component_Model_GuardFlash");
-		break;
 	case EFFECT_TYPE::EFFECT_SHOCKWAVE_RING:
 		return TEXT("Prototype_Component_Model_ShockwaveRing");
-		break;
 	case EFFECT_TYPE::EFFECT_SHOCKWAVE:
 		return TEXT("Prototype_Component_Model_Shockwave");
-		break;
 	case EFFECT_TYPE::EFFECT_STAR:
 		return TEXT("Prototype_Component_Model_Star");
-		break;
 	}
 }
 
