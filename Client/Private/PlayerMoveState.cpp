@@ -27,7 +27,9 @@ CPlayerState * CMoveState::HandleInput(CPlayer * pPlayer)
 	else if (pGameInstance->Key_Down('W'))
 		return new CGuardState(STATETYPE_START);
 	else if (pGameInstance->Key_Down('Z'))
-		return new CJumpState(STATETYPE_MAIN, true);
+		return pPlayer->Use_Item();
+	else if (pGameInstance->Key_Down('X'))
+		return pPlayer->Use_Item(false);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CMoveState(DIR_STRAIGHT_LEFT, m_bFirstSmokeSpawned, m_bSecondSmokeSpawned);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))

@@ -8,6 +8,8 @@
 #include "PlayerHitState.h"
 #include "PlayerFallState.h"
 #include "PlayerAchieveState.h"
+#include "PlayerCarryState.h"
+#include "PlayerJumpState.h"
 #include "Layer.h"
 #include "UI_Manager.h"
 #include "Effect.h"
@@ -47,9 +49,6 @@ HRESULT CPlayer::Initialize(void * pArg)
 
 	m_tStats.m_fMaxHp = CUI_Manager::Get_Instance()->Get_MaxHp() == 0 ? 4 : CUI_Manager::Get_Instance()->Get_MaxHp();
 	m_tStats.m_fCurrentHp = CUI_Manager::Get_Instance()->Get_CurrentHp() == 0 ? m_tStats.m_fMaxHp : CUI_Manager::Get_Instance()->Get_CurrentHp();
-	/*m_tStats.m_fAttackPower = 1;
-	m_tStats.m_fWalkSpeed = .7f;
-	m_tStats.m_fRunSpeed = 1.4f;*/
 
 	CPlayerState* pState = new CIdleState();
 	m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
@@ -273,6 +272,7 @@ _bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 	case ANIM_LADDER_DOWN:
 	case ANIM_LADDER_UP:
 	case ANIM_LADDER_WAIT:
+	case ANIM_MOVE_CARRY:
 	case ANIM_PULL:
 	case ANIM_PULL_IDLE:
 	case ANIM_PUSH:
@@ -374,6 +374,50 @@ void CPlayer::HandleFall(_float fTimeDelta)
 		CPlayerState* pState = new CFallState();
 		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
 	}
+}
+
+CPlayerState* CPlayer::Use_Item(_bool bIsX)
+{
+	INVENTORYOBJDESC* tInvObjDesc = nullptr;
+
+	if (bIsX)
+		tInvObjDesc = CInventory::Get_Instance()->Get_ItemX();
+	else
+		tInvObjDesc = CInventory::Get_Instance()->Get_ItemY();
+
+	if (!tInvObjDesc)
+		return nullptr;
+
+	CPlayerState* pNewState = nullptr;
+
+	/* Change State based on Item used. */
+	switch (tInvObjDesc->m_eItemId)
+	{
+	case ITEMID::ITEM_BOMB:
+		pNewState = new CCarryState(CPlayerState::STATETYPE::STATETYPE_START);
+		break;
+	case ITEMID::ITEM_ROCFEATHER:
+	{
+		CPlayerState::STATE_ID eStateId = m_pPlayerState->Get_StateId();
+		switch (eStateId)
+		{
+			case CPlayerState::STATE_ID::STATE_IDLE:
+				pNewState = new CJumpState(CPlayerState::STATETYPE::STATETYPE_MAIN);
+				break;
+			case CPlayerState::STATE_ID::STATE_MOVE:
+				pNewState =  new CJumpState(CPlayerState::STATETYPE::STATETYPE_MAIN, true);
+				break;
+		}
+	}
+	case ITEMID::ITEM_BOW:
+		break;
+	}
+
+	/* Decrease Item Counter. */
+	CInventory* pInventory = CInventory::Get_Instance();
+	pInventory->Decrease_ItemCount(tInvObjDesc->m_eItemId, bIsX ? pInventory->Get_IndexItemX() : pInventory->Get_IndexItemY());
+
+	return pNewState;
 }
 
 void CPlayer::Spawn_GuardEffect()

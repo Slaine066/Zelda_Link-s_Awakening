@@ -22,6 +22,8 @@ HRESULT CUI_Manager::Initialize()
 	if (m_bIsLoaded)
 		return S_OK;
 
+	m_ItemIcons.resize(12);
+
 	Build_Inventory(); /* Need to be executed first, so other UI component will be visible on top of the Inventory UI. */
 	Build_GameItemSlots();
 	Build_Hearts();
@@ -399,6 +401,7 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 	pGameInstance->Add_GameObject_Out(TEXT("Item_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pInventoryIcon, &tUIDesc);
 
 	pInventoryIcon->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INVENTORY);
+	m_ItemIcons[iIndex] = pInventoryIcon;
 
 	/* Add UI_ItemChip to Inventory. */
 	if (tItem.m_bIsCountable)
@@ -463,7 +466,10 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 void CUI_Manager::Add_ItemX()
 {
 	if (m_pItemIconX)
+	{
 		m_pItemIconX->Set_ShouldDestroy(true);
+		m_pItemIconX = nullptr;
+	}
 
 	if (m_pInventory->Get_ItemX())
 	{
@@ -490,7 +496,10 @@ void CUI_Manager::Add_ItemX()
 void CUI_Manager::Add_ItemY()
 {
 	if (m_pItemIconY)
+	{
 		m_pItemIconY->Set_ShouldDestroy(true);
+		m_pItemIconY = nullptr;
+	}
 
 	if (m_pInventory->Get_ItemY())
 	{
@@ -512,6 +521,41 @@ void CUI_Manager::Add_ItemY()
 		m_pItemIconY->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INGAME);
 		RELEASE_INSTANCE(CGameInstance);
 	}
+}
+
+void CUI_Manager::Remove_ItemFromInventory(_uint iIndex)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	/* Delete: */
+	/*	- Inventory Item Icon; */
+	m_ItemIcons[iIndex]->Set_ShouldDestroy(true);
+	m_ItemIcons[iIndex] = nullptr;
+
+	/*	- Inventory Item Chip; */
+	/* Gets deleted automatically when counter reaches 0. */
+
+	/*- In Game Item Icon. */
+	if (iIndex == m_pInventory->Get_IndexItemX())
+	{
+		m_pItemIconX->Set_ShouldDestroy(true);
+		m_pItemIconX = nullptr;
+	}
+	else if (iIndex == m_pInventory->Get_IndexItemY())
+	{
+		m_pItemIconY->Set_ShouldDestroy(true);
+		m_pItemIconY = nullptr;
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CUI_Manager::Remove_ItemX()
+{
+}
+
+void CUI_Manager::Remove_ItemY()
+{
 }
 
 void CUI_Manager::Free()

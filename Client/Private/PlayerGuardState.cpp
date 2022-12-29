@@ -74,12 +74,10 @@ CPlayerState * CGuardState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 	{
 		switch (m_eStateType)
 		{
-		case STATETYPE_START:
-			return new CGuardState(STATETYPE_MAIN);
-			break;
-		case STATETYPE_END:
-			return new CIdleState();
-			break;
+			case STATETYPE_START:
+				return new CGuardState(STATETYPE_MAIN);
+			case STATETYPE_END:
+				return new CIdleState();
 		}
 	}
 

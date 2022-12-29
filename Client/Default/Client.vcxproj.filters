@@ -414,6 +414,15 @@
     <ClInclude Include="..\public\Sky.h">
       <Filter>02.GameObjects\06.Sky</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerCarryState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerThrowState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerCarryMoveState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -634,6 +643,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
       <Filter>02.GameObjects\06.Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerCarryState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerThrowState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerCarryMoveState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -35,6 +35,12 @@ _uint CUI_ItemChip::Tick(_float fTimeDelta)
 	if (FAILED(__super::Tick(fTimeDelta)))
 		return E_FAIL;
 
+	if (CInventory::Get_Instance()->Get_ItemCounter(m_iSlotIndex) == 0)
+		m_bShouldDestroy = true;
+
+	if (m_bShouldDestroy)
+		return OBJ_DESTROY;
+
 	return OBJ_NOEVENT;
 }
 

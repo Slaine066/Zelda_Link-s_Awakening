@@ -46,6 +46,7 @@ public:
 	virtual HRESULT SetUp_ShaderResources();
 
 public:
+	void Set_IsSpendable(_bool bIsSpendable) { m_bIsSpendable = bIsSpendable; }
 	ITEMDESC Get_ItemDesc() { return m_tItemDesc; }
 	_bool Is_AnimationLoop(_uint eAnimId);
 	_tchar* Get_ModelPrototypeId(ITEMID eItemId);
@@ -54,6 +55,7 @@ public:
 protected:
 	ITEMDESC m_tItemDesc;
 	_bool m_bIsAnimationFinished = false;
+	_bool m_bIsSpendable = false;
 
 public:
 	static CItem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

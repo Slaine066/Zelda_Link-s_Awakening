@@ -48,6 +48,10 @@ public:
 	void Add_ItemX();
 	void Add_ItemY();
 
+	void Remove_ItemFromInventory(_uint iIndex);
+	void Remove_ItemX();
+	void Remove_ItemY();
+
 	void Render_Rupees();
 
 	/* Functions which get executed every Tick() and update the UI. */
@@ -61,22 +65,25 @@ private:
 
 	MODE m_eMode = MODE_END;
 
+/* = = = UI General = = = */
 	/* Hearts Variables */
 	vector<class CUI_Heart*> m_Hearts;
 	_float m_fMaxHp = 0.f;
 	_float m_fCurrentHp = 0.f;
 
+/* = = = UI Inventory = = = */
 	class CInventory* m_pInventory = nullptr;
 
 	/* Rupees Variables */
 	_tchar m_szRupees[MAX_PATH] = TEXT("");
 
-	/* Item Slots Variables */
+	/* Item Slots/Icons Variables */
 	class CUI_ItemSlot* m_pGameSlotX = nullptr;
 	class CUI_ItemSlot* m_pGameSlotY = nullptr;
 	class CUI_InventoryItem* m_pItemIconX = nullptr;
 	class CUI_InventoryItem* m_pItemIconY = nullptr;
 	vector<class CUI_ItemSlot*> m_ItemSlots;
+	vector<class CUI_InventoryItem*> m_ItemIcons;
 	_int m_iCurrentSlotIndex = 0;
 
 public:

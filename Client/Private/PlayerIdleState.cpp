@@ -26,7 +26,9 @@ CPlayerState * CIdleState::HandleInput(CPlayer * pPlayer)
 	else if (pGameInstance->Key_Down('W'))
 		return new CGuardState(STATETYPE_START);
 	else if (pGameInstance->Key_Down('Z'))
-		return new CJumpState(STATETYPE_MAIN);
+		return pPlayer->Use_Item();
+	else if (pGameInstance->Key_Down('X'))
+		return pPlayer->Use_Item(false);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))

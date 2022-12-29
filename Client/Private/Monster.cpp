@@ -72,19 +72,34 @@ void CMonster::DropItems()
 	switch ((ITEMID)iRand)
 	{
 		case ITEMID::ITEM_RUPEE_GREEN:
-		case ITEMID::ITEM_BOMB:
+		{
 			tItemDesc.m_eItemId = (ITEMID)iRand;
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Item"), TEXT("Prototype_GameObject_Item"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Item"), &tItemDesc)))
+				return;
+
+			RELEASE_INSTANCE(CGameInstance);
+
 			break;
+		}
+		case ITEMID::ITEM_BOMB:
+		{	
+			tItemDesc.m_eItemId = (ITEMID)iRand;
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			
+			if (FAILED(pGameInstance->Add_GameObject(TEXT("Item"), TEXT("Prototype_GameObject_Item"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Item"), &tItemDesc)))
+				return;
+
+			RELEASE_INSTANCE(CGameInstance);
+
+			break;
+		}
 		default:
 			return; /* Just return if out of Item Drop range. */
 	}
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Item"), TEXT("Prototype_GameObject_Item"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Item"), &tItemDesc)))
-		return;
-
-	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CMonster::Free()

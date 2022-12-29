@@ -27,15 +27,25 @@ void CInventory::Add_Item(ITEMID eItemId)
 	}
 }
 
-void CInventory::Remove_Item(ITEMID eItemId, _uint iCount)
+void CInventory::Decrease_ItemCount(ITEMID eItemId, _uint iItemIndex, _uint iDecreaseAmount)
 {
 	switch ((ITEMID)eItemId)
 	{
-		case ITEMID::ITEM_RUPEE_GREEN:
-			m_iRupees -= iCount;
-			break;
-		case ITEMID::ITEM_BOMB:
-			break;
+	case ITEMID::ITEM_RUPEE_GREEN:
+		if (m_iRupees - iDecreaseAmount >= 0)
+			m_iRupees -= iDecreaseAmount;
+		else
+			m_iRupees = 0;
+		break;
+	case ITEMID::ITEM_BOMB:
+		if (m_Items[iItemIndex].m_iCounter - iDecreaseAmount > 0)
+			m_Items[iItemIndex].m_iCounter -= iDecreaseAmount;
+		else
+		{
+			Remove_FromInventory(iItemIndex);
+			CUI_Manager::Get_Instance()->Remove_ItemFromInventory(iItemIndex);
+		}
+		break;
 	}
 }
 
@@ -75,6 +85,13 @@ void CInventory::Add_ToInventory(ITEMID eItemId)
 			return;
 		}
 	}
+}
+
+void CInventory::Remove_FromInventory(_uint iIndex)
+{
+	m_Items[iIndex].m_eItemId = ITEMID::ITEM_END;
+	m_Items[iIndex].m_bIsCountable = false;
+	m_Items[iIndex].m_iCounter = 0;
 }
 
 void CInventory::Free()

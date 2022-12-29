@@ -49,10 +49,11 @@ public:
 	
 	/* Inventory Functions */
 	void Add_Item(ITEMID eItemId);
-	void Remove_Item(ITEMID eItemId, _uint iCount = 1);
+	void Decrease_ItemCount(ITEMID eItemId, _uint iItemIndex, _uint iDecreaseAmount = 1);
 
 private:
 	void Add_ToInventory(ITEMID eItemId);
+	void Remove_FromInventory(_uint iIndex);
 
 private:
 	_uint m_iRupees = 0.f;

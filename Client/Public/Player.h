@@ -24,25 +24,25 @@ class CPlayer final : public CCharacter
 public:
 	enum MESHID
 	{
-		MESH_SHOVEL,			// 2
-		MESH_SWORD_B_HANDLE,	// 19
-		MESH_SHIELD_A,			// 13
-		MESH_SHIELD_B_MIRROR,	// 15
-		MESH_BOOTS,				// 6
 		MESH_ARMS_LEGS,			// 3
-		MESH_BELT,				// 4
-		MESH_SWORD_A,			// 16
-		MESH_SHIELD_B,			// 14
-		MESH_EYES,				// 8
-		MESH_HOOKSHOT,			// 12
-		MESH_SWORD_A_HANDLE,	// 17
-		MESH_OCARINA,			// 1
-		MESH_MOUTH,				// 9
+		MESH_SWORD_B_HANDLE,	// 19
+		MESH_SHIELD_B_MIRROR,	// 15
+		MESH_EARS,				// 7
 		MESH_HAIR,				// 11
 		MESH_MAGIC_ROD,			// 0
+		MESH_BELT,				// 4
+		MESH_HOOKSHOT,			// 12
+		MESH_SWORD_A,			// 16
+		MESH_EYES,				// 8
 		MESH_BODY,				// 5
+		MESH_SWORD_A_HANDLE,	// 17
+		MESH_OCARINA,			// 1
+		MESH_SHIELD_A,			// 13
+		MESH_MOUTH,				// 9
+		MESH_SHOVEL,			// 2
 		MESH_SWORD_B,			// 18
-		MESH_EARS,				// 7
+		MESH_SHIELD_B,			// 14
+		MESH_BOOTS,				// 6
 		MESH_FLIPPERS,			// 10
 		MESH_END
 	};
@@ -77,6 +77,7 @@ public:
 		ANIM_LADDER_UP_START,
 		ANIM_LADDER_WAIT,
 		ANIM_LAND,
+		ANIM_MOVE_CARRY,
 		ANIM_PULL,
 		ANIM_PULL_START,
 		ANIM_PULL_IDLE,
@@ -136,6 +137,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual _float Take_Damage(float fDamage, void* DamageType, CGameObject* DamageCauser) override;
 
+	class CPlayerState* Use_Item(_bool bIsX = true);
 	void Spawn_GuardEffect();
 
 private:
