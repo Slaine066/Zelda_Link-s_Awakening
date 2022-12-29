@@ -11,6 +11,7 @@ public:
 	{
 		PROJECTILE_MORIBLINSPEAR,
 		PROJECTILE_BOSSBLINSPEAR,
+		PROJECTILE_PLAYERBOMB,
 		PROJECTILE_END
 	};
 
@@ -45,13 +46,23 @@ private:
 private:
 	void MoriblinSpear_Tick(_float fTimeDelta);
 	void BossblinSpear_Tick(_float fTimeDelta);
+	void PlayerBomb_Tick(_float fTimeDelta);
 	void MoriblinSpear_Collision();
 	void BossblinSpear_Collision();
 
 private:
 	PROJECTILEDESC m_tProjectileDesc;
+
 	_float m_fAliveTimer = 0.f;
 
+	/* Bomb Variables */
+	_float4 m_vProjectileDirection;
+	_uint m_iBounces = 0;
+	_uint m_iMaxBounces = 3;
+	_bool m_bBounceSwitch = true;
+	_float m_fBouncePower = 2.f;
+	_bool m_bShouldStartCountdown = false;
+	
 public:
 	static CProjectile* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr);

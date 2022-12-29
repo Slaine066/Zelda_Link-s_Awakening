@@ -31,7 +31,7 @@ HRESULT CWeapon::Initialize(void * pArg)
 	m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, .4f);
 
 	/* Revert PivotMatrix. */
-	if (wcscmp(m_WeaponDesc.pModelPrototypeId, TEXT("Prototype_Component_Model_BossblinSpear"))) /* PivotMatrix has not been applied to Bossblin Spear.*/
+	if (!wcscmp(m_WeaponDesc.pModelPrototypeId, TEXT("Prototype_Component_Model_Spear")))
 		m_pTransformCom->Set_RotationY(180.f);
 
 	return S_OK;
@@ -53,6 +53,15 @@ _uint CWeapon::Tick(_float fTimeDelta)
 	SocketMatrix.r[0] = XMVector3Normalize(SocketMatrix.r[0]);
 	SocketMatrix.r[1] = XMVector3Normalize(SocketMatrix.r[1]);
 	SocketMatrix.r[2] = XMVector3Normalize(SocketMatrix.r[2]);
+
+	if (!wcscmp(m_WeaponDesc.pModelPrototypeId, TEXT("Prototype_Component_Model_Bomb")))
+	{
+		_float4 vPosition;
+		XMStoreFloat4(&vPosition, SocketMatrix.r[3]);
+		vPosition.y += .1f;
+
+		memcpy(&SocketMatrix.r[3], &XMLoadFloat4(&vPosition), sizeof(_vector));
+	}
 
 	XMStoreFloat4x4(&m_CombinedWorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
 

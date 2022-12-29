@@ -10,9 +10,11 @@
 #include "PlayerAchieveState.h"
 #include "PlayerCarryState.h"
 #include "PlayerJumpState.h"
+#include "Weapon.h"
 #include "Layer.h"
 #include "UI_Manager.h"
 #include "Effect.h"
+#include "Projectile.h"
 
 using namespace Player;
 
@@ -68,7 +70,10 @@ _uint CPlayer::Tick(_float fTimeDelta)
 	HandleInvincibility(fTimeDelta);
 
 	HandleInput();
-	TickState(fTimeDelta);		
+	TickState(fTimeDelta);
+
+	if (m_pWeapon)
+		m_pWeapon->Tick(fTimeDelta);
 
 	return OBJ_NOEVENT;
 }
@@ -81,9 +86,18 @@ _uint CPlayer::Late_Tick(_float fTimeDelta)
 		return iEvent;
 
 	if (m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
+		if (m_pWeapon)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, m_pWeapon);
+	}
+
 	LateTickState(fTimeDelta);
+
+	if (m_pWeapon)
+		m_pWeapon->Late_Tick(fTimeDelta);
+
 	HandleFall(fTimeDelta);
 
 	/* Reset HIT Shader Pass. */
@@ -112,6 +126,9 @@ HRESULT CPlayer::Render()
 	{
 		if (i == MESH_SWORD_B || i == MESH_SWORD_B_HANDLE|| i == MESH_SHIELD_B|| i == MESH_SHIELD_B_MIRROR|| i == MESH_MAGIC_ROD ||
 			i == MESH_HOOKSHOT || i == MESH_OCARINA || i == MESH_SHOVEL || i == MESH_FLIPPERS)
+			continue;
+
+		if ((i == MESH_SWORD_A && !m_bShowSword) || (i == MESH_SWORD_A_HANDLE && !m_bShowSword))
 			continue;
 
 		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
@@ -146,6 +163,12 @@ _float CPlayer::Take_Damage(float fDamage, void * DamageType, CGameObject * Dama
 			CPlayerState* pState = new CHitState(DamageCauser->Get_Position());
 			m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
 
+			if (m_pWeapon)
+			{
+				Unset_WeaponBomb();
+				m_bShowSword = true;
+			}
+
 			m_bIsInvincible = true;
 		}
 		else
@@ -155,6 +178,12 @@ _float CPlayer::Take_Damage(float fDamage, void * DamageType, CGameObject * Dama
 			m_pModelCom->Reset_CurrentAnimation();
 			CPlayerState* pState = new CHitState(DamageCauser->Get_Position());
 			m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
+
+			if (m_pWeapon)
+			{
+				Unset_WeaponBomb();
+				m_bShowSword = true;
+			}
 
 			m_bIsInvincible = true;
 		}
@@ -420,6 +449,80 @@ CPlayerState* CPlayer::Use_Item(_bool bIsX)
 	return pNewState;
 }
 
+HRESULT CPlayer::Set_WeaponBomb()
+{
+	m_bShowSword = false;
+
+	/* For.Bomb */
+	CHierarchyNode*	pSocket = m_pModelCom->Get_BonePtr("itemA_L");
+	if (!pSocket)
+		return E_FAIL;
+
+	CWeapon::WEAPONDESC WeaponDesc;
+	WeaponDesc.pSocket = pSocket;
+	WeaponDesc.pParentWorldMatrix = m_pTransformCom->Get_World4x4Ptr();
+	WeaponDesc.SocketPivotMatrix = m_pModelCom->Get_PivotFloat4x4();
+	WeaponDesc.bIsPlayerWeapon = false;
+	WeaponDesc.pModelPrototypeId = TEXT("Prototype_Component_Model_Bomb");
+
+	CCollider::COLLIDERDESC tColliderDesc;
+	ZeroMemory(&tColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	tColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_OUTPUT;
+	tColliderDesc.vScale = _float3(1.f, 1.f, 1.f);
+	tColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+
+	WeaponDesc.tColliderDesc = tColliderDesc;
+
+	Safe_AddRef(pSocket);
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	m_pWeapon = pGameInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc);
+	if (!m_pWeapon)
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+HRESULT CPlayer::Unset_WeaponBomb()
+{
+	m_pWeapon->Set_ShouldDestroy(true);
+	m_pWeapon = nullptr;
+
+	return S_OK;
+}
+
+void CPlayer::Spawn_BombProjectile()
+{
+	CProjectile::PROJECTILEDESC tProjectileDesc;
+	ZeroMemory(&tProjectileDesc, sizeof(CProjectile::PROJECTILEDESC));
+	tProjectileDesc.pOwner = this;
+	tProjectileDesc.eProjectileType = CProjectile::PROJECTILE_TYPE::PROJECTILE_PLAYERBOMB;
+	tProjectileDesc.bIsPlayerProjectile = true;
+	tProjectileDesc.fProjectileSpeed = 1.f;
+	tProjectileDesc.pModelPrototypeId = TEXT("Prototype_Component_Model_Bomb");
+	
+	if (!m_pWeapon)
+		return;
+	CWeapon* pBomb = dynamic_cast<CWeapon*>(m_pWeapon);
+	if (!pBomb)
+		return;
+	tProjectileDesc.mWorldMatrix = pBomb->Get_CombinedWorldMatrix();
+
+	CCollider::COLLIDERDESC tColliderDesc;
+	ZeroMemory(&tColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	tColliderDesc.eAim = CCollider::AIM::AIM_DAMAGE_OUTPUT;
+	tColliderDesc.vScale = _float3(5.f, 5.f, 5.f);
+	tColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	tProjectileDesc.tColliderDesc = tColliderDesc;
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Bomb_Projectile"), TEXT("Prototype_GameObject_Projectile"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Projectile"), &tProjectileDesc)))
+		return;
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
 void CPlayer::Spawn_GuardEffect()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -479,4 +582,5 @@ void CPlayer::Free()
 	__super::Free();
 
 	Safe_Delete(m_pPlayerState);
+	Safe_Release(m_pWeapon);
 }

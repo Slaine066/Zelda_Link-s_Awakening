@@ -47,7 +47,7 @@ CPlayerState * CCarryMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 {
 	Move(pPlayer, fTimeDelta);
 
-	pPlayer->Get_Model()->Play_Animation(fTimeDelta * 2, m_bIsAnimationFinished, pPlayer->Is_AnimationLoop(pPlayer->Get_Model()->Get_CurrentAnimIndex()));
+	pPlayer->Get_Model()->Play_Animation(fTimeDelta * 1.5f, m_bIsAnimationFinished, pPlayer->Is_AnimationLoop(pPlayer->Get_Model()->Get_CurrentAnimIndex()));
 
 	return nullptr;
 }
@@ -62,10 +62,12 @@ void CCarryMoveState::Enter(CPlayer * pPlayer)
 	m_eStateId = STATE_ID::STATE_CARRY_MOVE;
 
 	pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_MOVE_CARRY);
+	pPlayer->Get_Transform()->Change_Speed(pPlayer->Get_Stats().m_fWalkSpeed);
 }
 
 void CCarryMoveState::Exit(CPlayer * pPlayer)
 {
+	pPlayer->Get_Transform()->Change_Speed(pPlayer->Get_Stats().m_fRunSpeed);
 }
 
 void CCarryMoveState::Move(CPlayer * pPlayer, _float fTimeDelta)

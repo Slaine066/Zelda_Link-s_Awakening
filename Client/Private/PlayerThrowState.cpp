@@ -20,6 +20,15 @@ CPlayerState * CThrowState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 	pPlayer->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pPlayer->Is_AnimationLoop(pPlayer->Get_Model()->Get_CurrentAnimIndex()));
 	pPlayer->Sync_WithNavigationHeight();
 
+	if (pPlayer->Get_Model()->Is_Keyframe("itemA_L", 12) && !m_bIsBombDisappeared)
+	{
+		/* Be sure to call this function before "Unset_WeaponBomb()" because it needs the Weapon position in order spawn. */
+		pPlayer->Spawn_BombProjectile();
+		pPlayer->Unset_WeaponBomb();
+	
+		m_bIsBombDisappeared = true;
+	}
+
 	return nullptr;
 }
 
@@ -40,4 +49,5 @@ void CThrowState::Enter(CPlayer * pPlayer)
 
 void CThrowState::Exit(CPlayer * pPlayer)
 {
+	pPlayer->Set_ShowSword(true);
 }

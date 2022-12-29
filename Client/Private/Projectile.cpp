@@ -33,16 +33,37 @@ HRESULT CProjectile::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (m_tProjectileDesc.eProjectileType == PROJECTILE_TYPE::PROJECTILE_MORIBLINSPEAR ||
-		m_tProjectileDesc.eProjectileType == PROJECTILE_TYPE::PROJECTILE_BOSSBLINSPEAR)
+	switch (m_tProjectileDesc.eProjectileType)
 	{
-		_float4 vPosition;
-		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+		case PROJECTILE_TYPE::PROJECTILE_MORIBLINSPEAR:
+		case PROJECTILE_TYPE::PROJECTILE_BOSSBLINSPEAR:
+		{
+			_float4 vPosition;
+			XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
 
-		_vector vTargetPosition = XMVectorSet(m_tProjectileDesc.vTargetPosition.x, vPosition.y, m_tProjectileDesc.vTargetPosition.z, 1.f);
+			_vector vTargetPosition = XMVectorSet(m_tProjectileDesc.vTargetPosition.x, vPosition.y, m_tProjectileDesc.vTargetPosition.z, 1.f);
 
-		_vector vLook = vTargetPosition - XMLoadFloat4(&vPosition);
-		m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, XMVector3Normalize(vLook) * m_pTransformCom->Get_Scale(CTransform::STATE::STATE_LOOK));
+			_vector vLook = vTargetPosition - XMLoadFloat4(&vPosition);
+			m_pTransformCom->Set_State(CTransform::STATE::STATE_LOOK, XMVector3Normalize(vLook) * m_pTransformCom->Get_Scale(CTransform::STATE::STATE_LOOK));
+
+			break;
+		}
+		case PROJECTILE_TYPE::PROJECTILE_PLAYERBOMB:
+		{
+			_float4 vPosition;
+			XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+
+			_float4 vOwnerPosition;
+			XMStoreFloat4(&vOwnerPosition, m_tProjectileDesc.pOwner->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
+			vOwnerPosition.y = vPosition.y;
+
+			_vector vDirection = XMLoadFloat4(&vPosition) - XMLoadFloat4(&vOwnerPosition);
+			vDirection = XMVector4Normalize(vDirection);
+
+			XMStoreFloat4(&m_vProjectileDirection, vDirection);
+
+			break;
+		}
 	}
 
 	return S_OK;
@@ -68,6 +89,10 @@ _uint CProjectile::Tick(_float fTimeDelta)
 			break;
 		case PROJECTILE_BOSSBLINSPEAR:
 			BossblinSpear_Tick(fTimeDelta);
+			break;
+		case PROJECTILE_PLAYERBOMB:
+			PlayerBomb_Tick(fTimeDelta);
+			break;
 	}
 
 	return OBJ_NOEVENT;
@@ -156,8 +181,27 @@ HRESULT CProjectile::Ready_Components(void* pArg)
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	memcpy(&ColliderDesc, &m_tProjectileDesc.tColliderDesc, sizeof(CCollider::COLLIDERDESC));
 
-	/* For.Com_Collider*/
-	if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+	if (m_tProjectileDesc.eProjectileType == PROJECTILE_TYPE::PROJECTILE_PLAYERBOMB)
+	{
+		/* For.Com_Collider*/
+		if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_Sphere"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+			return E_FAIL;
+	}
+	else
+	{
+		/* For.Com_Collider*/
+		if (FAILED(__super::Add_Components(TEXT("Com_Collider"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+			return E_FAIL;
+	}
+
+	CNavigation::NAVDESC NavDesc;
+	ZeroMemory(&NavDesc, sizeof(CNavigation::NAVDESC));
+	XMStoreFloat3(&NavDesc.vInitialPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+
+	_uint iLevelIndex = CGameInstance::Get_Instance()->Get_NextLevelIndex();
+
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_Components(TEXT("Com_Navigation"), iLevelIndex, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationCom, &NavDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -298,6 +342,47 @@ void CProjectile::BossblinSpear_Tick(_float fTimeDelta)
 	}
 	else
 		m_fAliveTimer += fTimeDelta;
+}
+
+void CProjectile::PlayerBomb_Tick(_float fTimeDelta)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (!m_bShouldStartCountdown)
+	{
+		_float4 vPosition;
+
+		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+		XMStoreFloat4(&vPosition, XMLoadFloat4(&vPosition) + XMVector4Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f)) * m_pTransformCom->Get_TransformDesc().fSpeedPerSec * fTimeDelta * m_fBouncePower);
+		XMStoreFloat4(&vPosition, XMLoadFloat4(&vPosition) + XMVector4Normalize(XMLoadFloat4(&m_vProjectileDirection)) * m_pTransformCom->Get_TransformDesc().fSpeedPerSec * fTimeDelta);
+
+		if (m_pNavigationCom->CanMove(XMLoadFloat4(&vPosition)))
+			m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMLoadFloat4(&vPosition));
+		else
+			XMStoreFloat4(&m_vProjectileDirection, (XMLoadFloat4(&m_vProjectileDirection) * -1));
+
+		_float fNavigationHeight = m_pNavigationCom->Get_NavigationHeight(_float3(vPosition.x, vPosition.y, vPosition.z));
+		m_fBouncePower -= 0.05f;
+
+		if (vPosition.y <= fNavigationHeight + 0.1f)
+		{
+			if (m_iBounces < m_iMaxBounces)
+			{
+				m_iBounces++;
+				m_fBouncePower = 2.f / (m_iBounces + 1);
+			}
+			else
+				m_bShouldStartCountdown = true;
+		}
+		else
+			m_fBouncePower -= 0.05f;
+	}
+	else
+	{
+		/* TODO: Should start countdown. */
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 CProjectile* CProjectile::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

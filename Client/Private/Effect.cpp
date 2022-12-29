@@ -206,7 +206,7 @@ HRESULT CEffect::Initialize(void * pArg)
 			}
 
 			/* Set Scale. */
-			m_fEffectScale = .1f;
+			m_fEffectScale = .125f;
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
 			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);

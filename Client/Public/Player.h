@@ -123,6 +123,7 @@ public:
 	void Set_AchieveState();
 	_bool Get_CanPickup() { return m_bCanPickup; }
 	void Set_CanPickup(_bool bCanPickup) { m_bCanPickup = bCanPickup; }
+	void Set_ShowSword(_bool bShowSword) { m_bShowSword = bShowSword; }
 
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -138,6 +139,10 @@ public:
 	virtual _float Take_Damage(float fDamage, void* DamageType, CGameObject* DamageCauser) override;
 
 	class CPlayerState* Use_Item(_bool bIsX = true);
+	HRESULT Set_WeaponBomb();
+	HRESULT Unset_WeaponBomb();
+	void Spawn_BombProjectile();
+
 	void Spawn_GuardEffect();
 
 private:
@@ -162,6 +167,9 @@ private:
 
 	class CInteractableObject* m_pCurrentInteractableObject = nullptr;
 	_bool m_bCanPickup = true;
+
+	CGameObject* m_pWeapon = nullptr;
+	_bool m_bShowSword = true;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

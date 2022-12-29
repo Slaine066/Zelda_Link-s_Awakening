@@ -75,6 +75,7 @@ void CCarryState::Enter(CPlayer * pPlayer)
 	{
 		case STATETYPE_START:
 			pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_CARRY);
+			pPlayer->Set_WeaponBomb();
 			break;
 		case STATETYPE_MAIN:
 			pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_IDLE_CARRY);
