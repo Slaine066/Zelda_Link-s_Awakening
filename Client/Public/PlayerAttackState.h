@@ -18,7 +18,7 @@ public:
 
 private:
 	void Spawn_SwordSlashEffect(CPlayer* pPlayer);
-	void Spawn_HitEffect(CPlayer* pPlayer, CGameObject*& pDamaged);
+	static void Spawn_HitEffect(CPlayer* pPlayer, CGameObject*& pDamaged);
 
 private:
 	_bool m_bIsSwordSlashEffectSpawned = false;

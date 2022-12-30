@@ -117,16 +117,13 @@ _float CMoriblinSword::Take_Damage(float fDamage, void * DamageType, CGameObject
 {
 	if (fDamage > 0.f)
 	{
-		if (m_pMoriblinSwordState->Get_StateId() == CMoriblinSwordState::STATE_ID::STATE_IDLE || 
-			m_pMoriblinSwordState->Get_StateId() == CMoriblinSwordState::STATE_ID::STATE_ATTACK || 
-			m_pMoriblinSwordState->Get_StateId() == CMoriblinSwordState::STATE_ID::STATE_GUARD)
+		if ((m_pMoriblinSwordState->Get_StateId() == CMoriblinSwordState::STATE_ID::STATE_IDLE ||
+			m_pMoriblinSwordState->Get_StateId() == CMoriblinSwordState::STATE_ID::STATE_ATTACK ||
+			m_pMoriblinSwordState->Get_StateId() == CMoriblinSwordState::STATE_ID::STATE_GUARD) && m_pMoriblinSwordState->Has_Aggro())
 		{
-			if (m_pMoriblinSwordState->Has_Aggro())
-			{
-				m_pModelCom->Reset_CurrentAnimation();
-				CMoriblinSwordState* pState = new CGuardState();
-				m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
-			}
+			m_pModelCom->Reset_CurrentAnimation();
+			CMoriblinSwordState* pState = new CGuardState();
+			m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
 
 			fDamage = 0.f;
 		}

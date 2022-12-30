@@ -457,7 +457,7 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem.m_eItemId));
 
 		pGameInstance->Add_GameObject_Out(TEXT("Item_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pItemIconY, &tUIDesc);
-		m_pItemIconX->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INGAME);
+		m_pItemIconY->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INGAME);
 	}
 
 	RELEASE_INSTANCE(CGameInstance);

@@ -12,6 +12,10 @@ float g_EffectLifespan;
 /* Used in Tool. */
 bool		g_IsSelected; 
 
+float mod(float x, float y) {
+	return x - y * floor(x / y);
+}
+
 struct VS_IN
 {
 	float3 vPosition : POSITION;
@@ -398,6 +402,34 @@ PS_OUT PS_MAIN_EFFECT_STAR(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_EFFECT_COUNTDOWN(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	float4 vTextureNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+	float3 vNormal;
+
+	vNormal = float3(vTextureNormal.x, vTextureNormal.y, sqrt(1 - vTextureNormal.x * vTextureNormal.x - vTextureNormal.y * vTextureNormal.y));
+
+	float3x3 WorldMatrix = float3x3(In.vTangent, In.vBinormal, In.vNormal);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.f, 0.f, 0.f);
+	Out.vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (Out.vDiffuse.a <= 0.3f)
+		discard;
+
+	float fInterpFactor = g_EffectTimer / g_EffectLifespan;
+	float fLerpRed = lerp(0, 1, fInterpFactor);
+
+	Out.vDiffuse.r += fLerpRed;
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Default
@@ -497,5 +529,16 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_EFFECT_STAR();
+	}
+
+	pass Countdown
+	{
+		SetRasterizerState(RS_Default);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_EFFECT_COUNTDOWN();
 	}
 }

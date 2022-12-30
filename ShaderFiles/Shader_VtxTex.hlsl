@@ -3,6 +3,7 @@
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_DiffuseTexture;
+texture2D g_DissolveTexture;
 
 float g_EffectTimer;
 float g_EffectLifespan;
@@ -51,6 +52,13 @@ struct PS_IN
 {
 	float4 vPosition : SV_POSITION;
 	float2 vTexUV : TEXCOORD0;
+};
+
+struct PS_IN_SOFTEFFECT
+{
+	float4		vPosition : SV_POSITION;
+	float2		vTexUV : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
 };
 
 struct PS_OUT
@@ -118,6 +126,64 @@ PS_OUT PS_MAIN_HIT_FLASH_EFFECT(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_BOMB_FLASH_EFFECT(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor.a = Out.vColor.g;
+	Out.vColor.gb = Out.vColor.r;
+
+	if (Out.vColor.a != 0)
+	{
+		float3 vFirstColor = float3(1.f, .4f, .2f);		/* Orange (when Alpha is 0) */
+		float3 vSecondColor = float3(1.f, 1.f, .8f);	/* Yellow (when Alpha is 1) */
+
+		float3 vLerpColor = lerp(vFirstColor, vSecondColor, Out.vColor.a);
+
+		Out.vColor.rgb = vLerpColor;
+
+		float startAfter = g_EffectLifespan / 2;
+		if (g_EffectTimer >= startAfter)
+		{
+			float fLerpAlpha = lerp(Out.vColor.a, 0, (g_EffectTimer - startAfter) / (g_EffectLifespan - startAfter));
+			Out.vColor.a = fLerpAlpha;
+		}
+	}
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_BOMB_EXPLOSION_EFFECT(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor.a = Out.vColor.g;
+
+	float4 dissolveColor = g_DissolveTexture.Sample(LinearSampler, In.vTexUV);
+	dissolveColor.a = dissolveColor.g;
+	dissolveColor.gb = dissolveColor.r;
+
+	if (Out.vColor.a != 0)
+	{
+		float3 vFirstColor = float3(1.f, .2f, 0.f);		
+		float3 vSecondColor = float3(1.f, .81f, .44f);
+
+		float3 vLerpColor = lerp(vFirstColor, vSecondColor, dissolveColor.r);
+		Out.vColor.rgb = vLerpColor;
+
+		float startAfter = g_EffectLifespan / 2;
+		if (g_EffectTimer >= startAfter)
+		{
+			float fLerpAlpha = lerp(Out.vColor.a, 0, (g_EffectTimer - startAfter) / (g_EffectLifespan - startAfter));
+			Out.vColor.a = fLerpAlpha;
+		}
+	}
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Default
@@ -164,7 +230,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_SMOKE_EFFECT();
 	}
 
-	pass Effect_Hit
+	pass Effect_HitFlash
 	{
 		SetRasterizerState(RS_Default_NoCull);
 		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
@@ -173,5 +239,27 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_HIT_FLASH_EFFECT();
+	}
+
+	pass Effect_BombFlash
+	{
+		SetRasterizerState(RS_Default_NoCull);
+		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_BOMB_FLASH_EFFECT();
+	}
+
+	pass Effect_BombExplosion
+	{
+		SetRasterizerState(RS_Default_NoCull);
+		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_BOMB_EXPLOSION_EFFECT();
 	}
 }

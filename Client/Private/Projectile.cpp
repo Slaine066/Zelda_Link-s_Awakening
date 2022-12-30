@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "PlayerState.h"
 #include "PlayerGuardState.h"
+#include "Effect.h"
 
 using namespace Player;
 
@@ -116,6 +117,8 @@ _uint CProjectile::Late_Tick(_float fTimeDelta)
 		case PROJECTILE_BOSSBLINSPEAR:
 			BossblinSpear_Collision();
 			break;
+		case PROJECTILE_PLAYERBOMB:
+			PlayerBomb_Collision();
 	}
 
 	return OBJ_NOEVENT;
@@ -135,7 +138,7 @@ HRESULT CProjectile::Render()
 		m_pModelCom->SetUp_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 		m_pModelCom->SetUp_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR);
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, m_eShaderPass)))
 			return E_FAIL;
 	}
 
@@ -212,18 +215,21 @@ HRESULT CProjectile::SetUp_ShaderResources()
 	if (!m_pShaderCom)
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
-		return E_FAIL;
-
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
+	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
+		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_EffectTimer", &m_fCountdownTimer, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_EffectLifespan", &m_fCountdownLifetime, sizeof(_float))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -312,6 +318,118 @@ void CProjectile::BossblinSpear_Collision()
 	}
 }
 
+void CProjectile::PlayerBomb_Collision()
+{
+	if (!m_bShouldDestroy)
+		return;
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	vector<CGameObject*> pDamagedObjects;
+	pGameInstance->Collision_Check_Group_Multi(m_tProjectileDesc.bIsPlayerProjectile ? CCollision_Manager::COLLISION_MONSTER : CCollision_Manager::COLLISION_PLAYER,
+		Get_Collider(CCollider::AIM::AIM_DAMAGE_OUTPUT), CCollider::AIM::AIM_DAMAGE_INPUT, pDamagedObjects);
+	RELEASE_INSTANCE(CGameInstance);
+
+	if (!pDamagedObjects.empty())
+	{
+		for (auto& pDamaged : pDamagedObjects)
+		{
+			if (m_tProjectileDesc.bIsPlayerProjectile)
+			{
+				pDamaged->Take_Damage(3.f, nullptr, m_tProjectileDesc.pOwner);
+
+				Spawn_HitEffect(pDamaged);
+			}
+		}
+	}
+}
+
+void CProjectile::Spawn_BombEffect()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CEffect::EFFECTDESC tEffectDesc;
+	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_BOMB_FLASH;
+	tEffectDesc.m_fEffectLifespan = .2f; 
+	tEffectDesc.m_pOwner = this;
+	XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+
+	/* Spawn Bomb Flash Effect (Rect Buffer). */
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Bomb_Flash_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+		return;
+
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_BOMB_EXPLOSION;
+	tEffectDesc.m_fEffectLifespan = .25f;
+
+	_uint iExplosionCounter = 0;
+	while (iExplosionCounter <= 5)
+	{
+		_float fRandX = ((_float)rand() / (float)(RAND_MAX)) * .25;
+		_float fRandY = ((_float)rand() / (float)(RAND_MAX)) * .25;
+		_bool bSignX = rand() % 2;
+		_bool bSignY = rand() % 2;
+
+		_matrix mWorldMatrix = m_pTransformCom->Get_WorldMatrix();
+		_matrix mMatrixTranslation = XMMatrixTranslation(bSignX ? fRandX : -fRandX, bSignY ? fRandY : -fRandY, 0.f);
+		mWorldMatrix *= mMatrixTranslation;
+
+		XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, mWorldMatrix);
+
+		/* Spawn Bomb Exposion Effect (Rect Buffer). */
+		if (FAILED(pGameInstance->Add_GameObject(TEXT("Bomb_Explosion_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+			return;
+
+		iExplosionCounter++;
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CProjectile::Spawn_HitEffect(CGameObject*& pDamaged)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CEffect::EFFECTDESC tEffectDesc;
+	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_HIT_FLASH;
+	tEffectDesc.m_fEffectLifespan = .25f;
+	tEffectDesc.m_pOwner = m_tProjectileDesc.pOwner;
+
+	_matrix mWorldMatrix = XMMatrixIdentity();
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION);
+	_vector vDamagedPosition = ((CActor*)pDamaged)->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+
+	_vector vDir = vPosition - vDamagedPosition;
+	vDir = XMVector4Normalize(vDir);
+
+	_vector vSpawnPosition = vDamagedPosition + (vDir * pDamaged->Get_Radius());
+	memcpy(&mWorldMatrix.r[3], &vSpawnPosition, sizeof(_vector));
+
+	_matrix mMatrixTranslation = XMMatrixTranslation(0.f, 0.5f, 0.f);
+	mWorldMatrix *= mMatrixTranslation;
+
+	XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, mWorldMatrix);
+
+	/* Spawn Hit Flash Effect (Rect Buffer) on Sword Bone. */
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Hit_Flash_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+		return;
+
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_HIT_RING;
+
+	/* Spawn Hit Ring Effect (Model) on Sword Bone. */
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Hit_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+		return;
+
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_HIT;
+
+	/* Spawn Hit Flash Effect (Model) on Sword Bone. */
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Hit_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+		return;
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
 void CProjectile::MoriblinSpear_Tick(_float fTimeDelta)
 {
 	m_pTransformCom->Move_Straight(fTimeDelta);
@@ -372,14 +490,25 @@ void CProjectile::PlayerBomb_Tick(_float fTimeDelta)
 				m_fBouncePower = 2.f / (m_iBounces + 1);
 			}
 			else
+			{
 				m_bShouldStartCountdown = true;
+
+				m_eShaderPass = VTXMODELPASS::VTXMODEL_COUNTDOWN;
+			}
 		}
 		else
 			m_fBouncePower -= 0.05f;
 	}
 	else
 	{
-		/* TODO: Should start countdown. */
+		if (m_fCountdownTimer < m_fCountdownLifetime)
+			m_fCountdownTimer += fTimeDelta;
+		else
+		{
+			Spawn_BombEffect();
+
+			m_bShouldDestroy = true;
+		}
 	}
 
 	RELEASE_INSTANCE(CGameInstance);

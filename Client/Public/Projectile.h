@@ -49,9 +49,15 @@ private:
 	void PlayerBomb_Tick(_float fTimeDelta);
 	void MoriblinSpear_Collision();
 	void BossblinSpear_Collision();
+	void PlayerBomb_Collision();
+
+	void Spawn_BombEffect();
+	void Spawn_HitEffect(CGameObject*& pDamaged);
 
 private:
 	PROJECTILEDESC m_tProjectileDesc;
+
+	VTXMODELPASS m_eShaderPass = VTXMODELPASS::VTXMODEL_DEFAULT;
 
 	_float m_fAliveTimer = 0.f;
 
@@ -59,9 +65,11 @@ private:
 	_float4 m_vProjectileDirection;
 	_uint m_iBounces = 0;
 	_uint m_iMaxBounces = 3;
-	_bool m_bBounceSwitch = true;
 	_float m_fBouncePower = 2.f;
 	_bool m_bShouldStartCountdown = false;
+	_float m_fCountdownTimer = 0.f;
+	_float m_fCountdownLifetime = 2.f;
+	_bool m_bShouldExplode = false;
 	
 public:
 	static CProjectile* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

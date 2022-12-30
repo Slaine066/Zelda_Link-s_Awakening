@@ -46,9 +46,12 @@ public:
 		/* When Bossblin is Down. */
 		EFFECT_STAR,			/* Model Effect */
 
+		EFFECT_BOMB_FLASH,		/* Rect Buffer Effect */
+		EFFECT_BOMB_EXPLOSION,	/* Rect Buffer Effect */
+
 		EFFECT_TREASURE,
 		EFFECT_GET_ITEM,
-		EFFECT_BOMB_EXPLOSION,
+		
 		EFFECT_END
 	};
 
@@ -80,6 +83,7 @@ public:
 private:
 	_bool Is_ModelEffect();
 	_tchar* Get_TextureName();
+	_uint Get_TextureId();
 	_tchar* Get_ModelPrototypeId();
 
 	void Calculate_Angle();
@@ -98,6 +102,8 @@ protected:
 
 	VTXTEXPASS m_eShaderPass = VTXTEXPASS::VTXTEX_DEFAULT;
 	VTXMODELPASS m_eShaderModelPass = VTXMODELPASS::VTXMODEL_DEFAULT;
+
+	CTexture* m_pDissolveTextureCom = nullptr;
 
 	_float m_fEffectScale = 1.f;
 	_float m_fEffectTimer = 0.f;
