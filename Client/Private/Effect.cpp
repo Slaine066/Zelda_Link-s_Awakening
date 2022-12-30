@@ -351,12 +351,18 @@ HRESULT CEffect::Initialize(void * pArg)
 			RELEASE_INSTANCE(CGameInstance);
 			break;
 		}
-		case EFFECT_TYPE::EFFECT_TREASURE:
-		{	
-			break;
-		}
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
 		{	
+			m_eShaderPass = VTXTEXPASS::VTXTEX_EFFECT_GET_ITEM;
+
+			m_fEffectScale = .15f;
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, m_fEffectScale);
+			m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, m_fEffectScale);
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+			RELEASE_INSTANCE(CGameInstance);
 			break;
 		}
 	}	
@@ -691,12 +697,32 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 			break;
 		}
-		case EFFECT_TYPE::EFFECT_TREASURE:
-		{
-			break;
-		}
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
 		{
+			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
+				return OBJ_DESTROY;
+			else
+			{
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+				m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+
+				/* Increase Scale based on Time. */
+				if (m_fEffectTimer < m_tEffectDesc.m_fEffectLifespan / 2)
+				{
+					_float fInterpFactor = m_fEffectTimer / (m_tEffectDesc.m_fEffectLifespan / 2);
+
+					_float fScale = m_fEffectScale + fInterpFactor * (m_fEffectScale * 4 - m_fEffectScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_RIGHT, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_UP, fScale);
+					m_pTransformCom->Set_Scale(CTransform::STATE::STATE_LOOK, fScale);
+				}
+
+				RELEASE_INSTANCE(CGameInstance);
+
+				m_fEffectTimer += fTimeDelta;
+			}
+
 			break;
 		}
 	}
@@ -851,6 +877,7 @@ _bool CEffect::Is_ModelEffect()
 	case EFFECT_TYPE::EFFECT_HIT_FLASH:
 	case EFFECT_TYPE::EFFECT_BOMB_FLASH:
 	case EFFECT_TYPE::EFFECT_BOMB_EXPLOSION:
+	case EFFECT_TYPE::EFFECT_GET_ITEM:
 		bIsModel = false;
 		break;
 
@@ -878,6 +905,7 @@ _tchar * CEffect::Get_TextureName()
 		return TEXT("Prototype_Component_Texture_Smoke");
 	case EFFECT_TYPE::EFFECT_HIT_FLASH:
 	case EFFECT_TYPE::EFFECT_BOMB_FLASH:
+	case EFFECT_TYPE::EFFECT_GET_ITEM:
 		return TEXT("Prototype_Component_Texture_Hit_Flash");
 	}
 }
@@ -886,10 +914,12 @@ _uint CEffect::Get_TextureId()
 {
 	switch (m_tEffectDesc.m_eEffectType)
 	{
-		case EFFECT_TYPE::EFFECT_BOMB_FLASH:
-			return 3;
-		default:
-			return 0;
+	case EFFECT_TYPE::EFFECT_GET_ITEM:
+		return 2;
+	case EFFECT_TYPE::EFFECT_BOMB_FLASH:
+		return 3;
+	default:
+		return 0;
 	}
 }
 

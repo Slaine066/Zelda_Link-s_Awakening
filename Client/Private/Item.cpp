@@ -43,6 +43,8 @@ HRESULT CItem::Initialize(void * pArg)
 		break;
 		case ITEMTYPE::TYPE_TREASURE:
 		{
+			m_eShaderPass = VTXMODELPASS::VTXMODEL_DISSOLVE_APPEAR;
+
 			_float4 vPosition;
 			XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
 
@@ -102,6 +104,8 @@ _uint CItem::Late_Tick(_float fTimeDelta)
 		m_bShouldDestroy = true;
 	}
 
+	Compute_ShaderTimers(fTimeDelta);
+
 	return S_OK;
 }
 
@@ -120,7 +124,7 @@ HRESULT CItem::Render()
 		m_pModelCom->SetUp_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 		m_pModelCom->SetUp_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR);
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 0)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, m_eShaderPass)))
 			return E_FAIL;
 	}
 
@@ -187,6 +191,10 @@ HRESULT CItem::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_ColliderItem"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_Sphere"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
 		return E_FAIL;
 
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Components(TEXT("Com_Texture_Dissolve"), LEVEL_STATIC, TEXT("Prototype_Component_Texture_Dissolve"), (CComponent**)&m_pDissolveTextureCom)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -204,9 +212,33 @@ HRESULT CItem::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
+	/* Dissolve */
+	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DissolveTexture", m_pDissolveTextureCom->Get_SRV(0))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_DissolveTimer", &m_fDissolveTimer, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_DissolveLifespan", &m_fDissolveLifespan, sizeof(_float))))
+		return E_FAIL;
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
+}
+
+void CItem::Compute_ShaderTimers(_float fTimeDelta)
+{
+	switch (m_eShaderPass)
+	{
+		case VTXMODELPASS::VTXMODEL_DISSOLVE_APPEAR:
+		{
+			if (m_fDissolveTimer <= m_fDissolveLifespan)
+				m_fDissolveTimer += fTimeDelta;
+			else
+				m_eShaderPass = VTXMODELPASS::VTXMODEL_DEFAULT;
+			
+			break;
+		}
+	}
 }
 
 _bool CItem::Is_AnimationLoop(_uint eAnimId)
@@ -277,4 +309,6 @@ CGameObject* CItem::Clone(void * pArg)
 void CItem::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pDissolveTextureCom);
 }

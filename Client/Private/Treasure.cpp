@@ -71,6 +71,7 @@ _uint CTreasure::Late_Tick(_float fTimeDelta)
 		if (pPlayer)
 		{
 			pPlayer->Set_AchieveState();
+			pPlayer->Spawn_GetItemEffect();
 		
 			CItem::ITEMDESC tItemDesc;
 			ZeroMemory(&tItemDesc, sizeof(CItem::ITEMDESC));

@@ -45,6 +45,8 @@ public:
 	virtual HRESULT Ready_Components(void* pArg);
 	virtual HRESULT SetUp_ShaderResources();
 
+	virtual void Compute_ShaderTimers(_float fTimeDelta);
+
 public:
 	void Set_IsSpendable(_bool bIsSpendable) { m_bIsSpendable = bIsSpendable; }
 	ITEMDESC Get_ItemDesc() { return m_tItemDesc; }
@@ -56,6 +58,12 @@ protected:
 	ITEMDESC m_tItemDesc;
 	_bool m_bIsAnimationFinished = false;
 	_bool m_bIsSpendable = false;
+
+	VTXMODELPASS m_eShaderPass = VTXMODELPASS::VTXMODEL_DEFAULT;
+
+	_float m_fDissolveTimer = 0.f;
+	_float m_fDissolveLifespan = 1.5f;
+	CTexture* m_pDissolveTextureCom = nullptr;
 
 public:
 	static CItem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

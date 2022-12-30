@@ -184,6 +184,33 @@ PS_OUT PS_MAIN_BOMB_EXPLOSION_EFFECT(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_GET_ITEM_EFFECT(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vColor.a = Out.vColor.g;
+
+	if (Out.vColor.a != 0)
+	{
+		float3 vFirstColor = float3(1.f, 1.f, 1.f);		
+		float3 vSecondColor = float3(1.f, 1.f, .8f);
+
+		float3 vLerpColor = lerp(vFirstColor, vSecondColor, Out.vColor.a);
+
+		Out.vColor.rgb = vLerpColor;
+
+		float startAfter = g_EffectLifespan / 2;
+		if (g_EffectTimer >= startAfter)
+		{
+			float fLerpAlpha = lerp(Out.vColor.a, 0, (g_EffectTimer - startAfter) / (g_EffectLifespan - startAfter));
+			Out.vColor.a = fLerpAlpha;
+		}
+	}
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass Default
@@ -261,5 +288,16 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_BOMB_EXPLOSION_EFFECT();
+	}
+
+	pass Effect_GetItem
+	{
+		SetRasterizerState(RS_Default_NoCull);
+		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_GET_ITEM_EFFECT();
 	}
 }

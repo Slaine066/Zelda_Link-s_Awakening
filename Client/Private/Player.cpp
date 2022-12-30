@@ -551,6 +551,29 @@ void CPlayer::Spawn_GuardEffect()
 	RELEASE_INSTANCE(CGameInstance);
 }
 
+void CPlayer::Spawn_GetItemEffect()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CEffect::EFFECTDESC tEffectDesc;
+	ZeroMemory(&tEffectDesc, sizeof(CEffect::EFFECTDESC));
+	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_GET_ITEM;
+	tEffectDesc.m_fEffectLifespan = 2.5f;
+	tEffectDesc.m_pOwner = this;
+
+	_matrix mWorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	_matrix mTranslationMatrix = XMMatrixTranslation(0.f, .75f, 0.f);
+	mWorldMatrix *= mTranslationMatrix;
+
+	XMStoreFloat4x4(&tEffectDesc.m_WorldMatrix, mWorldMatrix);
+
+	/* Spawn Hit Ring Effect (Model) on Shield Bone. */
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Get_Item_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
+		return;
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
 CPlayer* CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
 	CPlayer* pInstance = new CPlayer(pDevice, pContext);

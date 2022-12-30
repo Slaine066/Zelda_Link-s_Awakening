@@ -144,6 +144,7 @@ public:
 	void Spawn_BombProjectile();
 
 	void Spawn_GuardEffect();
+	void Spawn_GetItemEffect();
 
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;

@@ -49,8 +49,7 @@ public:
 		EFFECT_BOMB_FLASH,		/* Rect Buffer Effect */
 		EFFECT_BOMB_EXPLOSION,	/* Rect Buffer Effect */
 
-		EFFECT_TREASURE,
-		EFFECT_GET_ITEM,
+		EFFECT_GET_ITEM,		/* Rect Buffer Effect */
 		
 		EFFECT_END
 	};
