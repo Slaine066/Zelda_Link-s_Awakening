@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\Zelda_Link%27s_Awakening\ShaderFiles\Client_Shader_Defines.hpp" />
     <ClInclude Include="..\public\Actor.h" />
+    <ClInclude Include="..\public\Bed.h" />
     <ClInclude Include="..\public\Bossblin.h" />
     <ClInclude Include="..\public\BossblinAttackState.h" />
     <ClInclude Include="..\public\BossblinBreakState.h" />
@@ -184,13 +185,20 @@
     <ClInclude Include="..\public\BossblinTackleState.h" />
     <ClInclude Include="..\public\CameraManager.h" />
     <ClInclude Include="..\public\Camera_Dungeon.h" />
+    <ClInclude Include="..\public\Camera_Static.h" />
     <ClInclude Include="..\public\Character.h" />
     <ClInclude Include="..\public\Effect.h" />
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\InteractableObject.h" />
     <ClInclude Include="..\public\Inventory.h" />
     <ClInclude Include="..\public\Level_BottleGrotto.h" />
+    <ClInclude Include="..\public\Level_MarinHouse.h" />
     <ClInclude Include="..\public\Level_MoriblinCave.h" />
+    <ClInclude Include="..\public\Marin.h" />
+    <ClInclude Include="..\public\MarinIdleState.h" />
+    <ClInclude Include="..\public\MarinState.h" />
+    <ClInclude Include="..\public\MarinTalkState.h" />
+    <ClInclude Include="..\public\MarinWalkState.h" />
     <ClInclude Include="..\public\MoriblinSpearFallState.h" />
     <ClInclude Include="..\public\MoriblinSwordFallState.h" />
     <ClInclude Include="..\public\MoriblinSwordGuardState.h" />
@@ -209,6 +217,7 @@
     <ClInclude Include="..\public\MoriblinSwordIdleState.h" />
     <ClInclude Include="..\public\MoriblinSwordMoveState.h" />
     <ClInclude Include="..\public\MoriblinSwordStaggerState.h" />
+    <ClInclude Include="..\public\Npc.h" />
     <ClInclude Include="..\public\PlayerAchieveState.h" />
     <ClInclude Include="..\Public\PlayerAttackState.h" />
     <ClInclude Include="..\Public\Camera_Player.h" />
@@ -237,6 +246,11 @@
     <ClInclude Include="..\public\PlayerThrowState.h" />
     <ClInclude Include="..\public\Projectile.h" />
     <ClInclude Include="..\public\Sky.h" />
+    <ClInclude Include="..\public\Tarin.h" />
+    <ClInclude Include="..\public\TarinIdleState.h" />
+    <ClInclude Include="..\public\TarinState.h" />
+    <ClInclude Include="..\public\TarinTalkState.h" />
+    <ClInclude Include="..\public\TarinWalkState.h" />
     <ClInclude Include="..\public\Treasure.h" />
     <ClInclude Include="..\public\TriggerBox_Dynamic.h" />
     <ClInclude Include="..\public\UI.h" />
@@ -256,6 +270,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Actor.cpp" />
+    <ClCompile Include="..\private\Bed.cpp" />
     <ClCompile Include="..\private\Bossblin.cpp" />
     <ClCompile Include="..\private\BossblinAttackState.cpp" />
     <ClCompile Include="..\private\BossblinBreakState.cpp" />
@@ -268,13 +283,19 @@
     <ClCompile Include="..\private\BossblinTackleState.cpp" />
     <ClCompile Include="..\private\CameraManager.cpp" />
     <ClCompile Include="..\private\Camera_Dungeon.cpp" />
+    <ClCompile Include="..\private\Camera_Static.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
     <ClCompile Include="..\private\Effect.cpp" />
     <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\private\InteractableObject.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
     <ClCompile Include="..\private\Level_BottleGrotto.cpp" />
+    <ClCompile Include="..\private\Level_MarinHouse.cpp" />
     <ClCompile Include="..\private\Level_MoriblinCave.cpp" />
+    <ClCompile Include="..\private\Marin.cpp" />
+    <ClCompile Include="..\private\MarinIdleState.cpp" />
+    <ClCompile Include="..\private\MarinTalkState.cpp" />
+    <ClCompile Include="..\private\MarinWalkState.cpp" />
     <ClCompile Include="..\private\MoriblinSpearFallState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordFallState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordGuardState.cpp" />
@@ -292,6 +313,7 @@
     <ClCompile Include="..\private\MoriblinSwordIdleState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordMoveState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordStaggerState.cpp" />
+    <ClCompile Include="..\private\Npc.cpp" />
     <ClCompile Include="..\private\PlayerAchieveState.cpp" />
     <ClCompile Include="..\Private\PlayerAttackState.cpp" />
     <ClCompile Include="..\Private\Camera_Player.cpp" />
@@ -317,6 +339,10 @@
     <ClCompile Include="..\private\PlayerThrowState.cpp" />
     <ClCompile Include="..\private\Projectile.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
+    <ClCompile Include="..\private\Tarin.cpp" />
+    <ClCompile Include="..\private\TarinIdleState.cpp" />
+    <ClCompile Include="..\private\TarinTalkState.cpp" />
+    <ClCompile Include="..\private\TarinWalkState.cpp" />
     <ClCompile Include="..\private\Treasure.cpp" />
     <ClCompile Include="..\private\TriggerBox_Dynamic.cpp" />
     <ClCompile Include="..\private\UI.cpp" />

@@ -24,10 +24,7 @@ HRESULT CTreasure::Initialize_Prototype()
 
 HRESULT CTreasure::Initialize(void * pArg)
 {
-	/*if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;*/
-
-	if (FAILED(Ready_Components(pArg)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	m_eInteractableType = INTERACTABLE_TREASURE;

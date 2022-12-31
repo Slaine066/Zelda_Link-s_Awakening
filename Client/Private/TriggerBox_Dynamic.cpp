@@ -59,7 +59,8 @@ _uint CTriggerBox_Dynamic::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
-	/* Should not run on the FirstFrame after spawn, to give other Objects time to update. */
+	/* Should not run on the FirstFrame after spawn, to give other Objects time to update. 
+	(Bleah.. should remove Get_Position() function ¤Ð¤Ð) */
 	if (m_bIsFirstFrame)
 	{
 		m_bIsFirstFrame = false;
@@ -69,31 +70,60 @@ _uint CTriggerBox_Dynamic::Late_Tick(_float fTimeDelta)
 	CGameObject* pCollidedObject = nullptr;
 	_bool bIsCollided = CGameInstance::Get_Instance()->Collision_with_Group(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, m_pCollider, CCollider::AIM::AIM_DAMAGE_INPUT, pCollidedObject);
 	
-	if (bIsCollided)
+	if (!strcmp(m_tTriggerBoxDesc.pTriggerName, CGameInstance::Get_Instance()->Get_SpawnTriggerBoxName()))
 	{
-		_bool bIsJustSpawned = CGameInstance::Get_Instance()->Get_IsJustSpawned();
-		if (bIsJustSpawned)
-			return OBJ_NOEVENT;
-
-		switch (CGameInstance::Get_Instance()->Get_CurrentLevelIndex())
+		if (bIsCollided)
 		{
-		case LEVEL_FIELD:
-			Field_Triggers();
-			break;
-		case LEVEL_MORIBLINCAVE:
-			MoriblinCave_Triggers();
-			break;
-		case LEVEL_BOTTLEGROTTO:
-			BottleGrotto_Triggers();
-			break;
-		}
+			_bool bIsJustSpawned = CGameInstance::Get_Instance()->Get_IsJustSpawned();
+			if (bIsJustSpawned)
+				return OBJ_NOEVENT;
 
-		return OBJ_DESTROY;
+			switch (CGameInstance::Get_Instance()->Get_CurrentLevelIndex())
+			{
+			case LEVEL_FIELD:
+				Field_Triggers();
+				break;
+			case LEVEL_MORIBLINCAVE:
+				MoriblinCave_Triggers();
+				break;
+			case LEVEL_BOTTLEGROTTO:
+				BottleGrotto_Triggers();
+				break;
+			case LEVEL_MARINHOUSE:
+				MarinHouse_Triggers();
+				break;
+			}
+
+			return OBJ_DESTROY;
+		}
+		else
+		{
+			CGameInstance::Get_Instance()->Set_IsJustSpawned(false);
+			CGameInstance::Get_Instance()->Set_SpawnTriggerBox(nullptr);
+		}
 	}
 	else
 	{
-		CGameInstance::Get_Instance()->Set_IsJustSpawned(false);
-		CGameInstance::Get_Instance()->Set_SpawnTriggerBox(nullptr);
+		if (bIsCollided)
+		{
+			switch (CGameInstance::Get_Instance()->Get_CurrentLevelIndex())
+			{
+			case LEVEL_FIELD:
+				Field_Triggers();
+				break;
+			case LEVEL_MORIBLINCAVE:
+				MoriblinCave_Triggers();
+				break;
+			case LEVEL_BOTTLEGROTTO:
+				BottleGrotto_Triggers();
+				break;
+			case LEVEL_MARINHOUSE:
+				MarinHouse_Triggers();
+				break;
+			}
+
+			return OBJ_DESTROY;
+		}
 	}
 
 	return OBJ_NOEVENT;
@@ -112,11 +142,22 @@ void CTriggerBox_Dynamic::Field_Triggers()
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MoriblinCave_Entrance"))
-	{	
+	{
 		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MORIBLINCAVE))))
 			return;
 
 		pGameInstance->Set_SpawnTriggerBox("MoriblinCave_Entrance");
+		pGameInstance->Set_IsJustSpawned(true);
+		pGameInstance->ClearLights();
+
+		CUI_Manager::Get_Instance()->Clear();
+	}
+	else if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MarinHouse_Entrance"))
+	{
+		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MARINHOUSE))))
+			return;
+
+		pGameInstance->Set_SpawnTriggerBox("MarinHouse_Entrance");
 		pGameInstance->Set_IsJustSpawned(true);
 		pGameInstance->ClearLights();
 
@@ -147,6 +188,25 @@ void CTriggerBox_Dynamic::MoriblinCave_Triggers()
 
 void CTriggerBox_Dynamic::BottleGrotto_Triggers()
 {
+}
+
+void CTriggerBox_Dynamic::MarinHouse_Triggers()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MarinHouse_Entrance"))
+	{
+		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FIELD))))
+			return;
+
+		pGameInstance->Set_SpawnTriggerBox("MarinHouse_Entrance");
+		pGameInstance->Set_IsJustSpawned(true);
+		pGameInstance->ClearLights();
+
+		CUI_Manager::Get_Instance()->Clear();
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 CTriggerBox_Dynamic * CTriggerBox_Dynamic::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

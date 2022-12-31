@@ -166,6 +166,36 @@
     <Filter Include="02.GameObjects\06.Sky">
       <UniqueIdentifier>{ccb89b73-79ac-4543-a3f3-cc6b2fab5f64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\05.MarinHouse">
+      <UniqueIdentifier>{f65e1c64-b5f9-4ee4-8bba-307560288c8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\02.Npc">
+      <UniqueIdentifier>{c416c434-7b48-4ef3-a318-c0543789a5de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\02.Npc\Tarin">
+      <UniqueIdentifier>{c71a2efc-a155-4d8f-bfd2-765fea64f83b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\02.Npc\Marin">
+      <UniqueIdentifier>{f10c5afa-276e-4418-bd6b-c73217e17084}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\02.Npc\Tarin\TarinState">
+      <UniqueIdentifier>{007e2ef0-512b-4acf-8c2d-d44998a1089c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\02.Npc\Marin\MarinState">
+      <UniqueIdentifier>{f718df2f-d831-420b-b45d-6e29cdd271d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\02.Npc\Tarin\TarinState\States">
+      <UniqueIdentifier>{1352ed30-8775-41fd-ab0a-c3e161297cec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\02.Npc\Marin\MarinState\States">
+      <UniqueIdentifier>{38e77f76-a478-4f50-8d09-abd238aa0a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Camera\02.StaticCamera">
+      <UniqueIdentifier>{15e42e04-d028-42ab-9f9d-527e3e16ea32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\01.Bed">
+      <UniqueIdentifier>{01a8c0fb-0676-48ac-bca9-45113a4f0baf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -423,6 +453,48 @@
     <ClInclude Include="..\public\PlayerCarryMoveState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Level_MarinHouse.h">
+      <Filter>01.Levels\05.MarinHouse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Npc.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Tarin.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Tarin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Marin.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Marin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TarinState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Tarin\TarinState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TarinIdleState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Tarin\TarinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TarinWalkState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Tarin\TarinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TarinTalkState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Tarin\TarinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MarinState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Marin\MarinState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MarinTalkState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Marin\MarinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MarinWalkState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Marin\MarinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MarinIdleState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Marin\MarinState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Camera_Static.h">
+      <Filter>02.GameObjects\01.Camera\02.StaticCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bed.h">
+      <Filter>02.GameObjects\00.Actor\02.InteractableObject\01.Bed</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -652,6 +724,42 @@
     </ClCompile>
     <ClCompile Include="..\private\PlayerCarryMoveState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_MarinHouse.cpp">
+      <Filter>01.Levels\05.MarinHouse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Npc.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Tarin.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Tarin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Marin.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Marin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TarinIdleState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Tarin\TarinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TarinWalkState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Tarin\TarinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TarinTalkState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Tarin\TarinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MarinTalkState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Marin\MarinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MarinWalkState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Marin\MarinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MarinIdleState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Marin\MarinState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_Static.cpp">
+      <Filter>02.GameObjects\01.Camera\02.StaticCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bed.cpp">
+      <Filter>02.GameObjects\00.Actor\02.InteractableObject\01.Bed</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

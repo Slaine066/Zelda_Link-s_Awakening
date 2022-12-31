@@ -74,7 +74,6 @@ private:
 
 private:
 	class CMoriblinSwordState* m_pMoriblinSwordState = nullptr;
-	_bool m_bTick = false;
 
 public:
 	static CMoriblinSword* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

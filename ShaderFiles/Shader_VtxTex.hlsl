@@ -178,6 +178,22 @@ PS_OUT PS_MAIN_BOMB_EXPLOSION_EFFECT(PS_IN In)
 		{
 			float fLerpAlpha = lerp(Out.vColor.a, 0, (g_EffectTimer - startAfter) / (g_EffectLifespan - startAfter));
 			Out.vColor.a = fLerpAlpha;
+
+			/* Dissolve with Highlight */
+			float fInterpFactor = (g_EffectTimer - startAfter) / (g_EffectLifespan / 2);
+			float dissolveFactor = lerp(0, 1, fInterpFactor);						/* If dissolveFactor:
+																					 == 0:	Should not Dissolve
+																					 == 1:	Should Dissolve Everything. */
+			float4 dissolveColor = g_DissolveTexture.Sample(LinearSampler, In.vTexUV);
+			dissolveColor.a = dissolveColor.y;
+			dissolveColor.yz = dissolveColor.x;
+
+			float dissolveValue = dissolveColor.r - dissolveFactor; /* If dissolveValue:
+																	> .1:		No Dissolve
+																	<= 0:		Dissolve. */
+
+			if (dissolveValue <= 0)
+				discard;
 		}
 	}
 

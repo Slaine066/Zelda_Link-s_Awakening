@@ -11,6 +11,9 @@
 #include "Effect.h"
 #include "Treasure.h"
 #include "Player.h"
+#include "Tarin.h"
+#include "Marin.h"
+#include "Bed.h"
 #include "MoriblinSword.h"
 #include "MoriblinSpear.h"
 #include "Bossblin.h"
@@ -51,6 +54,9 @@ unsigned int APIENTRY Thread_Main(void* pArg)
 		break;
 	case LEVEL_BOTTLEGROTTO:
 		pLoader->Loading_ForBottleGrotto();
+		break;
+	case LEVEL_MARINHOUSE:
+		pLoader->Loading_ForMarinHouse();
 		break;
 	}
 
@@ -197,7 +203,7 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_BossblinSpear"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_BossblinSpear/BossblinSpear.fbx", false))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_Treasure*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Treasure"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Object_Treasure/Treasure.fbx", false))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Treasure"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Object_Treasure/Treasure.fbx", false, PivotMatrix))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_RupeeGreen*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RupeeGreen"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Item_RupeeGreen/RupeeGreen.fbx", false))))
@@ -494,13 +500,6 @@ HRESULT CLoader::Loading_ForField()
 	// .. Add Above ..
 #pragma endregion Loading_Shaders
 
-#pragma region Loading_Objects
-	lstrcpy(m_szLoadingText, TEXT("Loading_Objects.."));
-
-	// >
-	// .. Add Above ..
-#pragma endregion Loading_Objects
-
 	m_isFinished = true;
 	lstrcpy(m_szLoadingText, TEXT("Loading Completed."));
 
@@ -623,6 +622,69 @@ HRESULT CLoader::Loading_ForBottleGrotto()
 	return S_OK;
 }
 
+HRESULT CLoader::Loading_ForMarinHouse()
+{
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	if (pGameInstance == nullptr)
+		return E_FAIL;
+
+	Safe_AddRef(pGameInstance);
+
+#pragma region Loading_Textures
+	lstrcpy(m_szLoadingText, TEXT("Loading Textures.."));
+
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Textures
+
+#pragma region Loading_Components
+	lstrcpy(m_szLoadingText, TEXT("Loading Components.."));
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MARINHOUSE, TEXT("Prototype_Component_Navigation"), CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Data/NavigationData/MarinHouse.dat")))))
+		return E_FAIL;
+
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Components
+
+#pragma region Loading_Models
+	lstrcpy(m_szLoadingText, TEXT("Loading Models.."));
+
+	_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+	/*For.Prototype_Component_Model_Tarin*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MARINHOUSE, TEXT("Prototype_Component_Model_Tarin"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Npc_Tarin/Tarin.fbx", false, PivotMatrix))))
+		return E_FAIL;
+	/*For.Prototype_Component_Model_Marin*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MARINHOUSE, TEXT("Prototype_Component_Model_Marin"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Npc_Marin/Marin.fbx", false, PivotMatrix))))
+		return E_FAIL;
+	/*For.Prototype_Component_Model_MarinHouse */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MARINHOUSE, TEXT("Prototype_Component_Model_MarinHouse"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/MarinHouse/MarinHouse.fbx"))))
+		return E_FAIL;
+	/*For.Prototype_Component_Model_Bed */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MARINHOUSE, TEXT("Prototype_Component_Model_Bed"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Object_Bed/Bed.fbx", false, PivotMatrix))))
+		return E_FAIL;
+
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Models
+
+#pragma region Loading_Shaders
+	lstrcpy(m_szLoadingText, TEXT("Loading_Shaders.."));
+
+	// >
+	// .. Add Above ..
+#pragma endregion Loading_Shaders
+
+	m_isFinished = true;
+	lstrcpy(m_szLoadingText, TEXT("Loading Completed."));
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
 HRESULT CLoader::Load_GameObject_Prototypes()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -655,6 +717,15 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_Player */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Tarin */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Tarin"), CTarin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Marin */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Marin"), CMarin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Bed */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Bed"), CBed::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_MoriblinSword */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSword"), CMoriblinSword::Create(m_pDevice, m_pContext))))

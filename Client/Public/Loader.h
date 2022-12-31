@@ -26,6 +26,7 @@ public:
 	HRESULT Loading_ForField();
 	HRESULT Loading_ForMoriblinCave();
 	HRESULT Loading_ForBottleGrotto();
+	HRESULT Loading_ForMarinHouse();
 
 	HRESULT Load_GameObject_Prototypes();
 

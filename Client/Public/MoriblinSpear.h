@@ -88,7 +88,6 @@ private:
 
 private:
 	_bool m_bIsProjectileAlive = false;
-	_bool m_bTick = false;
 
 public:
 	static CMoriblinSpear* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

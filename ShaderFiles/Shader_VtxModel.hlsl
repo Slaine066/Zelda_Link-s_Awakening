@@ -93,6 +93,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	if (Out.vDiffuse.a <= 0.3f)
 		discard;
 
+	if (g_IsSelected)
+		Out.vDiffuse += .2f;
+
 	return Out;
 }
 

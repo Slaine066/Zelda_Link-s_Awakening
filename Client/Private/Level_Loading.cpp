@@ -7,6 +7,7 @@
 #include "Level_Field.h"
 #include "Level_MoriblinCave.h"
 #include "Level_BottleGrotto.h"
+#include "Level_MarinHouse.h"
 #include "TriggerBox.h"
 #include "Player.h"
 
@@ -56,6 +57,10 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 		/*case LEVEL_BOTTLEGROTTO:
 			pNewLevel = CLevel_BottleGrotto::Create(m_pDevice, m_pContext);
 			break;*/
+		case LEVEL_MARINHOUSE:
+			pGameInstance->Set_NextLevel(m_eNextLevel);
+			pNewLevel = CLevel_MarinHouse::Create(m_pDevice, m_pContext);
+			break;
 		}
 
 		if (!pNewLevel)
@@ -93,7 +98,7 @@ void CLevel_Loading::Compute_SpawnPosition(_float fTimeDelta)
 
 	_float3 vSpawnPosition = (_float3)pSpawnTriggerBox->Get_TriggerBoxDesc().mWorldMatrix.m[3];
 
-	CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
+ 	CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
 	pPlayer->Get_Transform()->Set_State(CTransform::STATE::STATE_TRANSLATION, XMVectorSetW(XMLoadFloat3(&vSpawnPosition), 1.f));
 	pPlayer->Get_Navigation()->Set_InitialPosition(vSpawnPosition);
 	pPlayer->Get_Navigation()->Compute_CurrentCell();

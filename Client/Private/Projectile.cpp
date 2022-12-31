@@ -359,7 +359,7 @@ void CProjectile::Spawn_BombEffect()
 		return;
 
 	tEffectDesc.m_eEffectType = CEffect::EFFECT_TYPE::EFFECT_BOMB_EXPLOSION;
-	tEffectDesc.m_fEffectLifespan = .25f;
+	tEffectDesc.m_fEffectLifespan = 1.f;
 
 	_uint iExplosionCounter = 0;
 	while (iExplosionCounter <= 5)
