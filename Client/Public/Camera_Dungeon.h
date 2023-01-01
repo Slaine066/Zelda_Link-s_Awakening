@@ -56,7 +56,6 @@ private:
 
 	vector<_float3> m_CameraPositions;
 	_float3 m_vCurrentCameraPosition;
-	_float3 m_vPreviousCameraPosition;
 	_bool m_bMoving = false;
 
 	_float3 m_vZoomPosition;

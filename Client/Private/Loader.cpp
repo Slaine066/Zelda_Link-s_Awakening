@@ -17,6 +17,7 @@
 #include "MoriblinSword.h"
 #include "MoriblinSpear.h"
 #include "Bossblin.h"
+#include "DungeonDoor.h"
 #include "Weapon.h"
 #include "Projectile.h"
 #include "Item.h"
@@ -556,6 +557,9 @@ HRESULT CLoader::Loading_ForMoriblinCave()
 	/* For.Prototype_Component_Model_MoriblinCaveRock */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Model_CaveRock"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Object_MoriblinCaveRock/CaveRock.fbx", false))))
 		return E_FAIL;
+	/* For.Prototype_Component_Model_DungeonDoor */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Model_DungeonDoor"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Object_DungeonDoor/DungeonDoor.fbx", false, PivotMatrix))))
+		return E_FAIL;
 
 	// >
 	// .. Add Above ..
@@ -735,6 +739,9 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_Bossblin */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Bossblin"), CBossblin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_DungeonDoor */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_DungeonDoor"), CDungeonDoor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_Weapon */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon"), CWeapon::Create(m_pDevice, m_pContext))))

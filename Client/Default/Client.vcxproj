@@ -187,6 +187,8 @@
     <ClInclude Include="..\public\Camera_Dungeon.h" />
     <ClInclude Include="..\public\Camera_Static.h" />
     <ClInclude Include="..\public\Character.h" />
+    <ClInclude Include="..\public\DungeonDoor.h" />
+    <ClInclude Include="..\public\DynamicObject.h" />
     <ClInclude Include="..\public\Effect.h" />
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\InteractableObject.h" />
@@ -285,6 +287,8 @@
     <ClCompile Include="..\private\Camera_Dungeon.cpp" />
     <ClCompile Include="..\private\Camera_Static.cpp" />
     <ClCompile Include="..\private\Character.cpp" />
+    <ClCompile Include="..\private\DungeonDoor.cpp" />
+    <ClCompile Include="..\private\DynamicObject.cpp" />
     <ClCompile Include="..\private\Effect.cpp" />
     <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\private\InteractableObject.cpp" />

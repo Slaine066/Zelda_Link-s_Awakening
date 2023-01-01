@@ -103,15 +103,6 @@
     <Filter Include="01.Levels\04.BottleGrotto">
       <UniqueIdentifier>{2f7c194d-db72-4caa-96da-091d58297368}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.Actor\03.Projectile">
-      <UniqueIdentifier>{f279f72b-34e4-4814-8a6c-90323861b232}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\00.Actor\04.Weapon">
-      <UniqueIdentifier>{a0bc7f6a-4750-4359-8559-2c2971c88d9a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\00.Actor\02.InteractableObject">
-      <UniqueIdentifier>{e9429ddd-49ea-471f-b83a-3dbda1a24f8a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\00.Loading">
       <UniqueIdentifier>{d34b4313-2969-4649-ac63-5be3b1783f75}</UniqueIdentifier>
     </Filter>
@@ -129,9 +120,6 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Camera\01.DungeonCamera">
       <UniqueIdentifier>{fd532923-ec4e-4a43-adef-c6da7d183122}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\00.Treasure">
-      <UniqueIdentifier>{8e1b759d-dd3c-4e48-bb49-a73457336fc9}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\04.UI">
       <UniqueIdentifier>{76db635f-835c-42fe-a8ef-35f87d99cf8e}</UniqueIdentifier>
@@ -193,8 +181,26 @@
     <Filter Include="02.GameObjects\01.Camera\02.StaticCamera">
       <UniqueIdentifier>{15e42e04-d028-42ab-9f9d-527e3e16ea32}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.Actor\02.InteractableObject\01.Bed">
+    <Filter Include="02.GameObjects\00.Actor\02.DynamicObject">
+      <UniqueIdentifier>{120d22cb-109a-4747-909f-c0884a3e1b11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\03.InteractableObject">
+      <UniqueIdentifier>{e9429ddd-49ea-471f-b83a-3dbda1a24f8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\03.InteractableObject\00.Treasure">
+      <UniqueIdentifier>{8e1b759d-dd3c-4e48-bb49-a73457336fc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\03.InteractableObject\01.Bed">
       <UniqueIdentifier>{01a8c0fb-0676-48ac-bca9-45113a4f0baf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\04.Projectile">
+      <UniqueIdentifier>{f279f72b-34e4-4814-8a6c-90323861b232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\05.Weapon">
+      <UniqueIdentifier>{a0bc7f6a-4750-4359-8559-2c2971c88d9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\02.DynamicObject\DungeonDoor">
+      <UniqueIdentifier>{f35650b0-5331-468d-a9fa-b39cff0bd45c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -304,10 +310,10 @@
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Projectile.h">
-      <Filter>02.GameObjects\00.Actor\03.Projectile</Filter>
+      <Filter>02.GameObjects\00.Actor\04.Projectile</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Weapon.h">
-      <Filter>02.GameObjects\00.Actor\04.Weapon</Filter>
+      <Filter>02.GameObjects\00.Actor\05.Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\public\MoriblinSwordAggroState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
@@ -367,7 +373,7 @@
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
     </ClInclude>
     <ClInclude Include="..\public\InteractableObject.h">
-      <Filter>02.GameObjects\00.Actor\02.InteractableObject</Filter>
+      <Filter>02.GameObjects\00.Actor\03.InteractableObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Loader.h">
       <Filter>01.Levels\00.Loading\Loader</Filter>
@@ -385,7 +391,7 @@
       <Filter>02.GameObjects\01.Camera\00.PlayerCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Treasure.h">
-      <Filter>02.GameObjects\00.Actor\02.InteractableObject\00.Treasure</Filter>
+      <Filter>02.GameObjects\00.Actor\03.InteractableObject\00.Treasure</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI.h">
       <Filter>02.GameObjects\04.UI</Filter>
@@ -493,7 +499,13 @@
       <Filter>02.GameObjects\01.Camera\02.StaticCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Bed.h">
-      <Filter>02.GameObjects\00.Actor\02.InteractableObject\01.Bed</Filter>
+      <Filter>02.GameObjects\00.Actor\03.InteractableObject\01.Bed</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DynamicObject.h">
+      <Filter>02.GameObjects\00.Actor\02.DynamicObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DungeonDoor.h">
+      <Filter>02.GameObjects\00.Actor\02.DynamicObject\DungeonDoor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -579,10 +591,10 @@
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Projectile.cpp">
-      <Filter>02.GameObjects\00.Actor\03.Projectile</Filter>
+      <Filter>02.GameObjects\00.Actor\04.Projectile</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Weapon.cpp">
-      <Filter>02.GameObjects\00.Actor\04.Weapon</Filter>
+      <Filter>02.GameObjects\00.Actor\05.Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\private\MoriblinSwordAggroState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\MoriblinSword\MoriblinSwordState\States</Filter>
@@ -639,7 +651,7 @@
       <Filter>02.GameObjects\00.Actor\00.Character\01.Monster\Bossblin\BossblinState\States</Filter>
     </ClCompile>
     <ClCompile Include="..\private\InteractableObject.cpp">
-      <Filter>02.GameObjects\00.Actor\02.InteractableObject</Filter>
+      <Filter>02.GameObjects\00.Actor\03.InteractableObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Loader.cpp">
       <Filter>01.Levels\00.Loading\Loader</Filter>
@@ -657,7 +669,7 @@
       <Filter>02.GameObjects\01.Camera\00.PlayerCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Treasure.cpp">
-      <Filter>02.GameObjects\00.Actor\02.InteractableObject\00.Treasure</Filter>
+      <Filter>02.GameObjects\00.Actor\03.InteractableObject\00.Treasure</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI.cpp">
       <Filter>02.GameObjects\04.UI</Filter>
@@ -759,7 +771,13 @@
       <Filter>02.GameObjects\01.Camera\02.StaticCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Bed.cpp">
-      <Filter>02.GameObjects\00.Actor\02.InteractableObject\01.Bed</Filter>
+      <Filter>02.GameObjects\00.Actor\03.InteractableObject\01.Bed</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DynamicObject.cpp">
+      <Filter>02.GameObjects\00.Actor\02.DynamicObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DungeonDoor.cpp">
+      <Filter>02.GameObjects\00.Actor\02.DynamicObject\DungeonDoor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
