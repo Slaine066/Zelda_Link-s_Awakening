@@ -190,6 +190,14 @@ HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 	return m_pLevel_Manager->Open_Level(iLevelIndex, pNewLevel);
 }
 
+CLevel * CGameInstance::Get_CurrentLevel()
+{
+	if (nullptr == m_pLevel_Manager)
+		return nullptr;
+
+	return m_pLevel_Manager->Get_CurrentLevel();
+}
+
 _uint CGameInstance::Get_CurrentLevelIndex()
 {
 	if (nullptr == m_pLevel_Manager)

@@ -13,6 +13,19 @@ CDungeonDoor::CDungeonDoor(const CDungeonDoor & rhs)
 {
 }
 
+void CDungeonDoor::Open_Door()
+{
+	m_pModelCom->Reset_CurrentAnimation();
+	m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_OPEN);
+}
+
+void CDungeonDoor::Close_Door()
+{
+	m_bIsAnimationFinished = false;
+	m_pModelCom->Reset_CurrentAnimation();
+	m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_CLOSE);
+}
+
 HRESULT CDungeonDoor::Initialize_Prototype()
 {
 	return S_OK;
@@ -35,10 +48,19 @@ _uint CDungeonDoor::Tick(_float fTimeDelta)
 	if (iEvent == OBJ_STOP)
 		return iEvent;
 
-	CGameInstance::Get_Instance()->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_OBJECT, this);
+	switch (m_pModelCom->Get_CurrentAnimIndex())
+	{
+	case ANIMID::ANIM_CLOSE:
+		CGameInstance::Get_Instance()->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_OBJECT, this);
 
-	if (!m_bIsAnimationFinished)
+		if (!m_bIsAnimationFinished)
+			m_pModelCom->Play_Animation(fTimeDelta, m_bIsAnimationFinished, Is_AnimationLoop(m_pModelCom->Get_CurrentAnimIndex()));
+		break;
+	case ANIMID::ANIM_OPEN_IDLE:
+	case ANIMID::ANIM_OPEN:
 		m_pModelCom->Play_Animation(fTimeDelta, m_bIsAnimationFinished, Is_AnimationLoop(m_pModelCom->Get_CurrentAnimIndex()));
+		break;
+	}
 
 	return S_OK;
 }
@@ -129,7 +151,12 @@ void CDungeonDoor::Reset_Animation()
 {
 	if (m_bIsAnimationFinished)
 	{
-		
+		switch (m_pModelCom->Get_CurrentAnimIndex())
+		{
+		case ANIM_OPEN:
+			m_pModelCom->Set_CurrentAnimIndex(ANIM_OPEN_IDLE);
+			break;
+		}
 	}
 }
 

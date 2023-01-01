@@ -11,10 +11,10 @@ public:
 	{
 		ANIM_CLOSE,
 		ANIM_CLOSE_WIDE,
-		ANIM_OPEN_IDLE,
-		ANIM_OPEN_IDLE_WIDE,
 		ANIM_OPEN,
 		ANIM_OPEN_WIDE,
+		ANIM_OPEN_IDLE,
+		ANIM_OPEN_IDLE_WIDE,
 		ANIM_END
 	};
 
@@ -24,7 +24,8 @@ private:
 	virtual ~CDungeonDoor() = default;
 
 public:
-	/* TODO: .. */
+	void Open_Door();
+	void Close_Door();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;

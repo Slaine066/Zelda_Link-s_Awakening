@@ -8,6 +8,10 @@
 #include "TriggerBox_Dynamic.h"
 #include "UI_Manager.h"
 #include "Sky.h"
+#include "Layer.h"
+#include "Monster.h"
+#include "Player.h"
+#include "DungeonDoor.h"
 
 CLevel_MoriblinCave::CLevel_MoriblinCave(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext),
@@ -52,6 +56,9 @@ HRESULT CLevel_MoriblinCave::Initialize()
 void CLevel_MoriblinCave::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	Compute_CurrentRoom();
+	Check_Doors(fTimeDelta);
 }
 
 void CLevel_MoriblinCave::Late_Tick(_float fTimeDelta)
@@ -117,6 +124,10 @@ HRESULT CLevel_MoriblinCave::Load_Objects_FromFile()
 	CloseHandle(hFile);
 
 	Safe_Release(pGameInstance);
+
+	Add_RoomPositions();
+	Compute_RoomsData();
+
 	return S_OK;
 }
 
@@ -226,11 +237,14 @@ HRESULT CLevel_MoriblinCave::Ready_Layer_Camera(const _tchar * pLayerTag)
 	if (!pCameraDungeon)
 		return E_FAIL;
 
-	pCameraDungeon->Add_RoomCamera(_float3(0.f, 0.f, 0.f));		// MoriblinCave_1A
-	pCameraDungeon->Add_RoomCamera(_float3(6.f, 0.f, 0.f));		// MoriblinCave_1B
-	pCameraDungeon->Add_RoomCamera(_float3(12.f, 0.f, 0.f));	// MoriblinCave_1C
-	pCameraDungeon->Add_RoomCamera(_float3(0.f, 0.f, -5.f));	// MoriblinCave_2A
-	pCameraDungeon->Setup_DungeonCamera();
+	for (auto& tDungeonRoom : m_DungeonRoomDescs)
+	{
+		_float3 vRoomPosition = _float3(tDungeonRoom->m_vRoomPosition.x, tDungeonRoom->m_vRoomPosition.y, tDungeonRoom->m_vRoomPosition.z);
+		pCameraDungeon->Add_RoomPosition(vRoomPosition);
+	}
+
+	Compute_CurrentRoom();
+	pCameraDungeon->Setup_DungeonCamera(_float3(m_pCurrentDungeonRoom->m_vRoomPosition.x, m_pCurrentDungeonRoom->m_vRoomPosition.y, m_pCurrentDungeonRoom->m_vRoomPosition.z));
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -247,6 +261,139 @@ HRESULT CLevel_MoriblinCave::Ready_Layer_Effect(const _tchar * pLayerTag)
 	Safe_Release(pGameInstance);
 
 	return S_OK;
+}
+
+void CLevel_MoriblinCave::Add_RoomPositions()
+{
+	DUNGEONROOMDESC* tDungeonRoomDesc = new DUNGEONROOMDESC;
+	tDungeonRoomDesc->m_vRoomPosition = _float4(0.f, 0.f, 0.f, 1.f);	// MoriblinCave_1A
+	m_DungeonRoomDescs.push_back(tDungeonRoomDesc);	
+
+	tDungeonRoomDesc = new DUNGEONROOMDESC;
+	tDungeonRoomDesc->m_vRoomPosition = _float4(6.f, 0.f, 0.f, 1.f);	// MoriblinCave_1B
+	m_DungeonRoomDescs.push_back(tDungeonRoomDesc);
+
+	tDungeonRoomDesc = new DUNGEONROOMDESC;
+	tDungeonRoomDesc->m_vRoomPosition = _float4(12.f, 0.f, 0.f, 1.f);	// MoriblinCave_1C
+	m_DungeonRoomDescs.push_back(tDungeonRoomDesc);
+
+	tDungeonRoomDesc = new DUNGEONROOMDESC;
+	tDungeonRoomDesc->m_vRoomPosition = _float4(0.f, 0.f, -5.f, 1.f);	// MoriblinCave_2A
+	m_DungeonRoomDescs.push_back(tDungeonRoomDesc);
+}
+
+void CLevel_MoriblinCave::Compute_RoomsData()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	/* Monsters Data */
+	list<CGameObject*> Monsters = pGameInstance->Get_Layer(pGameInstance->Get_NextLevelIndex(), TEXT("Layer_Monster"))->Get_Objects();
+	for (auto pObject : Monsters)
+	{
+		CMonster* pMonster = static_cast<CMonster*>(pObject);
+	
+		_uint iDungeonRoomIndex = 0;
+		_float fPreviousDistance = 999.f;
+
+		for (_uint i = 0; i < m_DungeonRoomDescs.size(); i++)
+		{
+			_vector vPosition = pMonster->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+			_float fDistance = XMVectorGetX(XMVector4Length(XMLoadFloat4(&m_DungeonRoomDescs[i]->m_vRoomPosition) - vPosition));
+
+			if (fDistance < fPreviousDistance)
+			{
+				iDungeonRoomIndex = i;
+				fPreviousDistance = fDistance;
+			}
+		}
+		
+		m_DungeonRoomDescs[iDungeonRoomIndex]->m_RoomMonsters.push_back(pMonster);
+	}
+
+	/* Dungeon Doors Data */
+	list<CGameObject*> Objects = pGameInstance->Get_Layer(pGameInstance->Get_NextLevelIndex(), TEXT("Layer_Objects"))->Get_Objects();
+	for (auto pObject : Objects)
+	{
+		CDungeonDoor* pDungeonDoor = dynamic_cast<CDungeonDoor*>(pObject);
+		if (pDungeonDoor)
+			m_DungeonDoors.push_back(pDungeonDoor);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CLevel_MoriblinCave::Compute_CurrentRoom()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	DUNGEONROOMDESC* pCurrentRoom = nullptr;
+	_float fPreviousDistance = 999.f;
+
+	for (auto& pDungeonRoom : m_DungeonRoomDescs)
+	{
+		CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_NextLevelIndex(), TEXT("Layer_Player"));
+		_vector vPlayerPosition = pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
+
+		_float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&pDungeonRoom->m_vRoomPosition) - vPlayerPosition));
+
+		if (fDistance < fPreviousDistance)
+		{
+			pCurrentRoom = pDungeonRoom;
+			fPreviousDistance = fDistance;
+		}
+	}
+
+	if (pCurrentRoom != m_pCurrentDungeonRoom && m_pCurrentDungeonRoom != nullptr)
+		m_bIsRoomChanged = true;
+	else
+		m_bIsRoomChanged = false;
+
+	m_pCurrentDungeonRoom = pCurrentRoom;
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CLevel_MoriblinCave::Remove_MonsterFromRoom(CMonster * pMonster)
+{
+	for (auto& iter = m_pCurrentDungeonRoom->m_RoomMonsters.begin(); iter != m_pCurrentDungeonRoom->m_RoomMonsters.end(); iter++)
+	{
+		if (pMonster == *iter)
+		{
+			m_pCurrentDungeonRoom->m_RoomMonsters.erase(iter);
+			return;
+		}
+	}
+}
+
+void CLevel_MoriblinCave::Check_Doors(_float fTimeDelta)
+{
+	if (m_pCurrentDungeonRoom->m_RoomMonsters.empty() && !m_pCurrentDungeonRoom->m_bIsRoomClear)
+	{
+		for (auto& pDungeonDoor : m_DungeonDoors)
+			pDungeonDoor->Open_Door();
+
+		m_pCurrentDungeonRoom->m_bIsRoomClear = true;
+	}
+
+	if (m_bShouldClose)
+	{
+		if (m_fCloseTimer > m_fCloseTimerMax)
+		{
+			for (auto& pDungeonDoor : m_DungeonDoors)
+				pDungeonDoor->Close_Door();
+
+			m_fCloseTimer = 0.f;
+			m_bShouldClose = false;
+		}
+		else
+			m_fCloseTimer += fTimeDelta;
+	}
+}
+
+void CLevel_MoriblinCave::Close_Door()
+{
+	if (!m_pCurrentDungeonRoom->m_RoomMonsters.empty())
+		m_bShouldClose = true;
 }
 
 CLevel_MoriblinCave* CLevel_MoriblinCave::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -267,4 +414,9 @@ void CLevel_MoriblinCave::Free()
 	__super::Free();
 
 	Safe_Release(m_pUIManager);
+
+	for (auto& pDungeonRoom : m_DungeonRoomDescs)
+		Safe_Delete(pDungeonRoom);
+
+	m_DungeonRoomDescs.clear();
 }

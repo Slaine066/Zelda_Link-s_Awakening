@@ -10,6 +10,7 @@
 #include "MoriblinSwordAttackState.h"
 #include "MoriblinSwordFallState.h"
 #include "Effect.h"
+#include "Level_MoriblinCave.h"
 
 using namespace MoriblinSword;
 
@@ -136,6 +137,12 @@ _float CMoriblinSword::Take_Damage(float fDamage, void * DamageType, CGameObject
 				m_pModelCom->Reset_CurrentAnimation();
 				CMoriblinSwordState* pState = new CDieState(DamageCauser->Get_Position());
 				m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
+
+				/* If this Monster is in a Dungeon, remove it from Dungeon Room Monsters. */
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+				CLevel_MoriblinCave* pDungeonLevel = dynamic_cast<CLevel_MoriblinCave*>(pGameInstance->Get_CurrentLevel());
+				if (pDungeonLevel)
+					pDungeonLevel->Remove_MonsterFromRoom(this);
 			}
 			else
 			{

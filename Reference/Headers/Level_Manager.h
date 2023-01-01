@@ -16,6 +16,7 @@ public:
 	virtual ~CLevel_Manager() = default;
 
 public:
+	class CLevel* Get_CurrentLevel() {	return m_pCurrentLevel; }
 	_uint Get_CurrentLevelIndex() { return m_iLevelIndex; }
 	_uint Get_NextLevelIndex() { return m_iNextLevelIndex; }
 	_bool Get_IsJustSpawned() { return m_bIsJustSpawned; }

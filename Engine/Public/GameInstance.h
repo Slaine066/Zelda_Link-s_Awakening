@@ -48,6 +48,7 @@ public: /* For.Timer_Manager */
 
 public: /* For.Level_Manager */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
+	class CLevel* Get_CurrentLevel();
 	_uint Get_CurrentLevelIndex();
 	_uint Get_NextLevelIndex();
 	_bool Get_IsJustSpawned();

@@ -8,6 +8,7 @@
 #include "MoriblinSpearDieState.h"
 #include "Weapon.h"
 #include "MoriblinSpearFallState.h"
+#include "Level_MoriblinCave.h"
 
 using namespace MoriblinSpear;
 
@@ -148,6 +149,12 @@ _float CMoriblinSpear::Take_Damage(float fDamage, void * DamageType, CGameObject
 			m_pModelCom->Reset_CurrentAnimation();
 			CMoriblinSpearState* pState = new CDieState(DamageCauser->Get_Position());
 			m_pMoriblinSpearState = m_pMoriblinSpearState->ChangeState(this, m_pMoriblinSpearState, pState);
+
+			/* If this Monster is in a Dungeon, remove it from Dungeon Room Monsters. */
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			CLevel_MoriblinCave* pDungeonLevel = dynamic_cast<CLevel_MoriblinCave*>(pGameInstance->Get_CurrentLevel());
+			if (pDungeonLevel)
+				pDungeonLevel->Remove_MonsterFromRoom(this);
 		}
 		else
 		{

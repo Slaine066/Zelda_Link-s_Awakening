@@ -12,6 +12,7 @@
 #include "PlayerState.h"
 #include "PlayerGuardState.h"
 #include "Effect.h"
+#include "Level_MoriblinCave.h"
 
 using namespace Bossblin;
 
@@ -176,6 +177,12 @@ _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * Da
 				m_pModelCom->Reset_CurrentAnimation();
 				CBossblinState* pState = new CDieState(CBossblinState::STATETYPE::STATETYPE_START);
 				m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pState);
+
+				/* If this Monster is in a Dungeon, remove it from Dungeon Room Monsters. */
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+				CLevel_MoriblinCave* pDungeonLevel = dynamic_cast<CLevel_MoriblinCave*>(pGameInstance->Get_CurrentLevel());
+				if (pDungeonLevel)
+					pDungeonLevel->Remove_MonsterFromRoom(this);
 			}
 			else
 			{

@@ -20,9 +20,9 @@ private:
 	virtual ~CCamera_Dungeon() = default;
 
 public:
-	void Add_RoomCamera(_float3 vPosition) { m_CameraPositions.push_back(vPosition); }
+	void Add_RoomPosition(_float3 vPosition) { m_RoomPositions.push_back(vPosition); }
 
-	_float3 Get_CurrentCameraPosition() { m_vCurrentCameraPosition; }
+	_float3 Get_CurrentCameraPosition() { return m_vCurrentRoomPosition; }
 
 	void Set_ModeZoom(_bool bZoom) { bZoom ? m_eCamMode = MODE_ZOOMIN : m_eCamMode = MODE_ZOOMOUT; }
 	void Set_ZoomPosition(_float3 vZoomPosition) { m_vZoomPosition = vZoomPosition; }
@@ -34,7 +34,7 @@ public:
 		m_fVelocityDecrement = fVelocityDecrement;
 	};
 	
-	void Setup_DungeonCamera();
+	void Setup_DungeonCamera(_float3 vCurrentRoomPosition);
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -45,7 +45,6 @@ public:
 
 
 private:
-	_float3 Compute_DungeonCamera();
 	void Dungeon_Camera(_float fTimeDelta);
 	void ZoomIn_Camera(_float fTimeDelta, _float3 vZoomPosition);
 	void ZoomOut_Camera(_float fTimeDelta);
@@ -54,10 +53,11 @@ private:
 private:
 	CAM_MODE m_eCamMode = MODE_DUNGEON;
 
-	vector<_float3> m_CameraPositions;
-	_float3 m_vCurrentCameraPosition;
+	vector<_float3> m_RoomPositions;
+	_float3 m_vCurrentRoomPosition;
 	_bool m_bMoving = false;
 
+	/* Zoom Variables */
 	_float3 m_vZoomPosition;
 
 	/* Shake Variables */
