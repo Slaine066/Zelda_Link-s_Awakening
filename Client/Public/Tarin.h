@@ -16,14 +16,14 @@ class CTarin final : public CNpc
 public:
 	enum MESHID
 	{
-		MESH_BACKBACK,
-		MESH_BACKBACK_STRAPS,
-		MESH_FACE,
-		MESH_BODY,
-		MESH_EYES,
-		MESH_MOUTH,
-		MESH_NOSE,
-		MESH_BANANA,
+		MESH_BACKBACK,			// 1
+		MESH_FACE,				// 2
+		MESH_BANANA,			// 0 
+		MESH_MOUTH,				// 5
+		MESH_NOSE,				// 6
+		MESH_BACKBACK_STRAPS,	// 7
+		MESH_BODY, 				// 3	
+		MESH_EYES,				// 4
 		MESH_END
 	};
 
@@ -44,6 +44,15 @@ private:
 	virtual ~CTarin() = default;
 
 public:
+	virtual _bool CanInteract() override;
+	virtual void Interact() override;
+	virtual void Compute_ChatLine() override;
+
+	class CUI* Get_InteractButton() { return m_pInteractButton; }
+	void Set_InteractButton(class CUI* pInteractButton) { m_pInteractButton = pInteractButton; }
+	void Spawn_InteractButton();
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _uint Tick(_float fTimeDelta) override;
@@ -53,7 +62,7 @@ public:
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;
 	virtual HRESULT SetUp_ShaderResources() override;
-
+	
 private:
 	virtual void AI_Behavior() override;
 	virtual void TickState(_float fTimeDelta) override;
@@ -61,6 +70,11 @@ private:
 
 private:
 	class CTarinState* m_pTarinState = nullptr;
+
+	class CUI* m_pInteractButton = nullptr;
+	
+	_uint m_iChatLineIndex = 1;
+	class CUI_Chat* m_pCurrentChat = nullptr;
 
 public:
 	static CTarin* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

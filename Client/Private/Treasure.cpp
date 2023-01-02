@@ -74,25 +74,15 @@ _uint CTreasure::Late_Tick(_float fTimeDelta)
 		CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
 		if (pPlayer)
 		{
-			pPlayer->Set_AchieveState();
-			pPlayer->Spawn_GetItemEffect();
-		
-			CItem::ITEMDESC tItemDesc;
-			ZeroMemory(&tItemDesc, sizeof(CItem::ITEMDESC));
-			tItemDesc.m_eItemType = CItem::ITEMTYPE::TYPE_TREASURE;
-			tItemDesc.mWorldMatrix = pPlayer->Get_Transform()->Get_World4x4();
-
 			switch (pGameInstance->Get_CurrentLevelIndex())
 			{
 			case LEVEL::LEVEL_FIELD:
-				tItemDesc.m_eItemId = ITEMID::ITEM_ROCFEATHER;
+				pPlayer->Set_AchieveState(ITEMID::ITEM_ROCFEATHER);
 				break;
 			case LEVEL::LEVEL_MORIBLINCAVE:
-				tItemDesc.m_eItemId = ITEMID::ITEM_OCARINA;
+				pPlayer->Set_AchieveState(ITEMID::ITEM_OCARINA);
 				break;
 			}
-
-			pGameInstance->Add_GameObject(TEXT("Item_Treasure"), TEXT("Prototype_GameObject_Item"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Item"), &tItemDesc);
 		}
 
 		m_bItemDropped = true;

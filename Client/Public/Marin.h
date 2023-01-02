@@ -44,6 +44,15 @@ private:
 	virtual ~CMarin() = default;
 
 public:
+	virtual _bool CanInteract() override;
+	virtual void Interact() override;
+	virtual void Compute_ChatLine() override;
+
+	class CUI* Get_InteractButton() { return m_pInteractButton; }
+	void Set_InteractButton(class CUI* pInteractButton) { m_pInteractButton = pInteractButton; }
+	void Spawn_InteractButton();
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _uint Tick(_float fTimeDelta) override;
@@ -61,6 +70,11 @@ private:
 
 private:
 	class CMarinState* m_pMarinState = nullptr;
+
+	class CUI* m_pInteractButton = nullptr;
+
+	_uint m_iChatLineIndex = 1;
+	class CUI_Chat* m_pCurrentChat = nullptr;
 
 public:
 	static CMarin* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -202,6 +202,9 @@
     <Filter Include="02.GameObjects\00.Actor\02.DynamicObject\DungeonDoor">
       <UniqueIdentifier>{f35650b0-5331-468d-a9fa-b39cff0bd45c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\04.UI\UI_Chat">
+      <UniqueIdentifier>{c72ef776-27b5-4ade-a86b-6df7d0d9b406}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -507,6 +510,9 @@
     <ClInclude Include="..\public\DungeonDoor.h">
       <Filter>02.GameObjects\00.Actor\02.DynamicObject\DungeonDoor</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Chat.h">
+      <Filter>02.GameObjects\04.UI\UI_Chat</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -778,6 +784,9 @@
     </ClCompile>
     <ClCompile Include="..\private\DungeonDoor.cpp">
       <Filter>02.GameObjects\00.Actor\02.DynamicObject\DungeonDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Chat.cpp">
+      <Filter>02.GameObjects\04.UI\UI_Chat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

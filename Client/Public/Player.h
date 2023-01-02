@@ -120,7 +120,9 @@ public:
 	void Set_IsInvincible(_bool bIsInvincible) { m_bIsInvincible = bIsInvincible; }
 	class CInteractableObject* Get_InteractableObject() { return m_pCurrentInteractableObject; }
 	void Set_InteractableObject(class CInteractableObject* pInteractableObj) { m_pCurrentInteractableObject = pInteractableObj; }
-	void Set_AchieveState();
+	class CNpc* Get_Npc() { return m_pCurrentNpc; }
+	void Set_Npc(class CNpc* pNpc) { m_pCurrentNpc = pNpc; }
+	void Set_AchieveState(ITEMID eItemId);
 	_bool Get_CanPickup() { return m_bCanPickup; }
 	void Set_CanPickup(_bool bCanPickup) { m_bCanPickup = bCanPickup; }
 	void Set_ShowSword(_bool bShowSword) { m_bShowSword = bShowSword; }
@@ -144,7 +146,6 @@ public:
 	void Spawn_BombProjectile();
 
 	void Spawn_GuardEffect();
-	void Spawn_GetItemEffect();
 
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;
@@ -166,11 +167,16 @@ private:
 	_float m_fInvincibleTimer = 0.f;
 	_bool m_bIsInvincible = false;
 
+	/* InteractableObject Variables */
 	class CInteractableObject* m_pCurrentInteractableObject = nullptr;
 	_bool m_bCanPickup = true;
 
+	/* Equipment Variables */
 	CGameObject* m_pWeapon = nullptr;
 	_bool m_bShowSword = true;
+
+	/* Npc Variables*/
+	class CNpc* m_pCurrentNpc = nullptr;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

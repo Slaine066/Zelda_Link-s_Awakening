@@ -7,6 +7,7 @@ texture2D g_DissolveTexture;
 
 float g_EffectTimer;
 float g_EffectLifespan;
+bool g_StartTimer;
 
 /* Used by "UI_ItemSlot" class. */
 bool g_Hovered;
@@ -77,6 +78,21 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	if (g_Hovered)
 		Out.vColor += .2;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_FADEIN(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (g_EffectTimer < 0.25f)
+	{
+		float fLerpAlpha = lerp(0, Out.vColor.a, g_EffectTimer / 0.25f);
+		Out.vColor.a = fLerpAlpha;
+	}
 
 	return Out;
 }
@@ -216,11 +232,14 @@ PS_OUT PS_MAIN_GET_ITEM_EFFECT(PS_IN In)
 
 		Out.vColor.rgb = vLerpColor;
 
-		float startAfter = g_EffectLifespan / 2;
-		if (g_EffectTimer >= startAfter)
+		if (g_StartTimer)
 		{
-			float fLerpAlpha = lerp(Out.vColor.a, 0, (g_EffectTimer - startAfter) / (g_EffectLifespan - startAfter));
-			Out.vColor.a = fLerpAlpha;
+			float startAfter = g_EffectLifespan / 2;
+			if (g_EffectTimer >= startAfter)
+			{
+				float fLerpAlpha = lerp(Out.vColor.a, 0, (g_EffectTimer - startAfter) / (g_EffectLifespan - startAfter));
+				Out.vColor.a = fLerpAlpha;
+			}
 		}
 	}
 
@@ -260,6 +279,18 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+
+	pass UI_Blend_FadeIn
+	{
+		SetRasterizerState(RS_Default);
+		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FADEIN();
 	}
 
 	pass Effect_Smoke

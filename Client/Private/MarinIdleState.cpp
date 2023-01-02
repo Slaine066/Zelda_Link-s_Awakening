@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "MarinIdleState.h"
+#include "UI.h"
 
 using namespace Marin;
 
@@ -18,13 +19,22 @@ CMarinState * CIdleState::Tick(CMarin * pMarin, _float fTimeDelta)
 	pMarin->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMarin->Is_AnimationLoop(pMarin->Get_Model()->Get_CurrentAnimIndex()));
 	pMarin->Sync_WithNavigationHeight();
 
-	/* TODO: .. */
-
 	return nullptr;
 }
 
 CMarinState * CIdleState::LateTick(CMarin * pMarin, _float fTimeDelta)
 {
+	if (pMarin->CanInteract())
+		pMarin->Spawn_InteractButton();
+	else
+	{
+		if (pMarin->Get_InteractButton())
+		{
+			pMarin->Get_InteractButton()->Set_ShouldDestroy(true);
+			pMarin->Set_InteractButton(nullptr);
+		}
+	}
+
 	return nullptr;
 }
 

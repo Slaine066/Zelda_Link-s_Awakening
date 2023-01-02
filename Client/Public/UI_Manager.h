@@ -43,6 +43,10 @@ public:
 	_float Get_MaxHp() { return m_fMaxHp; }
 	_float Get_CurrentHp() { return m_fCurrentHp; }
 	_tchar* Get_ItemTextureName(ITEMID eItemId);
+	_uint Get_MarinChatLine() { return m_iMarinChatLine; }
+	_uint Get_TarinChatLine() { return m_iTarinChatLine; }
+	void Increase_MarinChatLine() { m_iMarinChatLine++; }
+	void Increase_TarinChatLine() { m_iTarinChatLine++; }
 
 	void Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex);
 	void Add_ItemX();
@@ -85,6 +89,11 @@ private:
 	vector<class CUI_ItemSlot*> m_ItemSlots;
 	vector<class CUI_InventoryItem*> m_ItemIcons;
 	_int m_iCurrentSlotIndex = 0;
+
+	/* Chat Line Variables */ 
+	// These informations should not be here! But I don't want to make a new class ("Quest_Manager", or whatever..)
+	_uint m_iMarinChatLine = 1;
+	_uint m_iTarinChatLine = 1;
 
 public:
 	virtual void Free() override;

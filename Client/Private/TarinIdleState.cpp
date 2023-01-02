@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "TarinIdleState.h"
+#include "UI.h"
 
 using namespace Tarin;
 
@@ -18,13 +19,22 @@ CTarinState * CIdleState::Tick(CTarin * pTarin, _float fTimeDelta)
 	pTarin->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pTarin->Is_AnimationLoop(pTarin->Get_Model()->Get_CurrentAnimIndex()));
 	pTarin->Sync_WithNavigationHeight();
 
-	/* TODO: .. */
-
 	return nullptr;
 }
 
 CTarinState * CIdleState::LateTick(CTarin * pTarin, _float fTimeDelta)
 {
+	if (pTarin->CanInteract())
+		pTarin->Spawn_InteractButton();
+	else
+	{
+		if (pTarin->Get_InteractButton())
+		{
+			pTarin->Get_InteractButton()->Set_ShouldDestroy(true);
+			pTarin->Set_InteractButton(nullptr);
+		}
+	}
+
 	return nullptr;
 }
 

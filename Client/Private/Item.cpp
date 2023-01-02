@@ -78,6 +78,15 @@ _uint CItem::Tick(_float fTimeDelta)
 	if (m_tItemDesc.m_eModelType == CModel::TYPE::TYPE_ANIM)
 		m_pModelCom->Play_Animation(fTimeDelta * 2, m_bIsAnimationFinished, Is_AnimationLoop(m_pModelCom->Get_CurrentAnimIndex()));
 
+	if (m_tItemDesc.m_eItemType == ITEMTYPE::TYPE_TREASURE)
+	{
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		_float4 vCamPosition = pGameInstance->Get_CamPosition();
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_pTransformCom->LookAt(XMLoadFloat4(&vCamPosition));
+	}
+
 	return S_OK;
 }
 
@@ -145,6 +154,7 @@ void CItem::Setup_Item(void * pArg)
 		m_tItemDesc.m_eModelType = CModel::TYPE::TYPE_ANIM;
 		m_tItemDesc.m_bAnimOnPickup = false;
 		break;
+	case ITEMID::ITEM_SHIELD:
 	case ITEMID::ITEM_ROCFEATHER:
 	case ITEMID::ITEM_OCARINA:
 		m_tItemDesc.m_eModelType = CModel::TYPE::TYPE_NONANIM;
@@ -257,6 +267,9 @@ _tchar * CItem::Get_ModelPrototypeId(ITEMID eItemId)
 {
 	switch ((ITEMID)eItemId)
 	{
+	case ITEMID::ITEM_SHIELD:
+		return TEXT("Prototype_Component_Model_Shield");
+		break;
 	case ITEMID::ITEM_RUPEE_GREEN:
 		return TEXT("Prototype_Component_Model_RupeeGreen");
 		break;

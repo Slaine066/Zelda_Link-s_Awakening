@@ -79,6 +79,9 @@ public:
 	virtual HRESULT Ready_Components(void* pArg);
 	virtual HRESULT SetUp_ShaderResources();
 
+public:
+	void Set_StartTimer(_bool bStartTimer) { m_bStartTimer = bStartTimer; }
+
 private:
 	_bool Is_ModelEffect();
 	_tchar* Get_TextureName();
@@ -106,6 +109,7 @@ protected:
 
 	_float m_fEffectScale = 1.f;
 	_float m_fEffectTimer = 0.f;
+	_bool m_bStartTimer = false;
 
 	_float m_fAngle = 0.f;
 	_float4 m_vCenterPosition;

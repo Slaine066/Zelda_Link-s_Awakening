@@ -66,5 +66,6 @@ protected:
 	STATE_ID m_eStateId = STATE_END;
 	_bool m_bIsAnimationFinished = false;
 	class CInteractableObject* m_pInteractableObject = nullptr;
+	class CNpc* m_pNpc = nullptr;
 };
 END

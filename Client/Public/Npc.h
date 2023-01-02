@@ -11,8 +11,14 @@ protected:
 	virtual ~CNpc() = default;
 
 public:
-	virtual _bool Is_AnimationLoop(_uint eAnimId) PURE;
+	_bool Get_DidInteract() { return m_bDidInteract; }
+	void Set_DidInteract(_bool bdidInteract) { m_bDidInteract = bdidInteract; }
 
+	virtual _bool Is_AnimationLoop(_uint eAnimId) PURE;
+	virtual _bool CanInteract() PURE;
+	virtual void Interact() PURE;
+	virtual void Compute_ChatLine() PURE;
+	
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -24,6 +30,9 @@ protected:
 	virtual void AI_Behavior() PURE;
 	virtual void TickState(_float fTimeDelta) PURE;
 	virtual void LateTickState(_float fTimeDelta) PURE;
+
+protected:
+	_bool m_bDidInteract = false;
 
 public:
 	virtual void Free() override;

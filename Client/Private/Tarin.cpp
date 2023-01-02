@@ -4,6 +4,9 @@
 #include "GameInstance.h"
 #include "TarinState.h"
 #include "TarinIdleState.h"
+#include "UI_Manager.h"
+#include "UI.h"
+#include "UI_Chat.h"
 
 using namespace Tarin;
 
@@ -15,6 +18,165 @@ CTarin::CTarin(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 CTarin::CTarin(const CTarin & rhs)
 	: CNpc(rhs)
 {
+}
+
+_bool CTarin::CanInteract()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
+	if (!pPlayer)
+		return false;
+
+	if (m_bDidInteract)
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return false;
+	}
+
+	CGameObject* pCollided = nullptr;
+	_bool bCollided = pGameInstance->Collision_with_Group(CCollision_Manager::COLLISION_PLAYER, Get_Collider(CCollider::AIM_OBJECT), CCollider::AIM_DAMAGE_INPUT, pCollided);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	if (bCollided && !m_bDidInteract)
+	{
+		pPlayer->Set_Npc(this);
+		return true;
+	}
+	else
+	{
+		if (pPlayer->Get_Npc() == this)
+			pPlayer->Set_Npc(nullptr);
+		
+		return false;
+	}
+}
+
+void CTarin::Interact()
+{
+	m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_TALK);
+
+	if (m_pCurrentChat)
+	{
+		if (m_pCurrentChat->Get_ChatIndex() >= m_pCurrentChat->Get_ChatCount() - 1)
+		{
+			m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_WAIT);
+
+			m_pCurrentChat->Set_ShouldDestroy(true);
+			m_pCurrentChat = nullptr;
+
+			m_bDidInteract = true;
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
+			if (!pPlayer)
+				return;
+
+			pPlayer->Set_Npc(nullptr);
+			RELEASE_INSTANCE(CGameInstance);
+		}
+		else
+			m_pCurrentChat->Increase_ChatIndex();
+	}
+	else
+	{
+		CUI::UIDESC tUIDesc;
+		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
+		tUIDesc.m_fSizeX = 1161;
+		tUIDesc.m_fSizeY = 250;
+		tUIDesc.m_fX = g_iWinSizeX / 2;
+		tUIDesc.m_fY = g_iWinSizeY - 175;
+		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
+
+		/* Load correct Chat Line. */
+		_tchar wcTextureName[MAX_PATH] = TEXT("Prototype_Component_Texture_Chat_Tarin_Line_");
+		_tchar wcTextureId[MAX_PATH];
+		swprintf_s(wcTextureId, L"%d", m_iChatLineIndex);
+		wcscat_s(wcTextureName, MAX_PATH, wcTextureId); 
+		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, wcTextureName);
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+		pGameInstance->Add_GameObject_Out(TEXT("UI_Chat_Tarin"), TEXT("Prototype_GameObject_UI_Chat"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)m_pCurrentChat, &tUIDesc);
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
+}
+
+void CTarin::Compute_ChatLine()
+{
+	if (!m_bDidInteract)
+		return;
+
+	m_iChatLineIndex = CUI_Manager::Get_Instance()->Get_TarinChatLine();
+	switch (m_iChatLineIndex)
+	{
+		case 1:
+		{
+			CUI_Manager::Get_Instance()->Increase_TarinChatLine();
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
+			if (!pPlayer)
+				return;
+
+			pPlayer->Set_AchieveState(ITEMID::ITEM_SHIELD);
+			RELEASE_INSTANCE(CGameInstance);
+
+			break;
+		}
+		case 2:
+		{
+			break;
+		}
+		case 3:
+		{
+			break;
+		}
+	}
+}
+
+void CTarin::Spawn_InteractButton()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_float4 vPosition;
+	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+	vPosition.y -= 0.5f;
+
+	/* World to View */
+	_matrix mViewMatrix = pGameInstance->Get_TransformMatrix(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
+	XMStoreFloat4(&vPosition, XMVector3TransformCoord(XMLoadFloat4(&vPosition), mViewMatrix));
+
+	/* View to Projection */
+	_matrix mProjMatrix = pGameInstance->Get_TransformMatrix(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
+	XMStoreFloat4(&vPosition, XMVector3TransformCoord(XMLoadFloat4(&vPosition), mProjMatrix));
+
+	/* Projection to Screen */
+	_float2 fScreenPosition;
+	fScreenPosition.x = vPosition.x * g_iWinSizeX + g_iWinSizeX * 0.5f;
+	fScreenPosition.y = -vPosition.y * g_iWinSizeY + g_iWinSizeY * 0.5f;
+
+	if (m_pInteractButton)
+	{
+		m_pInteractButton->Set_PositionX(fScreenPosition.x);
+		m_pInteractButton->Set_PositionY(fScreenPosition.y);
+	}
+	else
+	{
+		CUI::UIDESC tUIDesc;
+		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
+		tUIDesc.m_fSizeX = 120;
+		tUIDesc.m_fSizeY = 44;
+		tUIDesc.m_fX = fScreenPosition.x;
+		tUIDesc.m_fY = fScreenPosition.y;
+		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
+		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_InteractButton_Talk"));
+
+		pGameInstance->Add_GameObject_Out(TEXT("UI_InteractButton"), TEXT("Prototype_GameObject_UI"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)m_pInteractButton, &tUIDesc);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CTarin::Initialize_Prototype()
@@ -41,6 +203,8 @@ HRESULT CTarin::Initialize(void * pArg)
 	CTarinState* pState = new CIdleState();
 	m_pTarinState = m_pTarinState->ChangeState(this, m_pTarinState, pState);
 
+	m_iChatLineIndex = CUI_Manager::Get_Instance()->Get_TarinChatLine();
+
 	return S_OK;
 }
 
@@ -54,9 +218,12 @@ _uint CTarin::Tick(_float fTimeDelta)
 	if (m_bShouldDestroy)
 		return OBJ_DESTROY;
 
+	CGameInstance::Get_Instance()->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_OBJECT, this);
 
 	AI_Behavior();
 	TickState(fTimeDelta);
+
+	Compute_ChatLine();
 
 	return OBJ_NOEVENT;
 }
@@ -85,6 +252,9 @@ HRESULT CTarin::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
+		if (i == MESHID::MESH_BACKBACK || i == MESHID::MESH_BACKBACK_STRAPS || i == MESHID::MESH_BANANA)
+			continue;
+
 		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
@@ -136,9 +306,19 @@ HRESULT CTarin::Ready_Components(void * pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_Navigation"), iLevelIndex, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationCom, &NavDesc)))
 		return E_FAIL;
 
-	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object
-
 	CCollider::COLLIDERDESC	ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.eAim = CCollider::AIM::AIM_OBJECT;
+	ColliderDesc.vScale = _float3(2.5f, 2.5f, 2.5f);
+	ColliderDesc.vPosition = _float3(0.f, 0.75f, 0.f);
+	ColliderDesc.m_bIsAttachedToBone = false;
+
+	m_vCollidersCom.resize(2); // Numbers of Colliders needed for this Object
+
+	/* For.Com_Collider*/
+	if (FAILED(__super::Add_Components(TEXT("Com_ColliderTarin"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_Sphere"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+		return E_FAIL;
+
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.eAim = CCollider::AIM::AIM_BLOCK;
 	ColliderDesc.vScale = _float3(.8f, 1.4f, .8f);
@@ -146,7 +326,7 @@ HRESULT CTarin::Ready_Components(void * pArg)
 	ColliderDesc.m_bIsAttachedToBone = false;
 
 	/* For.Com_Collider*/
-	if (FAILED(__super::Add_Components(TEXT("Com_ColliderBedBlock"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_AABB"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
+	if (FAILED(__super::Add_Components(TEXT("Com_ColliderTarinBlock"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_AABB"), (CComponent**)&m_vCollidersCom[1], &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -699,8 +699,21 @@ _uint CEffect::Tick(_float fTimeDelta)
 		}
 		case EFFECT_TYPE::EFFECT_GET_ITEM:
 		{
-			if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
-				return OBJ_DESTROY;
+			if (m_bStartTimer)
+			{
+				if (m_fEffectTimer >= m_tEffectDesc.m_fEffectLifespan)
+					return OBJ_DESTROY;
+				else
+				{
+					CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+					m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
+
+					RELEASE_INSTANCE(CGameInstance);
+
+					m_fEffectTimer += fTimeDelta;
+				}
+			}
 			else
 			{
 				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -722,6 +735,7 @@ _uint CEffect::Tick(_float fTimeDelta)
 
 				m_fEffectTimer += fTimeDelta;
 			}
+			
 
 			break;
 		}
@@ -862,6 +876,12 @@ HRESULT CEffect::SetUp_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_RawValue("g_EffectLifespan", &m_tEffectDesc.m_fEffectLifespan, sizeof(_float))))
 		return E_FAIL;
+
+	if (m_tEffectDesc.m_eEffectType == EFFECT_TYPE::EFFECT_GET_ITEM)
+	{
+		if (FAILED(m_pShaderCom->Set_RawValue("g_StartTimer", &m_bStartTimer, sizeof(_bool))))
+			return E_FAIL;
+	}
 
 	RELEASE_INSTANCE(CGameInstance);
 

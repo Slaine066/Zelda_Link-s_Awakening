@@ -12,6 +12,7 @@ private:
 
 public:
 	ID3D11ShaderResourceView* Get_SRV(_uint iIndex = 0);
+	_uint Get_Count() { return m_SRVs.size(); }
 
 public:
 	virtual HRESULT Initialize_Prototype(const _tchar* pTextureFilePath, _uint iNumTextures);

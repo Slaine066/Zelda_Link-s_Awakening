@@ -28,6 +28,7 @@
 #include "UI_ItemSlot.h"
 #include "UI_ItemChip.h"
 #include "UI_InventoryItem.h"
+#include "UI_Chat.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -166,6 +167,35 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Hit_Flash"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Effects/Hit_Flash_%02d.dds"), 6))))
 		return E_FAIL;
 
+	/* Chat Dialogs */
+	/*For.Prototype_Component_Texture_Chat_Marin_Line_1 */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Marin_Line_1"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Marin/Line_1/Chat_%02d.png"), 4))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Chat_Marin_Line_2 */
+	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Marin_Line_2"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Marin/Line_2/Chat_%02d.png"), 1))))
+		return E_FAIL;*/
+	/*For.Prototype_Component_Texture_Chat_Tarin_Line_1 */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Tarin_Line_1"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Tarin/Line_1/Chat_%02d.png"), 3))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Chat_Tarin_Line_2 */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Tarin_Line_2"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Tarin/Line_2/Chat_%02d.png"), 2))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Chat_Bossblin_Line_1 */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Bossblin_Line_1"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Bossblin/Line_1/Chat_%02d.png"), 2))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Chat_Get_Item_Shield */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Get_Item_Shield"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Get_Item/Get_Item_Shield.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Chat_Get_Item_Sword */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Get_Item_Sword"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Get_Item/Get_Item_Sword.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Chat_Get_Item_RocsFeather */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Get_Item_RocsFeather"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Get_Item/Get_Item_RocsFeather.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Chat_Get_Item_Ocarina */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Get_Item_Ocarina"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Get_Item/Get_Item_Ocarina.png"), 1))))
+		return E_FAIL;
+
 	// >
 	// .. Add Above ..
 #pragma endregion Loading_Textures
@@ -219,6 +249,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Model_Treasure*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Treasure"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Object_Treasure/Treasure.fbx", false, PivotMatrix))))
 		return E_FAIL;
+	/*For.Prototype_Component_Model_Shield*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Shield"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_Shield/Shield.fbx", false, PivotMatrix))))
+		return E_FAIL;
 	/*For.Prototype_Component_Model_RupeeGreen*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RupeeGreen"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Item_RupeeGreen/RupeeGreen.fbx", false))))
 		return E_FAIL;
@@ -226,10 +259,10 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Bomb"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Item_Bomb/Bomb.fbx", false))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_RocsFeather*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RocsFeather"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_RocsFeather/RocsFeather.fbx", false))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RocsFeather"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_RocsFeather/RocsFeather.fbx", false, PivotMatrix))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_Ocarina*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Ocarina"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_Ocarina/Ocarina.fbx", false))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Ocarina"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_Ocarina/Ocarina.fbx", false, PivotMatrix))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_HitRing*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_HitRing"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Effects/HitRing/HitRing.fbx", false))))
@@ -788,6 +821,9 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_InventoryItem */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_InventoryItem"), CUI_InventoryItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_Chat */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Chat"), CUI_Chat::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// >

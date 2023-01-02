@@ -8,6 +8,7 @@
 #include "PlayerJumpState.h"
 #include "PlayerAchieveState.h"
 #include "InteractableObject.h"
+#include "Npc.h"
 
 using namespace Player;
 
@@ -20,7 +21,10 @@ CPlayerState * CIdleState::HandleInput(CPlayer * pPlayer)
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
 	if (pGameInstance->Key_Down('A'))
+	{
+		m_pNpc = pPlayer->Get_Npc();
 		m_pInteractableObject = pPlayer->Get_InteractableObject();
+	}
 	else if (pGameInstance->Key_Down('S'))
 		return new CAttackState();
 	else if (pGameInstance->Key_Down('W'))
@@ -59,12 +63,20 @@ CPlayerState * CIdleState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 
 CPlayerState * CIdleState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 {
-	if (!m_pInteractableObject)
+	if (!m_pInteractableObject && !m_pNpc)
 		return nullptr;
 
-	m_pInteractableObject->Interact();
-	m_pInteractableObject = nullptr;
-
+	if (m_pNpc)
+	{
+		m_pNpc->Interact();
+		m_pNpc = nullptr;
+	}
+	else if (m_pInteractableObject)
+	{
+		m_pInteractableObject->Interact();
+		m_pInteractableObject = nullptr;
+	}
+	
 	return nullptr;
 }
 
