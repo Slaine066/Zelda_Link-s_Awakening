@@ -47,6 +47,7 @@ public:
 	virtual _bool CanInteract() override;
 	virtual void Interact() override;
 	virtual void Compute_ChatLine() override;
+	virtual void Process_ChatLine() override;
 
 	class CUI* Get_InteractButton() { return m_pInteractButton; }
 	void Set_InteractButton(class CUI* pInteractButton) { m_pInteractButton = pInteractButton; }

@@ -61,11 +61,9 @@ void CMarin::Interact()
 		if (m_pCurrentChat->Get_ChatIndex() >= m_pCurrentChat->Get_ChatCount() - 1)
 		{
 			m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_WAIT);
-			
+
 			m_pCurrentChat->Set_ShouldDestroy(true);
 			m_pCurrentChat = nullptr;
-
-			m_bDidInteract = true;
 
 			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 			CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
@@ -73,6 +71,9 @@ void CMarin::Interact()
 				return;
 
 			pPlayer->Set_Npc(nullptr);
+
+			Process_ChatLine();
+
 			RELEASE_INSTANCE(CGameInstance);
 		}
 		else
@@ -99,7 +100,48 @@ void CMarin::Interact()
 
 void CMarin::Compute_ChatLine()
 {
-	/* When Game starts ChatLine should be 1. */
+	m_iChatLineIndex = CUI_Manager::Get_Instance()->Get_MarinChatLine();
+	switch (m_iChatLineIndex)
+	{
+		case 1:
+		{
+			break;
+		}
+		case 2:
+		{
+			m_bDidInteract = true;
+
+			break;
+		}
+		case 3:
+		{
+			break;
+		}
+	}
+}
+
+void CMarin::Process_ChatLine()
+{
+	m_bDidInteract = true;
+
+	m_iChatLineIndex = CUI_Manager::Get_Instance()->Get_MarinChatLine();
+	switch (m_iChatLineIndex)
+	{
+		case 1:
+		{
+			CUI_Manager::Get_Instance()->Increase_MarinChatLine();
+
+			break;
+		}
+		case 2:
+		{
+			break;
+		}
+		case 3:
+		{
+			break;
+		}
+	}
 }
 
 void CMarin::Spawn_InteractButton()
@@ -188,6 +230,8 @@ _uint CMarin::Tick(_float fTimeDelta)
 
 	AI_Behavior();
 	TickState(fTimeDelta);
+
+	Compute_ChatLine();
 
 	return OBJ_NOEVENT;
 }

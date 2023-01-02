@@ -18,6 +18,7 @@ public:
 	virtual _bool CanInteract() PURE;
 	virtual void Interact() PURE;
 	virtual void Compute_ChatLine() PURE;
+	virtual void Process_ChatLine() PURE;
 	
 public:
 	virtual HRESULT Initialize_Prototype() override;
