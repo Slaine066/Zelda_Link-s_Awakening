@@ -146,6 +146,7 @@ void CItem::Setup_Item(void * pArg)
 		m_tItemDesc.m_bAnimOnPickup = false;
 		break;
 	case ITEMID::ITEM_ROCFEATHER:
+	case ITEMID::ITEM_OCARINA:
 		m_tItemDesc.m_eModelType = CModel::TYPE::TYPE_NONANIM;
 		m_tItemDesc.m_bAnimOnPickup = false;
 		break;
@@ -264,6 +265,9 @@ _tchar * CItem::Get_ModelPrototypeId(ITEMID eItemId)
 		break;
 	case ITEMID::ITEM_ROCFEATHER:
 		return TEXT("Prototype_Component_Model_RocsFeather");
+		break;
+	case ITEMID::ITEM_OCARINA:
+		return TEXT("Prototype_Component_Model_Ocarina");
 		break;
 	}
 }

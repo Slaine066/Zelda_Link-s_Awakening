@@ -155,6 +155,7 @@ _float CMoriblinSpear::Take_Damage(float fDamage, void * DamageType, CGameObject
 			CLevel_MoriblinCave* pDungeonLevel = dynamic_cast<CLevel_MoriblinCave*>(pGameInstance->Get_CurrentLevel());
 			if (pDungeonLevel)
 				pDungeonLevel->Remove_MonsterFromRoom(this);
+			RELEASE_INSTANCE(CGameInstance);
 		}
 		else
 		{

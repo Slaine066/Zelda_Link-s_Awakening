@@ -27,6 +27,8 @@ public:
 	virtual _bool CanInteract() override;
 	virtual void Interact() override;
 
+	void Spawn_InteractButton();
+
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -45,6 +47,8 @@ private:
 private:
 	_bool m_bIsAnimationFinished = false;
 	_bool m_bItemDropped = false;
+
+	class CUI* m_pInteractButton = nullptr;
 
 public:
 	static CTreasure* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

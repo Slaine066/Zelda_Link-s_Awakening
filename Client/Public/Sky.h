@@ -19,6 +19,7 @@ public:
 	{
 		SKY_FIELD,
 		SKY_MORIBLINCAVE,
+		SKY_MARINHOUSE,
 		SKY_END
 	};
 

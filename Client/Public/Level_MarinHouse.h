@@ -30,6 +30,8 @@ private:
 
 	class CUI_Manager* m_pUIManager = nullptr;
 
+	_float4 m_vLookPosition = _float4(0.f, 0.f, .25f, 1.f);
+
 public:
 	static CLevel_MarinHouse* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

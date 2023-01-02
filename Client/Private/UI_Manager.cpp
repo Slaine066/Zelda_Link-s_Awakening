@@ -378,6 +378,8 @@ _tchar * CUI_Manager::Get_ItemTextureName(ITEMID eItemId)
 		return TEXT("Prototype_Component_Texture_Item_RocsFeather");
 	case ITEMID::ITEM_BOW:
 		return TEXT("Prototype_Component_Texture_Item_Bow");
+	case ITEMID::ITEM_OCARINA:
+		return TEXT("Prototype_Component_Texture_Item_Ocarina");
 	}
 }
 

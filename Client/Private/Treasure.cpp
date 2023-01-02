@@ -6,6 +6,7 @@
 #include "PlayerState.h"
 #include "PlayerAchieveState.h"
 #include "Item.h"
+#include "UI.h"
 
 CTreasure::CTreasure(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CInteractableObject(pDevice, pContext)
@@ -55,8 +56,14 @@ _uint CTreasure::Late_Tick(_float fTimeDelta)
 		return iEvent;
 
 	if (CanInteract())
+		Spawn_InteractButton();
+	else
 	{
-		/* TODO: Show Open Button */
+		if (m_pInteractButton)
+		{
+			m_pInteractButton->Set_ShouldDestroy(true);
+			m_pInteractButton = nullptr;
+		}
 	}
 
 	/* If Player has already Interacted and Treasure Chest is opened. */
@@ -74,7 +81,16 @@ _uint CTreasure::Late_Tick(_float fTimeDelta)
 			ZeroMemory(&tItemDesc, sizeof(CItem::ITEMDESC));
 			tItemDesc.m_eItemType = CItem::ITEMTYPE::TYPE_TREASURE;
 			tItemDesc.mWorldMatrix = pPlayer->Get_Transform()->Get_World4x4();
-			tItemDesc.m_eItemId = ITEMID::ITEM_ROCFEATHER;
+
+			switch (pGameInstance->Get_CurrentLevelIndex())
+			{
+			case LEVEL::LEVEL_FIELD:
+				tItemDesc.m_eItemId = ITEMID::ITEM_ROCFEATHER;
+				break;
+			case LEVEL::LEVEL_MORIBLINCAVE:
+				tItemDesc.m_eItemId = ITEMID::ITEM_OCARINA;
+				break;
+			}
 
 			pGameInstance->Add_GameObject(TEXT("Item_Treasure"), TEXT("Prototype_GameObject_Item"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Item"), &tItemDesc);
 		}
@@ -196,6 +212,49 @@ void CTreasure::Interact()
 		m_pModelCom->Set_CurrentAnimIndex(ANIM_OPEN_FAIL);
 		m_bDidInteract = true;
 	}
+}
+
+void CTreasure::Spawn_InteractButton()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_float4 vPosition; 
+	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+	vPosition.y -= 0.5f;
+
+	/* World to View */
+	_matrix mViewMatrix = pGameInstance->Get_TransformMatrix(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
+	XMStoreFloat4(&vPosition, XMVector3TransformCoord(XMLoadFloat4(&vPosition), mViewMatrix));
+
+	/* View to Projection */
+	_matrix mProjMatrix = pGameInstance->Get_TransformMatrix(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
+	XMStoreFloat4(&vPosition, XMVector3TransformCoord(XMLoadFloat4(&vPosition), mProjMatrix));
+
+	/* Projection to Screen */
+	_float2 fScreenPosition;
+	fScreenPosition.x = vPosition.x * g_iWinSizeX + g_iWinSizeX * 0.5f;
+	fScreenPosition.y = -vPosition.y * g_iWinSizeY + g_iWinSizeY * 0.5f;
+
+	if (m_pInteractButton)
+	{
+		m_pInteractButton->Set_PositionX(fScreenPosition.x);
+		m_pInteractButton->Set_PositionY(fScreenPosition.y);
+	}
+	else
+	{
+		CUI::UIDESC tUIDesc;
+		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
+		tUIDesc.m_fSizeX = 120;
+		tUIDesc.m_fSizeY = 44;
+		tUIDesc.m_fX = fScreenPosition.x;
+		tUIDesc.m_fY = fScreenPosition.y;
+		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
+		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_InteractButton_Open"));
+
+		pGameInstance->Add_GameObject_Out(TEXT("UI_InteractButton"), TEXT("Prototype_GameObject_UI"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)m_pInteractButton, &tUIDesc);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 _bool CTreasure::Is_AnimationLoop(_uint eAnimId)

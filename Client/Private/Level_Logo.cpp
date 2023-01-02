@@ -25,7 +25,7 @@ void CLevel_Logo::Tick(_float fTimeDelta)
 	{
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, /*LEVEL_MARINHOUSE*//*LEVEL_FIELD*/LEVEL_MORIBLINCAVE))))
+		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MARINHOUSE/*LEVEL_FIELD*//*LEVEL_MORIBLINCAVE*/))))
 			return;
 
 		RELEASE_INSTANCE(CGameInstance);

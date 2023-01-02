@@ -37,6 +37,11 @@ protected:
 	virtual ~CUI() = default;
 
 public:
+	CTransform* Get_Transform() { return m_pTransformCom; }
+	void Set_PositionX(_float fX) { m_tUIDesc.m_fX = fX; }
+	void Set_PositionY(_float fY) { m_tUIDesc.m_fY = fY; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _uint Tick(_float fTimeDelta) override;

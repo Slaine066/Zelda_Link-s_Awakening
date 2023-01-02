@@ -24,7 +24,7 @@ public:
 	{
 		ITEMTYPE m_eItemType = TYPE_END;
 		ITEMID m_eItemId = ITEM_END;
-		CModel::TYPE m_eModelType;
+		CModel::TYPE m_eModelType = CModel::TYPE::TYPE_END;
 		_float4x4 mWorldMatrix;
 		_bool m_bAnimOnPickup = false;
 	} ITEMDESC;

@@ -3,7 +3,7 @@
 #include "Level_MarinHouse.h"
 #include "GameInstance.h"
 #include "CameraManager.h"
-#include "Camera_Player.h"
+#include "Camera_Static.h"
 #include "TriggerBox_Dynamic.h"
 #include "UI_Manager.h"
 #include "Sky.h"
@@ -148,7 +148,7 @@ HRESULT CLevel_MarinHouse::Ready_Sky()
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	CSky::SKYDESC tSkyDesc;
-	tSkyDesc.m_eLevelId = CSky::SKYBOX::SKY_MORIBLINCAVE;
+	tSkyDesc.m_eLevelId = CSky::SKYBOX::SKY_MARINHOUSE;
 
 	if (FAILED(pGameInstance->Add_GameObject(TEXT("Sky"), TEXT("Prototype_GameObject_Sky"), LEVEL_MARINHOUSE, TEXT("Layer_Sky"), &tSkyDesc)))
 		return E_FAIL;
@@ -195,8 +195,8 @@ HRESULT CLevel_MarinHouse::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	CCamera_Player::CAMERADESC_DERIVED CameraDesc;
-	ZeroMemory(&CameraDesc, sizeof(CCamera_Player::CAMERADESC_DERIVED));
+	CCamera_Static::CAMERADESC_DERIVED CameraDesc;
+	ZeroMemory(&CameraDesc, sizeof(CCamera_Static::CAMERADESC_DERIVED));
 
 	CameraDesc.CameraDesc.vEye = _float4(0.f, 10.0f, -10.f, 1.f);
 	CameraDesc.CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
@@ -209,12 +209,17 @@ HRESULT CLevel_MarinHouse::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Player"), TEXT("Prototype_GameObject_Camera_Player"), LEVEL_MARINHOUSE, pLayerTag, &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("Camera_Static"), TEXT("Prototype_GameObject_Camera_Static"), LEVEL_MARINHOUSE, pLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	CCameraManager::Get_Instance()->Ready_Camera(LEVEL::LEVEL_MARINHOUSE, CCameraManager::CAM_STATE::CAM_PLAYER);
+	CCameraManager::Get_Instance()->Ready_Camera(LEVEL::LEVEL_MARINHOUSE, CCameraManager::CAM_STATE::CAM_STATIC);
+	CCamera_Static* pCameraStatic = dynamic_cast<CCamera_Static*>(CGameInstance::Get_Instance()->Find_Object(LEVEL_MARINHOUSE, TEXT("Layer_Camera")));
+	if (!pCameraStatic)
+		return E_FAIL;
+
+	pCameraStatic->Set_LookPosition(m_vLookPosition);
 
 	return S_OK;
 }

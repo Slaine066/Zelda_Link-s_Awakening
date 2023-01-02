@@ -5,6 +5,7 @@
 #include "Navigation.h"
 #include "Camera_Player.h"
 #include "Camera_Dungeon.h"
+#include "Camera_Static.h"
 #include "TriggerBox_Dynamic.h"
 #include "Sky.h"
 #include "StaticObject.h"
@@ -93,7 +94,7 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	lstrcpy(m_szLoadingText, TEXT("Loading Textures.."));
 
 	/*For.Prototype_Component_Texture_Sky */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/SkyBox/Sky_%d.dds"), 3))))
 		return E_FAIL;
 
 	/*For.Prototype_Component_Texture_Heart */
@@ -108,6 +109,15 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Texture_Inventory */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Inventory"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Inventory.png"), 1))))
 		return E_FAIL;
+	/*For.Prototype_Component_Texture_InteractButton_Open */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_InteractButton_Open"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Interact_Button_Open.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_InteractButton_Talk */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_InteractButton_Talk"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Interact_Button_Talk.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_InteractButton_Use */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_InteractButton_Use"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Interact_Button_Use.png"), 1))))
+		return E_FAIL;
 	
 	/* Item Icons */
 	/*For.Prototype_Component_Texture_Rupee */
@@ -121,6 +131,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Item_Bow */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Bow"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemBow.png"), 1))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Item_Ocarina */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item_Ocarina"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ItemOcarina.png"), 1))))
 		return E_FAIL;
 
 	/* Equipment Icons */
@@ -214,6 +227,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 		return E_FAIL;
 	/*For.Prototype_Component_Model_RocsFeather*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RocsFeather"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_RocsFeather/RocsFeather.fbx", false))))
+		return E_FAIL;
+	/*For.Prototype_Component_Model_Ocarina*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Ocarina"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_Ocarina/Ocarina.fbx", false))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_HitRing*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_HitRing"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Effects/HitRing/HitRing.fbx", false))))
@@ -703,6 +719,9 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_Camera_Dungeon */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Dungeon"), CCamera_Dungeon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Camera_Static */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Static"), CCamera_Static::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_TriggerBox_Dynamic */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TriggerBox_Dynamic"), CTriggerBox_Dynamic::Create(m_pDevice, m_pContext))))

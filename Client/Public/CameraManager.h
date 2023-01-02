@@ -8,7 +8,7 @@ class CCameraManager final : public CBase
 	DECLARE_SINGLETON(CCameraManager)
 
 public:
-	enum CAM_STATE { CAM_PLAYER, CAM_DUNGEON, CAM_END };
+	enum CAM_STATE { CAM_PLAYER, CAM_DUNGEON, CAM_STATIC, CAM_END };
 
 public:
 	CCameraManager();

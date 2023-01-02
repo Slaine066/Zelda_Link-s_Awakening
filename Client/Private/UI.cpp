@@ -34,6 +34,9 @@ HRESULT CUI::Initialize(void * pArg)
 
 _uint CUI::Tick(_float fTimeDelta)
 {
+	if (m_bShouldDestroy)
+		return OBJ_DESTROY;
+
 	m_pTransformCom->Set_Scale(CTransform::STATE_RIGHT, m_tUIDesc.m_fSizeX);
 	m_pTransformCom->Set_Scale(CTransform::STATE_UP, m_tUIDesc.m_fSizeY);
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tUIDesc.m_fX - g_iWinSizeX * 0.5f, - m_tUIDesc.m_fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
