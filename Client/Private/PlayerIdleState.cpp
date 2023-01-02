@@ -9,6 +9,7 @@
 #include "PlayerAchieveState.h"
 #include "InteractableObject.h"
 #include "Npc.h"
+#include "Inventory.h"
 
 using namespace Player;
 
@@ -26,9 +27,15 @@ CPlayerState * CIdleState::HandleInput(CPlayer * pPlayer)
 		m_pInteractableObject = pPlayer->Get_InteractableObject();
 	}
 	else if (pGameInstance->Key_Down('S'))
-		return new CAttackState();
+	{
+		if (CInventory::Get_Instance()->Get_Sword())
+			return new CAttackState();
+	}
 	else if (pGameInstance->Key_Down('W'))
-		return new CGuardState(STATETYPE_START);
+	{
+		if (CInventory::Get_Instance()->Get_Shield())
+			return new CGuardState(STATETYPE_START);
+	}
 	else if (pGameInstance->Key_Down('Z'))
 		return pPlayer->Use_Item();
 	else if (pGameInstance->Key_Down('X'))

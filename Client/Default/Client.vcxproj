@@ -224,6 +224,8 @@
     <ClInclude Include="..\Public\PlayerAttackState.h" />
     <ClInclude Include="..\Public\Camera_Player.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\public\PlayerBareMoveState.h" />
+    <ClInclude Include="..\public\PlayerBareState.h" />
     <ClInclude Include="..\public\PlayerCarryMoveState.h" />
     <ClInclude Include="..\public\PlayerCarryState.h" />
     <ClInclude Include="..\public\PlayerFallState.h" />
@@ -244,8 +246,10 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\PlayerPushMoveState.h" />
     <ClInclude Include="..\public\PlayerPushState.h" />
+    <ClInclude Include="..\public\PlayerSleepState.h" />
     <ClInclude Include="..\public\PlayerState.h" />
     <ClInclude Include="..\public\PlayerThrowState.h" />
+    <ClInclude Include="..\public\PlayerWakeupState.h" />
     <ClInclude Include="..\public\Projectile.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Tarin.h" />
@@ -322,6 +326,8 @@
     <ClCompile Include="..\private\PlayerAchieveState.cpp" />
     <ClCompile Include="..\Private\PlayerAttackState.cpp" />
     <ClCompile Include="..\Private\Camera_Player.cpp" />
+    <ClCompile Include="..\private\PlayerBareMoveState.cpp" />
+    <ClCompile Include="..\private\PlayerBareState.cpp" />
     <ClCompile Include="..\private\PlayerCarryMoveState.cpp" />
     <ClCompile Include="..\private\PlayerCarryState.cpp" />
     <ClCompile Include="..\private\PlayerFallState.cpp" />
@@ -341,7 +347,9 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\PlayerPushMoveState.cpp" />
     <ClCompile Include="..\private\PlayerPushState.cpp" />
+    <ClCompile Include="..\private\PlayerSleepState.cpp" />
     <ClCompile Include="..\private\PlayerThrowState.cpp" />
+    <ClCompile Include="..\private\PlayerWakeupState.cpp" />
     <ClCompile Include="..\private\Projectile.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Tarin.cpp" />

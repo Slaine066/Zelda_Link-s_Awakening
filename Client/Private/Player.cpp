@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "HierarchyNode.h"
 #include "PlayerState.h"
+#include "PlayerSleepState.h"
 #include "PlayerIdleState.h"
 #include "PlayerHitState.h"
 #include "PlayerFallState.h"
@@ -52,8 +53,27 @@ HRESULT CPlayer::Initialize(void * pArg)
 	m_tStats.m_fMaxHp = CUI_Manager::Get_Instance()->Get_MaxHp() == 0 ? 4 : CUI_Manager::Get_Instance()->Get_MaxHp();
 	m_tStats.m_fCurrentHp = CUI_Manager::Get_Instance()->Get_CurrentHp() == 0 ? m_tStats.m_fMaxHp : CUI_Manager::Get_Instance()->Get_CurrentHp();
 
-	CPlayerState* pState = new CIdleState();
-	m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
+	CInventory* pInventory = GET_INSTANCE(CInventory);
+	if (pInventory->Get_IsGameStarted())
+	{
+		CPlayerState* pState = nullptr;
+
+		if (pInventory->Get_Shield())
+			pState = new CIdleState();
+		else
+			pState = new CSleepState();
+
+		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
+	}
+	else
+	{
+		CPlayerState* pState = new CSleepState();
+		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
+
+		pInventory->Set_IsGameStarted(true);
+	}
+
+	RELEASE_INSTANCE(CInventory);
 
 	return S_OK;
 }
@@ -68,6 +88,18 @@ _uint CPlayer::Tick(_float fTimeDelta)
 	CGameInstance::Get_Instance()->Add_CollisionGroup(CCollision_Manager::COLLISION_GROUP::COLLISION_PLAYER, this);
 
 	HandleInvincibility(fTimeDelta);
+
+	if (m_bSleepOffset)
+	{
+		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION);
+		_vector vOffset = XMVectorSet(.58f, 0.f, 0.f, 0.f);
+
+		vPosition += vOffset;
+
+		m_pTransformCom->Set_State(CTransform::STATE::STATE_TRANSLATION, vPosition);
+
+		m_bSleepOffset = false;
+	}
 
 	HandleInput();
 	TickState(fTimeDelta);
@@ -130,6 +162,18 @@ HRESULT CPlayer::Render()
 
 		if ((i == MESH_SWORD_A && !m_bShowSword) || (i == MESH_SWORD_A_HANDLE && !m_bShowSword))
 			continue;
+
+		if (i == MESH_SWORD_A || i == MESH_SWORD_A_HANDLE)
+		{
+			if (!CInventory::Get_Instance()->Get_Sword())
+				continue;
+		}
+
+		if (i == MESH_SHIELD_A)
+		{
+			if (!CInventory::Get_Instance()->Get_Shield())
+				continue;
+		}
 
 		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
@@ -318,9 +362,11 @@ _bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 	case ANIM_SLASH_HOLD_LEFT:
 	case ANIM_SLASH_HOLD_LOOP:
 	case ANIM_SLASH_HOLD_RIGHT:
+	case ANIM_SLEEP_LOOP:
 	case ANIM_TALK:
 	case ANIM_WALK:
 	case ANIM_WALK_BARE:
+	case ANIM_WAKEUP_LOOP:
 		return true;
 	case ANIM_BOW_END:
 	case ANIM_BOW_START:
@@ -353,6 +399,8 @@ _bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 	case ANIM_SLASH_HOLD_END:
 	case ANIM_SLASH_HOLD_START:
 	case ANIM_THROW:
+	case ANIM_WAKEUP_END:
+	case ANIM_WAKEUP_START:
 	case ANIM_WARP_END:
 	case ANIM_WARP_START:
 		return false;

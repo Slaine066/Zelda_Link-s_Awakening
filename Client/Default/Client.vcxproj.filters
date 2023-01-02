@@ -513,6 +513,18 @@
     <ClInclude Include="..\public\UI_Chat.h">
       <Filter>02.GameObjects\04.UI\UI_Chat</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerSleepState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerWakeupState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerBareState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerBareMoveState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -787,6 +799,18 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Chat.cpp">
       <Filter>02.GameObjects\04.UI\UI_Chat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerSleepState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerWakeupState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerBareState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerBareMoveState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -134,6 +134,7 @@ public:
 	_bool Get_CanPickup() { return m_bCanPickup; }
 	void Set_CanPickup(_bool bCanPickup) { m_bCanPickup = bCanPickup; }
 	void Set_ShowSword(_bool bShowSword) { m_bShowSword = bShowSword; }
+	void Set_SleepOffset(_bool bSleepOffset) { m_bSleepOffset = bSleepOffset; }
 
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -185,6 +186,8 @@ private:
 
 	/* Npc Variables*/
 	class CNpc* m_pCurrentNpc = nullptr;
+
+	_bool m_bSleepOffset = false;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

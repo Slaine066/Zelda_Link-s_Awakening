@@ -19,7 +19,7 @@ HRESULT CUI_Manager::Initialize()
 {
 	m_eMode = MODE::MODE_GAME;
 
-	if (m_bIsLoaded)
+	if (m_bIsUILoaded)
 		return S_OK;
 
 	m_ItemIcons.resize(12);
@@ -29,7 +29,7 @@ HRESULT CUI_Manager::Initialize()
 	Build_Hearts();
 	Build_Rupees();
 
-	m_bIsLoaded = true;
+	m_bIsUILoaded = true;
 
 	return S_OK;
 }

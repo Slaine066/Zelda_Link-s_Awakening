@@ -19,10 +19,14 @@ void CInventory::Add_Item(ITEMID eItemId)
 		case ITEMID::ITEM_RUPEE_GREEN:
 			m_iRupees++;
 			break;
+		case ITEMID::ITEM_SHIELD:
+		case ITEMID::ITEM_SWORD:
+			Add_ToEquipment(eItemId);
+			break;
 		case ITEMID::ITEM_ROCFEATHER:
-		case ITEMID::ITEM_BOW:
 		case ITEMID::ITEM_BOMB:
 		case ITEMID::ITEM_OCARINA:
+		case ITEMID::ITEM_BOW:
 			Add_ToInventory(eItemId);
 			break;
 	}
@@ -47,6 +51,26 @@ void CInventory::Decrease_ItemCount(ITEMID eItemId, _uint iItemIndex, _uint iDec
 			CUI_Manager::Get_Instance()->Remove_ItemFromInventory(iItemIndex);
 		}
 		break;
+	}
+}
+
+void CInventory::Add_ToEquipment(ITEMID eItemId)
+{
+	INVENTORYOBJDESC* tInventoryObjectDesc = new INVENTORYOBJDESC;
+	tInventoryObjectDesc->m_eItemId = eItemId;
+
+	switch (eItemId)
+	{
+		case ITEMID::ITEM_SHIELD:
+		{
+			m_pShield = tInventoryObjectDesc;
+			break;
+		}
+		case ITEMID::ITEM_SWORD:
+		{
+			m_pSword = tInventoryObjectDesc;
+			break;
+		}
 	}
 }
 
@@ -97,4 +121,9 @@ void CInventory::Remove_FromInventory(_uint iIndex)
 
 void CInventory::Free()
 {
+	if (m_pSword)
+		Safe_Delete(m_pSword);
+
+	if (m_pShield)
+		Safe_Delete(m_pShield);
 }

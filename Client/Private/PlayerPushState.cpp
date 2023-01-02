@@ -3,7 +3,9 @@
 #include "PlayerPushState.h"
 #include "GameInstance.h"
 #include "PlayerIdleState.h"
+#include "PlayerBareState.h"
 #include "PlayerPushMoveState.h"
+#include "Inventory.h"
 
 using namespace Player;
 
@@ -29,7 +31,13 @@ CPlayerState * CPushState::HandleInput(CPlayer * pPlayer)
 				return new CPushMoveState(m_eDirection);
 		}
 		else
-			return new CIdleState();
+		{
+			if (!CInventory::Get_Instance()->Get_Shield())
+				return new CBareState();
+			else
+				return new CIdleState();
+		}
+			
 		break;
 	}
 

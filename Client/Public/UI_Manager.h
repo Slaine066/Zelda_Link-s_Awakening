@@ -65,7 +65,7 @@ public:
 	void Compute_Inventory();
 
 private:
-	_bool m_bIsLoaded = false; /* Switch to TRUE once UI gets loaded the first time. */
+	_bool m_bIsUILoaded = false; /* Switch to TRUE once UI gets loaded the first time. */
 
 	MODE m_eMode = MODE_END;
 

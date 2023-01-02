@@ -17,6 +17,8 @@ public:
 
 	enum STATE_ID
 	{
+		STATE_BARE,
+		STATE_BARE_MOVE,
 		STATE_IDLE,
 		STATE_MOVE,
 		STATE_JUMP,
@@ -32,6 +34,8 @@ public:
 		STATE_ACHIEVE,
 		STATE_FALL,
 		STATE_DIE,
+		STATE_SLEEP,
+		STATE_WAKEUP,
 		STATE_END
 	};
 
