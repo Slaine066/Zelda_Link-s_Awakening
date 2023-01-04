@@ -9,7 +9,7 @@
 #include "UI_Manager.h"
 #include "Sky.h"
 #include "Layer.h"
-#include "Monster.h"
+#include "Bossblin.h"
 #include "Player.h"
 #include "DungeonDoor.h"
 
@@ -381,6 +381,19 @@ void CLevel_MoriblinCave::Check_Doors(_float fTimeDelta)
 		{
 			for (auto& pDungeonDoor : m_DungeonDoors)
 				pDungeonDoor->Close_Door();
+
+			if (m_pCurrentDungeonRoom->m_vRoomPosition.x == 6.f)
+			{
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+				CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(LEVEL::LEVEL_MORIBLINCAVE, TEXT("Layer_Player"));
+				if (pPlayer)
+				{
+					pPlayer->Set_Monster(m_pCurrentDungeonRoom->m_RoomMonsters.front());
+					((CBossblin*)m_pCurrentDungeonRoom->m_RoomMonsters.front())->Show_Chat();
+				}
+
+				RELEASE_INSTANCE(CGameInstance);
+			}
 
 			m_fCloseTimer = 0.f;
 			m_bShouldClose = false;

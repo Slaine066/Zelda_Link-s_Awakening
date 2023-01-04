@@ -131,6 +131,8 @@ public:
 	class CNpc* Get_Npc() { return m_pCurrentNpc; }
 	void Set_Npc(class CNpc* pNpc) { m_pCurrentNpc = pNpc; }
 	void Set_AchieveState(ITEMID eItemId);
+	class CMonster* Get_Monster() { return m_pCurrentMonster; }
+	void Set_Monster(class CMonster* pMonster) { m_pCurrentMonster = pMonster; }
 	_bool Get_CanPickup() { return m_bCanPickup; }
 	void Set_CanPickup(_bool bCanPickup) { m_bCanPickup = bCanPickup; }
 	void Set_ShowSword(_bool bShowSword) { m_bShowSword = bShowSword; }
@@ -184,8 +186,8 @@ private:
 	CGameObject* m_pWeapon = nullptr;
 	_bool m_bShowSword = true;
 
-	/* Npc Variables*/
 	class CNpc* m_pCurrentNpc = nullptr;
+	class CMonster* m_pCurrentMonster = nullptr;
 
 	_bool m_bSleepOffset = false;
 

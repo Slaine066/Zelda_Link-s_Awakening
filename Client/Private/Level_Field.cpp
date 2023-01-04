@@ -106,6 +106,8 @@ HRESULT CLevel_Field::Load_Objects_FromFile()
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_MoriblinSpear"), LEVEL_FIELD, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Treasure")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Treasure"), LEVEL_FIELD, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Sword")))
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Sword"), LEVEL_FIELD, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 	}
 	CloseHandle(hFile);
 

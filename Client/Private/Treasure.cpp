@@ -184,7 +184,9 @@ _bool CTreasure::CanInteract()
 	}
 	else
 	{
-		pPlayer->Set_InteractableObject(nullptr);
+		if (pPlayer->Get_InteractableObject() == this)
+			pPlayer->Set_InteractableObject(nullptr);
+
 		return false;
 	}
 }
@@ -208,27 +210,31 @@ void CTreasure::Spawn_InteractButton()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	_float4 vPosition; 
+	_float4 vPosition;
 	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
-	vPosition.y -= 0.5f;
+	vPosition.x += 0.3f;
+	vPosition.y += 0.3f;
 
 	/* World to View */
 	_matrix mViewMatrix = pGameInstance->Get_TransformMatrix(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
-	XMStoreFloat4(&vPosition, XMVector3TransformCoord(XMLoadFloat4(&vPosition), mViewMatrix));
+	XMStoreFloat4(&vPosition, XMVector4Transform(XMLoadFloat4(&vPosition), mViewMatrix));
 
 	/* View to Projection */
 	_matrix mProjMatrix = pGameInstance->Get_TransformMatrix(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
-	XMStoreFloat4(&vPosition, XMVector3TransformCoord(XMLoadFloat4(&vPosition), mProjMatrix));
+	XMStoreFloat4(&vPosition, XMVector4Transform(XMLoadFloat4(&vPosition), mProjMatrix));
+
+	vPosition.x /= vPosition.w * 2;
+	vPosition.y /= vPosition.w * 2;
 
 	/* Projection to Screen */
-	_float2 fScreenPosition;
-	fScreenPosition.x = vPosition.x * g_iWinSizeX + g_iWinSizeX * 0.5f;
-	fScreenPosition.y = -vPosition.y * g_iWinSizeY + g_iWinSizeY * 0.5f;
+	_float2 vScreenPosition;
+	vScreenPosition.x = vPosition.x * g_iWinSizeX + g_iWinSizeX * 0.5f;
+	vScreenPosition.y = -vPosition.y * g_iWinSizeY + g_iWinSizeY * 0.5f;
 
 	if (m_pInteractButton)
 	{
-		m_pInteractButton->Set_PositionX(fScreenPosition.x);
-		m_pInteractButton->Set_PositionY(fScreenPosition.y);
+		m_pInteractButton->Set_PositionX(vScreenPosition.x);
+		m_pInteractButton->Set_PositionY(vScreenPosition.y);
 	}
 	else
 	{
@@ -236,9 +242,9 @@ void CTreasure::Spawn_InteractButton()
 		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
 		tUIDesc.m_fSizeX = 120;
 		tUIDesc.m_fSizeY = 44;
-		tUIDesc.m_fX = fScreenPosition.x;
-		tUIDesc.m_fY = fScreenPosition.y;
-		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
+		tUIDesc.m_fX = vScreenPosition.x;
+		tUIDesc.m_fY = vScreenPosition.y;
+		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND_FADE_IN;
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_InteractButton_Open"));
 
 		pGameInstance->Add_GameObject_Out(TEXT("UI_InteractButton"), TEXT("Prototype_GameObject_UI"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)m_pInteractButton, &tUIDesc);

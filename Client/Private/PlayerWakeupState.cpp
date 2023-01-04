@@ -57,16 +57,24 @@ void CWakeupState::Enter(CPlayer * pPlayer)
 {
 	m_eStateId = STATE_ID::STATE_WAKEUP;
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	m_pBed = (CBed*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Object"));
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	switch (m_eStateType)
 	{
 	case STATETYPE_START:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_WAKEUP_START);
+		m_pBed->Set_Wakeup();
 		break;
 	case STATETYPE_MAIN:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_WAKEUP_LOOP);
 		break;
 	case STATETYPE_END:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_WAKEUP_END);
+		m_pBed->Set_Getup();
 		break;
 	}
 }

@@ -66,6 +66,8 @@ public:
 	CGameObject* Get_Part(CBossblin::PARTS ePart) { return m_vParts[ePart]; }
 	void Reset_StarsEffectSpawned() { m_bStarsEffectSpawned = false; }
 
+	virtual void Show_Chat() override;
+
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;

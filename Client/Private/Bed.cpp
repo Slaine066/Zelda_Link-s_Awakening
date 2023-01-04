@@ -159,8 +159,23 @@ _bool CBed::CanInteract()
 void CBed::Interact()
 {
 	/* Go to Sleep */
-	m_pModelCom->Set_CurrentAnimIndex(ANIM_SLEEP_START);
+	/*m_pModelCom->Set_CurrentAnimIndex(ANIM_SLEEP_START);*/
 	m_bDidInteract = true;
+}
+
+void CBed::Set_Sleep()
+{
+	m_pModelCom->Set_CurrentAnimIndex(ANIM_SLEEP_LOOP);
+}
+
+void CBed::Set_Wakeup()
+{
+	m_pModelCom->Set_CurrentAnimIndex(ANIM_WAKEUP_START);
+}
+
+void CBed::Set_Getup()
+{
+	m_pModelCom->Set_CurrentAnimIndex(ANIM_OUTBED);
 }
 
 _bool CBed::Is_AnimationLoop(_uint eAnimId)
@@ -169,18 +184,12 @@ _bool CBed::Is_AnimationLoop(_uint eAnimId)
 	{
 		case ANIM_OUTBED:
 		case ANIM_WAKEUP_START:
-		case ANIM_SLEEP_END:
-		case ANIM_SLEEP_START:
 			return false;
-			break;
 		case ANIM_IDLE_SLEPT:
 		case ANIM_SLEEP_LOOP:
 		case ANIM_WAKEUP_LOOP:
 		case ANIM_IDLE:
-		case ANIM_SLEEP_LOOP_:
-		case ANIM_TARIN_SLEEP:
 			return true;
-			break;
 	}
 }
 
@@ -190,6 +199,9 @@ void CBed::Reset_Animation()
 	{
 		switch (m_pModelCom->Get_CurrentAnimIndex())
 		{
+			case ANIM_WAKEUP_START:
+				m_pModelCom->Set_CurrentAnimIndex(ANIM_WAKEUP_LOOP);
+				break;
 			case ANIM_OUTBED:
 				m_pModelCom->Set_CurrentAnimIndex(ANIM_IDLE_SLEPT);
 				break;

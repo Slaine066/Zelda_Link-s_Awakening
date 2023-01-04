@@ -15,10 +15,6 @@ public:
 		ANIM_WAKEUP_LOOP,
 		ANIM_WAKEUP_START,
 		ANIM_IDLE,
-		ANIM_SLEEP_END,
-		ANIM_SLEEP_LOOP_,
-		ANIM_SLEEP_START,
-		ANIM_TARIN_SLEEP, /* Not used. */
 		ANIM_END
 	};
 
@@ -30,6 +26,10 @@ private:
 public:
 	virtual _bool CanInteract() override;
 	virtual void Interact() override;
+
+	void Set_Sleep();
+	void Set_Wakeup();
+	void Set_Getup();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;

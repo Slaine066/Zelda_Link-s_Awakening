@@ -10,6 +10,7 @@
 #include "InteractableObject.h"
 #include "Npc.h"
 #include "Inventory.h"
+#include "Monster.h"
 
 using namespace Player;
 
@@ -21,9 +22,28 @@ CPlayerState * CIdleState::HandleInput(CPlayer * pPlayer)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
+	if (pPlayer->Get_Monster())
+		if (pPlayer->Get_Monster()->Get_CurrentChat())
+		{
+			if (pGameInstance->Key_Down('A'))
+				m_pMonster = pPlayer->Get_Monster();
+
+			return nullptr;
+		}
+
+	if (pPlayer->Get_Npc())
+		if (pPlayer->Get_Npc()->Get_CurrentChat())
+		{
+			if (pGameInstance->Key_Down('A'))
+				m_pNpc = pPlayer->Get_Npc();
+
+			return nullptr;
+		}
+
 	if (pGameInstance->Key_Down('A'))
 	{
 		m_pNpc = pPlayer->Get_Npc();
+		m_pMonster = pPlayer->Get_Monster();
 		m_pInteractableObject = pPlayer->Get_InteractableObject();
 	}
 	else if (pGameInstance->Key_Down('S'))
@@ -70,13 +90,18 @@ CPlayerState * CIdleState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 
 CPlayerState * CIdleState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 {
-	if (!m_pInteractableObject && !m_pNpc)
+	if (!m_pInteractableObject && !m_pMonster && !m_pNpc)
 		return nullptr;
 
 	if (m_pNpc)
 	{
 		m_pNpc->Interact();
 		m_pNpc = nullptr;
+	}
+	else if (m_pMonster)
+	{
+		m_pMonster->Show_Chat();
+		m_pMonster = nullptr;
 	}
 	else if (m_pInteractableObject)
 	{

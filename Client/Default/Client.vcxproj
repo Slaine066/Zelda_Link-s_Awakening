@@ -244,6 +244,7 @@
     <ClInclude Include="..\public\PlayerJumpState.h" />
     <ClInclude Include="..\Public\PlayerMoveState.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\public\PlayerOcarinaState.h" />
     <ClInclude Include="..\public\PlayerPushMoveState.h" />
     <ClInclude Include="..\public\PlayerPushState.h" />
     <ClInclude Include="..\public\PlayerSleepState.h" />
@@ -252,6 +253,7 @@
     <ClInclude Include="..\public\PlayerWakeupState.h" />
     <ClInclude Include="..\public\Projectile.h" />
     <ClInclude Include="..\public\Sky.h" />
+    <ClInclude Include="..\public\Sword.h" />
     <ClInclude Include="..\public\Tarin.h" />
     <ClInclude Include="..\public\TarinIdleState.h" />
     <ClInclude Include="..\public\TarinState.h" />
@@ -345,6 +347,7 @@
     <ClCompile Include="..\private\PlayerJumpState.cpp" />
     <ClCompile Include="..\Private\PlayerMoveState.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\private\PlayerOcarinaState.cpp" />
     <ClCompile Include="..\private\PlayerPushMoveState.cpp" />
     <ClCompile Include="..\private\PlayerPushState.cpp" />
     <ClCompile Include="..\private\PlayerSleepState.cpp" />
@@ -352,6 +355,7 @@
     <ClCompile Include="..\private\PlayerWakeupState.cpp" />
     <ClCompile Include="..\private\Projectile.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
+    <ClCompile Include="..\private\Sword.cpp" />
     <ClCompile Include="..\private\Tarin.cpp" />
     <ClCompile Include="..\private\TarinIdleState.cpp" />
     <ClCompile Include="..\private\TarinTalkState.cpp" />

@@ -15,6 +15,7 @@
 #include "Tarin.h"
 #include "Marin.h"
 #include "Bed.h"
+#include "Sword.h"
 #include "MoriblinSword.h"
 #include "MoriblinSpear.h"
 #include "Bossblin.h"
@@ -119,6 +120,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Texture_InteractButton_Use */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_InteractButton_Use"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Interact_Button_Use.png"), 1))))
 		return E_FAIL;
+	/*For.Prototype_Component_Texture_InteractButton_Take */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_InteractButton_Take"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Interact_Button_Take.png"), 1))))
+		return E_FAIL;
 	
 	/* Item Icons */
 	/*For.Prototype_Component_Texture_Rupee */
@@ -181,7 +185,7 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Tarin_Line_2"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Tarin/Line_2/Chat_%02d.png"), 2))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Chat_Bossblin_Line_1 */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Bossblin_Line_1"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Bossblin/Line_1/Chat_%02d.png"), 2))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Bossblin_Line_1"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Bossblin/Chat_%02d.png"), 2))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Chat_Get_Item_Shield */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Get_Item_Shield"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Get_Item/Get_Item_Shield.png"), 1))))
@@ -251,6 +255,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 		return E_FAIL;
 	/*For.Prototype_Component_Model_Shield*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Shield"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_Shield/Shield.fbx", false, PivotMatrix))))
+		return E_FAIL;
+	/*For.Prototype_Component_Model_Sword*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Sword"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Resources/Meshes/NonAnim/Item_Sword/Sword.fbx", false, PivotMatrix))))
 		return E_FAIL;
 	/*For.Prototype_Component_Model_RupeeGreen*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RupeeGreen"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Item_RupeeGreen/RupeeGreen.fbx", false))))
@@ -782,6 +789,9 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_Bed */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Bed"), CBed::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Sword */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sword"), CSword::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_MoriblinSword */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSword"), CMoriblinSword::Create(m_pDevice, m_pContext))))

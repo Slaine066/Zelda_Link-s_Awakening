@@ -201,8 +201,8 @@ HRESULT CUI_Manager::Build_GameItemSlots()
 
 	/* Game Item Slot X */
 	ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
-	tUIDesc.m_fSizeX = 115;
-	tUIDesc.m_fSizeY = 115;
+	tUIDesc.m_fSizeX = 135;
+	tUIDesc.m_fSizeY = 135;
 	tUIDesc.m_fX = g_iWinSizeX - 115;
 	tUIDesc.m_fY = 65;
 	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
@@ -219,8 +219,8 @@ HRESULT CUI_Manager::Build_GameItemSlots()
 
 	/* Game Item Slot Y */
 	ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
-	tUIDesc.m_fSizeX = 115;
-	tUIDesc.m_fSizeY = 115;
+	tUIDesc.m_fSizeX = 135;
+	tUIDesc.m_fSizeY = 135;
 	tUIDesc.m_fX = g_iWinSizeX - 250;
 	tUIDesc.m_fY = 80;
 	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
@@ -272,8 +272,8 @@ HRESULT CUI_Manager::Build_InventoryItemSlots()
 	CUI::UIDESC tUIDesc;
 	ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
 
-	tUIDesc.m_fSizeX = 125;
-	tUIDesc.m_fSizeY = 125;
+	tUIDesc.m_fSizeX = 135;
+	tUIDesc.m_fSizeY = 135;
 
 	for (_uint i = 0; i < 3; i++)
 	{

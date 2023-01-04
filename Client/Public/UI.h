@@ -62,6 +62,8 @@ protected:
 	UIDESC m_tUIDesc;
 	_float4x4 m_ViewMatrix, m_ProjMatrix;
 
+	_float m_fTimer = 0.f;
+
 public:
 	static CUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr);

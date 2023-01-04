@@ -14,6 +14,8 @@ public:
 	_bool Get_DidInteract() { return m_bDidInteract; }
 	void Set_DidInteract(_bool bdidInteract) { m_bDidInteract = bdidInteract; }
 
+	class CUI_Chat* Get_CurrentChat() { return m_pCurrentChat; }
+
 	virtual _bool Is_AnimationLoop(_uint eAnimId) PURE;
 	virtual _bool CanInteract() PURE;
 	virtual void Interact() PURE;
@@ -34,6 +36,11 @@ protected:
 
 protected:
 	_bool m_bDidInteract = false;
+
+	class CUI* m_pInteractButton = nullptr;
+
+	_uint m_iChatLineIndex = 1;
+	class CUI_Chat* m_pCurrentChat = nullptr;
 
 public:
 	virtual void Free() override;

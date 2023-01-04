@@ -155,6 +155,7 @@ void CItem::Setup_Item(void * pArg)
 		m_tItemDesc.m_bAnimOnPickup = false;
 		break;
 	case ITEMID::ITEM_SHIELD:
+	case ITEMID::ITEM_SWORD:
 	case ITEMID::ITEM_ROCFEATHER:
 	case ITEMID::ITEM_OCARINA:
 		m_tItemDesc.m_eModelType = CModel::TYPE::TYPE_NONANIM;
@@ -269,19 +270,16 @@ _tchar * CItem::Get_ModelPrototypeId(ITEMID eItemId)
 	{
 	case ITEMID::ITEM_SHIELD:
 		return TEXT("Prototype_Component_Model_Shield");
-		break;
+	case ITEMID::ITEM_SWORD:
+		return TEXT("Prototype_Component_Model_Sword");
 	case ITEMID::ITEM_RUPEE_GREEN:
 		return TEXT("Prototype_Component_Model_RupeeGreen");
-		break;
 	case ITEMID::ITEM_BOMB:
 		return TEXT("Prototype_Component_Model_Bomb");
-		break;
 	case ITEMID::ITEM_ROCFEATHER:
 		return TEXT("Prototype_Component_Model_RocsFeather");
-		break;
 	case ITEMID::ITEM_OCARINA:
 		return TEXT("Prototype_Component_Model_Ocarina");
-		break;
 	}
 }
 

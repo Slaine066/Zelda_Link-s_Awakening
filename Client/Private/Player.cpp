@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "HierarchyNode.h"
 #include "PlayerState.h"
+#include "PlayerBareState.h"
 #include "PlayerSleepState.h"
 #include "PlayerIdleState.h"
 #include "PlayerHitState.h"
@@ -54,25 +55,27 @@ HRESULT CPlayer::Initialize(void * pArg)
 	m_tStats.m_fCurrentHp = CUI_Manager::Get_Instance()->Get_CurrentHp() == 0 ? m_tStats.m_fMaxHp : CUI_Manager::Get_Instance()->Get_CurrentHp();
 
 	CInventory* pInventory = GET_INSTANCE(CInventory);
-	if (pInventory->Get_IsGameStarted())
-	{
-		CPlayerState* pState = nullptr;
-
-		if (pInventory->Get_Shield())
-			pState = new CIdleState();
-		else
-			pState = new CSleepState();
-
-		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
-	}
-	else
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	if (!pInventory->Get_IsGameStarted() && pGameInstance->Get_NextLevelIndex() == LEVEL::LEVEL_MARINHOUSE)
 	{
 		CPlayerState* pState = new CSleepState();
 		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
 
 		pInventory->Set_IsGameStarted(true);
 	}
+	else 
+	{
+		CPlayerState* pState = nullptr;
 
+		if (pInventory->Get_Shield())
+			pState = new CIdleState();
+		else
+			pState = new CBareState();
+
+		m_pPlayerState = m_pPlayerState->ChangeState(this, m_pPlayerState, pState);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 	RELEASE_INSTANCE(CInventory);
 
 	return S_OK;

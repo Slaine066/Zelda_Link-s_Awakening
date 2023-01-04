@@ -71,5 +71,6 @@ protected:
 	_bool m_bIsAnimationFinished = false;
 	class CInteractableObject* m_pInteractableObject = nullptr;
 	class CNpc* m_pNpc = nullptr;
+	class CMonster* m_pMonster = nullptr;
 };
 END

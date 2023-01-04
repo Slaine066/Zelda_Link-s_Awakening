@@ -15,6 +15,9 @@ public:
 	_float Get_PatrolRadius() { return m_fPatrolRadius; }
 	_float Get_AttackRadius() { return m_fAttackRadius; }
 
+	class CUI_Chat* Get_CurrentChat() { return m_pCurrentChat; }
+	virtual void Show_Chat() {};
+
 	virtual _bool Is_AnimationLoop(_uint eAnimId) PURE;
 
 public:
@@ -34,6 +37,8 @@ protected:
 	_float m_fAggroRadius = 0.f;
 	_float m_fPatrolRadius = 0.f;
 	_float m_fAttackRadius = 0.f;
+
+	class CUI_Chat* m_pCurrentChat = nullptr;
 
 public:
 	virtual void Free() override;

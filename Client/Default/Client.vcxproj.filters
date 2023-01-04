@@ -205,6 +205,9 @@
     <Filter Include="02.GameObjects\04.UI\UI_Chat">
       <UniqueIdentifier>{c72ef776-27b5-4ade-a86b-6df7d0d9b406}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.Actor\03.InteractableObject\02.Sword">
+      <UniqueIdentifier>{a6d84aa2-6a81-4949-aac9-df9b8c27d215}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -525,6 +528,12 @@
     <ClInclude Include="..\public\PlayerBareMoveState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Sword.h">
+      <Filter>02.GameObjects\00.Actor\03.InteractableObject\02.Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerOcarinaState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -810,6 +819,12 @@
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PlayerBareMoveState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sword.cpp">
+      <Filter>02.GameObjects\00.Actor\03.InteractableObject\02.Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerOcarinaState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
     </ClCompile>
   </ItemGroup>

@@ -41,6 +41,8 @@ _uint CUI::Tick(_float fTimeDelta)
 	m_pTransformCom->Set_Scale(CTransform::STATE_UP, m_tUIDesc.m_fSizeY);
 	m_pTransformCom->Set_State(CTransform::STATE_TRANSLATION, XMVectorSet(m_tUIDesc.m_fX - g_iWinSizeX * 0.5f, - m_tUIDesc.m_fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
 
+	m_fTimer += fTimeDelta;
+
 	return OBJ_NOEVENT;
 }
 
@@ -107,6 +109,8 @@ HRESULT CUI::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(0))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_EffectTimer", &m_fTimer, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

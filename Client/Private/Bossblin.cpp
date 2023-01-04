@@ -13,6 +13,7 @@
 #include "PlayerGuardState.h"
 #include "Effect.h"
 #include "Level_MoriblinCave.h"
+#include "UI_Chat.h"
 
 using namespace Bossblin;
 
@@ -24,6 +25,52 @@ CBossblin::CBossblin(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 CBossblin::CBossblin(const CBossblin & rhs)
 	: CMonster(rhs)
 {
+}
+
+void CBossblin::Show_Chat()
+{
+	/* If a Chat is already showing */
+	if (m_pCurrentChat)
+	{
+		/* If Chat is finished */
+		if (m_pCurrentChat->Get_ChatIndex() >= m_pCurrentChat->Get_ChatCount() - 1)
+		{
+			m_pCurrentChat->Set_ShouldDestroy(true);
+			m_pCurrentChat = nullptr;
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
+			if (!pPlayer)
+				return;
+
+			pPlayer->Set_Monster(nullptr);
+
+			RELEASE_INSTANCE(CGameInstance);
+		}
+		/* Go to next Chat */
+		else
+			m_pCurrentChat->Increase_ChatIndex();
+	}
+	/* Create Chat */
+	else
+	{
+		CUI::UIDESC tUIDesc;
+		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
+		tUIDesc.m_fSizeX = 1161;
+		tUIDesc.m_fSizeY = 250;
+		tUIDesc.m_fX = g_iWinSizeX / 2;
+		tUIDesc.m_fY = g_iWinSizeY - 175;
+		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
+
+		/* Load correct Chat Line. */
+		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Chat_Bossblin_Line_1"));
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+		pGameInstance->Add_GameObject_Out(TEXT("UI_Chat_Bossblin"), TEXT("Prototype_GameObject_UI_Chat"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)m_pCurrentChat, &tUIDesc);
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
 }
 
 HRESULT CBossblin::Initialize_Prototype()

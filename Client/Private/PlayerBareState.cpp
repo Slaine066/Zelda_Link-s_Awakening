@@ -16,10 +16,17 @@ CPlayerState * CBareState::HandleInput(CPlayer * pPlayer)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
+	if (pPlayer->Get_Npc())
+		if (pPlayer->Get_Npc()->Get_CurrentChat())
+		{
+			if (pGameInstance->Key_Down('A'))
+				m_pNpc = pPlayer->Get_Npc();
+
+			return nullptr;
+		}
+
 	if (pGameInstance->Key_Down('A'))
-	{
 		m_pNpc = pPlayer->Get_Npc();
-	}
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CBareMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))

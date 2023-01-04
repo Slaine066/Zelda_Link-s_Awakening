@@ -72,11 +72,6 @@ private:
 private:
 	class CMarinState* m_pMarinState = nullptr;
 
-	class CUI* m_pInteractButton = nullptr;
-
-	_uint m_iChatLineIndex = 1;
-	class CUI_Chat* m_pCurrentChat = nullptr;
-
 public:
 	static CMarin* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr);

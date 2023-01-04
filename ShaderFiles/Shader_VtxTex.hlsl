@@ -88,9 +88,9 @@ PS_OUT PS_MAIN_FADEIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
-	if (g_EffectTimer < 0.25f)
+	if (g_EffectTimer < 0.5f)
 	{
-		float fLerpAlpha = lerp(0, Out.vColor.a, g_EffectTimer / 0.25f);
+		float fLerpAlpha = lerp(0, Out.vColor.a, g_EffectTimer / 0.5f);
 		Out.vColor.a = fLerpAlpha;
 	}
 

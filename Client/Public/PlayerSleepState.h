@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PlayerState.h"
+#include "Bed.h"
 
 BEGIN(Client)
 BEGIN(Player)
@@ -15,6 +16,10 @@ public:
 
 	virtual void Enter(CPlayer* pPlayer) override;
 	virtual void Exit(CPlayer* pPlayer) override;
+
+private:
+	CBed* m_pBed = nullptr;
+	_bool m_bIsSleeping = false; /* m_bIsBedSleeping */
 };
 END
 END
