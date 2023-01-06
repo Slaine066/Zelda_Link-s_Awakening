@@ -97,6 +97,7 @@ void CGameObject::Free()
 {
 	for (auto& Pair : m_Components)	
 		Safe_Release(Pair.second);
+
 	m_Components.clear();	
 
 	Safe_Release(m_pDevice);

@@ -144,7 +144,6 @@ HRESULT CItem::Render()
 
 void CItem::Setup_Item(void * pArg)
 {
-	ZeroMemory(&m_tItemDesc, sizeof(ITEMDESC));
 	memcpy(&m_tItemDesc, (ITEMDESC*)pArg, sizeof(ITEMDESC));
 	
 	switch ((ITEMID)m_tItemDesc.m_eItemId)
@@ -172,7 +171,6 @@ HRESULT CItem::Ready_Components(void* pArg)
 
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC TransformDesc;
-	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 	TransformDesc.vInitialWorldMatrix = m_tItemDesc.mWorldMatrix;
 	TransformDesc.fSpeedPerSec = 0.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
@@ -193,7 +191,7 @@ HRESULT CItem::Ready_Components(void* pArg)
 	m_vCollidersCom.resize(1); // Numbers of Colliders needed for this Object
 
 	CCollider::COLLIDERDESC	ColliderDesc;
-	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	XMStoreFloat4x4(&ColliderDesc.pPivotMatrix, XMMatrixIdentity());
 	ColliderDesc.m_bIsAttachedToBone = false;
 	ColliderDesc.eAim = CCollider::AIM::AIM_OBJECT;
 	ColliderDesc.vScale = _float3(1.f, 1.f, 1.f);

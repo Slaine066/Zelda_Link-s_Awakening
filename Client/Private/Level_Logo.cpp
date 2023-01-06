@@ -3,6 +3,7 @@
 #include "Level_Logo.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "Inventory.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -27,6 +28,10 @@ void CLevel_Logo::Tick(_float fTimeDelta)
 
 		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MARINHOUSE/*LEVEL_FIELD*//*LEVEL_MORIBLINCAVE*/))))
 			return;
+
+		/* Testing */
+		/*CInventory::Get_Instance()->Set_Sword(new INVENTORYOBJDESC());
+		CInventory::Get_Instance()->Set_Shield(new INVENTORYOBJDESC());*/
 
 		RELEASE_INSTANCE(CGameInstance);
 	}

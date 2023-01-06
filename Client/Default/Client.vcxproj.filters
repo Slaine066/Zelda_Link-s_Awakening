@@ -151,9 +151,6 @@
     <Filter Include="02.GameObjects\05.Effect">
       <UniqueIdentifier>{8bbe6452-63a3-4eee-a2e1-aca84de347e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06.Sky">
-      <UniqueIdentifier>{ccb89b73-79ac-4543-a3f3-cc6b2fab5f64}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\05.MarinHouse">
       <UniqueIdentifier>{f65e1c64-b5f9-4ee4-8bba-307560288c8d}</UniqueIdentifier>
     </Filter>
@@ -207,6 +204,21 @@
     </Filter>
     <Filter Include="02.GameObjects\00.Actor\03.InteractableObject\02.Sword">
       <UniqueIdentifier>{a6d84aa2-6a81-4949-aac9-df9b8c27d215}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\02.Npc\Owl">
+      <UniqueIdentifier>{af9aff46-d04d-4184-bd64-fa2b04843695}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\02.Npc\Owl\OwlState">
+      <UniqueIdentifier>{4dc64143-8639-4328-9a36-1253f46dcce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Actor\00.Character\02.Npc\Owl\OwlState\States">
+      <UniqueIdentifier>{61da0313-58d1-46d6-a1e2-dab615c0a2bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Camera\Manager\06.Sky">
+      <UniqueIdentifier>{ccb89b73-79ac-4543-a3f3-cc6b2fab5f64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04.UI\UI_ScreenFade">
+      <UniqueIdentifier>{2c54d173-d58f-4cb5-bbdc-8dc6267b0b5a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -454,7 +466,7 @@
       <Filter>02.GameObjects\05.Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Sky.h">
-      <Filter>02.GameObjects\06.Sky</Filter>
+      <Filter>02.GameObjects\01.Camera\Manager\06.Sky</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PlayerCarryState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
@@ -533,6 +545,24 @@
     </ClInclude>
     <ClInclude Include="..\public\PlayerOcarinaState.h">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Owl.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Owl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\OwlIdleState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Owl\OwlState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\OwlTalkState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Owl\OwlState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\OwlState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Owl\OwlState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\OwlFlyOutState.h">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Owl\OwlState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_ScreenFade.h">
+      <Filter>02.GameObjects\04.UI\UI_ScreenFade</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -753,7 +783,7 @@
       <Filter>02.GameObjects\05.Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
-      <Filter>02.GameObjects\06.Sky</Filter>
+      <Filter>02.GameObjects\01.Camera\Manager\06.Sky</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PlayerCarryState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
@@ -826,6 +856,21 @@
     </ClCompile>
     <ClCompile Include="..\private\PlayerOcarinaState.cpp">
       <Filter>02.GameObjects\00.Actor\00.Character\00.Player\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Owl.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Owl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\OwlIdleState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Owl\OwlState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\OwlTalkState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Owl\OwlState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\OwlFlyOutState.cpp">
+      <Filter>02.GameObjects\00.Actor\00.Character\02.Npc\Owl\OwlState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_ScreenFade.cpp">
+      <Filter>02.GameObjects\04.UI\UI_ScreenFade</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

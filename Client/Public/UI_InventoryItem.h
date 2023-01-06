@@ -30,6 +30,7 @@ public:
 
 private:
 	INVENTORYITEM_TYPE m_eType = TYPE_END;
+	_bool m_bIsHovered = false;
 
 public:
 	static CUI_InventoryItem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

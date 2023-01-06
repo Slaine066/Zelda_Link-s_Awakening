@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "PlayerIdleState.h"
 #include "Item.h"
+#include "CameraManager.h"
 
 using namespace Player;
 
@@ -76,6 +77,7 @@ void CAchieveState::Enter(CPlayer * pPlayer)
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_ITEM_GET_START);
 		pPlayer->Set_CanPickup(false);
 
+		ZoomIn(pPlayer);
 		Create_Item(pPlayer);
 		break;
 	case STATETYPE_MAIN:
@@ -85,6 +87,8 @@ void CAchieveState::Enter(CPlayer * pPlayer)
 		break;
 	case STATETYPE_END:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_ITEM_GET_END);
+
+		ZoomOut(pPlayer);
 		break;
 	}
 
@@ -93,10 +97,82 @@ void CAchieveState::Enter(CPlayer * pPlayer)
 
 void CAchieveState::Exit(CPlayer * pPlayer)
 {
-	pPlayer->Get_Transform()->Set_RotationY(0.f);
-
 	if (m_eStateType == STATETYPE_MAIN)
 		pPlayer->Set_CanPickup(true);
+}
+
+void CAchieveState::ZoomIn(CPlayer * pPlayer)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	_float3 vPosition;
+
+	switch (pGameInstance->Get_CurrentLevelIndex())
+	{
+		case LEVEL::LEVEL_MARINHOUSE:
+		{	
+			CCamera_Static* pCameraStatic = (CCamera_Static*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+			pCameraStatic->Set_ModeZoom(true);
+
+			XMStoreFloat3(&vPosition, pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
+			vPosition.y += .5f;
+
+			pCameraStatic->Set_ZoomPosition(vPosition);
+			break;
+		}
+		case LEVEL::LEVEL_FIELD:
+		{	
+			CCamera_Player* pCameraPlayer = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+			pCameraPlayer->Set_ModeZoom(true);
+
+			XMStoreFloat3(&vPosition, pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
+			vPosition.y += .5f;
+
+			pCameraPlayer->Set_ZoomPosition(vPosition);
+			break;
+		}
+		case LEVEL::LEVEL_MORIBLINCAVE:
+		{	
+			CCamera_Dungeon* pCameraDungeon = (CCamera_Dungeon*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+			pCameraDungeon->Set_ModeZoom(true);
+
+			XMStoreFloat3(&vPosition, pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
+			vPosition.y += .5f;
+
+			pCameraDungeon->Set_ZoomPosition(vPosition);
+			break;
+		}
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CAchieveState::ZoomOut(CPlayer * pPlayer)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	switch (pGameInstance->Get_CurrentLevelIndex())
+	{
+		case LEVEL::LEVEL_MARINHOUSE:
+		{
+			CCamera_Static * pCameraStatic = (CCamera_Static*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+			pCameraStatic->Set_ModeZoom(false);
+			break;
+		}
+		case LEVEL::LEVEL_FIELD:
+		{
+			CCamera_Player * pCameraPlayer = (CCamera_Player*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+			pCameraPlayer->Set_ModeZoom(false);
+			break;
+		}
+		case LEVEL::LEVEL_MORIBLINCAVE:
+		{
+			CCamera_Dungeon * pCameraDungeon = (CCamera_Dungeon*)CCameraManager::Get_Instance()->Get_CurrentCamera();
+			pCameraDungeon->Set_ModeZoom(false);
+			break;
+		}
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CAchieveState::Create_Item(CPlayer * pPlayer)
@@ -109,7 +185,7 @@ void CAchieveState::Create_Item(CPlayer * pPlayer)
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	pGameInstance->Add_GameObject(TEXT("Item_Treasure"), TEXT("Prototype_GameObject_Item"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Item"), &tItemDesc);
+	pGameInstance->Add_GameObject(TEXT("Item_Achieve"), TEXT("Prototype_GameObject_Item"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Item"), &tItemDesc);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -167,7 +243,7 @@ void CAchieveState::Create_ChatGetItem(CPlayer * pPlayer)
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	pGameInstance->Add_GameObject_Out(TEXT("UI_Chat_Marin"), TEXT("Prototype_GameObject_UI_Chat"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)m_pGetItemChat, &tUIDesc);
+	pGameInstance->Add_GameObject_Out(TEXT("UI_Chat_Achieve"), TEXT("Prototype_GameObject_UI_Chat"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)m_pGetItemChat, &tUIDesc);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

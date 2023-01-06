@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "TarinIdleState.h"
+#include "TarinTalkState.h"
 #include "UI.h"
 
 using namespace Tarin;
@@ -35,6 +36,9 @@ CTarinState * CIdleState::LateTick(CTarin * pTarin, _float fTimeDelta)
 		}
 	}
 
+	if (pTarin->Get_CurrentChat())
+		return new CTalkState();
+	
 	return nullptr;
 }
 
@@ -47,5 +51,9 @@ void CIdleState::Enter(CTarin * pTarin)
 
 void CIdleState::Exit(CTarin * pTarin)
 {
-	m_fIdleMoveTimer = 0.f;
+	if (pTarin->Get_InteractButton())
+	{
+		pTarin->Get_InteractButton()->Set_ShouldDestroy(true);
+		pTarin->Set_InteractButton(nullptr);
+	}
 }

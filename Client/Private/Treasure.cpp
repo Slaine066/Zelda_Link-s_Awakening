@@ -125,7 +125,7 @@ HRESULT CTreasure::Ready_Components(void* pArg)
 		return E_FAIL;
 	
 	CCollider::COLLIDERDESC	ColliderDesc;
-	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	XMStoreFloat4x4(&ColliderDesc.pPivotMatrix, XMMatrixIdentity());
 	ColliderDesc.eAim = CCollider::AIM::AIM_OBJECT;
 	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
 	ColliderDesc.vPosition = _float3(0.f, .5f, 0.f);
@@ -137,7 +137,7 @@ HRESULT CTreasure::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_ColliderTreasure"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_Sphere"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
 		return E_FAIL;
 
-	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	XMStoreFloat4x4(&ColliderDesc.pPivotMatrix, XMMatrixIdentity());
 	ColliderDesc.eAim = CCollider::AIM::AIM_BLOCK;
 	ColliderDesc.vScale = _float3(1.4f, 1.f, 1.5f);
 	ColliderDesc.vPosition = _float3(0.f, 0.5f, 0.f);
@@ -239,7 +239,6 @@ void CTreasure::Spawn_InteractButton()
 	else
 	{
 		CUI::UIDESC tUIDesc;
-		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
 		tUIDesc.m_fSizeX = 120;
 		tUIDesc.m_fSizeY = 44;
 		tUIDesc.m_fX = vScreenPosition.x;

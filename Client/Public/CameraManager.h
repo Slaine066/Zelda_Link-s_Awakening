@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Camera_Static.h"
 #include "Camera_Player.h"
+#include "Camera_Dungeon.h"
 
 BEGIN(Client)
 class CCameraManager final : public CBase

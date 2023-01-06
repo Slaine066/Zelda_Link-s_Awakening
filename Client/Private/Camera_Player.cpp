@@ -45,9 +45,6 @@ _uint CCamera_Player::Tick(_float fTimeDelta)
 	case MODE_ZOOMOUT:
 		ZoomOut_Camera(fTimeDelta);
 		break;
-	case MODE_SHAKING:
-		Shaking_Camera(fTimeDelta);
-		break;
 	}
 
 	if (FAILED(Bind_OnPipeLine()))
@@ -78,10 +75,8 @@ void CCamera_Player::Player_Camera(_float fTimeDelta)
 	/* Player Camera*/
 	if (!pGameInstance->Key_Pressing(VK_SHIFT))
 	{
-		CGameObject* pGameObject = pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
-
-		_vector vPosition = XMLoadFloat3(&pGameObject->Get_Position());
-		vPosition = XMVectorSetW(vPosition, 1.0f);
+		CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
+		_vector vPosition = pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
 
 		m_pTransform->LookAt(vPosition);
 		m_pTransform->Attach_ToTarget(vPosition, XMVectorSet(0.f, 3.f, -2.5, 1.f)); /* Distance from Camera to Player */
@@ -110,24 +105,10 @@ void CCamera_Player::Player_Camera(_float fTimeDelta)
 
 void CCamera_Player::ZoomIn_Camera(_float fTimeDelta, _float3 vZoomPosition)
 {
-	_vector vCamPosition = m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION);
-	_vector vCamDirection = XMLoadFloat3(&vZoomPosition) - vCamPosition;
+	vZoomPosition.y += 1.5f;
+	vZoomPosition.z -= 1.5f;
 
-	vCamDirection -= XMVectorSet(0.f, .5f, .5f, 0.f);
-
-	_float3 vDistance = _float3(0, 2.5, -2);
-
-	_float3 vStoredCameraDirection;
-	XMStoreFloat3(&vStoredCameraDirection, vCamDirection);
-
-	if (fabsf(vStoredCameraDirection.y) < vDistance.y)
-		return;
-
-	vCamDirection = XMVector3Normalize(vCamDirection);
-	vCamPosition += vCamDirection * 0.1f;
-
-	m_pTransform->LookAt(XMVectorSetW(XMLoadFloat3(&vZoomPosition), 1.f));
-	m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vCamPosition);
+	m_pTransform->Go_TargetPosition(fTimeDelta / 5, vZoomPosition, 0.f);
 }
 
 void CCamera_Player::ZoomOut_Camera(_float fTimeDelta)
@@ -135,85 +116,17 @@ void CCamera_Player::ZoomOut_Camera(_float fTimeDelta)
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
-	
-	_vector vPlayerPosition = pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
-	_vector vCameraPosition = m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION);
-	_float3 fDistance = _float3(0.f, 3.5f, -2.5);
+	_float4 vPosition;
+	XMStoreFloat4(&vPosition, pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
 
-	_vector vDirection = vPlayerPosition + XMLoadFloat3(&fDistance) - vCameraPosition;
-
-	_float3 vStoredPlayerPosition;
-	XMStoreFloat3(&vStoredPlayerPosition, vPlayerPosition);
-	_float3 vStoredCameraPosition;
-	XMStoreFloat3(&vStoredCameraPosition, vCameraPosition);
-
-	if (fabsf(vStoredPlayerPosition.y + fDistance.y - vStoredCameraPosition.y) < 0.3f)
+	if (m_pTransform->Go_TargetPosition(fTimeDelta / 5, _float3(vPosition.x, vPosition.y + 3.f, vPosition.z - 2.5f), 0.f))
 	{
+		XMStoreFloat4(&vPosition, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+		vPosition.y -= 3.f;
+		vPosition.z += 2.5f;
+
 		m_eCamMode = MODE_PLAYER;
-
-		RELEASE_INSTANCE(CGameInstance);
-		return;
 	}
-
-	vDirection = XMVector3Normalize(vDirection);
-	vCameraPosition += vDirection * 0.1f;
-
-	m_pTransform->LookAt(vPlayerPosition);
-	m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vCameraPosition);
-
-	RELEASE_INSTANCE(CGameInstance);
-}
-
-void CCamera_Player::Shaking_Camera(_float fTimeDelta)
-{
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
-	
-	_float3 vPlayerPosition;
-	XMStoreFloat3(&vPlayerPosition, pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION));
-
-	m_iShakeCount++;
-
-	if (m_iShakeCount % 4 == 0)
-	{
-		vPlayerPosition.y += m_fPower * m_fVelocity;
-		if (rand() % 2 == 0)
-			vPlayerPosition.z -= m_fPower * m_fVelocity;
-		else
-			vPlayerPosition.z += m_fPower * m_fVelocity;
-
-		if (rand() % 2 == 0)
-			vPlayerPosition.x -= m_fPower * m_fVelocity;
-		else
-			vPlayerPosition.x += m_fPower * m_fVelocity;
-	}
-	else if (m_iShakeCount % 4 == 1)
-	{
-		vPlayerPosition.y -= m_fPower * m_fVelocity;
-		if (rand() % 2 == 0)
-			vPlayerPosition.z -= m_fPower * m_fVelocity;
-		else
-			vPlayerPosition.z += m_fPower * m_fVelocity;
-
-		if (rand() % 2 == 0)
-			vPlayerPosition.x -= m_fPower * m_fVelocity;
-		else
-			vPlayerPosition.x += m_fPower * m_fVelocity;
-	}
-
-	m_fVelocity -= m_fVelocityDecrement;
-	if (m_fVelocity < 0.0f)
-	{
-		m_eCamMode = MODE_PLAYER;
-		
-		RELEASE_INSTANCE(CGameInstance);
-		return;
-	}
-
-	m_pTransform->LookAt(XMVectorSetW(XMLoadFloat3(&vPlayerPosition), 1.f));
-	m_pTransform->Attach_ToTarget(XMVectorSetW(XMLoadFloat3(&vPlayerPosition), 1.f), XMVectorSet(0.f, 3.5f, -2.5, 1.f)); /* Distance from Camera to Player */
-
 	RELEASE_INSTANCE(CGameInstance);
 }
 

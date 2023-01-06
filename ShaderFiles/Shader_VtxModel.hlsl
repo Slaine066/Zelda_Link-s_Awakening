@@ -90,7 +90,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.f, 0.f, 0.f);
 	Out.vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 
-	if (Out.vDiffuse.a <= 0.3f)
+	if (Out.vDiffuse.a < 0.1f)
 		discard;
 
 	if (g_IsSelected)

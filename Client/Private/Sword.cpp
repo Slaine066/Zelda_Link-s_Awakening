@@ -95,32 +95,11 @@ HRESULT CSword::Render()
 
 HRESULT CSword::Ready_Components(void* pArg)
 {
-	memcpy(&m_tModelDesc, pArg, sizeof(MODELDESC));
-
-	/* For.Com_Renderer */
-	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
-		return E_FAIL;
-
-	/* For.Com_Transform */
-	CTransform::TRANSFORMDESC TransformDesc;
-	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
-	TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
-	TransformDesc.fSpeedPerSec = 0.f;
-	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
-
-	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_STATIC, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
-		return E_FAIL;
-
-	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
-		return E_FAIL;
-
-	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(TEXT("Com_Model"), LEVEL_STATIC, TEXT("Prototype_Component_Model_Sword"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Ready_Components(pArg)))
 		return E_FAIL;
 
 	CCollider::COLLIDERDESC	ColliderDesc;
-	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	XMStoreFloat4x4(&ColliderDesc.pPivotMatrix, XMMatrixIdentity());
 	ColliderDesc.eAim = CCollider::AIM::AIM_OBJECT;
 	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
 	ColliderDesc.vPosition = _float3(0.f, .5f, 0.f);
@@ -132,8 +111,8 @@ HRESULT CSword::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_ColliderSword"), LEVEL_STATIC, TEXT("Prototype_Component_Collider_Sphere"), (CComponent**)&m_vCollidersCom[0], &ColliderDesc)))
 		return E_FAIL;
 
-	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.eAim = CCollider::AIM::AIM_BLOCK;
+	XMStoreFloat4x4(&ColliderDesc.pPivotMatrix, XMMatrixIdentity());
 	ColliderDesc.vScale = _float3(.5f, .5f, .5f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.m_bIsAttachedToBone = false;
@@ -162,7 +141,9 @@ _bool CSword::CanInteract()
 
 	if (m_bDidInteract)
 	{
-		pPlayer->Set_InteractableObject(nullptr);
+		if (pPlayer->Get_InteractableObject() == this)
+			pPlayer->Set_InteractableObject(nullptr);
+
 		RELEASE_INSTANCE(CGameInstance);
 		return false;
 	}
@@ -234,7 +215,6 @@ void CSword::Spawn_InteractButton()
 	else
 	{
 		CUI::UIDESC tUIDesc;
-		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
 		tUIDesc.m_fSizeX = 120;
 		tUIDesc.m_fSizeY = 44;
 		tUIDesc.m_fX = vScreenPosition.x;

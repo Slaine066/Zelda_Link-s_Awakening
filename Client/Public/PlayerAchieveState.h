@@ -19,6 +19,8 @@ public:
 	virtual void Exit(CPlayer* pPlayer) override;
 
 private:
+	void ZoomIn(CPlayer * pPlayer);
+	void ZoomOut(CPlayer * pPlayer);
 	void Create_Item(CPlayer * pPlayer);
 	void Spawn_GetItemEffect(CPlayer * pPlayer);
 	void Create_ChatGetItem(CPlayer * pPlayer);

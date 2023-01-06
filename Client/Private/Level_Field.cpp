@@ -74,7 +74,6 @@ HRESULT CLevel_Field::Load_Objects_FromFile()
  	_uint iCounter = 0;
 
 	CActor::MODELDESC tModelDesc;
-	ZeroMemory(&tModelDesc, sizeof(CActor::MODELDESC));
 	while (true)
 	{
 		ReadFile(hFile, &tModelDesc, sizeof(CActor::MODELDESC), &dwByte, nullptr);
@@ -108,6 +107,8 @@ HRESULT CLevel_Field::Load_Objects_FromFile()
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Treasure"), LEVEL_FIELD, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Sword")))
 			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Sword"), LEVEL_FIELD, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
+		else if (!wcscmp(m_vInstancedObjects[i].wcObjName, TEXT("Owl")))
+			pGameInstance->Add_GameObject(m_vInstancedObjects[i].wcObjName, TEXT("Prototype_GameObject_Owl"), LEVEL_FIELD, m_vInstancedObjects[i].wcLayerTag, &m_vInstancedObjects[i]);
 	}
 	CloseHandle(hFile);
 
@@ -163,6 +164,7 @@ HRESULT CLevel_Field::Ready_Sky()
 HRESULT CLevel_Field::Ready_Layer_UI()
 {
 	m_pUIManager->Initialize();
+	m_pUIManager->ScreenFadeIn();
 
 	return S_OK;
 }

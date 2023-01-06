@@ -7,7 +7,7 @@ BEGIN(Client)
 class CCamera_Player final : public CCamera
 {
 public:
-	enum CAM_MODE { MODE_PLAYER, MODE_ZOOMIN, MODE_ZOOMOUT, MODE_SHAKING, MODE_ENDING };
+	enum CAM_MODE { MODE_PLAYER, MODE_ZOOMIN, MODE_ZOOMOUT, MODE_ENDING };
 
 	typedef struct tagCameraDesc_Derived
 	{
@@ -22,13 +22,6 @@ private:
 public:
 	void Set_ModeZoom(_bool bZoom) { bZoom ? m_eCamMode = MODE_ZOOMIN : m_eCamMode = MODE_ZOOMOUT; }
 	void Set_ZoomPosition(_float3 vZoomPosition) { m_vZoomPosition = vZoomPosition; }
-	void Set_ModeShake(_float fPower, _float fVelocity, _float fVelocityDecrement) 
-	{ 
-		m_eCamMode = MODE_SHAKING; 
-		m_fPower = fPower; 
-		m_fVelocity = fVelocity; 
-		m_fVelocityDecrement = fVelocityDecrement; 
-	};
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -41,17 +34,10 @@ private:
 	void Player_Camera(_float fTimeDelta);
 	void ZoomIn_Camera(_float fTimeDelta, _float3 vZoomPosition);
 	void ZoomOut_Camera(_float fTimeDelta);
-	void Shaking_Camera(_float fTimeDelta);
 
 private:
 	CAM_MODE m_eCamMode = MODE_PLAYER;
 	_float3 m_vZoomPosition;
-
-	/* Shake Variables */
-	_float m_fPower = .5f;
-	_float m_fVelocity = 0.1f;
-	_float m_fVelocityDecrement = 0.01f;
-	_uint m_iShakeCount = 0;
 
 public:
 	static CCamera_Player* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

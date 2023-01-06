@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "Base.h"
 #include "Inventory.h"
+#include "UI_ScreenFade.h"
 
 /*
 Note that this Class contains a pointer of the same Object stored in the Object Manager.
@@ -31,8 +32,10 @@ public:
 
 private:
 	/* Initialize Functions */
+	HRESULT Build_ScreenFade();
 	HRESULT Build_Inventory();
 	HRESULT Build_InventoryItemSlots();
+	HRESULT Build_EquipmentIcons();
 	HRESULT Build_GameItemSlots();
 	HRESULT Build_Hearts();
 	HRESULT Build_Rupees();
@@ -40,13 +43,18 @@ private:
 public:
 	MODE Get_Mode() { return m_eMode; }
 	void Set_Mode(MODE eMode) { m_eMode = eMode; }
+	void ScreenFadeIn();
+	void ScreenFadeOut();
+	_float Get_ScreenFadeTime() { return m_pScreenFade->Get_ScreenFadeTime(); }
 	_float Get_MaxHp() { return m_fMaxHp; }
 	_float Get_CurrentHp() { return m_fCurrentHp; }
 	_tchar* Get_ItemTextureName(ITEMID eItemId);
 	_uint Get_MarinChatLine() { return m_iMarinChatLine; }
 	_uint Get_TarinChatLine() { return m_iTarinChatLine; }
+	_uint Get_OwlChatLine() { return m_iOwlChatLine; }
 	void Increase_MarinChatLine() { m_iMarinChatLine++; }
 	void Increase_TarinChatLine() { m_iTarinChatLine++; }
+	void Increase_OwlChatLine() { m_iOwlChatLine++; }
 
 	void Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex);
 	void Add_ItemX();
@@ -69,6 +77,8 @@ private:
 
 	MODE m_eMode = MODE_END;
 
+	CUI_ScreenFade* m_pScreenFade = nullptr;
+
 /* = = = UI General = = = */
 	/* Hearts Variables */
 	vector<class CUI_Heart*> m_Hearts;
@@ -90,10 +100,15 @@ private:
 	vector<class CUI_InventoryItem*> m_ItemIcons;
 	_int m_iCurrentSlotIndex = 0;
 
+	class CUI_InventoryItem* m_pEquipCloth = nullptr;
+	class CUI_InventoryItem* m_pEquipShield = nullptr;
+	class CUI_InventoryItem* m_pEquipSword = nullptr;
+
 	/* Chat Line Variables */ 
 	// These informations should not be here! But I don't want to make a new class ("Quest_Manager", or whatever..)
 	_uint m_iMarinChatLine = 1;
 	_uint m_iTarinChatLine = 1;
+	_uint m_iOwlChatLine = 1;
 
 public:
 	virtual void Free() override;

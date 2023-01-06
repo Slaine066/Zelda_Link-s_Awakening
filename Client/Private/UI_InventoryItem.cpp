@@ -54,6 +54,18 @@ HRESULT CUI_InventoryItem::Render()
 		m_eType == INVENTORYITEM_TYPE::TYPE_INVENTORY && CUI_Manager::Get_Instance()->Get_Mode() != CUI_Manager::MODE::MODE_INVENTORY)
 		return S_OK;
 
+	if (!wcscmp(m_tUIDesc.m_pTextureName, TEXT("Prototype_Component_Texture_Equipment_Sword")))
+		if (!CInventory::Get_Instance()->Get_Sword())
+			return S_OK;
+
+	if (!wcscmp(m_tUIDesc.m_pTextureName, TEXT("Prototype_Component_Texture_Equipment_Shield")))
+		if (!CInventory::Get_Instance()->Get_Shield())
+			return S_OK;
+
+	if (!wcscmp(m_tUIDesc.m_pTextureName, TEXT("Prototype_Component_Texture_Equipment_Cloth")))
+		if (!CInventory::Get_Instance()->Get_Vest())
+			return S_OK;
+
 	if (!m_pShaderCom || !m_pVIBufferCom)
 		return E_FAIL;
 
@@ -100,6 +112,8 @@ HRESULT CUI_InventoryItem::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(0))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_Hovered", &m_bIsHovered, sizeof(_bool))))
 		return E_FAIL;
 
 	return S_OK;

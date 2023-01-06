@@ -29,6 +29,8 @@ HRESULT CUI_Manager::Initialize()
 	Build_Hearts();
 	Build_Rupees();
 
+	Build_ScreenFade();
+
 	m_bIsUILoaded = true;
 
 	return S_OK;
@@ -240,6 +242,25 @@ HRESULT CUI_Manager::Build_GameItemSlots()
 	return S_OK;
 }
 
+HRESULT CUI_Manager::Build_ScreenFade()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CUI::UIDESC tUIDesc;
+	tUIDesc.m_fSizeX = g_iWinSizeX;
+	tUIDesc.m_fSizeY = g_iWinSizeY;
+	tUIDesc.m_fX = g_iWinSizeX / 2;
+	tUIDesc.m_fY = g_iWinSizeY / 2;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
+	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Gradient"));
+
+	pGameInstance->Add_GameObject_Out(TEXT("UI_Fade"), TEXT("Prototype_GameObject_UI_ScreenFade"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pScreenFade, &tUIDesc);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
 HRESULT CUI_Manager::Build_Inventory()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -255,12 +276,13 @@ HRESULT CUI_Manager::Build_Inventory()
 	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Inventory"));
 
-	if (FAILED(pGameInstance->Add_GameObject(TEXT("UI_Test"), TEXT("Prototype_GameObject_UI_Inventory"), LEVEL_STATIC, TEXT("Layer_UI"), &tUIDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(TEXT("UI_Inventory"), TEXT("Prototype_GameObject_UI_Inventory"), LEVEL_STATIC, TEXT("Layer_UI"), &tUIDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 
 	Build_InventoryItemSlots();
+	Build_EquipmentIcons();
 
 	return S_OK;
 }
@@ -309,6 +331,54 @@ HRESULT CUI_Manager::Build_InventoryItemSlots()
 				pItemSlot->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY);
 		}
 	}
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CUI_Manager::Build_EquipmentIcons()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CUI::UIDESC tUIDesc;
+
+	/* Sword */
+	tUIDesc.m_fSizeX = 110;
+	tUIDesc.m_fSizeY = 110;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
+	tUIDesc.m_fX = 225;
+	tUIDesc.m_fY = 405;
+	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Equipment_Sword"));
+
+	pGameInstance->Add_GameObject_Out(TEXT("Equipment_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pEquipSword, &tUIDesc);
+
+	m_pEquipSword->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INVENTORY);
+
+	/* Shield */
+	tUIDesc.m_fSizeX = 110;
+	tUIDesc.m_fSizeY = 110;
+	tUIDesc.m_fX = 290;
+	tUIDesc.m_fY = 400;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
+
+	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Equipment_Shield"));
+
+	pGameInstance->Add_GameObject_Out(TEXT("Equipment_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pEquipShield, &tUIDesc);
+
+	m_pEquipShield->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INVENTORY);
+
+	/* Cloth */
+	tUIDesc.m_fSizeX = 110;
+	tUIDesc.m_fSizeY = 110;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
+	tUIDesc.m_fX = 225;
+	tUIDesc.m_fY = 510;
+	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Equipment_Cloth"));
+
+	pGameInstance->Add_GameObject_Out(TEXT("Equipment_Icon"), TEXT("Prototype_GameObject_UI_InventoryItem"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pEquipCloth, &tUIDesc);
+
+	m_pEquipCloth->Set_InventoryItemType(CUI_InventoryItem::INVENTORYITEM_TYPE::TYPE_INVENTORY);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -366,6 +436,16 @@ void CUI_Manager::Render_Rupees()
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	pGameInstance->Render_Font(TEXT("Quicksand-24"), m_szRupees, XMVectorSet(1720.f, 200.f, 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CUI_Manager::ScreenFadeIn()
+{
+	m_pScreenFade->FadeIn();
+}
+
+void CUI_Manager::ScreenFadeOut()
+{
+	m_pScreenFade->FadeOut();
 }
 
 _tchar * CUI_Manager::Get_ItemTextureName(ITEMID eItemId)
@@ -433,10 +513,10 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 		/* Add UI_InventoryItem to Game Slot. */
 		CUI::UIDESC tUIDesc;
 		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
-		tUIDesc.m_fSizeX = 100;
-		tUIDesc.m_fSizeY = 100;
-		tUIDesc.m_fX = vPositionX.x + 8;
-		tUIDesc.m_fY = vPositionX.y - 8;
+		tUIDesc.m_fSizeX = 85;
+		tUIDesc.m_fSizeY = 85;
+		tUIDesc.m_fX = vPositionX.x;
+		tUIDesc.m_fY = vPositionX.y;
 		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem.m_eItemId));
 
@@ -451,10 +531,10 @@ void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
 		/* Add UI_InventoryItem to Game Slot. */
 		CUI::UIDESC tUIDesc;
 		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
-		tUIDesc.m_fSizeX = 100;
-		tUIDesc.m_fSizeY = 100;
-		tUIDesc.m_fX = vPositionY.x + 8;
-		tUIDesc.m_fY = vPositionY.y - 8;
+		tUIDesc.m_fSizeX = 85;
+		tUIDesc.m_fSizeY = 85;
+		tUIDesc.m_fX = vPositionY.x;
+		tUIDesc.m_fY = vPositionY.y;
 		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem.m_eItemId));
 
@@ -481,10 +561,10 @@ void CUI_Manager::Add_ItemX()
 		/* Add UI_InventoryItem to Game Slot. */
 		CUI::UIDESC tUIDesc;
 		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
-		tUIDesc.m_fSizeX = 100;
-		tUIDesc.m_fSizeY = 100;
-		tUIDesc.m_fX = vPositionX.x + 8;
-		tUIDesc.m_fY = vPositionX.y - 8;
+		tUIDesc.m_fSizeX = 85;
+		tUIDesc.m_fSizeY = 85;
+		tUIDesc.m_fX = vPositionX.x;
+		tUIDesc.m_fY = vPositionX.y;
 		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem->m_eItemId));
 
@@ -511,10 +591,10 @@ void CUI_Manager::Add_ItemY()
 		/* Add UI_InventoryItem to Game Slot. */
 		CUI::UIDESC tUIDesc;
 		ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
-		tUIDesc.m_fSizeX = 100;
-		tUIDesc.m_fSizeY = 100;
-		tUIDesc.m_fX = vPositionY.x + 8;
-		tUIDesc.m_fY = vPositionY.y - 8;
+		tUIDesc.m_fSizeX = 85;
+		tUIDesc.m_fSizeY = 85;
+		tUIDesc.m_fX = vPositionY.x;
+		tUIDesc.m_fY = vPositionY.y;
 		tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 		wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, Get_ItemTextureName(tItem->m_eItemId));
 

@@ -90,7 +90,7 @@ HRESULT CEffect::Initialize(void * pArg)
 			/* Move it a bit far away to the Camera, cause it has some Z-fighting with VTXTEX_EFFECT_HIT_FLASH. */
 			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 			m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
-			m_pTransformCom->Move_Backward(0.01f); 
+			m_pTransformCom->Move_Straight(1.f);
 			RELEASE_INSTANCE(CGameInstance);
 
 			break;
@@ -107,7 +107,7 @@ HRESULT CEffect::Initialize(void * pArg)
 			/* Move it a bit closer to the Camera, cause it has some Z-fighting with VTXMODEL_HIT. */
 			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 			m_pTransformCom->LookAt(XMLoadFloat4(&pGameInstance->Get_CamPosition()));
-			m_pTransformCom->Move_Straight(0.01f);
+			m_pTransformCom->Move_Straight(1.01f);
 			RELEASE_INSTANCE(CGameInstance);
 
 			break;

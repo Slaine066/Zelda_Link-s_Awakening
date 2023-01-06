@@ -7,7 +7,12 @@ texture2D g_DissolveTexture;
 
 float g_EffectTimer;
 float g_EffectLifespan;
+
 bool g_StartTimer;
+
+float g_FadeTimer;
+float g_FadeLifespan;
+
 
 /* Used by "UI_ItemSlot" class. */
 bool g_Hovered;
@@ -72,13 +77,15 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT Out = (PS_OUT)0;
 	
 	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	
-	if (Out.vColor.a <= 0.1f)
-		discard;
 
 	if (g_Hovered)
-		Out.vColor += .2;
+	{
+		if (Out.vColor.a <= 0.1f)
+			discard;
 
+		Out.vColor += .2;
+	}
+		
 	return Out;
 }
 
@@ -91,6 +98,38 @@ PS_OUT PS_MAIN_FADEIN(PS_IN In)
 	if (g_EffectTimer < 0.5f)
 	{
 		float fLerpAlpha = lerp(0, Out.vColor.a, g_EffectTimer / 0.5f);
+		Out.vColor.a = fLerpAlpha;
+	}
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_SCREENFADEIN(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (g_FadeTimer <= g_FadeLifespan)
+	{
+		float fLerpAlpha = lerp(1, 0, g_FadeTimer / g_FadeLifespan);
+		Out.vColor.a = fLerpAlpha;
+	}
+	else
+		discard;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_SCREENFADEOUT(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (g_FadeTimer <= g_FadeLifespan)
+	{
+		float fLerpAlpha = lerp(0, 1, g_FadeTimer / g_FadeLifespan);
 		Out.vColor.a = fLerpAlpha;
 	}
 
@@ -291,6 +330,28 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_FADEIN();
+	}
+
+	pass UI_Blend_ScreenFadeIn
+	{
+		SetRasterizerState(RS_Default);
+		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SCREENFADEIN();
+	}
+
+	pass UI_Blend_ScreenFadeOut
+	{
+		SetRasterizerState(RS_Default);
+		SetBlendState(BS_AlphaBlending, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SCREENFADEOUT();
 	}
 
 	pass Effect_Smoke

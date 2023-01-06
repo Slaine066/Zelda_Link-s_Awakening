@@ -31,7 +31,7 @@ CPlayerState * CWakeupState::HandleInput(CPlayer * pPlayer)
 
 CPlayerState * CWakeupState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 {
-	pPlayer->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pPlayer->Is_AnimationLoop(pPlayer->Get_Model()->Get_CurrentAnimIndex()));
+	pPlayer->Get_Model()->Play_Animation(fTimeDelta * 1.5f, m_bIsAnimationFinished, pPlayer->Is_AnimationLoop(pPlayer->Get_Model()->Get_CurrentAnimIndex()));
 	pPlayer->Sync_WithNavigationHeight();
 
 	return nullptr;

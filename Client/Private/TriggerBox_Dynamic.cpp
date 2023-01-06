@@ -81,16 +81,16 @@ _uint CTriggerBox_Dynamic::Late_Tick(_float fTimeDelta)
 			switch (CGameInstance::Get_Instance()->Get_CurrentLevelIndex())
 			{
 			case LEVEL_FIELD:
-				Field_Triggers();
+				Field_Triggers(fTimeDelta);
 				break;
 			case LEVEL_MORIBLINCAVE:
-				MoriblinCave_Triggers();
+				MoriblinCave_Triggers(fTimeDelta);
 				break;
 			case LEVEL_BOTTLEGROTTO:
-				BottleGrotto_Triggers();
+				BottleGrotto_Triggers(fTimeDelta);
 				break;
 			case LEVEL_MARINHOUSE:
-				MarinHouse_Triggers();
+				MarinHouse_Triggers(fTimeDelta);
 				break;
 			}
 
@@ -109,16 +109,16 @@ _uint CTriggerBox_Dynamic::Late_Tick(_float fTimeDelta)
 			switch (CGameInstance::Get_Instance()->Get_CurrentLevelIndex())
 			{
 			case LEVEL_FIELD:
-				Field_Triggers();
+				Field_Triggers(fTimeDelta);
 				break;
 			case LEVEL_MORIBLINCAVE:
-				MoriblinCave_Triggers();
+				MoriblinCave_Triggers(fTimeDelta);
 				break;
 			case LEVEL_BOTTLEGROTTO:
-				BottleGrotto_Triggers();
+				BottleGrotto_Triggers(fTimeDelta);
 				break;
 			case LEVEL_MARINHOUSE:
-				MarinHouse_Triggers();
+				MarinHouse_Triggers(fTimeDelta);
 				break;
 			}
 
@@ -137,73 +137,121 @@ HRESULT CTriggerBox_Dynamic::Render()
 	return S_OK;
 }
 
-void CTriggerBox_Dynamic::Field_Triggers()
+void CTriggerBox_Dynamic::Field_Triggers(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MoriblinCave_Entrance"))
 	{
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MORIBLINCAVE))))
-			return;
+		if (m_fTimer < CUI_Manager::Get_Instance()->Get_ScreenFadeTime())
+		{
+			if (m_fTimer == 0)
+				CUI_Manager::Get_Instance()->ScreenFadeOut();
 
-		pGameInstance->Set_SpawnTriggerBox("MoriblinCave_Entrance");
-		pGameInstance->Set_IsJustSpawned(true);
-		pGameInstance->ClearLights();
+			m_fTimer += fTimeDelta;
+		}
+		else
+		{
+			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MORIBLINCAVE))))
+				return;
 
-		CUI_Manager::Get_Instance()->Clear();
+			pGameInstance->Set_SpawnTriggerBox("MoriblinCave_Entrance");
+			pGameInstance->Set_IsJustSpawned(true);
+			pGameInstance->ClearLights();
+
+			CUI_Manager::Get_Instance()->Clear();
+			
+			m_fTimer = 0.f;
+		}
 	}
 	else if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MarinHouse_Entrance"))
 	{
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MARINHOUSE))))
-			return;
+		if (m_fTimer < CUI_Manager::Get_Instance()->Get_ScreenFadeTime())
+		{
+			if (m_fTimer == 0)
+				CUI_Manager::Get_Instance()->ScreenFadeOut();
 
-		pGameInstance->Set_SpawnTriggerBox("MarinHouse_Entrance");
-		pGameInstance->Set_IsJustSpawned(true);
-		pGameInstance->ClearLights();
+			m_fTimer += fTimeDelta;
+		}
+		else
+		{
+			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MARINHOUSE))))
+				return;
 
-		CUI_Manager::Get_Instance()->Clear();
+			pGameInstance->Set_SpawnTriggerBox("MarinHouse_Entrance");
+			pGameInstance->Set_IsJustSpawned(true);
+			pGameInstance->ClearLights();
+
+			CUI_Manager::Get_Instance()->Clear();
+
+			m_fTimer = 0.f;
+		}
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
 }
 
-void CTriggerBox_Dynamic::MoriblinCave_Triggers()
+void CTriggerBox_Dynamic::MoriblinCave_Triggers(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MoriblinCave_Entrance"))
 	{
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FIELD))))
-			return;
+		if (m_fTimer < CUI_Manager::Get_Instance()->Get_ScreenFadeTime())
+		{
+			if (m_fTimer == 0)
+				CUI_Manager::Get_Instance()->ScreenFadeOut();
 
-		pGameInstance->Set_SpawnTriggerBox("MoriblinCave_Entrance");
-		pGameInstance->Set_IsJustSpawned(true);
-		pGameInstance->ClearLights();
+			m_fTimer += fTimeDelta;
+		}
+		else
+		{
+			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FIELD))))
+				return;
 
-		CUI_Manager::Get_Instance()->Clear();
+			pGameInstance->Set_SpawnTriggerBox("MoriblinCave_Entrance");
+			pGameInstance->Set_IsJustSpawned(true);
+			pGameInstance->ClearLights();
+
+			CUI_Manager::Get_Instance()->Clear();
+
+			m_fTimer = 0.f;
+		}
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
 }
 
-void CTriggerBox_Dynamic::BottleGrotto_Triggers()
+void CTriggerBox_Dynamic::BottleGrotto_Triggers(_float fTimeDelta)
 {
 }
 
-void CTriggerBox_Dynamic::MarinHouse_Triggers()
+void CTriggerBox_Dynamic::MarinHouse_Triggers(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MarinHouse_Entrance"))
 	{
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FIELD))))
-			return;
+		if (m_fTimer < CUI_Manager::Get_Instance()->Get_ScreenFadeTime())
+		{
+			if (m_fTimer == 0)
+				CUI_Manager::Get_Instance()->ScreenFadeOut();
 
-		pGameInstance->Set_SpawnTriggerBox("MarinHouse_Entrance");
-		pGameInstance->Set_IsJustSpawned(true);
-		pGameInstance->ClearLights();
+			m_fTimer += fTimeDelta;
+		}
+		else
+		{
+			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FIELD))))
+				return;
 
-		CUI_Manager::Get_Instance()->Clear();
+			pGameInstance->Set_SpawnTriggerBox("MarinHouse_Entrance");
+			pGameInstance->Set_IsJustSpawned(true);
+			pGameInstance->ClearLights();
+
+			CUI_Manager::Get_Instance()->Clear();
+
+			m_fTimer = 0.f;
+		}
 	}
 
 	RELEASE_INSTANCE(CGameInstance);

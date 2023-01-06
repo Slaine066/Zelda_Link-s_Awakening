@@ -82,7 +82,6 @@ HRESULT CLevel_MoriblinCave::Load_Objects_FromFile()
 	_uint iCounter = 0;
 
 	CActor::MODELDESC tModelDesc;
-	ZeroMemory(&tModelDesc, sizeof(CActor::MODELDESC));
 	while (true)
 	{
 		ReadFile(hFile, &tModelDesc, sizeof(CActor::MODELDESC), &dwByte, nullptr);
@@ -179,6 +178,7 @@ HRESULT CLevel_MoriblinCave::Ready_Sky()
 HRESULT CLevel_MoriblinCave::Ready_Layer_UI()
 {
 	m_pUIManager->Initialize();
+	m_pUIManager->ScreenFadeIn();
 
 	return S_OK;
 }

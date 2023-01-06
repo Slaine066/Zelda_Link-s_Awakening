@@ -59,7 +59,7 @@ HRESULT CInteractableObject::Render()
 
 HRESULT CInteractableObject::Ready_Components(void* pArg)
 {
-	memcpy(&m_tModelDesc, pArg, sizeof(MODELDESC));
+	memcpy(&m_tModelDesc, (MODELDESC*)pArg, sizeof(MODELDESC));
 
 	/* For.Com_Renderer */
 	if (FAILED(__super::Add_Components(TEXT("Com_Renderer"), LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -67,7 +67,6 @@ HRESULT CInteractableObject::Ready_Components(void* pArg)
 
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC TransformDesc;
-	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
 	TransformDesc.vInitialWorldMatrix = m_tModelDesc.mWorldMatrix;
 	TransformDesc.fSpeedPerSec = 0.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
@@ -75,9 +74,18 @@ HRESULT CInteractableObject::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_Transform"), LEVEL_STATIC, TEXT("Prototype_Component_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxAnimModel"), (CComponent**)&m_pShaderCom)))
-		return E_FAIL;
+	if (!wcscmp(m_tModelDesc.wcObjName, TEXT("Sword")))
+	{
+		/* For.Com_Shader */
+		if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxModel"), (CComponent**)&m_pShaderCom)))
+			return E_FAIL;
+	}
+	else
+	{
+		/* For.Com_Shader */
+		if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxAnimModel"), (CComponent**)&m_pShaderCom)))
+			return E_FAIL;
+	}
 
 	_uint iLevelIndex = Compute_LevelIndex(m_tModelDesc.wcObjName);
 
@@ -90,7 +98,7 @@ HRESULT CInteractableObject::Ready_Components(void* pArg)
 
 HRESULT CInteractableObject::SetUp_ShaderResources()
 {
-	if (m_pShaderCom == nullptr)
+	if (!m_pShaderCom)
 		return E_FAIL;
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -109,7 +117,7 @@ HRESULT CInteractableObject::SetUp_ShaderResources()
 
 _uint CInteractableObject::Compute_LevelIndex(_tchar * pObjName)
 {
-	if (wcsstr(pObjName, TEXT("Field")) || !wcscmp(pObjName, TEXT("Treasure")))
+	if (wcsstr(pObjName, TEXT("Field")) || !wcscmp(pObjName, TEXT("Treasure")) || !wcscmp(pObjName, TEXT("Sword")))
 		return 0;
 
 	return CGameInstance::Get_Instance()->Get_NextLevelIndex();

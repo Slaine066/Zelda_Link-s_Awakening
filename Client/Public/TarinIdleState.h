@@ -15,9 +15,6 @@ public:
 
 	virtual void Enter(CTarin* pTarin) override;
 	virtual void Exit(CTarin* pTarin) override;
-
-private:
-	_float m_fIdleMoveTimer = 0.f;
 };
 END
 END

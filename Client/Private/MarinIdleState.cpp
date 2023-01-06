@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "MarinIdleState.h"
+#include "MarinTalkState.h"
 #include "UI.h"
 
 using namespace Marin;
@@ -35,6 +36,9 @@ CMarinState * CIdleState::LateTick(CMarin * pMarin, _float fTimeDelta)
 		}
 	}
 
+	if (pMarin->Get_CurrentChat())
+		return new CTalkState();
+
 	return nullptr;
 }
 
@@ -47,5 +51,9 @@ void CIdleState::Enter(CMarin * pMarin)
 
 void CIdleState::Exit(CMarin * pMarin)
 {
-	m_fIdleMoveTimer = 0.f;
+	if (pMarin->Get_InteractButton())
+	{
+		pMarin->Get_InteractButton()->Set_ShouldDestroy(true);
+		pMarin->Set_InteractButton(nullptr);
+	}
 }

@@ -42,9 +42,13 @@ CPlayerState * CIdleState::HandleInput(CPlayer * pPlayer)
 
 	if (pGameInstance->Key_Down('A'))
 	{
-		m_pNpc = pPlayer->Get_Npc();
+		if (pPlayer->Get_Npc() && !pPlayer->Get_Npc()->Get_DidInteract())
+			m_pNpc = pPlayer->Get_Npc();
+
 		m_pMonster = pPlayer->Get_Monster();
-		m_pInteractableObject = pPlayer->Get_InteractableObject();
+
+		if (pPlayer->Get_InteractableObject() && !pPlayer->Get_InteractableObject()->Get_DidInteract())
+			m_pInteractableObject = pPlayer->Get_InteractableObject();
 	}
 	else if (pGameInstance->Key_Down('S'))
 	{

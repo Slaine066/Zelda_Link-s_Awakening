@@ -29,6 +29,9 @@ _bool CMarin::CanInteract()
 
 	if (m_bDidInteract)
 	{
+		if (pPlayer->Get_Npc() == this)
+			pPlayer->Set_Npc(nullptr);
+
 		RELEASE_INSTANCE(CGameInstance);
 		return false;
 	}
@@ -54,14 +57,10 @@ _bool CMarin::CanInteract()
 
 void CMarin::Interact()
 {
-	m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_TALK);
-
 	if (m_pCurrentChat)
 	{
 		if (m_pCurrentChat->Get_ChatIndex() >= m_pCurrentChat->Get_ChatCount() - 1)
 		{
-			m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_WAIT);
-
 			m_pCurrentChat->Set_ShouldDestroy(true);
 			m_pCurrentChat = nullptr;
 
@@ -70,8 +69,7 @@ void CMarin::Interact()
 			if (!pPlayer)
 				return;
 
-			pPlayer->Set_Npc(nullptr);
-
+			m_bDidInteract = true;
 			Process_ChatLine();
 
 			RELEASE_INSTANCE(CGameInstance);
@@ -105,6 +103,7 @@ void CMarin::Compute_ChatLine()
 	{
 		case 1:
 		{
+			m_bDidInteract = false;
 			break;
 		}
 		case 2:
@@ -122,15 +121,10 @@ void CMarin::Compute_ChatLine()
 
 void CMarin::Process_ChatLine()
 {
-	m_bDidInteract = true;
-
-	m_iChatLineIndex = CUI_Manager::Get_Instance()->Get_MarinChatLine();
 	switch (m_iChatLineIndex)
 	{
 		case 1:
 		{
-			CUI_Manager::Get_Instance()->Increase_MarinChatLine();
-
 			break;
 		}
 		case 2:
@@ -142,6 +136,8 @@ void CMarin::Process_ChatLine()
 			break;
 		}
 	}
+
+	CUI_Manager::Get_Instance()->Increase_MarinChatLine();
 }
 
 void CMarin::Spawn_InteractButton()
@@ -235,8 +231,6 @@ _uint CMarin::Tick(_float fTimeDelta)
 	AI_Behavior();
 	TickState(fTimeDelta);
 
-	Compute_ChatLine();
-
 	return OBJ_NOEVENT;
 }
 
@@ -251,6 +245,8 @@ _uint CMarin::Late_Tick(_float fTimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 	LateTickState(fTimeDelta);
+
+	Compute_ChatLine();
 
 	return OBJ_NOEVENT;
 }

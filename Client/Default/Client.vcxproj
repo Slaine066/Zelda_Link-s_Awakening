@@ -220,6 +220,11 @@
     <ClInclude Include="..\public\MoriblinSwordMoveState.h" />
     <ClInclude Include="..\public\MoriblinSwordStaggerState.h" />
     <ClInclude Include="..\public\Npc.h" />
+    <ClInclude Include="..\public\Owl.h" />
+    <ClInclude Include="..\public\OwlFlyOutState.h" />
+    <ClInclude Include="..\public\OwlIdleState.h" />
+    <ClInclude Include="..\Public\OwlState.h" />
+    <ClInclude Include="..\public\OwlTalkState.h" />
     <ClInclude Include="..\public\PlayerAchieveState.h" />
     <ClInclude Include="..\Public\PlayerAttackState.h" />
     <ClInclude Include="..\Public\Camera_Player.h" />
@@ -269,6 +274,7 @@
     <ClInclude Include="..\public\UI_Heart.h" />
     <ClInclude Include="..\public\UI_Inventory.h" />
     <ClInclude Include="..\public\UI_ItemSlot.h" />
+    <ClInclude Include="..\public\UI_ScreenFade.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\StaticObject.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -325,6 +331,10 @@
     <ClCompile Include="..\private\MoriblinSwordMoveState.cpp" />
     <ClCompile Include="..\private\MoriblinSwordStaggerState.cpp" />
     <ClCompile Include="..\private\Npc.cpp" />
+    <ClCompile Include="..\private\Owl.cpp" />
+    <ClCompile Include="..\private\OwlFlyOutState.cpp" />
+    <ClCompile Include="..\private\OwlIdleState.cpp" />
+    <ClCompile Include="..\private\OwlTalkState.cpp" />
     <ClCompile Include="..\private\PlayerAchieveState.cpp" />
     <ClCompile Include="..\Private\PlayerAttackState.cpp" />
     <ClCompile Include="..\Private\Camera_Player.cpp" />
@@ -370,6 +380,7 @@
     <ClCompile Include="..\private\UI_Heart.cpp" />
     <ClCompile Include="..\private\UI_Inventory.cpp" />
     <ClCompile Include="..\private\UI_ItemSlot.cpp" />
+    <ClCompile Include="..\private\UI_ScreenFade.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />

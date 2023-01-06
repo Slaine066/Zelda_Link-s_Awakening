@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "Tarin.h"
 #include "Marin.h"
+#include "Owl.h"
 #include "Bed.h"
 #include "Sword.h"
 #include "MoriblinSword.h"
@@ -30,6 +31,7 @@
 #include "UI_ItemChip.h"
 #include "UI_InventoryItem.h"
 #include "UI_Chat.h"
+#include "UI_ScreenFade.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -97,6 +99,9 @@ HRESULT CLoader::Loading_ForStaticLevel()
 
 	/*For.Prototype_Component_Texture_Sky */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/SkyBox/Sky_%d.dds"), 3))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Gradient */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Gradient"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Gradient_%02d.png"), 1))))
 		return E_FAIL;
 
 	/*For.Prototype_Component_Texture_Heart */
@@ -175,14 +180,14 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Texture_Chat_Marin_Line_1 */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Marin_Line_1"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Marin/Line_1/Chat_%02d.png"), 4))))
 		return E_FAIL;
-	/*For.Prototype_Component_Texture_Chat_Marin_Line_2 */
-	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Marin_Line_2"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Marin/Line_2/Chat_%02d.png"), 1))))
-		return E_FAIL;*/
 	/*For.Prototype_Component_Texture_Chat_Tarin_Line_1 */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Tarin_Line_1"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Tarin/Line_1/Chat_%02d.png"), 3))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Chat_Tarin_Line_2 */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Tarin_Line_2"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Tarin/Line_2/Chat_%02d.png"), 2))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Chat_Owl_Line_1 */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Owl_Line_1"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Owl/Line_1/Chat_%02d.png"), 5))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_Chat_Bossblin_Line_1 */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Chat_Bossblin_Line_1"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Chat/Bossblin/Chat_%02d.png"), 2))))
@@ -546,6 +551,12 @@ HRESULT CLoader::Loading_ForField()
 #pragma region Loading_Models
 	lstrcpy(m_szLoadingText, TEXT("Loading Models.."));
 
+	_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+	/*For.Prototype_Component_Model_Owl*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FIELD, TEXT("Prototype_Component_Model_Owl"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Resources/Meshes/Anim/Npc_Owl/Owl.fbx", false, PivotMatrix))))
+		return E_FAIL;
+
 	// >
 	// .. Add Above ..
 #pragma endregion Loading_Models
@@ -775,8 +786,14 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 	/* For.Prototype_GameObject_StaticObject */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticObject"), CStaticObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	/* For.Prototype_GameObject_Sword */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sword"), CSword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	/* For.Prototype_GameObject_Treasure */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Treasure"), CTreasure::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Bed */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Bed"), CBed::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_Player */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
@@ -787,11 +804,8 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 	/* For.Prototype_GameObject_Marin */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Marin"), CMarin::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	/* For.Prototype_GameObject_Bed */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Bed"), CBed::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_Sword */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sword"), CSword::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_GameObject_Owl */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Owl"), COwl::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	/* For.Prototype_GameObject_MoriblinSword */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MoriblinSword"), CMoriblinSword::Create(m_pDevice, m_pContext))))
@@ -834,6 +848,9 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_Chat */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Chat"), CUI_Chat::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_ScreenFade */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ScreenFade"), CUI_ScreenFade::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// >

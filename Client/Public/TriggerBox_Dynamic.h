@@ -22,10 +22,13 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	void Field_Triggers();
-	void MoriblinCave_Triggers();
-	void BottleGrotto_Triggers();
-	void MarinHouse_Triggers();
+	void Field_Triggers(_float fTimeDelta);
+	void MoriblinCave_Triggers(_float fTimeDelta);
+	void BottleGrotto_Triggers(_float fTimeDelta);
+	void MarinHouse_Triggers(_float fTimeDelta);
+
+private:
+	_float m_fTimer = 0.f;
 
 public:
 	static CTriggerBox_Dynamic* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

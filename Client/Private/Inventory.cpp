@@ -10,6 +10,11 @@ CInventory::CInventory()
 	m_Items.resize(12);
 	m_iIndexItemX = 0;
 	m_iIndexItemY = 1;
+
+	m_pVest = new INVENTORYOBJDESC();
+	m_pVest->m_eItemId = ITEMID::ITEM_SHIELD;
+	m_pVest->m_bIsCountable = false;
+	m_pVest->m_iCounter = 0;
 }
 
 void CInventory::Add_Item(ITEMID eItemId)
@@ -126,4 +131,7 @@ void CInventory::Free()
 
 	if (m_pShield)
 		Safe_Delete(m_pShield);
+
+	if (m_pVest)
+		Safe_Delete(m_pVest);
 }

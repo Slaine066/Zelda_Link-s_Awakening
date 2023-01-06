@@ -36,6 +36,7 @@ public:
 		STATE_DIE,
 		STATE_SLEEP,
 		STATE_WAKEUP,
+		STATE_OCARINA,
 		STATE_END
 	};
 

@@ -12,6 +12,7 @@
 #include "PlayerAchieveState.h"
 #include "PlayerCarryState.h"
 #include "PlayerJumpState.h"
+#include "PlayerOcarinaState.h"
 #include "Weapon.h"
 #include "Layer.h"
 #include "UI_Manager.h"
@@ -159,24 +160,43 @@ HRESULT CPlayer::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		if (i == MESH_SWORD_B || i == MESH_SWORD_B_HANDLE|| i == MESH_SHIELD_B|| i == MESH_SHIELD_B_MIRROR|| i == MESH_MAGIC_ROD ||
-			i == MESH_HOOKSHOT || i == MESH_OCARINA || i == MESH_SHOVEL || i == MESH_FLIPPERS)
-			continue;
-
-		if ((i == MESH_SWORD_A && !m_bShowSword) || (i == MESH_SWORD_A_HANDLE && !m_bShowSword))
+		/* Do NOT render these Meshes regardless. */
+		if (i == MESH_SWORD_B || i == MESH_SWORD_B_HANDLE|| i == MESH_SHIELD_B|| i == MESH_SHIELD_B_MIRROR|| i == MESH_MAGIC_ROD || i == MESH_HOOKSHOT || i == MESH_SHOVEL || i == MESH_FLIPPERS)
 			continue;
 
 		if (i == MESH_SWORD_A || i == MESH_SWORD_A_HANDLE)
 		{
+			/* Do NOT render Sword if it's not in the Inventory yet. */
 			if (!CInventory::Get_Instance()->Get_Sword())
+				continue;
+
+			/* Do NOT render Sword in specific situations (Ex. When throwing Bombs). */
+			if (!m_bShowSword)
+				continue;
+
+			/* Do NOT render Sword if Player is playing Ocarina. */
+			if (m_pPlayerState->Get_StateId() == CPlayerState::STATE_ID::STATE_OCARINA)
 				continue;
 		}
 
+		/* Do NOT render Shield if it's not in the Inventory yet. */
 		if (i == MESH_SHIELD_A)
 		{
 			if (!CInventory::Get_Instance()->Get_Shield())
 				continue;
+
+			/* Do NOT render Sword in specific situations (Ex. When throwing Bombs). */
+			if (!m_bShowSword)
+				continue;
+
+			/* Do NOT render Shield if Player is playing Ocarina. */
+			if (m_pPlayerState->Get_StateId() == CPlayerState::STATE_ID::STATE_OCARINA)
+				continue;
 		}
+
+		/* Do NOT render Ocarina if Player is not in "COcarinaState". */
+		if (i == MESH_OCARINA && m_pPlayerState->Get_StateId() != CPlayerState::STATE_ID::STATE_OCARINA)
+			continue;
 
 		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
@@ -349,6 +369,8 @@ _bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 	case ANIM_LADDER_UP:
 	case ANIM_LADDER_WAIT:
 	case ANIM_MOVE_CARRY:
+	case ANIM_OCARINA_LOOP:
+	case ANIM_OCARINA_IDLE:
 	case ANIM_PULL:
 	case ANIM_PULL_IDLE:
 	case ANIM_PUSH:
@@ -391,6 +413,8 @@ _bool CPlayer::Is_AnimationLoop(_uint eAnimId)
 	case ANIM_LADDER_UP_END:
 	case ANIM_LADDER_UP_START:
 	case ANIM_LAND:
+	case ANIM_OCARINA_END:
+	case ANIM_OCARINA_START:
 	case ANIM_PULL_START:
 	case ANIM_PUSH_START:
 	case ANIM_REVODOOR_IN:
@@ -488,7 +512,12 @@ CPlayerState* CPlayer::Use_Item(_bool bIsX)
 				pNewState =  new CJumpState(CPlayerState::STATETYPE::STATETYPE_MAIN, true);
 				break;
 		}
+
+		break;
 	}
+	case ITEMID::ITEM_OCARINA:
+		pNewState = new COcarinaState(CPlayerState::STATETYPE::STATETYPE_START);
+		break;
 	case ITEMID::ITEM_BOW:
 		break;
 	}

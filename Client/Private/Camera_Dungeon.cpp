@@ -161,110 +161,27 @@ void CCamera_Dungeon::Dungeon_Camera(_float fTimeDelta)
 
 void CCamera_Dungeon::ZoomIn_Camera(_float fTimeDelta, _float3 vZoomPosition)
 {
-	_vector vCamPosition = m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION);
-	_vector vCamDirection = XMLoadFloat3(&vZoomPosition) - vCamPosition;
+	vZoomPosition.y += 2.f;
+	vZoomPosition.z -= 1.f;
 
-	vCamDirection -= XMVectorSet(0.f, .5f, .5f, 0.f);
-
-	_float3 vDistance = _float3(0, 2.5, -2);
-
-	_float3 vStoredCameraDirection;
-	XMStoreFloat3(&vStoredCameraDirection, vCamDirection);
-
-	if (fabsf(vStoredCameraDirection.y) < vDistance.y)
-		return;
-
-	vCamDirection = XMVector3Normalize(vCamDirection);
-	vCamPosition += vCamDirection * 0.1f;
-
-	m_pTransform->LookAt(XMVectorSetW(XMLoadFloat3(&vZoomPosition), 1.f));
-	m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vCamPosition);
+	m_pTransform->Go_TargetPosition(fTimeDelta / 5, vZoomPosition, 0.f);
 }
 
 void CCamera_Dungeon::ZoomOut_Camera(_float fTimeDelta)
 {
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
-
-	_vector vPlayerPosition = pPlayer->Get_Transform()->Get_State(CTransform::STATE::STATE_TRANSLATION);
-	_vector vCameraPosition = m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION);
-	_float3 fDistance = _float3(0.f, 3.5f, -2.5);
-
-	_vector vDirection = vPlayerPosition + XMLoadFloat3(&fDistance) - vCameraPosition;
-
-	_float3 vStoredPlayerPosition;
-	XMStoreFloat3(&vStoredPlayerPosition, vPlayerPosition);
-	_float3 vStoredCameraPosition;
-	XMStoreFloat3(&vStoredCameraPosition, vCameraPosition);
-
-	if (fabsf(vStoredPlayerPosition.y + fDistance.y - vStoredCameraPosition.y) < 0.3f)
+	if (m_pTransform->Go_TargetPosition(fTimeDelta / 5, _float3(m_vCurrentRoomPosition.x, m_vCurrentRoomPosition.y + 3.5f, m_vCurrentRoomPosition.z - 2.f), 0.f))
 	{
+		XMStoreFloat3(&m_vCurrentRoomPosition, m_pTransform->Get_State(CTransform::STATE::STATE_TRANSLATION));
+		m_vCurrentRoomPosition.y -= 3.5f;
+		m_vCurrentRoomPosition.z += 2.f;
+
 		m_eCamMode = MODE_DUNGEON;
-
-		RELEASE_INSTANCE(CGameInstance);
-		return;
 	}
-
-	vDirection = XMVector3Normalize(vDirection);
-	vCameraPosition += vDirection * 0.1f;
-
-	m_pTransform->LookAt(vPlayerPosition);
-	m_pTransform->Set_State(CTransform::STATE::STATE_TRANSLATION, vCameraPosition);
-
-	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CCamera_Dungeon::Shaking_Camera(_float fTimeDelta)
 {
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	_float3 vLookPosition = m_vCurrentRoomPosition;
-	m_iShakeCount++;
-
-	if (m_iShakeCount % 4 == 0)
-	{
-		vLookPosition.y += m_fPower * m_fVelocity;
-		if (rand() % 2 == 0)
-			vLookPosition.z -= m_fPower * m_fVelocity;
-		else
-			vLookPosition.z += m_fPower * m_fVelocity;
-
-		if (rand() % 2 == 0)
-			vLookPosition.x -= m_fPower * m_fVelocity;
-		else
-			vLookPosition.x += m_fPower * m_fVelocity;
-	}
-	else if (m_iShakeCount % 4 == 1)
-	{
-		vLookPosition.y -= m_fPower * m_fVelocity;
-		if (rand() % 2 == 0)
-			vLookPosition.z -= m_fPower * m_fVelocity;
-		else
-			vLookPosition.z += m_fPower * m_fVelocity;
-
-		if (rand() % 2 == 0)
-			vLookPosition.x -= m_fPower * m_fVelocity;
-		else
-			vLookPosition.x += m_fPower * m_fVelocity;
-	}
-
-	m_fVelocity -= m_fVelocityDecrement;
-	if (m_fVelocity < 0.0f)
-	{
-		m_eCamMode = MODE_DUNGEON;
-
-		m_pTransform->LookAt(XMVectorSetW(XMLoadFloat3(&m_vCurrentRoomPosition), 1.f));
-		m_pTransform->Attach_ToTarget(XMVectorSetW(XMLoadFloat3(&m_vCurrentRoomPosition), 1.f), XMVectorSet(0.f, 3.5f, -2.5, 1.f)); /* Distance from Camera. */
-
-		RELEASE_INSTANCE(CGameInstance);
-		return;
-	}
-
-	m_pTransform->LookAt(XMVectorSetW(XMLoadFloat3(&vLookPosition), 1.f));
-	m_pTransform->Attach_ToTarget(XMVectorSetW(XMLoadFloat3(&vLookPosition), 1.f), XMVectorSet(0.f, 3.5f, -2.5, 1.f)); /* Distance from Camera. */
-
-	RELEASE_INSTANCE(CGameInstance);
+	
 }
 
 CCamera_Dungeon * CCamera_Dungeon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

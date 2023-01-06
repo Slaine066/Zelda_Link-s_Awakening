@@ -26,7 +26,12 @@ CPlayerState * CBareState::HandleInput(CPlayer * pPlayer)
 		}
 
 	if (pGameInstance->Key_Down('A'))
+	{
+		if (pPlayer->Get_Npc() && !pPlayer->Get_Npc()->Get_DidInteract())
+			m_pNpc = pPlayer->Get_Npc();
+
 		m_pNpc = pPlayer->Get_Npc();
+	}
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_LEFT))
 		return new CBareMoveState(DIR_STRAIGHT_LEFT);
 	else if (pGameInstance->Key_Pressing(VK_UP) && pGameInstance->Key_Pressing(VK_RIGHT))

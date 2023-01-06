@@ -29,6 +29,9 @@ _bool CTarin::CanInteract()
 
 	if (m_bDidInteract)
 	{
+		if (pPlayer->Get_Npc() == this)
+			pPlayer->Set_Npc(nullptr);
+
 		RELEASE_INSTANCE(CGameInstance);
 		return false;
 	}
@@ -54,16 +57,12 @@ _bool CTarin::CanInteract()
 
 void CTarin::Interact()
 {
-	m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_TALK);
-
 	/* If a Chat is already showing */
 	if (m_pCurrentChat)
 	{
 		/* If Chat is finished */
 		if (m_pCurrentChat->Get_ChatIndex() >= m_pCurrentChat->Get_ChatCount() - 1)
 		{
-			m_pModelCom->Set_CurrentAnimIndex(ANIMID::ANIM_WAIT);
-
 			m_pCurrentChat->Set_ShouldDestroy(true);
 			m_pCurrentChat = nullptr;
 
@@ -71,9 +70,8 @@ void CTarin::Interact()
 			CPlayer* pPlayer = (CPlayer*)pGameInstance->Find_Object(pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Player"));
 			if (!pPlayer)
 				return;
-
-			pPlayer->Set_Npc(nullptr);
-
+			
+			m_bDidInteract = true;
 			Process_ChatLine();
 
 			RELEASE_INSTANCE(CGameInstance);
@@ -115,6 +113,7 @@ void CTarin::Compute_ChatLine()
 	{
 		case 1:
 		{
+			m_bDidInteract = false;
 			break;
 		}
 		case 2:
@@ -132,9 +131,6 @@ void CTarin::Compute_ChatLine()
 
 void CTarin::Process_ChatLine()
 {
-	m_bDidInteract = true;
-
-	m_iChatLineIndex = CUI_Manager::Get_Instance()->Get_TarinChatLine();
 	switch (m_iChatLineIndex)
 	{
 		case 1:
@@ -147,14 +143,10 @@ void CTarin::Process_ChatLine()
 			pPlayer->Set_AchieveState(ITEMID::ITEM_SHIELD);
 			RELEASE_INSTANCE(CGameInstance);
 
-			CUI_Manager::Get_Instance()->Increase_TarinChatLine();
-
 			break;
 		}
 		case 2:
 		{
-			CUI_Manager::Get_Instance()->Increase_TarinChatLine();
-
 			break;
 		}
 		case 3:
@@ -162,6 +154,8 @@ void CTarin::Process_ChatLine()
 			break;
 		}
 	}
+
+	CUI_Manager::Get_Instance()->Increase_TarinChatLine();
 }
 
 void CTarin::Spawn_InteractButton()
