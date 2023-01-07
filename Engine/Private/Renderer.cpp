@@ -59,35 +59,16 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R8G8B8A8_UNORM, &_float4(0.0f, 0.0f, 0.0f, 0.0f))))
 		return E_FAIL;
 
+	/* For.Target_ShadowDepth */
 	_uint iShadowMapCX = 8000;
 	_uint iShadowMapCY = 6000;
 
-	// For.Target_ShadowDepth
+	if (FAILED(m_pTargetManager->Ready_ShadowDepthStencilRenderTargetView(m_pDevice, iShadowMapCX, iShadowMapCY)))
+		return E_FAIL;
+
 	if (FAILED(m_pTargetManager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowDepth"), iShadowMapCX, iShadowMapCY, 
 		DXGI_FORMAT_R32G32B32A32_FLOAT, &_float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
-
-	/*D3D11_TEXTURE2D_DESC tShadowTextureDesc;
-	tShadowTextureDesc.Width = iShadowMapCX;
-	tShadowTextureDesc.Height = iShadowMapCY;
-	tShadowTextureDesc.MipLevels = 1;
-	tShadowTextureDesc.ArraySize = 1;
-	tShadowTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	tShadowTextureDesc.SampleDesc.Count = 1;
-	tShadowTextureDesc.SampleDesc.Quality = 0;
-	tShadowTextureDesc.Usage = D3D11_USAGE_DEFAULT;
-	tShadowTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	tShadowTextureDesc.CPUAccessFlags = 0;
-	tShadowTextureDesc.MiscFlags = 0;
-
-	ID3D11Texture2D* pShadowTexture = nullptr;
-	if (FAILED(m_pDevice->CreateTexture2D(&tShadowTextureDesc, nullptr, &pShadowTexture)))
-		return E_FAIL;
-
-	if (FAILED(m_pDevice->CreateDepthStencilView(pShadowTexture, nullptr, &m_pShadowDSView)))
-		return E_FAIL;
-
-	pShadowTexture->Release();*/
 
 	/* For.MRT_Deferred */
 	if (FAILED(m_pTargetManager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Diffuse"))))
@@ -369,6 +350,10 @@ HRESULT CRenderer::Render_Blend()
 	/* Shadows */
 	CPipeLine* pPipeline = CPipeLine::Get_Instance();
 
+	_float4x4 LightViewMatrixTP = CLight_Manager::Get_Instance()->Get_ShadowLightViewMatrix();
+	if (FAILED(m_pShader->Set_RawValue("g_LightViewMatrix", &LightViewMatrixTP, sizeof(_float4x4))))
+		return E_FAIL;
+
 	_float4x4 matProjMatrixTP = pPipeline->Get_TransformFloat4x4_TP(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
 	if (FAILED(m_pShader->Set_RawValue("g_LightProjMatrix", &matProjMatrixTP, sizeof(_float4x4))))
 		return E_FAIL;
@@ -379,15 +364,6 @@ HRESULT CRenderer::Render_Blend()
 
 	_float4x4 matProjInverseTP = pPipeline->Get_TransformFloat4x4_Inverse_TP(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
 	if (FAILED(m_pShader->Set_RawValue("g_ProjMatrixInv", &matProjInverseTP, sizeof(_float4x4))))
-		return E_FAIL;
-
-	_vector	vLightEye = XMVectorSet(-5.f, 15.f, -5.f, 1.f);
-	_vector	vLightAt = XMVectorSet(60.f, 0.f, 60.f, 1.f);
-	_vector	vLightUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-	_float4x4 matLightViewTP;
-	XMStoreFloat4x4(&matLightViewTP, XMMatrixTranspose(XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp)));
-	if (FAILED(m_pShader->Set_RawValue("g_matLightView", &matLightViewTP, sizeof(_float4x4))))
 		return E_FAIL;
 	/* */
 

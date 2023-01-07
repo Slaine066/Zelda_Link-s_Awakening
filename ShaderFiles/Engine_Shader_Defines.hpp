@@ -7,6 +7,20 @@ sampler LinearSampler = sampler_state
 {
 	filter = min_mag_mip_Linear;
 };
+
+sampler DepthSampler = sampler_state
+{
+	filter = MIN_MAG_LINEAR_MIP_POINT;
+AddressU = clamp;
+AddressV = clamp;
+};
+
+sampler ShadowDepthSampler = sampler_state
+{
+	filter = MIN_MAG_LINEAR_MIP_POINT;
+AddressU = clamp;
+AddressV = clamp;
+};
 #pragma endregion
 
 #pragma region RasterizerStates

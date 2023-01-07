@@ -20,6 +20,24 @@ const LIGHTDESC * CLight_Manager::Get_LightDesc(_uint iIndex)
 	return (*iter)->Get_LightDesc();	
 }
 
+_float4x4 CLight_Manager::Get_ShadowLightViewMatrix()
+{
+	_float4x4 mMatrix;
+	XMStoreFloat4x4(&mMatrix, XMMatrixTranspose(XMLoadFloat4x4(&m_mShadowLightViewMatrix)));
+
+	return mMatrix;
+}
+
+HRESULT CLight_Manager::Set_ShadowLightViewMat(_float4 vEye, _float4 vAt)
+{
+	_vector		vLightEye = XMLoadFloat4(&vEye);
+	_vector		vLightAt = XMLoadFloat4(&vAt);
+	_vector		vLightUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	XMStoreFloat4x4(&m_mShadowLightViewMatrix, XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp));
+
+	return S_OK;
+}
+
 HRESULT CLight_Manager::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const LIGHTDESC & LightDesc)
 {
 	CLight*		pLight = CLight::Create(pDevice, pContext, LightDesc);

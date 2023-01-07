@@ -76,8 +76,7 @@ HRESULT CTargetManager::Begin_ShadowMRT(ID3D11DeviceContext * pContext, const _t
 		return E_FAIL;
 
 	pContext->OMGetRenderTargets(1, &m_pOldRTV, &m_pOldDSV);
-	pContext->ClearDepthStencilView(m_pOldDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
+	
 	ID3D11RenderTargetView* pRTVs[8] = { nullptr };
 
 	_uint iNumRenderTargets = 0;
@@ -88,6 +87,7 @@ HRESULT CTargetManager::Begin_ShadowMRT(ID3D11DeviceContext * pContext, const _t
 		pRTVs[iNumRenderTargets++] = pRenderTarget->Get_RTV();
 	}
 
+	pContext->ClearDepthStencilView(m_pShadowDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	pContext->OMSetRenderTargets(iNumRenderTargets, pRTVs, m_pShadowDSV);
 
 	D3D11_VIEWPORT ViewPortDesc;
@@ -132,6 +132,37 @@ HRESULT CTargetManager::Bind_ShaderResource(const _tchar * pTargetTag, CShader *
 		return E_FAIL;
 
 	return pRenderTarget->Bind_ShaderResource(pShader, pConstantName);
+}
+
+HRESULT CTargetManager::Ready_ShadowDepthStencilRenderTargetView(ID3D11Device * pDevice, _uint iWinCX, _uint iWinCY)
+{
+	if (!pDevice)
+		return E_FAIL;
+
+	ID3D11Texture2D* pDepthStencilTexture = nullptr;
+
+	D3D11_TEXTURE2D_DESC TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+	TextureDesc.Width = iWinCX;
+	TextureDesc.Height = iWinCY;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	TextureDesc.CPUAccessFlags = 0;
+	TextureDesc.MiscFlags = 0;
+
+	if (FAILED(pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+		return E_FAIL;
+	if (FAILED(pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pShadowDSV)))
+		return E_FAIL;
+
+	Safe_Release(pDepthStencilTexture);
+
+	return S_OK;
 }
 
 #ifdef _DEBUG
@@ -197,4 +228,5 @@ void CTargetManager::Free()
 
 	Safe_Release(m_pOldRTV);
 	Safe_Release(m_pOldDSV);
+	Safe_Release(m_pShadowDSV);
 }

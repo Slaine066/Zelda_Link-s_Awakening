@@ -18,6 +18,7 @@
 #include "UI_Manager.h"
 #include "Effect.h"
 #include "Projectile.h"
+#include "Light_Manager.h"
 
 using namespace Player;
 
@@ -218,7 +219,7 @@ HRESULT CPlayer::Render()
 
 HRESULT CPlayer::Render_ShadowDepth()
 {
-	if (FAILED(__super::Render()))
+	if (FAILED(__super::Render_ShadowDepth()))
 		return E_FAIL;
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshContainers();
@@ -417,14 +418,16 @@ HRESULT CPlayer::SetUp_ShadowShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
 
-	_vector	vLightEye = XMVectorSet(-5.f, 15.f, -5.f, 1.f);
-	_vector	vLightAt = XMVectorSet(60.f, 0.f, 60.f, 1.f);
-	_vector	vLightUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_float4 vPosition; 
+	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
+	
+	_float4 vEye = vPosition;
+	vEye.x -= 15.f;
+	vEye.y += 25.f;
+	vEye.z -= 15.f;
 
-	/* Light View Matrix */
-	_float4x4 LightViewMatrix;
-	XMStoreFloat4x4(&LightViewMatrix, XMMatrixTranspose(XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp)));
-	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &LightViewMatrix, sizeof(_float4x4))))
+	CLight_Manager::Get_Instance()->Set_ShadowLightViewMat(vEye, vPosition);
+	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &CLight_Manager::Get_Instance()->Get_ShadowLightViewMatrix(), sizeof(_float4x4))))
 		return E_FAIL;
 
 	/* Light Proj Matrix */
