@@ -32,7 +32,6 @@ public:
 
 private:
 	/* Initialize Functions */
-	HRESULT Build_ScreenFade();
 	HRESULT Build_Inventory();
 	HRESULT Build_InventoryItemSlots();
 	HRESULT Build_EquipmentIcons();
@@ -43,10 +42,9 @@ private:
 public:
 	MODE Get_Mode() { return m_eMode; }
 	void Set_Mode(MODE eMode) { m_eMode = eMode; }
-	void ScreenFadeIn();
-	void ScreenFadeOut();
+	void ScreenFadeIn(CUI_ScreenFade::TYPE eType = CUI_ScreenFade::TYPE::TYPE_BLACK, _float fFadeTime = 0.5f);
+	void ScreenFadeOut(CUI_ScreenFade::TYPE eType = CUI_ScreenFade::TYPE::TYPE_BLACK, _float fFadeTime = 0.5f);
 	void LevelNameFadeIn(LEVEL eLevelId);
-	_float Get_ScreenFadeTime() { return m_pScreenFade->Get_ScreenFadeTime(); }
 	_float Get_MaxHp() { return m_fMaxHp; }
 	_float Get_CurrentHp() { return m_fCurrentHp; }
 	_tchar* Get_ItemTextureName(ITEMID eItemId);
@@ -77,8 +75,6 @@ private:
 	_bool m_bIsUILoaded = false; /* Switch to TRUE once UI gets loaded the first time. */
 
 	MODE m_eMode = MODE_END;
-
-	CUI_ScreenFade* m_pScreenFade = nullptr;
 
 /* = = = UI General = = = */
 	/* Hearts Variables */

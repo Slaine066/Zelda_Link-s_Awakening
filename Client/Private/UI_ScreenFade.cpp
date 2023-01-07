@@ -38,8 +38,13 @@ _uint CUI_ScreenFade::Tick(_float fTimeDelta)
 	{
 		if (m_fFadeTimer >= m_fScreenFadeTime)
 		{
-			m_tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_END;
-			m_fFadeTimer = 0.f;
+			if (m_eType == TYPE::TYPE_BLACK)
+			{
+				m_tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_END;
+				m_fFadeTimer = 0.f;
+
+				m_bShouldDestroy = true;
+			}
 		}
 		else
 			m_fFadeTimer += fTimeDelta;
@@ -87,7 +92,7 @@ HRESULT CUI_ScreenFade::Ready_Components(void * pArg)
 	if (FAILED(__super::Add_Components(TEXT("Com_Shader"), LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_STATIC, TEXT("Prototype_Component_Texture_Gradient"), (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Components(TEXT("Com_Texture"), LEVEL_STATIC, TEXT("Prototype_Component_Texture_ScreenFade"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Components(TEXT("Com_VIBuffer"), LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), (CComponent**)&m_pVIBufferCom)))
@@ -105,7 +110,7 @@ HRESULT CUI_ScreenFade::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &m_ProjMatrix, sizeof(_float4x4))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(0))))
+	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV((_uint)m_eType))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_RawValue("g_FadeTimer", &m_fFadeTimer, sizeof(_float))))
 		return E_FAIL;

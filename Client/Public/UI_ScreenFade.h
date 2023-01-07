@@ -6,13 +6,18 @@
 BEGIN(Client)
 class CUI_ScreenFade final : public CUI
 {
+public:
+	enum TYPE { TYPE_BLACK, TYPE_WHITE, TYPE_END };
+
 private:
 	CUI_ScreenFade(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_ScreenFade(const CUI_ScreenFade& rhs);
 	virtual ~CUI_ScreenFade() = default;
 
 public:
+	void Set_Type(TYPE eType) { m_eType = eType; }
 	_float Get_ScreenFadeTime() { return m_fScreenFadeTime; }
+	void Set_ScreenFadeTime(_float fTime) { m_fScreenFadeTime = fTime; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -29,6 +34,8 @@ public:
 	void FadeOut() { m_tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_OUT; }
 
 private:
+	TYPE m_eType = TYPE::TYPE_BLACK;
+
 	_float m_fFadeTimer = 0.f;
 	_float m_fScreenFadeTime = 0.5f;
 

@@ -29,8 +29,6 @@ HRESULT CUI_Manager::Initialize()
 	Build_Hearts();
 	Build_Rupees();
 
-	Build_ScreenFade();
-
 	m_bIsUILoaded = true;
 
 	return S_OK;
@@ -242,25 +240,6 @@ HRESULT CUI_Manager::Build_GameItemSlots()
 	return S_OK;
 }
 
-HRESULT CUI_Manager::Build_ScreenFade()
-{
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	CUI::UIDESC tUIDesc;
-	tUIDesc.m_fSizeX = g_iWinSizeX;
-	tUIDesc.m_fSizeY = g_iWinSizeY;
-	tUIDesc.m_fX = g_iWinSizeX / 2;
-	tUIDesc.m_fY = g_iWinSizeY / 2;
-	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
-	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Gradient"));
-
-	pGameInstance->Add_GameObject_Out(TEXT("UI_Fade"), TEXT("Prototype_GameObject_UI_ScreenFade"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)m_pScreenFade, &tUIDesc);
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	return S_OK;
-}
-
 HRESULT CUI_Manager::Build_Inventory()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -438,14 +417,46 @@ void CUI_Manager::Render_Rupees()
 	RELEASE_INSTANCE(CGameInstance);
 }
 
-void CUI_Manager::ScreenFadeIn()
+void CUI_Manager::ScreenFadeIn(CUI_ScreenFade::TYPE eType, _float fFadeTime)
 {
-	m_pScreenFade->FadeIn();
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CUI::UIDESC tUIDesc;
+	tUIDesc.m_fSizeX = g_iWinSizeX;
+	tUIDesc.m_fSizeY = g_iWinSizeY;
+	tUIDesc.m_fX = g_iWinSizeX / 2;
+	tUIDesc.m_fY = g_iWinSizeY / 2;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_IN;
+	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_ScreenFade"));
+
+	CUI_ScreenFade* pScreenFade = nullptr;
+	pGameInstance->Add_GameObject_Out(TEXT("UI_ScreenFade"), TEXT("Prototype_GameObject_UI_ScreenFade"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pScreenFade, &tUIDesc);
+
+	pScreenFade->Set_Type(eType);
+	pScreenFade->Set_ScreenFadeTime(fFadeTime);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
-void CUI_Manager::ScreenFadeOut()
+void CUI_Manager::ScreenFadeOut(CUI_ScreenFade::TYPE eType, _float fFadeTime)
 {
-	m_pScreenFade->FadeOut();
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CUI::UIDESC tUIDesc;
+	tUIDesc.m_fSizeX = g_iWinSizeX;
+	tUIDesc.m_fSizeY = g_iWinSizeY;
+	tUIDesc.m_fX = g_iWinSizeX / 2;
+	tUIDesc.m_fY = g_iWinSizeY / 2;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_OUT;
+	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_ScreenFade"));
+
+	CUI_ScreenFade* pScreenFade = nullptr;
+	pGameInstance->Add_GameObject_Out(TEXT("UI_ScreenFade"), TEXT("Prototype_GameObject_UI_ScreenFade"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pScreenFade, &tUIDesc);
+	
+	pScreenFade->Set_Type(eType);
+	pScreenFade->Set_ScreenFadeTime(fFadeTime);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CUI_Manager::LevelNameFadeIn(LEVEL eLevelId)

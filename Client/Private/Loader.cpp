@@ -100,8 +100,8 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Texture_Sky */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/SkyBox/Sky_%d.dds"), 3))))
 		return E_FAIL;
-	/*For.Prototype_Component_Texture_Gradient */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Gradient"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Gradient_%02d.png"), 1))))
+	/*For.Prototype_Component_Texture_ScreenFade */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ScreenFade"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/ScreenFade_%02d.png"), 2))))
 		return E_FAIL;
 	/*For.Prototype_Component_Texture_LevelName */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LevelName"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/LevelName_%02d.png"), 2))))

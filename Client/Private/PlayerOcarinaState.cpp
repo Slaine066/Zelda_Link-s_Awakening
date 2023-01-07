@@ -3,6 +3,7 @@
 #include "PlayerOcarinaState.h"
 #include "GameInstance.h"
 #include "PlayerIdleState.h"
+#include "UI_Manager.h"
 
 using namespace Player;
 
@@ -56,6 +57,12 @@ CPlayerState * COcarinaState::LateTick(CPlayer * pPlayer, _float fTimeDelta)
 		case STATETYPE_START:
 			return new COcarinaState(STATETYPE_MAIN);
 		case STATETYPE_END:
+			CUI_Manager* pUIManager = GET_INSTANCE(CUI_Manager);
+
+			pUIManager->ScreenFadeOut(CUI_ScreenFade::TYPE::TYPE_WHITE, 4.f);
+
+			RELEASE_INSTANCE(CUI_Manager);
+
 			return new CIdleState();
 		}
 	}

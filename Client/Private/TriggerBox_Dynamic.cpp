@@ -143,7 +143,7 @@ void CTriggerBox_Dynamic::Field_Triggers(_float fTimeDelta)
 
 	if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MoriblinCave_Entrance"))
 	{
-		if (m_fTimer < CUI_Manager::Get_Instance()->Get_ScreenFadeTime())
+		if (m_fTimer < .5f)
 		{
 			if (m_fTimer == 0)
 				CUI_Manager::Get_Instance()->ScreenFadeOut();
@@ -166,7 +166,7 @@ void CTriggerBox_Dynamic::Field_Triggers(_float fTimeDelta)
 	}
 	else if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MarinHouse_Entrance"))
 	{
-		if (m_fTimer < CUI_Manager::Get_Instance()->Get_ScreenFadeTime())
+		if (m_fTimer < .5f)
 		{
 			if (m_fTimer == 0)
 				CUI_Manager::Get_Instance()->ScreenFadeOut();
@@ -197,7 +197,7 @@ void CTriggerBox_Dynamic::MoriblinCave_Triggers(_float fTimeDelta)
 
 	if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MoriblinCave_Entrance"))
 	{
-		if (m_fTimer < CUI_Manager::Get_Instance()->Get_ScreenFadeTime())
+		if (m_fTimer < .5f)
 		{
 			if (m_fTimer == 0)
 				CUI_Manager::Get_Instance()->ScreenFadeOut();
@@ -232,7 +232,7 @@ void CTriggerBox_Dynamic::MarinHouse_Triggers(_float fTimeDelta)
 
 	if (!strcmp(m_tTriggerBoxDesc.pTriggerName, "MarinHouse_Entrance"))
 	{
-		if (m_fTimer < CUI_Manager::Get_Instance()->Get_ScreenFadeTime())
+		if (m_fTimer < .5f)
 		{
 			if (m_fTimer == 0)
 				CUI_Manager::Get_Instance()->ScreenFadeOut();
