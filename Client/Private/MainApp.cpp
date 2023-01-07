@@ -66,9 +66,7 @@ void CMainApp::Tick(_float fTimeDelta)
 	m_pUIManager->Tick(fTimeDelta);
 	m_pGameInstance->Tick_Engine(fTimeDelta);
 
-#ifdef _DEBUG
 	m_fTimeAcc += fTimeDelta;
-#endif // _DEBUG
 }
 
 HRESULT CMainApp::Render()
@@ -87,9 +85,7 @@ HRESULT CMainApp::Render()
 	m_pRenderer->Render_GameObjects();
 	m_pUIManager->Render_Rupees();
 
-#ifdef _DEBUG
 	Show_FPS();
-#endif // _DEBUG
 
 	m_pGameInstance->Present();
 
@@ -123,7 +119,6 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	return S_OK;
 }
 
-#ifdef _DEBUG
 void CMainApp::Show_FPS()
 {
 	++m_iNumRender;
@@ -138,7 +133,6 @@ void CMainApp::Show_FPS()
 
 	m_pGameInstance->Render_Font(TEXT("Quicksand-24"), m_szFPS, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
 }
-#endif // _DEBUG
 
 CMainApp * CMainApp::Create()
 {

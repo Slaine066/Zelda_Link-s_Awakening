@@ -40,10 +40,12 @@ public:
 	virtual _uint Tick(_float fTimeDelta) override;
 	virtual _uint Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_ShadowDepth() override;
 
 	void Setup_Item(void * pArg);
 	virtual HRESULT Ready_Components(void* pArg);
 	virtual HRESULT SetUp_ShaderResources();
+	virtual HRESULT SetUp_ShadowShaderResources() override;
 
 	virtual void Compute_ShaderTimers(_float fTimeDelta);
 

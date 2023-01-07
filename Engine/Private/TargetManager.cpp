@@ -94,8 +94,8 @@ HRESULT CTargetManager::Begin_ShadowMRT(ID3D11DeviceContext * pContext, const _t
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
 	ViewPortDesc.TopLeftX = 0;
 	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = 8000;
-	ViewPortDesc.Height = 6000;
+	ViewPortDesc.Width = 1920 * 7;
+	ViewPortDesc.Height = 1080 * 7;
 	ViewPortDesc.MinDepth = 0.f;
 	ViewPortDesc.MaxDepth = 1.f;
 

@@ -81,7 +81,10 @@ _uint CMoriblinSword::Late_Tick(_float fTimeDelta)
 		return iEvent;
 
 	if (m_pRendererCom && m_bIsInFrustum)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
+	}
 
 	LateTickState(fTimeDelta);
 
@@ -111,7 +114,31 @@ HRESULT CMoriblinSword::Render()
 
 	Render_Colliders();
 
-	return E_NOTIMPL;
+	return S_OK;
+}
+
+HRESULT CMoriblinSword::Render_ShadowDepth()
+{
+	if (FAILED(__super::Render_ShadowDepth()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshContainers();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pModelCom->SetUp_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+		m_pModelCom->SetUp_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR);
+
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, VTXANIMMODELPASS::VTXANIMMODEL_SHADOW)))
+			return E_FAIL;
+	}
+
+	Render_Colliders();
+
+	return S_OK;
 }
 
 _float CMoriblinSword::Take_Damage(float fDamage, void * DamageType, CGameObject * DamageCauser)
@@ -277,6 +304,28 @@ HRESULT CMoriblinSword::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_DissolveTimer", &m_fDissolveTimer, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_RawValue("g_DissolveLifespan", &m_fDissolveLifespan, sizeof(_float))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CMoriblinSword::SetUp_ShadowShaderResources()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	/* World Matrix*/
+	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
+		return E_FAIL;
+
+	/* View Matrix */
+	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &CLight_Manager::Get_Instance()->Get_ShadowLightViewMatrix(), sizeof(_float4x4))))
+		return E_FAIL;
+
+	/* Proj Matrix */
+	_float4x4 matProjMatrixTP = pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
+	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &matProjMatrixTP, sizeof(_float4x4))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

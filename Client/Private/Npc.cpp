@@ -59,6 +59,14 @@ HRESULT CNpc::Render()
 	return S_OK;
 }
 
+HRESULT CNpc::Render_ShadowDepth()
+{
+	if (FAILED(__super::Render_ShadowDepth()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void CNpc::Free()
 {
 	__super::Free();

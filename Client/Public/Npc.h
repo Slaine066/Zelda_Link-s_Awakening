@@ -28,6 +28,7 @@ public:
 	virtual _uint Tick(_float fTimeDelta) override;
 	virtual _uint Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_ShadowDepth() override;
 
 protected:
 	virtual void AI_Behavior() PURE;

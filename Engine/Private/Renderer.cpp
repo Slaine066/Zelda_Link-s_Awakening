@@ -60,8 +60,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	/* For.Target_ShadowDepth */
-	_uint iShadowMapCX = 8000;
-	_uint iShadowMapCY = 6000;
+	_uint iShadowMapCX = 1920 * 7;
+	_uint iShadowMapCY = 1080 * 7;
 
 	if (FAILED(m_pTargetManager->Ready_ShadowDepthStencilRenderTargetView(m_pDevice, iShadowMapCX, iShadowMapCY)))
 		return E_FAIL;

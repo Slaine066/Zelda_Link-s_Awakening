@@ -208,7 +208,7 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector vShadowDepthDesc = g_ShadowDepthTexture.Sample(ShadowDepthSampler, vNewUV);
 
 	if (vPosition.z - 0.1f > vShadowDepthDesc.r * 500.0f)
-		Out.vColor *= vector(0.5f, 0.5f, 0.5f, 1.f);
+		Out.vColor *= vector(0.7f, 0.7f, 0.7f, 1.f);
 
 	if (Out.vColor.a == 0.f)
 		discard;

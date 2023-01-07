@@ -418,15 +418,6 @@ HRESULT CPlayer::SetUp_ShadowShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
 
-	_float4 vPosition; 
-	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE::STATE_TRANSLATION));
-	
-	_float4 vEye = vPosition;
-	vEye.x -= 15.f;
-	vEye.y += 25.f;
-	vEye.z -= 15.f;
-
-	CLight_Manager::Get_Instance()->Set_ShadowLightViewMat(vEye, vPosition);
 	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &CLight_Manager::Get_Instance()->Get_ShadowLightViewMatrix(), sizeof(_float4x4))))
 		return E_FAIL;
 
