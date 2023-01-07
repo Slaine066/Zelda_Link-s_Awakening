@@ -63,6 +63,7 @@ protected:
 	_float4x4 m_ViewMatrix, m_ProjMatrix;
 
 	_float m_fTimer = 0.f;
+	_float m_fTimeLifespan = 0.5f;
 
 public:
 	static CUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

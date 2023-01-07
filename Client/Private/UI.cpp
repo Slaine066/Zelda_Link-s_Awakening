@@ -110,7 +110,9 @@ HRESULT CUI::SetUp_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(0))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_RawValue("g_EffectTimer", &m_fTimer, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Set_RawValue("g_FadeTimer", &m_fTimer, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_FadeLifespan", &m_fTimeLifespan, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

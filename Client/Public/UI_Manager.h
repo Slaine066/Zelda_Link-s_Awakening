@@ -45,6 +45,7 @@ public:
 	void Set_Mode(MODE eMode) { m_eMode = eMode; }
 	void ScreenFadeIn();
 	void ScreenFadeOut();
+	void LevelNameFadeIn(LEVEL eLevelId);
 	_float Get_ScreenFadeTime() { return m_pScreenFade->Get_ScreenFadeTime(); }
 	_float Get_MaxHp() { return m_fMaxHp; }
 	_float Get_CurrentHp() { return m_fCurrentHp; }

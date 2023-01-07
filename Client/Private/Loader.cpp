@@ -103,7 +103,12 @@ HRESULT CLoader::Loading_ForStaticLevel()
 	/*For.Prototype_Component_Texture_Gradient */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Gradient"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Gradient_%02d.png"), 1))))
 		return E_FAIL;
-
+	/*For.Prototype_Component_Texture_LevelName */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LevelName"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/LevelName_%02d.png"), 2))))
+		return E_FAIL;
+	/*For.Prototype_Component_Texture_Number */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Number"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Number_%02d.png"), 10))))
+		return E_FAIL;
 	/*For.Prototype_Component_Texture_Heart */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Heart"), CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/UI/Heart_%d.png"), 3))))
 		return E_FAIL;

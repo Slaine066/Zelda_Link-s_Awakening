@@ -448,6 +448,11 @@ void CUI_Manager::ScreenFadeOut()
 	m_pScreenFade->FadeOut();
 }
 
+void CUI_Manager::LevelNameFadeIn(LEVEL eLevelId)
+{
+
+}
+
 _tchar * CUI_Manager::Get_ItemTextureName(ITEMID eItemId)
 {
 	switch ((ITEMID)eItemId)

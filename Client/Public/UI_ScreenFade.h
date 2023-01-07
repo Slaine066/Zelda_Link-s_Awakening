@@ -25,12 +25,10 @@ public:
 	virtual HRESULT SetUp_ShaderResources() override;
 
 public:
-	void FadeIn() { m_eShaderPass = VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_IN; }
-	void FadeOut() { m_eShaderPass = VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_OUT; }
+	void FadeIn() { m_tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_IN; }
+	void FadeOut() { m_tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_OUT; }
 
 private:
-	VTXTEXPASS m_eShaderPass = VTXTEXPASS::VTXTEX_END;
-
 	_float m_fFadeTimer = 0.f;
 	_float m_fScreenFadeTime = 0.5f;
 

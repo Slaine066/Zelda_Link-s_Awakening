@@ -34,11 +34,11 @@ _uint CUI_ScreenFade::Tick(_float fTimeDelta)
 	if (FAILED(__super::Tick(fTimeDelta)))
 		return E_FAIL;
 
-	if (m_eShaderPass == VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_IN || m_eShaderPass == VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_OUT)
+	if (m_tUIDesc.m_ePass == VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_IN || m_tUIDesc.m_ePass == VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_OUT)
 	{
 		if (m_fFadeTimer >= m_fScreenFadeTime)
 		{
-			m_eShaderPass = VTXTEXPASS::VTXTEX_END;
+			m_tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_END;
 			m_fFadeTimer = 0.f;
 		}
 		else
@@ -58,7 +58,7 @@ _uint CUI_ScreenFade::Late_Tick(_float fTimeDelta)
 
 HRESULT CUI_ScreenFade::Render()
 {
-	if (m_eShaderPass == VTXTEXPASS::VTXTEX_END)
+	if (m_tUIDesc.m_ePass == VTXTEXPASS::VTXTEX_END)
 		return S_OK;
 
 	if (!m_pShaderCom || !m_pVIBufferCom)
@@ -67,7 +67,7 @@ HRESULT CUI_ScreenFade::Render()
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(m_eShaderPass);
+	m_pShaderCom->Begin(m_tUIDesc.m_ePass);
 	m_pVIBufferCom->Render();
 
 	return S_OK;
