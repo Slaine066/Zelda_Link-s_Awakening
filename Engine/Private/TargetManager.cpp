@@ -69,12 +69,58 @@ HRESULT CTargetManager::Begin_MRT(ID3D11DeviceContext* pContext, const _tchar * 
 	return S_OK;
 }
 
+HRESULT CTargetManager::Begin_ShadowMRT(ID3D11DeviceContext * pContext, const _tchar * pMRTTag)
+{
+	list<CRenderTarget*>* pMRTList = Find_MRT(pMRTTag);
+	if (nullptr == pMRTList)
+		return E_FAIL;
+
+	pContext->OMGetRenderTargets(1, &m_pOldRTV, &m_pOldDSV);
+	pContext->ClearDepthStencilView(m_pOldDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	ID3D11RenderTargetView* pRTVs[8] = { nullptr };
+
+	_uint iNumRenderTargets = 0;
+
+	for (auto& pRenderTarget : *pMRTList)
+	{
+		pRenderTarget->Clear();
+		pRTVs[iNumRenderTargets++] = pRenderTarget->Get_RTV();
+	}
+
+	pContext->OMSetRenderTargets(iNumRenderTargets, pRTVs, m_pShadowDSV);
+
+	D3D11_VIEWPORT ViewPortDesc;
+	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
+	ViewPortDesc.TopLeftX = 0;
+	ViewPortDesc.TopLeftY = 0;
+	ViewPortDesc.Width = 8000;
+	ViewPortDesc.Height = 6000;
+	ViewPortDesc.MinDepth = 0.f;
+	ViewPortDesc.MaxDepth = 1.f;
+
+	pContext->RSSetViewports(1, &ViewPortDesc);
+
+	return S_OK;
+}
+
 HRESULT CTargetManager::End_MRT(ID3D11DeviceContext * pContext)
 {
 	pContext->OMSetRenderTargets(1, &m_pOldRTV, m_pOldDSV);
 
 	Safe_Release(m_pOldRTV);
 	Safe_Release(m_pOldDSV);
+
+	D3D11_VIEWPORT ViewPortDesc;
+	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
+	ViewPortDesc.TopLeftX = 0;
+	ViewPortDesc.TopLeftY = 0;
+	ViewPortDesc.Width = 1920;
+	ViewPortDesc.Height = 1080;
+	ViewPortDesc.MinDepth = 0.f;
+	ViewPortDesc.MaxDepth = 1.f;
+
+	pContext->RSSetViewports(1, &ViewPortDesc);
 
 	return S_OK;
 }

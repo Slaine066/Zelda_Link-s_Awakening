@@ -124,6 +124,7 @@ _uint CPlayer::Late_Tick(_float fTimeDelta)
 	if (m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
 
 		if (m_pWeapon)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, m_pWeapon);
@@ -205,6 +206,70 @@ HRESULT CPlayer::Render()
 		m_pModelCom->SetUp_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR);
 
 		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, m_eShaderPass)))
+			return E_FAIL;
+	}
+
+	// Only in Debug
+	Render_Colliders();
+	Render_NavigationMesh();
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Render_ShadowDepth()
+{
+	if (FAILED(__super::Render()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshContainers();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		/* Do NOT render these Meshes regardless. */
+		if (i == MESH_SWORD_B || i == MESH_SWORD_B_HANDLE || i == MESH_SHIELD_B || i == MESH_SHIELD_B_MIRROR || i == MESH_MAGIC_ROD || i == MESH_HOOKSHOT || i == MESH_SHOVEL || i == MESH_FLIPPERS)
+			continue;
+
+		if (i == MESH_SWORD_A || i == MESH_SWORD_A_HANDLE)
+		{
+			/* Do NOT render Sword if it's not in the Inventory yet. */
+			if (!CInventory::Get_Instance()->Get_Sword())
+				continue;
+
+			/* Do NOT render Sword in specific situations (Ex. When throwing Bombs). */
+			if (!m_bShowSword)
+				continue;
+
+			/* Do NOT render Sword if Player is playing Ocarina. */
+			if (m_pPlayerState->Get_StateId() == CPlayerState::STATE_ID::STATE_OCARINA)
+				continue;
+		}
+
+		/* Do NOT render Shield if it's not in the Inventory yet. */
+		if (i == MESH_SHIELD_A)
+		{
+			if (!CInventory::Get_Instance()->Get_Shield())
+				continue;
+
+			/* Do NOT render Sword in specific situations (Ex. When throwing Bombs). */
+			if (!m_bShowSword)
+				continue;
+
+			/* Do NOT render Shield if Player is playing Ocarina. */
+			if (m_pPlayerState->Get_StateId() == CPlayerState::STATE_ID::STATE_OCARINA)
+				continue;
+		}
+
+		/* Do NOT render Ocarina if Player is not in "COcarinaState". */
+		if (i == MESH_OCARINA && m_pPlayerState->Get_StateId() != CPlayerState::STATE_ID::STATE_OCARINA)
+			continue;
+
+		if (FAILED(m_pModelCom->SetUp_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pModelCom->SetUp_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+		m_pModelCom->SetUp_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR);
+
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, VTXANIMMODELPASS::VTXANIMMODEL_SHADOW)))
 			return E_FAIL;
 	}
 
@@ -337,6 +402,34 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_HitTimer", &m_fHitTimer, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Set_RawValue("g_HitLifespan", &m_fHitLifespan, sizeof(_float))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CPlayer::SetUp_ShadowShaderResources()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	/* World Matrix*/
+	if (FAILED(m_pShaderCom->Set_RawValue("g_WorldMatrix", &m_pTransformCom->Get_World4x4_TP(), sizeof(_float4x4))))
+		return E_FAIL;
+
+	_vector	vLightEye = XMVectorSet(-5.f, 15.f, -5.f, 1.f);
+	_vector	vLightAt = XMVectorSet(60.f, 0.f, 60.f, 1.f);
+	_vector	vLightUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	/* Light View Matrix */
+	_float4x4 LightViewMatrix;
+	XMStoreFloat4x4(&LightViewMatrix, XMMatrixTranspose(XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp)));
+	if (FAILED(m_pShaderCom->Set_RawValue("g_ViewMatrix", &LightViewMatrix, sizeof(_float4x4))))
+		return E_FAIL;
+
+	/* Light Proj Matrix */
+	_float4x4 matProjMatrixTP = pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
+	if (FAILED(m_pShaderCom->Set_RawValue("g_ProjMatrix", &matProjMatrixTP, sizeof(_float4x4))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

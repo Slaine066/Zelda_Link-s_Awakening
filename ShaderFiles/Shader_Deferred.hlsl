@@ -1,7 +1,9 @@
 #include "Engine_Shader_Defines.hpp"
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix g_LightProjMatrix;
 matrix g_ViewMatrixInv, g_ProjMatrixInv;
+matrix g_matLightView;
 
 vector g_vCamPosition;
 
@@ -18,6 +20,7 @@ texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_DepthTexture;
 texture2D g_SpecularTexture;
+texture2D g_ShadowDepthTexture;
 
 texture2D g_ShadeTexture;
 texture2D g_ReflectionTexture;
@@ -182,6 +185,30 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	vector vReflection = g_ReflectionTexture.Sample(LinearSampler, In.vTexUV);
 	
 	Out.vColor = vDiffuse * vShade + vReflection;
+
+	vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
+	float fViewZ = vDepthDesc.y * 500.f;
+
+	vector vPosition;
+	vPosition.x = (In.vTexUV.x * 2.f - 1.f) * fViewZ;
+	vPosition.y = (In.vTexUV.y * -2.f + 1.f) * fViewZ;
+	vPosition.z = vDepthDesc.x * fViewZ;
+	vPosition.w = fViewZ;
+
+	vPosition = mul(vPosition, g_ProjMatrixInv);
+	vPosition = mul(vPosition, g_ViewMatrixInv);
+	vPosition = mul(vPosition, g_matLightView);
+
+	vector vUVPos = mul(vPosition, g_LightProjMatrix);
+	
+	float2 vNewUV;
+	vNewUV.x = (vUVPos.x / vUVPos.w) * 0.5f + 0.5f;
+	vNewUV.y = (vUVPos.y / vUVPos.w) * -0.5f + 0.5f;
+
+	vector vShadowDepthDesc = g_ShadowDepthTexture.Sample(LinearSampler, vNewUV);
+
+	if (vPosition.z - 0.1f > vShadowDepthDesc.r * 500.0f)
+		Out.vColor = vector(0.f, 0.f, 0.f, 1.f);
 
 	if (Out.vColor.a == 0.f)
 		discard;

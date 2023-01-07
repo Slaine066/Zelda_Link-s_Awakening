@@ -13,8 +13,8 @@ sampler LinearSampler = sampler_state
 RasterizerState RS_Default
 {
 	FillMode = solid;
-CullMode = back;
-FrontCounterClockwise = false;
+	CullMode = back;
+	FrontCounterClockwise = false;
 };
 #pragma endregion
 
@@ -27,11 +27,11 @@ BlendState BS_Default
 BlendState BS_LightBlending
 {
 	BlendEnable[0] = true;
-BlendEnable[1] = true;
+	BlendEnable[1] = true;
 
-SrcBlend = one;
-DestBlend = one;
-BlendOp = add;
+	SrcBlend = one;
+	DestBlend = one;
+	BlendOp = add;
 };
 #pragma endregion 
 
@@ -39,13 +39,13 @@ BlendOp = add;
 DepthStencilState DSS_Default
 {
 	DepthEnable = true;
-DepthWriteMask = all;
-DepthFunc = less_equal;
+	DepthWriteMask = all;
+	DepthFunc = less_equal;
 };
 
 DepthStencilState DSS_ZEnable_Disable_ZWrite_Disable
 {
 	DepthEnable = false;
-DepthWriteMask = zero;
+	DepthWriteMask = zero;
 };
 #pragma endregion

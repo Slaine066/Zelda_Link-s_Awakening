@@ -64,9 +64,11 @@ protected:
 	virtual _uint Tick(_float fTimeDelta) override;
 	virtual _uint Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_ShadowDepth() override;
 
 	virtual HRESULT Ready_Components(void* pArg) PURE;
 	virtual HRESULT SetUp_ShaderResources() PURE;
+	virtual HRESULT SetUp_ShadowShaderResources() { return S_OK; };
 
 	void Render_Colliders();
 	void Render_NavigationMesh();

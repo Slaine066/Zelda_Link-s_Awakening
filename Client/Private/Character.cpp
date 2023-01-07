@@ -59,6 +59,14 @@ HRESULT CCharacter::Render()
 	return S_OK;
 }
 
+HRESULT CCharacter::Render_ShadowDepth()
+{
+	if (FAILED(__super::Render_ShadowDepth()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void CCharacter::Compute_ShaderTimers(_float fTimeDelta)
 {
 	switch (m_eShaderPass)

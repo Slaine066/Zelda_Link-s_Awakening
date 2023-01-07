@@ -33,6 +33,7 @@ public:
 	virtual _uint Tick(_float fTimeDelta);
 	virtual _uint Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual HRESULT Render_ShadowDepth() { return S_OK; }
 
 public:
 	class CComponent* Find_Component(const _tchar* pComponentTag);

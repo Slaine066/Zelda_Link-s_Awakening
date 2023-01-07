@@ -2,6 +2,7 @@
 #include "Client_Shader_Defines.hpp"
 
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 texture2D	g_SpecularTexture;
@@ -85,6 +86,11 @@ struct PS_OUT
 	float4 vSpecular : SV_TARGET3;
 };
 
+struct PS_OUT_SHADOW
+{
+	float4 vLightDepth : SV_TARGET0;
+};
+
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -104,6 +110,16 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	if (Out.vDiffuse.a <= 0.3f)
 		discard;
+
+	return Out;
+}
+
+PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN In)
+{
+	PS_OUT_SHADOW Out = (PS_OUT_SHADOW)0;
+
+	Out.vLightDepth.r = In.vProjPos.w / 500.f;
+	Out.vLightDepth.a = 1.f;
 
 	return Out;
 }
@@ -239,6 +255,17 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass Shadow_Depth
+	{
+		SetRasterizerState(RS_Default);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
 	}
 
 	pass Hit

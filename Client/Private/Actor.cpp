@@ -66,6 +66,17 @@ HRESULT CActor::Render()
 	return S_OK;
 }
 
+HRESULT CActor::Render_ShadowDepth()
+{
+	if (!m_pShaderCom || !m_pModelCom)
+		return E_FAIL;
+
+	if (FAILED(SetUp_ShadowShaderResources()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 CCollider * CActor::Get_Collider(CCollider::AIM eAim)
 {
 	auto iter = find_if(m_vCollidersCom.begin(), m_vCollidersCom.end(), [&](CCollider* pCollider) {
