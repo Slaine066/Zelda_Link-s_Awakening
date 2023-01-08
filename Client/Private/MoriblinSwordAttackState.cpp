@@ -54,6 +54,16 @@ CMoriblinSwordState * CAttackState::LateTick(CMoriblinSword * pMoriblinSword, _f
 					pPlayer->Set_State(pPlayer->Get_State()->ChangeState(pPlayer, pPlayer->Get_State(), pGuardState));
 					pPlayer->Spawn_GuardEffect();
 
+					CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+					_tchar pSoundName[MAX_PATH] = TEXT("");
+					_uint iRand = rand() % 4;
+					wsprintf(pSoundName, TEXT("Link_Guard_%d.wav"), iRand);
+
+					pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, 1.f);
+
+					RELEASE_INSTANCE(CGameInstance);
+
 					pMoriblinSword->Get_Model()->Reset_CurrentAnimation();
 					return new CStaggerState();
 				}

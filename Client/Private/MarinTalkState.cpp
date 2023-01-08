@@ -34,6 +34,8 @@ CMarinState * CTalkState::Tick(CMarin * pMarin, _float fTimeDelta)
 	else
 		m_fSoundTimer += fTimeDelta;
 
+	RELEASE_INSTANCE(CGameInstance);
+
 	return nullptr;
 }
 

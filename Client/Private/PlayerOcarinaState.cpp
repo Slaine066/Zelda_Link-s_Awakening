@@ -36,7 +36,7 @@ CPlayerState * COcarinaState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 	{
 		case STATETYPE_MAIN:
 		{
-			if (m_fTimer > 10.f)
+			if (m_fTimer > 5.f)
 				return new COcarinaState(STATETYPE_END);
 			else
 				m_fTimer += fTimeDelta;
