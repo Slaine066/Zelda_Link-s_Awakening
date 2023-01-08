@@ -71,12 +71,21 @@ void COwl::Interact()
 				return;
 
 			m_bDidInteract = true;
+
+			pGameInstance->PlaySounds(TEXT("Chat_End.wav"), SOUND_SYSYEM, .4f);
+
 			Process_ChatLine();
 
 			RELEASE_INSTANCE(CGameInstance);
 		}
 		else
+		{
 			m_pCurrentChat->Increase_ChatIndex();
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			pGameInstance->PlaySounds(TEXT("Chat_Next.wav"), SOUND_SYSYEM, .4f);
+			RELEASE_INSTANCE(CGameInstance);
+		}
 	}
 	else
 	{
@@ -92,6 +101,7 @@ void COwl::Interact()
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 		pGameInstance->Add_GameObject_Out(TEXT("UI_Chat_Owl"), TEXT("Prototype_GameObject_UI_Chat"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)m_pCurrentChat, &tUIDesc);
+		pGameInstance->PlaySounds(TEXT("Chat_Next.wav"), SOUND_SYSYEM, .4f);
 
 		RELEASE_INSTANCE(CGameInstance);
 	}

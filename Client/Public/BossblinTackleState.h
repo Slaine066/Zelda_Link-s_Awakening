@@ -22,6 +22,7 @@ private:
 	_bool Should_Break(CBossblin* pBossblin, _float fTimeDelta);
 	void BounceBack(CBossblin* pBossblin, _float fTimeDelta);
 	void Spawn_ShockwaveEffect(CBossblin* pBossblin);
+	void Play_Footsteps(CBossblin* pBossblin);
 
 private:
 	_bool m_bDidDamage = false;
@@ -29,6 +30,7 @@ private:
 	_float m_fBreakTimer = 0.f;
 
 	_bool m_bIsShockwaveSpawned = false;
+	_bool m_bIsSoundPlayed = false;
 };
 END
 END

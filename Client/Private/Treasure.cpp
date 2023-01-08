@@ -247,6 +247,10 @@ void CTreasure::Interact()
 	{
 		m_pModelCom->Set_CurrentAnimIndex(ANIM_OPEN);
 		m_bDidInteract = true;
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		pGameInstance->PlaySounds(TEXT("Treasure.mp3"), SOUND_OBJECT, 1.f);
+		RELEASE_INSTANCE(CGameInstance);
 	}
 	else
 	{

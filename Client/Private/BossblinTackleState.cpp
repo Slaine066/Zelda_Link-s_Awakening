@@ -31,8 +31,16 @@ CBossblinState * CTackleState::Tick(CBossblin * pBossblin, _float fTimeDelta)
 		break;
 		case STATETYPE::STATETYPE_MAIN:
 		{	
+			Play_Footsteps(pBossblin);
+
 			if (!Tackle(pBossblin, fTimeDelta)) /* Return FALSE when NavigationMesh::CanMove() function returns FALSE. */
+			{
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+				pGameInstance->PlaySounds(TEXT("Bossblin_Wall_Hit.wav"), SOUND_MONSTER_EFFECT, 1.f);
+				RELEASE_INSTANCE(CGameInstance);
+
 				return new CDownState(STATETYPE::STATETYPE_START);
+			}
 		}
 		break;
 	}
@@ -177,6 +185,11 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
 				return;
 
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 2;
+			wsprintf(pSoundName, TEXT("Drum_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_EFFECT, 1.f);
+
 			m_bIsShockwaveSpawned = true;
 		}
 	}
@@ -196,6 +209,11 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
 				return;
+
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 2;
+			wsprintf(pSoundName, TEXT("Drum_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_EFFECT, 1.f);
 
 			m_bIsShockwaveSpawned = true;
 		}
@@ -217,6 +235,11 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
 				return;
 
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 2;
+			wsprintf(pSoundName, TEXT("Drum_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_EFFECT, 1.f);
+
 			m_bIsShockwaveSpawned = true;
 		}
 	}
@@ -236,6 +259,11 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 			/* Spawn ShockwaveRing Effect (Model) on Bone Position. */
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
 				return;
+
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 2;
+			wsprintf(pSoundName, TEXT("Drum_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_EFFECT, 1.f);
 
 			m_bIsShockwaveSpawned = true;
 		}
@@ -257,11 +285,74 @@ void CTackleState::Spawn_ShockwaveEffect(CBossblin * pBossblin)
 			if (FAILED(pGameInstance->Add_GameObject(TEXT("Shockwave_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
 				return;
 
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 2;
+			wsprintf(pSoundName, TEXT("Drum_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_EFFECT, 1.f);
+
 			m_bIsShockwaveSpawned = true;
 		}
 	}
 	else
 		m_bIsShockwaveSpawned = false;
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CTackleState::Play_Footsteps(CBossblin * pBossblin)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 12))
+	{
+		if (!m_bIsSoundPlayed)
+		{
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 4;
+			wsprintf(pSoundName, TEXT("Bossblin_Step_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_EFFECT, 1.f);
+
+			m_bIsSoundPlayed = true;
+		}
+	}
+	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 18))
+	{
+		if (!m_bIsSoundPlayed)
+		{
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 4;
+			wsprintf(pSoundName, TEXT("Bossblin_Step_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_EFFECT, 1.f);
+
+			m_bIsSoundPlayed = true;
+		}
+	}
+	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 28))
+	{
+		if (!m_bIsSoundPlayed)
+		{
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 4;
+			wsprintf(pSoundName, TEXT("Bossblin_Step_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_EFFECT, 1.f);
+
+			m_bIsSoundPlayed = true;
+		}
+	}
+	else if (pBossblin->Get_Model()->Is_Keyframe("spine_a", 33))
+	{
+		if (!m_bIsSoundPlayed)
+		{
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 4;
+			wsprintf(pSoundName, TEXT("Bossblin_Step_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_EFFECT, 1.f);
+
+			m_bIsSoundPlayed = true;
+		}
+	}
+	else
+		m_bIsSoundPlayed = false;
 
 	RELEASE_INSTANCE(CGameInstance);
 }

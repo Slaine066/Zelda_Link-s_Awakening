@@ -44,8 +44,8 @@ void CUI_Manager::Handle_Input()
 		{
 			if (pGameInstance->Key_Down('N'))
 			{
-				pGameInstance->SetChannelVolume(SOUND_BGM, .05f);
-				pGameInstance->PlaySounds(TEXT("Inventory_Open_Close.wav"), SOUND_SYSYEM, 1.f);
+				pGameInstance->SetChannelVolume(SOUND_BGM, .1f);
+				pGameInstance->PlaySounds(TEXT("Inventory_Open.wav"), SOUND_SYSYEM, 1.f);
 				
 				/* Open Inventory */
 				m_eMode = MODE::MODE_INVENTORY;	
@@ -60,7 +60,7 @@ void CUI_Manager::Handle_Input()
 			if (pGameInstance->Key_Down('S'))
 			{
 				pGameInstance->SetChannelVolume(SOUND_BGM, .5f);
-				pGameInstance->PlaySounds(TEXT("Inventory_Open_Close.wav"), SOUND_SYSYEM, 1.f);
+				pGameInstance->PlaySounds(TEXT("Inventory_Close.wav"), SOUND_SYSYEM, 1.f);
 
 				/* Close Inventory. */
 				m_eMode = MODE::MODE_GAME;
@@ -72,29 +72,49 @@ void CUI_Manager::Handle_Input()
 			else if (pGameInstance->Key_Down(VK_RIGHT))
 			{
 				if (m_iCurrentSlotIndex < m_ItemSlots.size() - 1)
+				{
 					m_iCurrentSlotIndex += 1;
+					pGameInstance->PlaySounds(TEXT("Inventory_Change.wav"), SOUND_SYSYEM, 1.f);
+				}
 			}
 			else if (pGameInstance->Key_Down(VK_LEFT))
 			{
 				if (m_iCurrentSlotIndex > 0)
+				{
 					m_iCurrentSlotIndex -= 1;
+					pGameInstance->PlaySounds(TEXT("Inventory_Change.wav"), SOUND_SYSYEM, 1.f);
+				}
 			}
 			else if (pGameInstance->Key_Down(VK_UP))
 			{
 				if (m_iCurrentSlotIndex - 4 < 0)
+				{
 					m_iCurrentSlotIndex = 0;
+					pGameInstance->PlaySounds(TEXT("Inventory_Change.wav"), SOUND_SYSYEM, 1.f);
+				}
 				else
+				{
 					m_iCurrentSlotIndex -= 4;
+					pGameInstance->PlaySounds(TEXT("Inventory_Change.wav"), SOUND_SYSYEM, 1.f);
+				}
 			}
 			else if (pGameInstance->Key_Down(VK_DOWN))
 			{
 				if (m_iCurrentSlotIndex + 4 > m_ItemSlots.size() - 1)
+				{
 					m_iCurrentSlotIndex = m_ItemSlots.size() - 1;
+					pGameInstance->PlaySounds(TEXT("Inventory_Change.wav"), SOUND_SYSYEM, 1.f);
+				}
 				else
+				{
 					m_iCurrentSlotIndex += 4;
+					pGameInstance->PlaySounds(TEXT("Inventory_Change.wav"), SOUND_SYSYEM, 1.f);
+				}
 			}
 			else if (pGameInstance->Key_Down('Z'))
 			{
+				pGameInstance->PlaySounds(TEXT("Inventory_Set.wav"), SOUND_SYSYEM, 1.f);
+
 				m_ItemSlots[m_pInventory->Get_IndexItemX()]->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY);
 				m_ItemSlots[m_iCurrentSlotIndex]->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY_X);
 
@@ -110,6 +130,8 @@ void CUI_Manager::Handle_Input()
 			}
 			else if (pGameInstance->Key_Down('X'))
 			{
+				pGameInstance->PlaySounds(TEXT("Inventory_Set.wav"), SOUND_SYSYEM, 1.f);
+
 				m_ItemSlots[m_pInventory->Get_IndexItemY()]->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY);
 				m_ItemSlots[m_iCurrentSlotIndex]->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_INVENTORY_Y);
 

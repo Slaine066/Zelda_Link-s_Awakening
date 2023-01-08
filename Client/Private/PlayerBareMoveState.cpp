@@ -67,7 +67,7 @@ CPlayerState * CBareMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 		_uint iRand = rand() % 3;
 		wsprintf(pSoundName, TEXT("Footstep_%d.wav"), iRand);
 
-		pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, .75f);
+		pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, .9f);
 
 		RELEASE_INSTANCE(CGameInstance);
 
@@ -92,7 +92,7 @@ CPlayerState * CBareMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 		_uint iRand = rand() % 3;
 		wsprintf(pSoundName, TEXT("Footstep_%d.wav"), iRand);
 
-		pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, .75f);
+		pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, .9f);
 
 		RELEASE_INSTANCE(CGameInstance);
 

@@ -180,6 +180,19 @@ _float CMoriblinSword::Take_Damage(float fDamage, void * DamageType, CGameObject
 				CMoriblinSwordState* pState = new CHitState(DamageCauser->Get_Position());
 				m_pMoriblinSwordState = m_pMoriblinSwordState->ChangeState(this, m_pMoriblinSwordState, pState);
 			}
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 3;
+			wsprintf(pSoundName, TEXT("Moriblin_Damage_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_VOICE, 1.f);
+
+			iRand = rand() % 2;
+			wsprintf(pSoundName, TEXT("Hit_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER_EFFECT, 1.f);
+
+			RELEASE_INSTANCE(CGameInstance);
 		}
 	}
 

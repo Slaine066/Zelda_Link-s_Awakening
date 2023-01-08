@@ -26,6 +26,8 @@ CPlayerState * CAchieveState::HandleInput(CPlayer * pPlayer)
 				m_pGetItemEffect->Set_StartTimer(true);
 				m_pGetItemChat->Set_ShouldDestroy(true);
 				m_pGetItemChat = nullptr;
+
+				pGameInstance->PlaySounds(TEXT("Chat_Next.wav"), SOUND_SYSYEM, .4f);
 				
 				RELEASE_INSTANCE(CGameInstance);
 

@@ -45,14 +45,22 @@ void CBossblin::Show_Chat()
 
 			pPlayer->Set_Monster(nullptr);
 
+		
 			pGameInstance->StopAll();
+			pGameInstance->PlaySounds(TEXT("Chat_End.wav"), SOUND_SYSYEM, .4f);
 			pGameInstance->PlaySounds(TEXT("Final_Boss.mp3"), SOUND_BGM, 0.5f);
 
 			RELEASE_INSTANCE(CGameInstance);
 		}
 		/* Go to next Chat */
 		else
+		{
 			m_pCurrentChat->Increase_ChatIndex();
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			pGameInstance->PlaySounds(TEXT("Chat_Next.wav"), SOUND_SYSYEM, .4f);
+			RELEASE_INSTANCE(CGameInstance);
+		}
 	}
 	/* Create Chat */
 	else
@@ -71,6 +79,7 @@ void CBossblin::Show_Chat()
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 		pGameInstance->Add_GameObject_Out(TEXT("UI_Chat_Bossblin"), TEXT("Prototype_GameObject_UI_Chat"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), (CGameObject*&)m_pCurrentChat, &tUIDesc);
+		pGameInstance->PlaySounds(TEXT("Chat_Next.wav"), SOUND_SYSYEM, .4f);
 
 		RELEASE_INSTANCE(CGameInstance);
 	}
@@ -253,8 +262,10 @@ _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * Da
 				CBossblinState* pState = new CDieState(CBossblinState::STATETYPE::STATETYPE_START);
 				m_pBossblinState = m_pBossblinState->ChangeState(this, m_pBossblinState, pState);
 
-				/* If this Monster is in a Dungeon, remove it from Dungeon Room Monsters. */
 				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+				pGameInstance->PlaySounds(TEXT("Bossblin_Die.wav"), SOUND_MONSTER_VOICE, 1.f);
+
+				/* If this Monster is in a Dungeon, remove it from Dungeon Room Monsters. */
 				CLevel_MoriblinCave* pDungeonLevel = dynamic_cast<CLevel_MoriblinCave*>(pGameInstance->Get_CurrentLevel());
 				if (pDungeonLevel)
 					pDungeonLevel->Remove_MonsterFromRoom(this);
@@ -290,6 +301,19 @@ _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * Da
 						break;
 				}
 			}
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 3;
+			wsprintf(pSoundName, TEXT("Moriblin_Damage_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_VOICE, 1.f);
+
+			iRand = rand() % 2;
+			wsprintf(pSoundName, TEXT("Hit_%d.wav"), iRand);
+			pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER_EFFECT, 1.f);
+
+			RELEASE_INSTANCE(CGameInstance);
 		}
 		else if (m_pBossblinState->Get_StateId() == CBossblinState::STATE_ID::STATE_ATTACK_TACKLE)
 		{
@@ -309,6 +333,16 @@ _float CBossblin::Take_Damage(float fDamage, void * DamageType, CGameObject * Da
 			fDamage = 0.f;
 			
 			Spawn_GuardEffect(DamageCauser);
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			_uint iRand = rand() % 4;
+			wsprintf(pSoundName, TEXT("Bossblin_Guard_%d.wav"), iRand);
+
+			pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_EFFECT, 1.f);
+
+			RELEASE_INSTANCE(CGameInstance);
 		}
 	}
 

@@ -190,6 +190,19 @@ _float CMoriblinSpear::Take_Damage(float fDamage, void * DamageType, CGameObject
 			CMoriblinSpearState* pState = new CHitState(DamageCauser->Get_Position());
 			m_pMoriblinSpearState = m_pMoriblinSpearState->ChangeState(this, m_pMoriblinSpearState, pState);
 		}
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+		_tchar pSoundName[MAX_PATH] = TEXT("");
+		_uint iRand = rand() % 3;
+		wsprintf(pSoundName, TEXT("Moriblin_Damage_%d.wav"), iRand);
+		pGameInstance->PlaySounds(pSoundName, SOUND_MONSTER_VOICE, 1.f);
+
+		iRand = rand() % 2;
+		wsprintf(pSoundName, TEXT("Hit_%d.wav"), iRand);
+		pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER_EFFECT, 1.f);
+
+		RELEASE_INSTANCE(CGameInstance);
 	}
 
 	return fDamage;

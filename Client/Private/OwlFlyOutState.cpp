@@ -46,8 +46,10 @@ void CFlyOutState::Enter(COwl * pOwl)
 	switch (m_eStateType)
 	{
 	case STATETYPE::STATETYPE_START:
+	{
 		pOwl->Get_Model()->Set_CurrentAnimIndex(COwl::ANIMID::ANIM_FLY_OUT_START);
 		break;
+	}
 	case STATETYPE::STATETYPE_END:
 		pOwl->Get_Model()->Set_CurrentAnimIndex(COwl::ANIMID::ANIM_FLY_OUT_END);
 		break;

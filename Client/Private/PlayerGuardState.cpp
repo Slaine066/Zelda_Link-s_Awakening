@@ -92,6 +92,8 @@ void CGuardState::Enter(CPlayer * pPlayer)
 	{
 	case STATETYPE_START:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SHIELD_START);
+
+		PlaySound();
 		break;
 	case STATETYPE_MAIN:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SHIELD_LOOP);
@@ -105,4 +107,17 @@ void CGuardState::Enter(CPlayer * pPlayer)
 void CGuardState::Exit(CPlayer * pPlayer)
 {
 
+}
+
+void CGuardState::PlaySound()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_tchar pSoundName[MAX_PATH] = TEXT("");
+	_uint iRand = rand() % 3;
+	wsprintf(pSoundName, TEXT("Shield_Up_%d.wav"), iRand);
+
+	pGameInstance->PlaySounds(pSoundName, SOUND_OBJECT, 1.f);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
