@@ -45,6 +45,16 @@ void CThrowState::Enter(CPlayer * pPlayer)
 	m_eStateId = STATE_ID::STATE_THROW;
 
 	pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_THROW);
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_tchar pSoundName[MAX_PATH] = TEXT("");
+	_uint iRand = rand() % 4;
+	wsprintf(pSoundName, TEXT("Link_Throw_%d.wav"), iRand);
+
+	pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, 1.f);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CThrowState::Exit(CPlayer * pPlayer)

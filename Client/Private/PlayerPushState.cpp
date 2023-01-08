@@ -49,6 +49,27 @@ CPlayerState * CPushState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 	pPlayer->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pPlayer->Is_AnimationLoop(pPlayer->Get_Model()->Get_CurrentAnimIndex()));
 	pPlayer->Sync_WithNavigationHeight();
 
+	if (m_eStateType == STATETYPE::STATETYPE_MAIN)
+	{
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+		if (m_fSoundTimer > 2.f)
+		{
+			_uint iRand = rand() % 5;
+			_tchar pSoundName[MAX_PATH] = TEXT("");
+			wsprintf(pSoundName, TEXT("Link_Push_%d.wav"), iRand);
+
+			pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, 0.75f);
+
+			m_fSoundTimer = 0.f;
+		}
+		else
+			m_fSoundTimer += fTimeDelta;
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
+	
+
 	return nullptr;
 }
 

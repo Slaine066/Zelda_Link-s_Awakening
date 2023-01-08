@@ -18,6 +18,7 @@ public:
 
 private:
 	_bool Check_CollisionBlock(CPlayer* pPlayer, _float fTimeDelta);
+	void Play_Sound(CPlayer * pPlayer);
 
 private:
 	_bool m_bMove = false;

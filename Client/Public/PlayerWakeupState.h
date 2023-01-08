@@ -19,6 +19,7 @@ public:
 
 private:
 	CBed* m_pBed = nullptr;
+	_bool m_bSoundPlayed = false;
 };
 END
 END

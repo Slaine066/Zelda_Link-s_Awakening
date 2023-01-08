@@ -15,6 +15,10 @@ public:
 
 	virtual void Enter(CMarin* pMarin) override;
 	virtual void Exit(CMarin* pMarin) override;
+
+private:
+	_float m_fSoundTimer = 3.f;
+	_uint m_iSoundCounter = 0;
 };
 END
 END

@@ -20,6 +20,8 @@ public:
 private:
 	CBed* m_pBed = nullptr;
 	_bool m_bIsSleeping = false; /* m_bIsBedSleeping */
+	_float m_fSoundTimer = 3.f;
+	_uint m_iSoundCounter = 0;
 };
 END
 END

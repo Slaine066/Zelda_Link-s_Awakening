@@ -29,7 +29,8 @@ public:
 
 private:
 	_uint m_iChatIndex = 0;
-	_float m_fTimer = 0.f;
+	_float m_fFadeTimer = 0.f;
+	_float m_fFadeLifespan = 0.5f;
 
 public:
 	static CUI_Chat* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

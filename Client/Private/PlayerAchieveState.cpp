@@ -73,23 +73,33 @@ void CAchieveState::Enter(CPlayer * pPlayer)
 
 	switch (m_eStateType)
 	{
-	case STATETYPE_START:
-		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_ITEM_GET_START);
-		pPlayer->Set_CanPickup(false);
+		case STATETYPE_START:
+		{
+			pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_ITEM_GET_START);
+			pPlayer->Set_CanPickup(false);
 
-		ZoomIn(pPlayer);
-		Create_Item(pPlayer);
-		break;
-	case STATETYPE_MAIN:
-		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_ITEM_GET_LOOP);
+			ZoomIn(pPlayer);
+			Create_Item(pPlayer);
+			break;
+		}
+		case STATETYPE_MAIN:
+		{	
+			pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_ITEM_GET_LOOP);
 
-		Create_ChatGetItem(pPlayer);
-		break;
-	case STATETYPE_END:
-		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_ITEM_GET_END);
+			Create_ChatGetItem(pPlayer);
+			break;
+		}
+		case STATETYPE_END:
+		{
+			pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_ITEM_GET_END);
 
-		ZoomOut(pPlayer);
-		break;
+			ZoomOut(pPlayer);
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			pGameInstance->SetChannelVolume(SOUND_BGM, 0.5f);
+			RELEASE_INSTANCE(CGameInstance);
+			break;
+		}
 	}
 
 	pPlayer->Get_Transform()->Set_RotationY(180.f);
@@ -184,6 +194,21 @@ void CAchieveState::Create_Item(CPlayer * pPlayer)
 	tItemDesc.m_eItemId = m_eItemId;
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	switch (m_eItemId)
+	{
+		case ITEMID::ITEM_SWORD:
+		{
+			pGameInstance->SetChannelVolume(SOUND_BGM, 0.f);
+			pGameInstance->PlaySounds(TEXT("Item_Get_Sword.mp3"), SOUND_OBJECT, 0.3f);
+			break;
+		}
+		default:
+		{	
+			pGameInstance->SetChannelVolume(SOUND_BGM, 0.f);
+			pGameInstance->PlaySounds(TEXT("Item_Get.mp3"), SOUND_OBJECT, 0.3f);
+		}
+	}
 
 	pGameInstance->Add_GameObject(TEXT("Item_Achieve"), TEXT("Prototype_GameObject_Item"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Item"), &tItemDesc);
 

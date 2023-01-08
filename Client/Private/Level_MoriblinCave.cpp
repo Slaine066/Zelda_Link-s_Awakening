@@ -50,6 +50,9 @@ HRESULT CLevel_MoriblinCave::Initialize()
 	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_MORIBLINCAVE, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationMesh)))
 		return E_FAIL;
 
+	CGameInstance::Get_Instance()->PlayBGM(TEXT("Moriblin_Cave.mp3"), 0.5f);
+	CGameInstance::Get_Instance()->Set_CurrentBGM(TEXT("Moriblin_Cave.mp3"));
+
 	return S_OK;
 }
 
@@ -425,6 +428,8 @@ CLevel_MoriblinCave* CLevel_MoriblinCave::Create(ID3D11Device* pDevice, ID3D11De
 void CLevel_MoriblinCave::Free()
 {
 	__super::Free();
+
+	CGameInstance::Get_Instance()->StopAll();
 
 	Safe_Release(m_pUIManager);
 

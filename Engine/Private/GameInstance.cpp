@@ -17,7 +17,9 @@ CGameInstance::CGameInstance()
 	, m_pKeys_Manager(CKeysManager::Get_Instance())
 	, m_pFrustumCulling(CFrustumCulling::Get_Instance())
 	, m_pTargetManager(CTargetManager::Get_Instance())
+	, m_pSound_Manager(CSound_Manager::Get_Instance())
 {	
+	Safe_AddRef(m_pSound_Manager);
 	Safe_AddRef(m_pTargetManager);
 	Safe_AddRef(m_pFrustumCulling);
 	Safe_AddRef(m_pFont_Manager);
@@ -47,6 +49,10 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 	/* 입력 디바이스를 초기화한다. */
 	if (FAILED(m_pInput_Device->Initialize(hInst, GraphicDesc.hWnd)))
+		return E_FAIL;
+
+	/* 사운드 디바이스를 초기화한다. */
+	if (FAILED(m_pSound_Manager->Initialize()))
 		return E_FAIL;
 
 	/* 사운드 디바이스를 초기화한다. */
@@ -529,6 +535,86 @@ HRESULT CGameInstance::Bind_RenderTarget_SRV(const _tchar * pTargetTag, CShader 
 	return m_pTargetManager->Bind_ShaderResource(pTargetTag, pShader, pConstantName);
 }
 
+void CGameInstance::PlaySounds(_tchar * pSoundKey, const _uint & eID, const _float & fVolume, _bool bPause)
+{
+	if (nullptr == m_pSound_Manager)
+		return;
+
+	m_pSound_Manager->PlaySoundW(pSoundKey, eID, fVolume, bPause);
+}
+
+void CGameInstance::PlayBGM(_tchar * pSoundKey, const _float & fVolume, _bool bPause)
+{
+	if (nullptr == m_pSound_Manager)
+		return;
+
+	m_pSound_Manager->PlayBGM(pSoundKey, fVolume, bPause);
+}
+
+void CGameInstance::StopSound(const _uint & eID)
+{
+	if (nullptr == m_pSound_Manager)
+		return;
+
+	m_pSound_Manager->StopSound(eID);
+}
+
+void CGameInstance::StopAll()
+{
+	if (nullptr == m_pSound_Manager)
+		return;
+
+	m_pSound_Manager->StopAll();
+}
+
+void CGameInstance::SetChannelVolume(const _uint & eID, const _float & fVolume)
+{
+	if (nullptr == m_pSound_Manager)
+		return;
+
+	m_pSound_Manager->SetChannelVolume(eID, fVolume);
+}
+
+int CGameInstance::VolumeUp(const _uint & eID, const _float & _vol)
+{
+	if (nullptr == m_pSound_Manager)
+		return 0;
+
+	return m_pSound_Manager->VolumeUp(eID, _vol);
+}
+
+int CGameInstance::VolumeDown(const _uint & eID, const _float & _vol)
+{
+	if (nullptr == m_pSound_Manager)
+		return 0;
+
+	return m_pSound_Manager->VolumeDown(eID, _vol);
+}
+
+int CGameInstance::Pause(const _uint & eID)
+{
+	if (nullptr == m_pSound_Manager)
+		return 0;
+
+	return m_pSound_Manager->Pause(eID);
+}
+
+_tchar * CGameInstance::Get_CurrentBGM()
+{
+	if (nullptr == m_pSound_Manager)
+		return TEXT("");
+
+	return m_pSound_Manager->Get_CurrentBGM();
+}
+
+void CGameInstance::Set_CurrentBGM(_tchar * wcBGM)
+{
+	if (nullptr == m_pSound_Manager)
+		return;
+
+	return m_pSound_Manager->Set_CurrentBGM(wcBGM);
+}
+
 _bool CGameInstance::Key_Down(int _Key)
 {
 	if (nullptr == m_pKeys_Manager)
@@ -554,10 +640,12 @@ void CGameInstance::Release_Engine()
 	CFrustumCulling::Get_Instance()->Destroy_Instance();
 	CKeysManager::Get_Instance()->Destroy_Instance();
 	CTargetManager::Get_Instance()->Destroy_Instance();
+	CSound_Manager::Get_Instance()->Destroy_Instance();
 }
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pTargetManager);
 	Safe_Release(m_pFrustumCulling);
 	Safe_Release(m_pKeys_Manager);

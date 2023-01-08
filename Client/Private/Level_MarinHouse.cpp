@@ -253,5 +253,7 @@ void CLevel_MarinHouse::Free()
 {
 	__super::Free();
 
+	CGameInstance::Get_Instance()->StopAll();
+
 	Safe_Release(m_pUIManager);
 }

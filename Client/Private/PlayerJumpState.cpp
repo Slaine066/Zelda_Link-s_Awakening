@@ -73,6 +73,8 @@ void CJumpState::Enter(CPlayer * pPlayer)
 	{
 	case STATETYPE_MAIN:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_JUMP);
+
+		Play_Sound(pPlayer);
 		break;
 	case STATETYPE_END:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_LAND);
@@ -102,4 +104,17 @@ _bool CJumpState::Check_CollisionBlock(CPlayer * pPlayer, _float fTimeDelta)
 
 	RELEASE_INSTANCE(CGameInstance);
 	return false;
+}
+
+void CJumpState::Play_Sound(CPlayer * pPlayer)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_tchar pSoundName[MAX_PATH] = TEXT("");
+	_uint iRand = rand() % 4;
+	wsprintf(pSoundName, TEXT("Link_Jump_%d.wav"), iRand);
+
+	pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, 1.f);
+
+	RELEASE_INSTANCE(CGameInstance);
 }

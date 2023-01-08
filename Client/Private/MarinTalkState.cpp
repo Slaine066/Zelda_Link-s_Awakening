@@ -19,6 +19,21 @@ CMarinState * CTalkState::Tick(CMarin * pMarin, _float fTimeDelta)
 	pMarin->Get_Model()->Play_Animation(fTimeDelta, m_bIsAnimationFinished, pMarin->Is_AnimationLoop(pMarin->Get_Model()->Get_CurrentAnimIndex()));
 	pMarin->Sync_WithNavigationHeight();
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (m_fSoundTimer > 3.f)
+	{
+		_tchar pSoundName[MAX_PATH] = TEXT("");
+		wsprintf(pSoundName, TEXT("Marin_Talk_%d.wav"), m_iSoundCounter);
+
+		pGameInstance->PlaySounds(pSoundName, SOUND_NPC, 1.f);
+
+		m_iSoundCounter++;
+		m_fSoundTimer = 0.f;
+	}
+	else
+		m_fSoundTimer += fTimeDelta;
+
 	return nullptr;
 }
 

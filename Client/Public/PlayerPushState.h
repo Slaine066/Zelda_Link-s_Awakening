@@ -19,6 +19,8 @@ public:
 private:
 	CActor* m_pPushedObject = nullptr;
 	DIRID m_eDirection = DIRID::DIR_END;
+
+	_float m_fSoundTimer = 2.f;
 };
 END
 END

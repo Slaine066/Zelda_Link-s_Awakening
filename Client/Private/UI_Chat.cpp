@@ -37,7 +37,7 @@ _uint CUI_Chat::Tick(_float fTimeDelta)
 	if (m_bShouldDestroy)
 		return OBJ_DESTROY;
 
-	m_fTimer += fTimeDelta;
+	m_fFadeTimer += fTimeDelta;
 
 	return OBJ_NOEVENT;
 }
@@ -103,7 +103,9 @@ HRESULT CUI_Chat::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTextureCom->Get_SRV(m_iChatIndex))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Set_RawValue("g_EffectTimer", &m_fTimer, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Set_RawValue("g_FadeTimer", &m_fFadeTimer, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_FadeLifespan", &m_fFadeLifespan, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

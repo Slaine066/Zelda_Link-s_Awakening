@@ -81,6 +81,7 @@ void COcarinaState::Enter(CPlayer * pPlayer)
 		break;
 	case STATETYPE_MAIN:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_OCARINA_LOOP);
+		PlaySound(pPlayer);
 		break;
 	case STATETYPE_END:
 		pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_OCARINA_END);
@@ -91,4 +92,12 @@ void COcarinaState::Enter(CPlayer * pPlayer)
 void COcarinaState::Exit(CPlayer * pPlayer)
 {
 
+}
+
+void COcarinaState::PlaySound(CPlayer * pPlayer)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->StopAll();
+	pGameInstance->PlaySounds(TEXT("Link_Ocarina.mp3"), SOUND_BGM, 0.5f);
+	RELEASE_INSTANCE(CGameInstance);
 }

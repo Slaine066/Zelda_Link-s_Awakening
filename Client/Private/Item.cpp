@@ -24,6 +24,9 @@ HRESULT CItem::Initialize(void * pArg)
 {
 	Setup_Item(pArg);
 
+	if (m_tItemDesc.m_eItemId == ITEMID::ITEM_SWORD)
+		m_fDissolveLifespan = 3.f;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 

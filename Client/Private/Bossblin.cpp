@@ -45,6 +45,9 @@ void CBossblin::Show_Chat()
 
 			pPlayer->Set_Monster(nullptr);
 
+			pGameInstance->StopAll();
+			pGameInstance->PlaySounds(TEXT("Final_Boss.mp3"), SOUND_BGM, 0.5f);
+
 			RELEASE_INSTANCE(CGameInstance);
 		}
 		/* Go to next Chat */

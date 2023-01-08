@@ -40,8 +40,17 @@ void CTalkState::Enter(COwl * pOwl)
 	m_eStateId = STATE_ID::STATE_TALK;
 
 	pOwl->Get_Model()->Set_CurrentAnimIndex(COwl::ANIMID::ANIM_TALK);
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->StopAll();
+	pGameInstance->PlayBGM(TEXT("Owl_Theme.mp3"), 0.5f);
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CTalkState::Exit(COwl * pOwl)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->StopAll();
+	pGameInstance->PlayBGM(TEXT("Mysterious_Forest.mp3"), 0.5f);
+	RELEASE_INSTANCE(CGameInstance);
 }

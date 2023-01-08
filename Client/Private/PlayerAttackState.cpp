@@ -73,6 +73,16 @@ void CAttackState::Enter(CPlayer * pPlayer)
 	pPlayer->Get_Model()->Set_CurrentAnimIndex(CPlayer::ANIMID::ANIM_SLASH);
 
 	Spawn_SwordSlashEffect(pPlayer);
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_tchar pSoundName[MAX_PATH] = TEXT("");
+	_uint iRand = rand() % 3;
+	wsprintf(pSoundName, TEXT("Link_Sword_Swing_%d.wav"), iRand);
+
+	pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, 1.f);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CAttackState::Exit(CPlayer * pPlayer)

@@ -14,6 +14,7 @@
 #include "KeysManager.h"
 #include "FrustumCulling.h"
 #include "TargetManager.h"
+#include "Sound_Manager.h"
 
 BEGIN(Engine)
 class ENGINE_DLL CGameInstance final : public CBase
@@ -113,6 +114,18 @@ public: /* For.FrustumCulling */
 public: /* For.Target_Manager */
 	HRESULT Bind_RenderTarget_SRV(const _tchar* pTargetTag, class CShader* pShader, const char* pConstantName);
 
+public: /* For.Sound_Manager */
+	void PlaySounds(_tchar* pSoundKey, const _uint& eID, const _float& fVolume, _bool bPause = false);
+	void PlayBGM(_tchar * pSoundKey, const _float& fVolume, _bool bPause = false);
+	void StopSound(const _uint& eID);
+	void StopAll();
+	void SetChannelVolume(const _uint& eID, const _float& fVolume);
+	int VolumeUp(const _uint& eID, const _float& _vol);
+	int VolumeDown(const _uint& eID, const _float& _vol);
+	int Pause(const _uint& eID);
+	_tchar* Get_CurrentBGM();
+	void Set_CurrentBGM(_tchar* wcBGM);
+
 public:
 	static void Release_Engine();
 
@@ -131,6 +144,7 @@ private:
 	CKeysManager*		m_pKeys_Manager = nullptr;
 	CFrustumCulling*	m_pFrustumCulling = nullptr;
 	CTargetManager*		m_pTargetManager = nullptr;
+	CSound_Manager*		m_pSound_Manager = nullptr;
 
 public:
 	virtual void Free() override;

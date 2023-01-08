@@ -17,6 +17,9 @@ public:
 	virtual void Exit(CPlayer* pPlayer) override;
 
 private:
+	void PlaySound(CPlayer * pPlayer);
+
+private:
 	_float m_fTimer = 0.f;
 };
 END

@@ -45,6 +45,9 @@ HRESULT CLevel_Field::Initialize()
 	if (FAILED(__super::Add_NavigationMesh(TEXT("Com_Navigation"), LEVEL_FIELD, TEXT("Prototype_Component_Navigation"), (CComponent**)&m_pNavigationMesh)))
 		return E_FAIL;
 
+	CGameInstance::Get_Instance()->PlayBGM(TEXT("Mabe_Village.mp3"), 0.5f);
+	CGameInstance::Get_Instance()->Set_CurrentBGM(TEXT("Mabe_Village.mp3"));
+
 	return S_OK;
 }
 
@@ -252,6 +255,8 @@ CLevel_Field* CLevel_Field::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 void CLevel_Field::Free()
 {
 	__super::Free();
+
+	CGameInstance::Get_Instance()->StopAll();
 
 	Safe_Release(m_pUIManager);
 }

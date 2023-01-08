@@ -15,6 +15,9 @@ public:
 
 	virtual void Enter(CPlayer* pPlayer) override;
 	virtual void Exit(CPlayer* pPlayer) override;
+
+private:
+	void PlaySound(CPlayer * pPlayer);
 };
 END
 END

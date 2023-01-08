@@ -42,6 +42,16 @@ void CHitState::Enter(CPlayer * pPlayer)
 
 	_bool bIsFront = Compute_HitPosition(pPlayer);
 	pPlayer->Get_Model()->Set_CurrentAnimIndex(bIsFront ? CPlayer::ANIMID::ANIM_DAMAGE_FRONT : CPlayer::ANIMID::ANIM_DAMAGE_BACK);
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_tchar pSoundName[MAX_PATH] = TEXT("");
+	_uint iRand = rand() % 5;
+	wsprintf(pSoundName, TEXT("Link_Damage_%d.wav"), iRand);
+
+	pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, 1.f);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CHitState::Exit(CPlayer * pPlayer)
