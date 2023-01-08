@@ -72,4 +72,8 @@ void CDieState::Enter(CBossblin * pBossblin)
 
 void CDieState::Exit(CBossblin * pBossblin)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->StopAll();
+	pGameInstance->PlayBGM(TEXT("Moriblin_Cave"), 0.5f);
+	RELEASE_INSTANCE(CGameInstance);
 }

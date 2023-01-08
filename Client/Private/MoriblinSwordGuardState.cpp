@@ -46,6 +46,16 @@ void CGuardState::Enter(CMoriblinSword * pMoriblinSword)
 	m_eStateId = STATE_ID::STATE_GUARD;
 
 	pMoriblinSword->Get_Model()->Set_CurrentAnimIndex(CMoriblinSword::ANIMID::ANIM_GUARD);
+	
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_tchar pSoundName[MAX_PATH] = TEXT("");
+	_uint iRand = rand() % 4;
+	wsprintf(pSoundName, TEXT("Guard_%d.wav"), iRand);
+
+	pGameInstance->PlaySounds(pSoundName, SOUND_OBJECT, .5f);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CGuardState::Exit(CMoriblinSword * pMoriblinSword)

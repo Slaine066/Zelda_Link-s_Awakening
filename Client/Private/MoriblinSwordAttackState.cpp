@@ -58,7 +58,7 @@ CMoriblinSwordState * CAttackState::LateTick(CMoriblinSword * pMoriblinSword, _f
 
 					_tchar pSoundName[MAX_PATH] = TEXT("");
 					_uint iRand = rand() % 4;
-					wsprintf(pSoundName, TEXT("Link_Guard_%d.wav"), iRand);
+					wsprintf(pSoundName, TEXT("Guard_%d.wav"), iRand);
 
 					pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, 1.f);
 

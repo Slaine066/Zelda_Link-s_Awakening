@@ -270,7 +270,7 @@ void CProjectile::MoriblinSpear_Collision()
 
 					_tchar pSoundName[MAX_PATH] = TEXT("");
 					_uint iRand = rand() % 4;
-					wsprintf(pSoundName, TEXT("Link_Guard_%d.wav"), iRand);
+					wsprintf(pSoundName, TEXT("Guard_%d.wav"), iRand);
 
 					pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, 1.f);
 
@@ -322,7 +322,7 @@ void CProjectile::BossblinSpear_Collision()
 
 					_tchar pSoundName[MAX_PATH] = TEXT("");
 					_uint iRand = rand() % 4;
-					wsprintf(pSoundName, TEXT("Link_Guard_%d.wav"), iRand);
+					wsprintf(pSoundName, TEXT("Guard_%d.wav"), iRand);
 
 					pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, 1.f);
 
@@ -526,6 +526,8 @@ void CProjectile::PlayerBomb_Tick(_float fTimeDelta)
 		else
 		{
 			Spawn_BombEffect();
+
+			pGameInstance->PlaySounds(TEXT("Bomb_Explosion.wav"), SOUND_PLAYER, 1.f);
 
 			m_bShouldDestroy = true;
 		}

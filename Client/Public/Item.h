@@ -55,6 +55,7 @@ public:
 	_bool Is_AnimationLoop(_uint eAnimId);
 	_tchar* Get_ModelPrototypeId(ITEMID eItemId);
 	_bool Check_Collision();
+	void PlaySound();
 
 protected:
 	ITEMDESC m_tItemDesc;

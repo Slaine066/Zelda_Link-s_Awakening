@@ -33,6 +33,14 @@ CMoriblinSpearState * CAttackState::Tick(CMoriblinSpear * pMoriblinSpear, _float
 	{
 		Create_Projectile(pMoriblinSpear);
 		pMoriblinSpear->Set_IsProjectileAlive(true);
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		_tchar pSoundName[MAX_PATH] = TEXT("");
+		_uint iRand = rand() % 4;
+		wsprintf(pSoundName, TEXT("Spear_Swing_%d.wav"), iRand);
+
+		pGameInstance->PlaySounds(pSoundName, SOUND_OBJECT, .5f);
+		RELEASE_INSTANCE(CGameInstance);
 	}
 
 	return nullptr;

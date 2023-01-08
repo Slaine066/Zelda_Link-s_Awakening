@@ -42,15 +42,16 @@ void CTalkState::Enter(COwl * pOwl)
 	pOwl->Get_Model()->Set_CurrentAnimIndex(COwl::ANIMID::ANIM_TALK);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	pGameInstance->StopAll();
-	pGameInstance->PlayBGM(TEXT("Owl_Theme.mp3"), 0.5f);
+	pGameInstance->SetChannelVolume(SOUND_BGM, 0.f);
+	pGameInstance->PlaySounds(TEXT("Owl_Theme.mp3"), SOUND_NPC, 0.5f);
+	pGameInstance->PlaySounds(TEXT("Owl.mp3"), SOUND_NPC_EFFECT, 1.f);
 	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CTalkState::Exit(COwl * pOwl)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	pGameInstance->StopAll();
-	pGameInstance->PlayBGM(TEXT("Mysterious_Forest.mp3"), 0.5f);
+	pGameInstance->StopSound(SOUND_NPC);
+	pGameInstance->SetChannelVolume(SOUND_BGM, 0.5f);
 	RELEASE_INSTANCE(CGameInstance);
 }

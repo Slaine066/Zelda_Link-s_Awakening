@@ -44,8 +44,11 @@ void CUI_Manager::Handle_Input()
 		{
 			if (pGameInstance->Key_Down('N'))
 			{
+				pGameInstance->SetChannelVolume(SOUND_BGM, .05f);
+				pGameInstance->PlaySounds(TEXT("Inventory_Open_Close.wav"), SOUND_SYSYEM, 1.f);
+				
 				/* Open Inventory */
-				m_eMode = MODE::MODE_INVENTORY;
+				m_eMode = MODE::MODE_INVENTORY;	
 
 				m_pGameSlotX->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_X_INVENTORY);
 				m_pGameSlotY->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_Y_INVENTORY);
@@ -56,6 +59,9 @@ void CUI_Manager::Handle_Input()
 		{
 			if (pGameInstance->Key_Down('S'))
 			{
+				pGameInstance->SetChannelVolume(SOUND_BGM, .5f);
+				pGameInstance->PlaySounds(TEXT("Inventory_Open_Close.wav"), SOUND_SYSYEM, 1.f);
+
 				/* Close Inventory. */
 				m_eMode = MODE::MODE_GAME;
 				m_pGameSlotX->Set_SlotType(CUI_ItemSlot::SLOT_TYPE::SLOT_GAME_X);

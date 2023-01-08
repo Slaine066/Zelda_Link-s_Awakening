@@ -118,6 +118,9 @@ _uint CItem::Late_Tick(_float fTimeDelta)
 	if (Check_Collision() && bCanPickup)
 	{
 		CInventory::Get_Instance()->Add_Item(m_tItemDesc.m_eItemId);
+
+		PlaySound();
+
 		m_bShouldDestroy = true;
 	}
 
@@ -345,6 +348,23 @@ _bool CItem::Check_Collision()
 	RELEASE_INSTANCE(CGameInstance);
 
 	return bCollided;
+}
+
+void CItem::PlaySound()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	switch (m_tItemDesc.m_eItemId)
+	{
+		case ITEMID::ITEM_BOMB:
+			pGameInstance->PlaySounds(TEXT("Item_Get_Common.wav"), SOUND_OBJECT, 1.f);
+			break;
+		case ITEMID::ITEM_RUPEE_GREEN:
+			pGameInstance->PlaySounds(TEXT("Rupee_Get.wav"), SOUND_OBJECT, 1.f);
+			break;
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 CItem* CItem::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

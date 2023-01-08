@@ -178,6 +178,7 @@ void CTriggerBox_Dynamic::Field_Triggers(_float fTimeDelta)
 			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_MARINHOUSE))))
 				return;
 
+			pGameInstance->PlaySounds(TEXT("Enter_Door.wav"), SOUND_GROUND, 1.f);
 			pGameInstance->Set_SpawnTriggerBox("MarinHouse_Entrance");
 			pGameInstance->Set_IsJustSpawned(true);
 			pGameInstance->ClearLights();
@@ -244,6 +245,7 @@ void CTriggerBox_Dynamic::MarinHouse_Triggers(_float fTimeDelta)
 			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FIELD))))
 				return;
 
+			pGameInstance->PlaySounds(TEXT("Enter_Door.wav"), SOUND_GROUND, 1.f);
 			pGameInstance->Set_SpawnTriggerBox("MarinHouse_Entrance");
 			pGameInstance->Set_IsJustSpawned(true);
 			pGameInstance->ClearLights();

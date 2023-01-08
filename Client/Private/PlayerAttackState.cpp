@@ -79,8 +79,8 @@ void CAttackState::Enter(CPlayer * pPlayer)
 	_tchar pSoundName[MAX_PATH] = TEXT("");
 	_uint iRand = rand() % 3;
 	wsprintf(pSoundName, TEXT("Link_Sword_Swing_%d.wav"), iRand);
-
 	pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, 1.f);
+	pGameInstance->PlaySounds(TEXT("Sword_Swing.wav"), SOUND_OBJECT, 1.f);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

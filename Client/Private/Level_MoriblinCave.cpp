@@ -492,6 +492,10 @@ void CLevel_MoriblinCave::Check_Doors(_float fTimeDelta)
 		for (auto& pDungeonDoor : m_DungeonDoors)
 			pDungeonDoor->Open_Door();
 
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		pGameInstance->PlaySounds(TEXT("DungeonDoor_Open.wav"), SOUND_OBJECT, 1.f);
+		RELEASE_INSTANCE(CGameInstance);
+
 		m_pCurrentDungeonRoom->m_bIsRoomClear = true;
 	}
 
@@ -501,6 +505,10 @@ void CLevel_MoriblinCave::Check_Doors(_float fTimeDelta)
 		{
 			for (auto& pDungeonDoor : m_DungeonDoors)
 				pDungeonDoor->Close_Door();
+
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			pGameInstance->PlaySounds(TEXT("DungeonDoor_Close.wav"), SOUND_OBJECT, 1.f);
+			RELEASE_INSTANCE(CGameInstance);
 
 			if (m_pCurrentDungeonRoom->m_vRoomPosition.x == 6.f)
 			{

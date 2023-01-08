@@ -63,6 +63,12 @@ CPlayerState * CBareMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 		if (FAILED(pGameInstance->Add_GameObject(TEXT("Smoke_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
 			return nullptr;
 
+		_tchar pSoundName[MAX_PATH] = TEXT("");
+		_uint iRand = rand() % 3;
+		wsprintf(pSoundName, TEXT("Footstep_%d.wav"), iRand);
+
+		pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, .75f);
+
 		RELEASE_INSTANCE(CGameInstance);
 
 		m_bFirstSmokeSpawned = true;
@@ -81,6 +87,12 @@ CPlayerState * CBareMoveState::Tick(CPlayer * pPlayer, _float fTimeDelta)
 
 		if (FAILED(pGameInstance->Add_GameObject(TEXT("Smoke_Effect"), TEXT("Prototype_GameObject_Effect"), pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_Effect"), &tEffectDesc)))
 			return nullptr;
+
+		_tchar pSoundName[MAX_PATH] = TEXT("");
+		_uint iRand = rand() % 3;
+		wsprintf(pSoundName, TEXT("Footstep_%d.wav"), iRand);
+
+		pGameInstance->PlaySounds(pSoundName, SOUND_PLAYER, .75f);
 
 		RELEASE_INSTANCE(CGameInstance);
 
