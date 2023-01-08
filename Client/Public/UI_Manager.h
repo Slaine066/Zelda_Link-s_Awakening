@@ -44,7 +44,7 @@ public:
 	void Set_Mode(MODE eMode) { m_eMode = eMode; }
 	void ScreenFadeIn(CUI_ScreenFade::TYPE eType = CUI_ScreenFade::TYPE::TYPE_BLACK, _float fFadeTime = 0.5f);
 	void ScreenFadeOut(CUI_ScreenFade::TYPE eType = CUI_ScreenFade::TYPE::TYPE_BLACK, _float fFadeTime = 0.5f);
-	void LevelNameFadeIn(LEVEL eLevelId);
+	void Add_LevelName(LEVEL iLevel);
 	_float Get_MaxHp() { return m_fMaxHp; }
 	_float Get_CurrentHp() { return m_fCurrentHp; }
 	_tchar* Get_ItemTextureName(ITEMID eItemId);
@@ -55,6 +55,8 @@ public:
 	void Increase_TarinChatLine() { m_iTarinChatLine++; }
 	void Increase_OwlChatLine() { m_iOwlChatLine++; }
 
+	
+
 	void Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex);
 	void Add_ItemX();
 	void Add_ItemY();
@@ -63,12 +65,12 @@ public:
 	void Remove_ItemX();
 	void Remove_ItemY();
 
-	void Render_Rupees();
+	//void Render_Rupees();
 
 	/* Functions which get executed every Tick() and update the UI. */
 	void Get_PlayerHp();
 	void Compute_Hearts();
-	void Compute_Rupees();
+	//void Compute_Rupees();
 	void Compute_Inventory();
 
 private:

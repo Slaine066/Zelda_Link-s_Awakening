@@ -270,10 +270,12 @@
     <ClInclude Include="..\public\UI_Chat.h" />
     <ClInclude Include="..\public\UI_InventoryItem.h" />
     <ClInclude Include="..\public\UI_ItemChip.h" />
+    <ClInclude Include="..\public\UI_LevelName.h" />
     <ClInclude Include="..\public\UI_Manager.h" />
     <ClInclude Include="..\public\UI_Heart.h" />
     <ClInclude Include="..\public\UI_Inventory.h" />
     <ClInclude Include="..\public\UI_ItemSlot.h" />
+    <ClInclude Include="..\public\UI_RupeesFont.h" />
     <ClInclude Include="..\public\UI_ScreenFade.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\StaticObject.h" />
@@ -376,10 +378,12 @@
     <ClCompile Include="..\private\UI_Chat.cpp" />
     <ClCompile Include="..\private\UI_InventoryItem.cpp" />
     <ClCompile Include="..\private\UI_ItemChip.cpp" />
+    <ClCompile Include="..\private\UI_LevelName.cpp" />
     <ClCompile Include="..\private\UI_Manager.cpp" />
     <ClCompile Include="..\private\UI_Heart.cpp" />
     <ClCompile Include="..\private\UI_Inventory.cpp" />
     <ClCompile Include="..\private\UI_ItemSlot.cpp" />
+    <ClCompile Include="..\private\UI_RupeesFont.cpp" />
     <ClCompile Include="..\private\UI_ScreenFade.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\StaticObject.cpp" />

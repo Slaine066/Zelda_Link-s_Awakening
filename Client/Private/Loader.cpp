@@ -32,6 +32,8 @@
 #include "UI_InventoryItem.h"
 #include "UI_Chat.h"
 #include "UI_ScreenFade.h"
+#include "UI_RupeesFont.h"
+#include "UI_LevelName.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -856,6 +858,12 @@ HRESULT CLoader::Load_GameObject_Prototypes()
 		return E_FAIL;
 	/* For.Prototype_GameObject_UI_ScreenFade */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ScreenFade"), CUI_ScreenFade::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_Rupees_Font */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Rupees_Font"), CUI_RupeesFont::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UI_Level_Name */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Level_Name"), CUI_LevelName::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// >

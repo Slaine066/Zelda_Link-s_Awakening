@@ -83,7 +83,7 @@ HRESULT CMainApp::Render()
 #endif // _DEBUG
 
 	m_pRenderer->Render_GameObjects();
-	m_pUIManager->Render_Rupees();
+	//m_pUIManager->Render_Rupees();
 
 	Show_FPS();
 

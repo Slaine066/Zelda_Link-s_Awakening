@@ -44,7 +44,6 @@ void CBossblin::Show_Chat()
 				return;
 
 			pPlayer->Set_Monster(nullptr);
-
 		
 			pGameInstance->StopAll();
 			pGameInstance->PlaySounds(TEXT("Chat_End.wav"), SOUND_SYSYEM, .4f);

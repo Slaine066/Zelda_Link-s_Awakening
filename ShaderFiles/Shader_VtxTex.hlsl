@@ -113,7 +113,7 @@ PS_OUT PS_MAIN_SCREENFADEIN(PS_IN In)
 	if (g_FadeTimer <= g_FadeLifespan)
 	{
 		float fLerpAlpha = lerp(1, 0, g_FadeTimer / g_FadeLifespan);
-		Out.vColor.a = fLerpAlpha;
+		Out.vColor.a *= fLerpAlpha;
 	}
 	else
 		discard;
@@ -130,7 +130,7 @@ PS_OUT PS_MAIN_SCREENFADEOUT(PS_IN In)
 	if (g_FadeTimer <= g_FadeLifespan)
 	{
 		float fLerpAlpha = lerp(0, 1, g_FadeTimer / g_FadeLifespan);
-		Out.vColor.a = fLerpAlpha;
+		Out.vColor.a *= fLerpAlpha;
 	}
 
 	return Out;

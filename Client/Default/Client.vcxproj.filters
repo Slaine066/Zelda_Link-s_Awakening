@@ -220,6 +220,12 @@
     <Filter Include="02.GameObjects\04.UI\UI_ScreenFade">
       <UniqueIdentifier>{2c54d173-d58f-4cb5-bbdc-8dc6267b0b5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\04.UI\UI_RupeesFont">
+      <UniqueIdentifier>{d2bdb7ab-e58f-402c-a864-b93e02055752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04.UI\UI_LevelName">
+      <UniqueIdentifier>{cefc5f38-59b7-47aa-9d2f-a3f00da145c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -564,6 +570,12 @@
     <ClInclude Include="..\public\UI_ScreenFade.h">
       <Filter>02.GameObjects\04.UI\UI_ScreenFade</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_RupeesFont.h">
+      <Filter>02.GameObjects\04.UI\UI_RupeesFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_LevelName.h">
+      <Filter>02.GameObjects\04.UI\UI_LevelName</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -871,6 +883,12 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_ScreenFade.cpp">
       <Filter>02.GameObjects\04.UI\UI_ScreenFade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_RupeesFont.cpp">
+      <Filter>02.GameObjects\04.UI\UI_RupeesFont</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_LevelName.cpp">
+      <Filter>02.GameObjects\04.UI\UI_LevelName</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

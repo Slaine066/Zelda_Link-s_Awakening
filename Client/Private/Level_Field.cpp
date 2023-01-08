@@ -168,7 +168,7 @@ HRESULT CLevel_Field::Ready_Layer_UI()
 {
 	m_pUIManager->Initialize();
 	m_pUIManager->ScreenFadeIn();
-	m_pUIManager->LevelNameFadeIn(LEVEL::LEVEL_FIELD);
+	m_pUIManager->Add_LevelName(LEVEL::LEVEL_FIELD);
 
 	return S_OK;
 }

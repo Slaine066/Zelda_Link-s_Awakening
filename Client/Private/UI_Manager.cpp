@@ -7,6 +7,7 @@
 #include "UI_ItemSlot.h"
 #include "UI_ItemChip.h"
 #include "UI_InventoryItem.h"
+#include "UI_LevelName.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -159,7 +160,7 @@ _uint CUI_Manager::Tick(_float fTimeDelta)
 
 	Handle_Input();
 	Compute_Hearts();
-	Compute_Rupees();
+	//Compute_Rupees();
 	Compute_Inventory();
 
 	return OBJ_NOEVENT;
@@ -205,16 +206,23 @@ HRESULT CUI_Manager::Build_Rupees()
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	CUI::UIDESC tUIDesc;
-	ZeroMemory(&tUIDesc, sizeof(CUI::UIDESC));
-
 	tUIDesc.m_fSizeX = 70;
 	tUIDesc.m_fSizeY = 70;
-	tUIDesc.m_fX = g_iWinSizeX - 225;
+	tUIDesc.m_fX = g_iWinSizeX - 205;
 	tUIDesc.m_fY = 220;
 	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
 	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Item_Rupee"));
 
 	pGameInstance->Add_GameObject(TEXT("UI_Rupees"), TEXT("Prototype_GameObject_UI"), LEVEL_STATIC, TEXT("Layer_UI"), &tUIDesc);
+
+	tUIDesc.m_fSizeX = 70;
+	tUIDesc.m_fSizeY = 70;
+	tUIDesc.m_fX = 1760;
+	tUIDesc.m_fY = 220;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND;
+	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_Number"));
+
+	pGameInstance->Add_GameObject(TEXT("UI_Rupees_Font"), TEXT("Prototype_GameObject_UI_Rupees_Font"), LEVEL_STATIC, TEXT("Layer_UI"), &tUIDesc);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -421,11 +429,11 @@ void CUI_Manager::Compute_Hearts()
 	}
 }
 
-void CUI_Manager::Compute_Rupees()
-{
-	_uint iRupees = m_pInventory->Get_Rupees();
-	wsprintf(m_szRupees, TEXT("%d"), iRupees);
-}
+//void CUI_Manager::Compute_Rupees()
+//{
+//	_uint iRupees = m_pInventory->Get_Rupees();
+//	wsprintf(m_szRupees, TEXT("%d"), iRupees);
+//}
 
 void CUI_Manager::Compute_Inventory()
 {
@@ -435,15 +443,15 @@ void CUI_Manager::Compute_Inventory()
 	m_ItemSlots[m_iCurrentSlotIndex]->Set_IsHovered(true);
 }
 
-void CUI_Manager::Render_Rupees()
-{
-	if (m_eMode != MODE::MODE_GAME && m_eMode != MODE::MODE_INVENTORY)
-		return;
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	pGameInstance->Render_Font(TEXT("Quicksand-24"), m_szRupees, XMVectorSet(1720.f, 200.f, 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
-	RELEASE_INSTANCE(CGameInstance);
-}
+//void CUI_Manager::Render_Rupees()
+//{
+//	if (m_eMode != MODE::MODE_GAME && m_eMode != MODE::MODE_INVENTORY)
+//		return;
+//
+//	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+//	pGameInstance->Render_Font(TEXT("Quicksand-24"), m_szRupees, XMVectorSet(1720.f, 200.f, 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+//	RELEASE_INSTANCE(CGameInstance);
+//}
 
 void CUI_Manager::ScreenFadeIn(CUI_ScreenFade::TYPE eType, _float fFadeTime)
 {
@@ -487,11 +495,6 @@ void CUI_Manager::ScreenFadeOut(CUI_ScreenFade::TYPE eType, _float fFadeTime)
 	RELEASE_INSTANCE(CGameInstance);
 }
 
-void CUI_Manager::LevelNameFadeIn(LEVEL eLevelId)
-{
-
-}
-
 _tchar * CUI_Manager::Get_ItemTextureName(ITEMID eItemId)
 {
 	switch ((ITEMID)eItemId)
@@ -505,6 +508,25 @@ _tchar * CUI_Manager::Get_ItemTextureName(ITEMID eItemId)
 	case ITEMID::ITEM_OCARINA:
 		return TEXT("Prototype_Component_Texture_Item_Ocarina");
 	}
+}
+
+void CUI_Manager::Add_LevelName(LEVEL iLevel)
+{
+	CUI::UIDESC tUIDesc;
+	tUIDesc.m_fSizeX = 490;
+	tUIDesc.m_fSizeY = 100;
+	tUIDesc.m_fX = 445;
+	tUIDesc.m_fY = 200;
+	tUIDesc.m_ePass = VTXTEXPASS::VTXTEX_UI_BLEND_SCREENFADE_IN;
+	wcscpy_s(tUIDesc.m_pTextureName, MAX_PATH, TEXT("Prototype_Component_Texture_LevelName"));
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CUI_LevelName* pLevelName = nullptr;
+	pGameInstance->Add_GameObject_Out(TEXT("UI_Level_Name"), TEXT("Prototype_GameObject_UI_Level_Name"), LEVEL_STATIC, TEXT("Layer_UI"), (CGameObject*&)pLevelName, &tUIDesc);
+	pLevelName->Set_Level(iLevel);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CUI_Manager::Add_ItemToInventory(INVENTORYOBJDESC tItem, _uint iIndex)
